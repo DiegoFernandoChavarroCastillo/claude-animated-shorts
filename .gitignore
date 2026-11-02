@@ -9,3 +9,4 @@ out/
 node_modules/
 __pycache__/
 _cache/
+pipeline/models/

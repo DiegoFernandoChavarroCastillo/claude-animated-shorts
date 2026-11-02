@@ -1,0 +1,800 @@
+[
+ {
+  "w": "Why",
+  "start": 0.1,
+  "end": 0.34,
+  "beat": "b01"
+ },
+ {
+  "w": "does",
+  "start": 0.34,
+  "end": 0.52,
+  "beat": "b01"
+ },
+ {
+  "w": "ice",
+  "start": 0.52,
+  "end": 0.66,
+  "beat": "b01"
+ },
+ {
+  "w": "float,",
+  "start": 0.66,
+  "end": 1.0,
+  "beat": "b01"
+ },
+ {
+  "w": "if",
+  "start": 1.0,
+  "end": 1.16,
+  "beat": "b01"
+ },
+ {
+  "w": "it's",
+  "start": 1.16,
+  "end": 1.36,
+  "beat": "b01"
+ },
+ {
+  "w": "just",
+  "start": 1.36,
+  "end": 1.58,
+  "beat": "b01"
+ },
+ {
+  "w": "solid",
+  "start": 1.58,
+  "end": 1.84,
+  "beat": "b01"
+ },
+ {
+  "w": "water?",
+  "start": 1.84,
+  "end": 2.36,
+  "beat": "b01"
+ },
+ {
+  "w": "Almost",
+  "start": 3.04,
+  "end": 3.32,
+  "beat": "b02"
+ },
+ {
+  "w": "every",
+  "start": 3.32,
+  "end": 3.74,
+  "beat": "b02"
+ },
+ {
+  "w": "substance",
+  "start": 3.74,
+  "end": 4.16,
+  "beat": "b02"
+ },
+ {
+  "w": "shrinks",
+  "start": 4.16,
+  "end": 4.58,
+  "beat": "b02"
+ },
+ {
+  "w": "when",
+  "start": 4.58,
+  "end": 4.72,
+  "beat": "b02"
+ },
+ {
+  "w": "it",
+  "start": 4.72,
+  "end": 4.92,
+  "beat": "b02"
+ },
+ {
+  "w": "freezes,",
+  "start": 4.92,
+  "end": 5.44,
+  "beat": "b02"
+ },
+ {
+  "w": "and",
+  "start": 5.44,
+  "end": 5.64,
+  "beat": "b02"
+ },
+ {
+  "w": "its",
+  "start": 5.64,
+  "end": 5.86,
+  "beat": "b02"
+ },
+ {
+  "w": "solid",
+  "start": 5.86,
+  "end": 6.24,
+  "beat": "b02"
+ },
+ {
+  "w": "form",
+  "start": 6.24,
+  "end": 6.54,
+  "beat": "b02"
+ },
+ {
+  "w": "sinks.",
+  "start": 6.54,
+  "end": 7.02,
+  "beat": "b02"
+ },
+ {
+  "w": "Water",
+  "start": 7.46,
+  "end": 7.68,
+  "beat": "b02"
+ },
+ {
+  "w": "does",
+  "start": 7.68,
+  "end": 7.94,
+  "beat": "b02"
+ },
+ {
+  "w": "exactly",
+  "start": 7.94,
+  "end": 8.44,
+  "beat": "b02"
+ },
+ {
+  "w": "the",
+  "start": 8.44,
+  "end": 8.62,
+  "beat": "b02"
+ },
+ {
+  "w": "opposite.",
+  "start": 8.62,
+  "end": 9.1,
+  "beat": "b02"
+ },
+ {
+  "w": "When",
+  "start": 9.7,
+  "end": 9.88,
+  "beat": "b03"
+ },
+ {
+  "w": "water",
+  "start": 9.88,
+  "end": 10.18,
+  "beat": "b03"
+ },
+ {
+  "w": "freezes,",
+  "start": 10.18,
+  "end": 10.72,
+  "beat": "b03"
+ },
+ {
+  "w": "it",
+  "start": 10.84,
+  "end": 11.04,
+  "beat": "b03"
+ },
+ {
+  "w": "expands",
+  "start": 11.04,
+  "end": 11.4,
+  "beat": "b03"
+ },
+ {
+  "w": "by",
+  "start": 11.4,
+  "end": 11.68,
+  "beat": "b03"
+ },
+ {
+  "w": "about",
+  "start": 11.68,
+  "end": 11.98,
+  "beat": "b03"
+ },
+ {
+  "w": "nine",
+  "start": 11.98,
+  "end": 12.254,
+  "beat": "b03"
+ },
+ {
+  "w": "percent.",
+  "start": 12.254,
+  "end": 12.734,
+  "beat": "b03"
+ },
+ {
+  "w": "That's",
+  "start": 13.114,
+  "end": 13.36,
+  "beat": "b03"
+ },
+ {
+  "w": "why",
+  "start": 13.36,
+  "end": 13.48,
+  "beat": "b03"
+ },
+ {
+  "w": "a",
+  "start": 13.48,
+  "end": 13.62,
+  "beat": "b03"
+ },
+ {
+  "w": "full",
+  "start": 13.62,
+  "end": 13.86,
+  "beat": "b03"
+ },
+ {
+  "w": "bottle",
+  "start": 13.86,
+  "end": 14.18,
+  "beat": "b03"
+ },
+ {
+  "w": "bursts",
+  "start": 14.18,
+  "end": 14.54,
+  "beat": "b03"
+ },
+ {
+  "w": "in",
+  "start": 14.54,
+  "end": 14.68,
+  "beat": "b03"
+ },
+ {
+  "w": "the",
+  "start": 14.68,
+  "end": 14.82,
+  "beat": "b03"
+ },
+ {
+  "w": "freezer.",
+  "start": 14.82,
+  "end": 15.2,
+  "beat": "b03"
+ },
+ {
+  "w": "Blame",
+  "start": 15.86,
+  "end": 16.12,
+  "beat": "b04"
+ },
+ {
+  "w": "the",
+  "start": 16.12,
+  "end": 16.3,
+  "beat": "b04"
+ },
+ {
+  "w": "molecules.",
+  "start": 16.3,
+  "end": 16.78,
+  "beat": "b04"
+ },
+ {
+  "w": "In",
+  "start": 17.32,
+  "end": 17.46,
+  "beat": "b04"
+ },
+ {
+  "w": "ice,",
+  "start": 17.46,
+  "end": 17.76,
+  "beat": "b04"
+ },
+ {
+  "w": "they",
+  "start": 17.76,
+  "end": 17.96,
+  "beat": "b04"
+ },
+ {
+  "w": "lock",
+  "start": 17.96,
+  "end": 18.18,
+  "beat": "b04"
+ },
+ {
+  "w": "into",
+  "start": 18.18,
+  "end": 18.42,
+  "beat": "b04"
+ },
+ {
+  "w": "hexagons",
+  "start": 18.42,
+  "end": 18.96,
+  "beat": "b04"
+ },
+ {
+  "w": "that",
+  "start": 18.96,
+  "end": 19.18,
+  "beat": "b04"
+ },
+ {
+  "w": "leave",
+  "start": 19.18,
+  "end": 19.4,
+  "beat": "b04"
+ },
+ {
+  "w": "gaps",
+  "start": 19.4,
+  "end": 19.7,
+  "beat": "b04"
+ },
+ {
+  "w": "inside.",
+  "start": 19.7,
+  "end": 20.26,
+  "beat": "b04"
+ },
+ {
+  "w": "A",
+  "start": 20.74,
+  "end": 20.84,
+  "beat": "b04"
+ },
+ {
+  "w": "liter",
+  "start": 20.84,
+  "end": 21.1,
+  "beat": "b04"
+ },
+ {
+  "w": "of",
+  "start": 21.1,
+  "end": 21.32,
+  "beat": "b04"
+ },
+ {
+  "w": "ice",
+  "start": 21.32,
+  "end": 21.62,
+  "beat": "b04"
+ },
+ {
+  "w": "weighs",
+  "start": 21.62,
+  "end": 21.98,
+  "beat": "b04"
+ },
+ {
+  "w": "about",
+  "start": 21.98,
+  "end": 22.5,
+  "beat": "b04"
+ },
+ {
+  "w": "nine",
+  "start": 22.5,
+  "end": 22.72,
+  "beat": "b04"
+ },
+ {
+  "w": "hundred",
+  "start": 22.72,
+  "end": 23.105,
+  "beat": "b04"
+ },
+ {
+  "w": "seventeen",
+  "start": 23.105,
+  "end": 23.6,
+  "beat": "b04"
+ },
+ {
+  "w": "grams,",
+  "start": 23.6,
+  "end": 24.26,
+  "beat": "b04"
+ },
+ {
+  "w": "and",
+  "start": 24.26,
+  "end": 24.52,
+  "beat": "b04"
+ },
+ {
+  "w": "a",
+  "start": 24.52,
+  "end": 24.66,
+  "beat": "b04"
+ },
+ {
+  "w": "liter",
+  "start": 24.66,
+  "end": 24.9,
+  "beat": "b04"
+ },
+ {
+  "w": "of",
+  "start": 24.9,
+  "end": 25.22,
+  "beat": "b04"
+ },
+ {
+  "w": "water,",
+  "start": 25.22,
+  "end": 25.5,
+  "beat": "b04"
+ },
+ {
+  "w": "a",
+  "start": 25.68,
+  "end": 25.84,
+  "beat": "b04"
+ },
+ {
+  "w": "thousand.",
+  "start": 25.84,
+  "end": 26.26,
+  "beat": "b04"
+ },
+ {
+  "w": "And",
+  "start": 26.84,
+  "end": 27.02,
+  "beat": "b05"
+ },
+ {
+  "w": "here's",
+  "start": 27.02,
+  "end": 27.3,
+  "beat": "b05"
+ },
+ {
+  "w": "where",
+  "start": 27.3,
+  "end": 27.46,
+  "beat": "b05"
+ },
+ {
+  "w": "it",
+  "start": 27.46,
+  "end": 27.62,
+  "beat": "b05"
+ },
+ {
+  "w": "gets",
+  "start": 27.62,
+  "end": 27.78,
+  "beat": "b05"
+ },
+ {
+  "w": "interesting.",
+  "start": 27.78,
+  "end": 28.38,
+  "beat": "b05"
+ },
+ {
+  "w": "Liquid",
+  "start": 28.94,
+  "end": 29.18,
+  "beat": "b05"
+ },
+ {
+  "w": "water",
+  "start": 29.18,
+  "end": 29.58,
+  "beat": "b05"
+ },
+ {
+  "w": "is",
+  "start": 29.58,
+  "end": 29.86,
+  "beat": "b05"
+ },
+ {
+  "w": "densest",
+  "start": 29.86,
+  "end": 30.4,
+  "beat": "b05"
+ },
+ {
+  "w": "at",
+  "start": 30.4,
+  "end": 30.56,
+  "beat": "b05"
+ },
+ {
+  "w": "about",
+  "start": 30.56,
+  "end": 30.84,
+  "beat": "b05"
+ },
+ {
+  "w": "four",
+  "start": 30.84,
+  "end": 31.12,
+  "beat": "b05"
+ },
+ {
+  "w": "degrees,",
+  "start": 31.12,
+  "end": 31.7,
+  "beat": "b05"
+ },
+ {
+  "w": "so",
+  "start": 31.7,
+  "end": 32.02,
+  "beat": "b05"
+ },
+ {
+  "w": "that",
+  "start": 32.02,
+  "end": 32.22,
+  "beat": "b05"
+ },
+ {
+  "w": "water",
+  "start": 32.22,
+  "end": 32.6,
+  "beat": "b05"
+ },
+ {
+  "w": "sinks",
+  "start": 32.6,
+  "end": 32.92,
+  "beat": "b05"
+ },
+ {
+  "w": "to",
+  "start": 32.92,
+  "end": 33.12,
+  "beat": "b05"
+ },
+ {
+  "w": "the",
+  "start": 33.12,
+  "end": 33.24,
+  "beat": "b05"
+ },
+ {
+  "w": "bottom",
+  "start": 33.24,
+  "end": 33.46,
+  "beat": "b05"
+ },
+ {
+  "w": "of",
+  "start": 33.46,
+  "end": 33.74,
+  "beat": "b05"
+ },
+ {
+  "w": "lakes.",
+  "start": 33.74,
+  "end": 34.0,
+  "beat": "b05"
+ },
+ {
+  "w": "That's",
+  "start": 35.01,
+  "end": 35.26,
+  "beat": "b06"
+ },
+ {
+  "w": "why",
+  "start": 35.26,
+  "end": 35.42,
+  "beat": "b06"
+ },
+ {
+  "w": "lakes",
+  "start": 35.42,
+  "end": 35.64,
+  "beat": "b06"
+ },
+ {
+  "w": "freeze",
+  "start": 35.64,
+  "end": 35.96,
+  "beat": "b06"
+ },
+ {
+  "w": "from",
+  "start": 35.96,
+  "end": 36.18,
+  "beat": "b06"
+ },
+ {
+  "w": "the",
+  "start": 36.18,
+  "end": 36.34,
+  "beat": "b06"
+ },
+ {
+  "w": "top",
+  "start": 36.34,
+  "end": 36.54,
+  "beat": "b06"
+ },
+ {
+  "w": "down.",
+  "start": 36.54,
+  "end": 36.86,
+  "beat": "b06"
+ },
+ {
+  "w": "Ice",
+  "start": 37.34,
+  "end": 37.54,
+  "beat": "b06"
+ },
+ {
+  "w": "doesn't",
+  "start": 37.54,
+  "end": 37.9,
+  "beat": "b06"
+ },
+ {
+  "w": "bury",
+  "start": 37.9,
+  "end": 38.16,
+  "beat": "b06"
+ },
+ {
+  "w": "life:",
+  "start": 38.16,
+  "end": 38.54,
+  "beat": "b06"
+ },
+ {
+  "w": "it",
+  "start": 38.72,
+  "end": 38.9,
+  "beat": "b06"
+ },
+ {
+  "w": "protects",
+  "start": 38.9,
+  "end": 39.22,
+  "beat": "b06"
+ },
+ {
+  "w": "it,",
+  "start": 39.22,
+  "end": 39.44,
+  "beat": "b06"
+ },
+ {
+  "w": "like",
+  "start": 39.44,
+  "end": 39.64,
+  "beat": "b06"
+ },
+ {
+  "w": "a",
+  "start": 39.64,
+  "end": 39.84,
+  "beat": "b06"
+ },
+ {
+  "w": "lid",
+  "start": 39.84,
+  "end": 39.96,
+  "beat": "b06"
+ },
+ {
+  "w": "against",
+  "start": 39.96,
+  "end": 40.22,
+  "beat": "b06"
+ },
+ {
+  "w": "the",
+  "start": 40.22,
+  "end": 40.46,
+  "beat": "b06"
+ },
+ {
+  "w": "cold.",
+  "start": 40.46,
+  "end": 40.74,
+  "beat": "b06"
+ },
+ {
+  "w": "What",
+  "start": 41.42,
+  "end": 41.64,
+  "beat": "b07"
+ },
+ {
+  "w": "other",
+  "start": 41.64,
+  "end": 41.88,
+  "beat": "b07"
+ },
+ {
+  "w": "weird",
+  "start": 41.88,
+  "end": 42.2,
+  "beat": "b07"
+ },
+ {
+  "w": "thing",
+  "start": 42.2,
+  "end": 42.44,
+  "beat": "b07"
+ },
+ {
+  "w": "about",
+  "start": 42.44,
+  "end": 42.74,
+  "beat": "b07"
+ },
+ {
+  "w": "water",
+  "start": 42.74,
+  "end": 43.1,
+  "beat": "b07"
+ },
+ {
+  "w": "should",
+  "start": 43.1,
+  "end": 43.28,
+  "beat": "b07"
+ },
+ {
+  "w": "I",
+  "start": 43.28,
+  "end": 43.62,
+  "beat": "b07"
+ },
+ {
+  "w": "explain",
+  "start": 43.62,
+  "end": 43.86,
+  "beat": "b07"
+ },
+ {
+  "w": "next?",
+  "start": 43.86,
+  "end": 44.38,
+  "beat": "b07"
+ },
+ {
+  "w": "Tell",
+  "start": 44.8,
+  "end": 44.94,
+  "beat": "b07"
+ },
+ {
+  "w": "me",
+  "start": 44.94,
+  "end": 45.06,
+  "beat": "b07"
+ },
+ {
+  "w": "in",
+  "start": 45.06,
+  "end": 45.14,
+  "beat": "b07"
+ },
+ {
+  "w": "the",
+  "start": 45.14,
+  "end": 45.36,
+  "beat": "b07"
+ },
+ {
+  "w": "comments.",
+  "start": 45.36,
+  "end": 45.7,
+  "beat": "b07"
+ }
+]

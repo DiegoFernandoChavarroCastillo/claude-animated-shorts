@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "id": "hielo-flota-en",
+    "lang": "en",
+    "title": "Why ice floats",
+    "fps": 30, "width": 1080, "height": 1920,
+    "voice": { "engine": "kokoro", "voice": "am_fenrir", "speed": 1.0 },
+    "music": false,
+    "captionEmphasis": "box"
+  },
+  "beats": [
+    {
+      "id": "b01", "role": "hook",
+      "text": "Why does ice float, if it's just solid water?",
+      "keyword": "float,",
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
+                 "camera": { "preset": "push_in", "rate": 0.2 }, "dof": 14 },
+      "overlays": [ { "type": "PulseRings", "at": "float,", "anchor": "hero", "color": "ui.cyan" } ],
+      "transition": "glide"
+    },
+    {
+      "id": "b02", "role": "tension",
+      "text": "Almost every substance shrinks when it freezes, and its solid form sinks. Water does exactly the opposite.",
+      "keyword": "opposite.",
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "lateral" },
+                 "camera": { "preset": "drift", "dir": "right" }, "dof": 12 },
+      "overlays": [ { "type": "Pill", "at": "sinks.", "text": "IT SINKS", "color": "ui.red" } ],
+      "transition": "zoom_through"
+    },
+    {
+      "id": "b03", "role": "mechanism",
+      "text": "When water freezes, it expands by about nine percent. That's why a full bottle bursts in the freezer.",
+      "keyword": "expands",
+      "scene": { "env": "tech_oscuro", "light": "tech", "hero": { "kind": "primitive", "asset": "moleculas_agua", "pose": "red_hexagonal" },
+                 "camera": { "preset": "orbit_slow", "deg": 12 }, "dof": 8 },
+      "overlays": [ { "type": "StatCallout", "at": "nine", "value": 9, "suffix": " %", "label": "MORE VOLUME WHEN FROZEN", "color": "warm.gold" } ],
+      "sources": ["https://en.wikipedia.org/wiki/Properties_of_water", "https://en.wikipedia.org/wiki/Ice"],
+      "transition": "glide"
+    },
+    {
+      "id": "b04", "role": "mechanism",
+      "text": "Blame the molecules. In ice, they lock into hexagons that leave gaps inside. A liter of ice weighs about nine hundred seventeen grams, and a liter of water, a thousand.",
+      "keyword": "hexagons",
+      "scene": { "env": "tech_oscuro", "light": "tech", "hero": { "kind": "primitive", "asset": "moleculas_agua", "pose": "red_hexagonal" },
+                 "camera": { "preset": "push_in", "rate": 0.25 }, "dof": 10 },
+      "overlays": [ { "type": "BarCompare", "at": "liter", "unit": "g per liter",
+                      "items": [ { "label": "Ice", "value": 917, "color": "ui.cyan" }, { "label": "Water", "value": 1000, "color": "warm.gold" } ] } ],
+      "sources": ["https://en.wikipedia.org/wiki/Ice", "https://www.britannica.com/science/ice"],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b05", "role": "layer2",
+      "text": "And here's where it gets interesting. Liquid water is densest at about four degrees, so that water sinks to the bottom of lakes.",
+      "keyword": "four",
+      "scene": { "env": "interior_neutro", "light": "dorado", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
+                 "camera": { "preset": "glide" }, "dof": 6 },
+      "overlays": [ { "type": "StatCallout", "at": "four", "value": 4, "suffix": " °C", "label": "DENSEST WATER", "color": "ui.cyan" } ],
+      "sources": ["https://en.wikipedia.org/wiki/Properties_of_water"],
+      "transition": "cut"
+    },
+    {
+      "id": "b06", "role": "twist",
+      "text": "That's why lakes freeze from the top down. Ice doesn't bury life: it protects it, like a lid against the cold.",
+      "keyword": "protects",
+      "scene": { "env": "interior_neutro", "light": "atardecer", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
+                 "camera": { "preset": "push_in", "rate": 0.15 }, "dof": 12 },
+      "overlays": [ { "type": "Callout3D", "at": "lid", "anchor": "top", "text": "Ice: insulator" } ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b07", "role": "cta",
+      "text": "What other weird thing about water should I explain next? Tell me in the comments.",
+      "keyword": "comments.",
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
+                 "camera": { "preset": "drift", "dir": "left" }, "dof": 14 },
+      "overlays": [],
+      "transition": "cut"
+    }
+  ]
+}

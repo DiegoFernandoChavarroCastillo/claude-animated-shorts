@@ -194,3 +194,33 @@ no con su tema.
 
 **D42 · Composiciones de desarrollo.** `EnvGallery` es un `Explainer` normal con un story de 12 beats (8 entornos y 4
 objetos extra) en `dev/`. `CullTest` es la tabla de la prueba de culling. Ninguna forma parte del pipeline.
+
+## F5 · Audio (decididas contigo en el chat)
+
+**D43 · Motores TTS: Kokoro y Piper instalados; Chatterbox no.** Chatterbox tiene su adaptador escrito, pero no está
+instalado, porque necesita una GPU NVIDIA (este PC tiene una Intel HD 530). Kokoro 0.9.4 es el motor por defecto y
+Piper 1.8.0 el respaldo. Las dos voces de Piper (es_ES-davefx, en_US-lessac) se descargan solas a `pipeline/models/`,
+que no se versiona.
+
+**D44 · Ejemplo en inglés.** `templates/examples/hielo-flota-en/` es la traducción de `hielo-flota`: mismos beats,
+escenas y overlays, con las palabras clave y los `at` adaptados.
+
+**D45 · Whisper medium** para la alineación (CPU, int8).
+
+**D46 · Voces.** Español: principal `em_alex`, alternativa `em_santa`. Inglés: principal `am_fenrir`, alternativa
+`af_heart`. Las muestras se generan con `pipeline/voice_samples.py`.
+
+**D47 · Tiempos reales en los ejemplos.** El `04_words.json` de los dos ejemplos es ahora el alineado con la voz de
+Kokoro, en lugar del sintético de F2. Los WAV no se versionan; se regeneran con `voice.py`.
+
+**D48 · Detalles técnicos de F5 (sin decisión de diseño):**
+- PyTorch necesita el Visual C++ Redistributable actual; está en `requirements.txt` y en `setup_audio.ps1`.
+- espeak-ng no hace falta instalarlo aparte: Kokoro trae `espeakng-loader`.
+- Whisper alarga a veces la última palabra de una frase hasta el silencio siguiente, así que los tiempos se recortan
+  al tramo real de cada frase, que se conoce por la síntesis.
+- Los SFX cortos (tick, pop) se limitan a un pico de "voz − 6 dB", porque medidos en ventanas de 400 ms salían con
+  picos enormes.
+- El módulo de síntesis de SFX se llama `sfx_synth.py`, porque `templates/audio/sfx.py` ya existe.
+
+**Corrección de D33:** la terminal sí tiene internet; la que no tiene acceso es mi herramienta de web. Los modelos
+glTF CC0 se pueden descargar. Queda como tarea aparte después de F5.
