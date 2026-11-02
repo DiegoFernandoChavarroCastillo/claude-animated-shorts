@@ -116,7 +116,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D55).
 2. **Color del ejemplo**: luma mediana 0,12 (mínimo 0,14) y saturación 0,67 (máximo 0,62). El ejemplo pasa casi
    todo el tiempo en escenas de noche y tech. Se trata en F8.
 3. **Voz algo robótica** y **sin pausas en las comas**: Kokoro apenas pausa en las comas y la voz sale seca. Hay
-   opciones propuestas en el chat del 2 de noviembre; pendiente de decidir.
+   Decidido con Diego (2 nov): después de F8, preparar muestras A/B con (a) silencio explícito de ~200 ms en cada coma y (b) tratamiento de voz (presencia, compresión ligera, un poco de sala). Descartados por ahora: velocidad/mezcla de voces y otro motor.
 4. **Modelos glTF CC0 (Kenney)**: el cargador está hecho pero sin probar con un modelo real. Descargar 2–3 modelos,
    probarlos y actualizar `heroes/LICENSES.md` (corrección de D33).
 5. **Fuentes no verificadas**: las de los guiones de ejemplo se escribieron de memoria (D14, D52). Hay que
