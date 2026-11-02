@@ -1,0 +1,860 @@
+[
+ {
+  "w": "¿Por",
+  "start": 0.15,
+  "end": 0.346,
+  "beat": "b01"
+ },
+ {
+  "w": "qué",
+  "start": 0.376,
+  "end": 0.572,
+  "beat": "b01"
+ },
+ {
+  "w": "el",
+  "start": 0.602,
+  "end": 0.756,
+  "beat": "b01"
+ },
+ {
+  "w": "hielo",
+  "start": 0.786,
+  "end": 1.066,
+  "beat": "b01"
+ },
+ {
+  "w": "flota,",
+  "start": 1.096,
+  "end": 1.376,
+  "beat": "b01"
+ },
+ {
+  "w": "si",
+  "start": 1.596,
+  "end": 1.75,
+  "beat": "b01"
+ },
+ {
+  "w": "es",
+  "start": 1.78,
+  "end": 1.934,
+  "beat": "b01"
+ },
+ {
+  "w": "agua",
+  "start": 1.964,
+  "end": 2.202,
+  "beat": "b01"
+ },
+ {
+  "w": "sólida?",
+  "start": 2.232,
+  "end": 2.554,
+  "beat": "b01"
+ },
+ {
+  "w": "Casi",
+  "start": 3.054,
+  "end": 3.292,
+  "beat": "b02"
+ },
+ {
+  "w": "todas",
+  "start": 3.322,
+  "end": 3.602,
+  "beat": "b02"
+ },
+ {
+  "w": "las",
+  "start": 3.632,
+  "end": 3.828,
+  "beat": "b02"
+ },
+ {
+  "w": "sustancias",
+  "start": 3.858,
+  "end": 4.348,
+  "beat": "b02"
+ },
+ {
+  "w": "se",
+  "start": 4.378,
+  "end": 4.532,
+  "beat": "b02"
+ },
+ {
+  "w": "encogen",
+  "start": 4.562,
+  "end": 4.926,
+  "beat": "b02"
+ },
+ {
+  "w": "al",
+  "start": 4.956,
+  "end": 5.11,
+  "beat": "b02"
+ },
+ {
+  "w": "congelarse,",
+  "start": 5.14,
+  "end": 5.63,
+  "beat": "b02"
+ },
+ {
+  "w": "y",
+  "start": 5.85,
+  "end": 5.962,
+  "beat": "b02"
+ },
+ {
+  "w": "su",
+  "start": 5.992,
+  "end": 6.146,
+  "beat": "b02"
+ },
+ {
+  "w": "versión",
+  "start": 6.176,
+  "end": 6.54,
+  "beat": "b02"
+ },
+ {
+  "w": "sólida",
+  "start": 6.57,
+  "end": 6.892,
+  "beat": "b02"
+ },
+ {
+  "w": "se",
+  "start": 6.922,
+  "end": 7.076,
+  "beat": "b02"
+ },
+ {
+  "w": "hunde.",
+  "start": 7.106,
+  "end": 7.386,
+  "beat": "b02"
+ },
+ {
+  "w": "Con",
+  "start": 7.836,
+  "end": 8.032,
+  "beat": "b02"
+ },
+ {
+  "w": "el",
+  "start": 8.062,
+  "end": 8.216,
+  "beat": "b02"
+ },
+ {
+  "w": "agua",
+  "start": 8.246,
+  "end": 8.484,
+  "beat": "b02"
+ },
+ {
+  "w": "pasa",
+  "start": 8.514,
+  "end": 8.752,
+  "beat": "b02"
+ },
+ {
+  "w": "justo",
+  "start": 8.782,
+  "end": 9.062,
+  "beat": "b02"
+ },
+ {
+  "w": "lo",
+  "start": 9.092,
+  "end": 9.246,
+  "beat": "b02"
+ },
+ {
+  "w": "contrario.",
+  "start": 9.276,
+  "end": 9.724,
+  "beat": "b02"
+ },
+ {
+  "w": "Al",
+  "start": 10.224,
+  "end": 10.378,
+  "beat": "b03"
+ },
+ {
+  "w": "congelarse,",
+  "start": 10.408,
+  "end": 10.898,
+  "beat": "b03"
+ },
+ {
+  "w": "el",
+  "start": 11.118,
+  "end": 11.272,
+  "beat": "b03"
+ },
+ {
+  "w": "agua",
+  "start": 11.302,
+  "end": 11.54,
+  "beat": "b03"
+ },
+ {
+  "w": "se",
+  "start": 11.57,
+  "end": 11.724,
+  "beat": "b03"
+ },
+ {
+  "w": "expande",
+  "start": 11.754,
+  "end": 12.118,
+  "beat": "b03"
+ },
+ {
+  "w": "cerca",
+  "start": 12.148,
+  "end": 12.428,
+  "beat": "b03"
+ },
+ {
+  "w": "de",
+  "start": 12.458,
+  "end": 12.612,
+  "beat": "b03"
+ },
+ {
+  "w": "un",
+  "start": 12.642,
+  "end": 12.796,
+  "beat": "b03"
+ },
+ {
+  "w": "nueve",
+  "start": 12.826,
+  "end": 13.106,
+  "beat": "b03"
+ },
+ {
+  "w": "por",
+  "start": 13.136,
+  "end": 13.332,
+  "beat": "b03"
+ },
+ {
+  "w": "ciento.",
+  "start": 13.362,
+  "end": 13.684,
+  "beat": "b03"
+ },
+ {
+  "w": "Por",
+  "start": 14.134,
+  "end": 14.33,
+  "beat": "b03"
+ },
+ {
+  "w": "eso",
+  "start": 14.36,
+  "end": 14.556,
+  "beat": "b03"
+ },
+ {
+  "w": "una",
+  "start": 14.586,
+  "end": 14.782,
+  "beat": "b03"
+ },
+ {
+  "w": "botella",
+  "start": 14.812,
+  "end": 15.176,
+  "beat": "b03"
+ },
+ {
+  "w": "llena",
+  "start": 15.206,
+  "end": 15.486,
+  "beat": "b03"
+ },
+ {
+  "w": "revienta",
+  "start": 15.516,
+  "end": 15.922,
+  "beat": "b03"
+ },
+ {
+  "w": "en",
+  "start": 15.952,
+  "end": 16.106,
+  "beat": "b03"
+ },
+ {
+  "w": "el",
+  "start": 16.136,
+  "end": 16.29,
+  "beat": "b03"
+ },
+ {
+  "w": "congelador.",
+  "start": 16.32,
+  "end": 16.81,
+  "beat": "b03"
+ },
+ {
+  "w": "La",
+  "start": 17.31,
+  "end": 17.464,
+  "beat": "b04"
+ },
+ {
+  "w": "culpa",
+  "start": 17.494,
+  "end": 17.774,
+  "beat": "b04"
+ },
+ {
+  "w": "es",
+  "start": 17.804,
+  "end": 17.958,
+  "beat": "b04"
+ },
+ {
+  "w": "de",
+  "start": 17.988,
+  "end": 18.142,
+  "beat": "b04"
+ },
+ {
+  "w": "sus",
+  "start": 18.172,
+  "end": 18.368,
+  "beat": "b04"
+ },
+ {
+  "w": "moléculas.",
+  "start": 18.398,
+  "end": 18.846,
+  "beat": "b04"
+ },
+ {
+  "w": "En",
+  "start": 19.296,
+  "end": 19.45,
+  "beat": "b04"
+ },
+ {
+  "w": "el",
+  "start": 19.48,
+  "end": 19.634,
+  "beat": "b04"
+ },
+ {
+  "w": "hielo",
+  "start": 19.664,
+  "end": 19.944,
+  "beat": "b04"
+ },
+ {
+  "w": "se",
+  "start": 19.974,
+  "end": 20.128,
+  "beat": "b04"
+ },
+ {
+  "w": "ordenan",
+  "start": 20.158,
+  "end": 20.522,
+  "beat": "b04"
+ },
+ {
+  "w": "en",
+  "start": 20.552,
+  "end": 20.706,
+  "beat": "b04"
+ },
+ {
+  "w": "hexágonos",
+  "start": 20.736,
+  "end": 21.184,
+  "beat": "b04"
+ },
+ {
+  "w": "que",
+  "start": 21.214,
+  "end": 21.41,
+  "beat": "b04"
+ },
+ {
+  "w": "dejan",
+  "start": 21.44,
+  "end": 21.72,
+  "beat": "b04"
+ },
+ {
+  "w": "huecos",
+  "start": 21.75,
+  "end": 22.072,
+  "beat": "b04"
+ },
+ {
+  "w": "por",
+  "start": 22.102,
+  "end": 22.298,
+  "beat": "b04"
+ },
+ {
+  "w": "dentro.",
+  "start": 22.328,
+  "end": 22.65,
+  "beat": "b04"
+ },
+ {
+  "w": "Un",
+  "start": 23.1,
+  "end": 23.254,
+  "beat": "b04"
+ },
+ {
+  "w": "litro",
+  "start": 23.284,
+  "end": 23.564,
+  "beat": "b04"
+ },
+ {
+  "w": "de",
+  "start": 23.594,
+  "end": 23.748,
+  "beat": "b04"
+ },
+ {
+  "w": "hielo",
+  "start": 23.778,
+  "end": 24.058,
+  "beat": "b04"
+ },
+ {
+  "w": "pesa",
+  "start": 24.088,
+  "end": 24.326,
+  "beat": "b04"
+ },
+ {
+  "w": "unos",
+  "start": 24.356,
+  "end": 24.594,
+  "beat": "b04"
+ },
+ {
+  "w": "novecientos",
+  "start": 24.624,
+  "end": 25.156,
+  "beat": "b04"
+ },
+ {
+  "w": "diecisiete",
+  "start": 25.186,
+  "end": 25.676,
+  "beat": "b04"
+ },
+ {
+  "w": "gramos,",
+  "start": 25.706,
+  "end": 26.028,
+  "beat": "b04"
+ },
+ {
+  "w": "y",
+  "start": 26.248,
+  "end": 26.36,
+  "beat": "b04"
+ },
+ {
+  "w": "uno",
+  "start": 26.39,
+  "end": 26.586,
+  "beat": "b04"
+ },
+ {
+  "w": "de",
+  "start": 26.616,
+  "end": 26.77,
+  "beat": "b04"
+ },
+ {
+  "w": "agua,",
+  "start": 26.8,
+  "end": 27.038,
+  "beat": "b04"
+ },
+ {
+  "w": "mil.",
+  "start": 27.258,
+  "end": 27.454,
+  "beat": "b04"
+ },
+ {
+  "w": "Y",
+  "start": 27.954,
+  "end": 28.066,
+  "beat": "b05"
+ },
+ {
+  "w": "aquí",
+  "start": 28.096,
+  "end": 28.334,
+  "beat": "b05"
+ },
+ {
+  "w": "se",
+  "start": 28.364,
+  "end": 28.518,
+  "beat": "b05"
+ },
+ {
+  "w": "pone",
+  "start": 28.548,
+  "end": 28.786,
+  "beat": "b05"
+ },
+ {
+  "w": "interesante.",
+  "start": 28.816,
+  "end": 29.348,
+  "beat": "b05"
+ },
+ {
+  "w": "El",
+  "start": 29.798,
+  "end": 29.952,
+  "beat": "b05"
+ },
+ {
+  "w": "agua",
+  "start": 29.982,
+  "end": 30.22,
+  "beat": "b05"
+ },
+ {
+  "w": "líquida",
+  "start": 30.25,
+  "end": 30.614,
+  "beat": "b05"
+ },
+ {
+  "w": "es",
+  "start": 30.644,
+  "end": 30.798,
+  "beat": "b05"
+ },
+ {
+  "w": "más",
+  "start": 30.828,
+  "end": 31.024,
+  "beat": "b05"
+ },
+ {
+  "w": "densa",
+  "start": 31.054,
+  "end": 31.334,
+  "beat": "b05"
+ },
+ {
+  "w": "a",
+  "start": 31.364,
+  "end": 31.476,
+  "beat": "b05"
+ },
+ {
+  "w": "unos",
+  "start": 31.506,
+  "end": 31.744,
+  "beat": "b05"
+ },
+ {
+  "w": "cuatro",
+  "start": 31.774,
+  "end": 32.096,
+  "beat": "b05"
+ },
+ {
+  "w": "grados,",
+  "start": 32.126,
+  "end": 32.448,
+  "beat": "b05"
+ },
+ {
+  "w": "así",
+  "start": 32.668,
+  "end": 32.864,
+  "beat": "b05"
+ },
+ {
+  "w": "que",
+  "start": 32.894,
+  "end": 33.09,
+  "beat": "b05"
+ },
+ {
+  "w": "esa",
+  "start": 33.12,
+  "end": 33.316,
+  "beat": "b05"
+ },
+ {
+  "w": "agua",
+  "start": 33.346,
+  "end": 33.584,
+  "beat": "b05"
+ },
+ {
+  "w": "baja",
+  "start": 33.614,
+  "end": 33.852,
+  "beat": "b05"
+ },
+ {
+  "w": "al",
+  "start": 33.882,
+  "end": 34.036,
+  "beat": "b05"
+ },
+ {
+  "w": "fondo",
+  "start": 34.066,
+  "end": 34.346,
+  "beat": "b05"
+ },
+ {
+  "w": "de",
+  "start": 34.376,
+  "end": 34.53,
+  "beat": "b05"
+ },
+ {
+  "w": "los",
+  "start": 34.56,
+  "end": 34.756,
+  "beat": "b05"
+ },
+ {
+  "w": "lagos.",
+  "start": 34.786,
+  "end": 35.066,
+  "beat": "b05"
+ },
+ {
+  "w": "Por",
+  "start": 36.066,
+  "end": 36.262,
+  "beat": "b06"
+ },
+ {
+  "w": "eso",
+  "start": 36.292,
+  "end": 36.488,
+  "beat": "b06"
+ },
+ {
+  "w": "los",
+  "start": 36.518,
+  "end": 36.714,
+  "beat": "b06"
+ },
+ {
+  "w": "lagos",
+  "start": 36.744,
+  "end": 37.024,
+  "beat": "b06"
+ },
+ {
+  "w": "se",
+  "start": 37.054,
+  "end": 37.208,
+  "beat": "b06"
+ },
+ {
+  "w": "congelan",
+  "start": 37.238,
+  "end": 37.644,
+  "beat": "b06"
+ },
+ {
+  "w": "desde",
+  "start": 37.674,
+  "end": 37.954,
+  "beat": "b06"
+ },
+ {
+  "w": "arriba.",
+  "start": 37.984,
+  "end": 38.306,
+  "beat": "b06"
+ },
+ {
+  "w": "El",
+  "start": 38.756,
+  "end": 38.91,
+  "beat": "b06"
+ },
+ {
+  "w": "hielo",
+  "start": 38.94,
+  "end": 39.22,
+  "beat": "b06"
+ },
+ {
+  "w": "no",
+  "start": 39.25,
+  "end": 39.404,
+  "beat": "b06"
+ },
+ {
+  "w": "hunde",
+  "start": 39.434,
+  "end": 39.714,
+  "beat": "b06"
+ },
+ {
+  "w": "la",
+  "start": 39.744,
+  "end": 39.898,
+  "beat": "b06"
+ },
+ {
+  "w": "vida:",
+  "start": 39.928,
+  "end": 40.166,
+  "beat": "b06"
+ },
+ {
+  "w": "la",
+  "start": 40.386,
+  "end": 40.54,
+  "beat": "b06"
+ },
+ {
+  "w": "protege,",
+  "start": 40.57,
+  "end": 40.934,
+  "beat": "b06"
+ },
+ {
+  "w": "como",
+  "start": 41.154,
+  "end": 41.392,
+  "beat": "b06"
+ },
+ {
+  "w": "una",
+  "start": 41.422,
+  "end": 41.618,
+  "beat": "b06"
+ },
+ {
+  "w": "tapa",
+  "start": 41.648,
+  "end": 41.886,
+  "beat": "b06"
+ },
+ {
+  "w": "contra",
+  "start": 41.916,
+  "end": 42.238,
+  "beat": "b06"
+ },
+ {
+  "w": "el",
+  "start": 42.268,
+  "end": 42.422,
+  "beat": "b06"
+ },
+ {
+  "w": "frío.",
+  "start": 42.452,
+  "end": 42.69,
+  "beat": "b06"
+ },
+ {
+  "w": "¿Qué",
+  "start": 43.19,
+  "end": 43.386,
+  "beat": "b07"
+ },
+ {
+  "w": "otra",
+  "start": 43.416,
+  "end": 43.654,
+  "beat": "b07"
+ },
+ {
+  "w": "rareza",
+  "start": 43.684,
+  "end": 44.006,
+  "beat": "b07"
+ },
+ {
+  "w": "del",
+  "start": 44.036,
+  "end": 44.232,
+  "beat": "b07"
+ },
+ {
+  "w": "agua",
+  "start": 44.262,
+  "end": 44.5,
+  "beat": "b07"
+ },
+ {
+  "w": "quieres",
+  "start": 44.53,
+  "end": 44.894,
+  "beat": "b07"
+ },
+ {
+  "w": "que",
+  "start": 44.924,
+  "end": 45.12,
+  "beat": "b07"
+ },
+ {
+  "w": "te",
+  "start": 45.15,
+  "end": 45.304,
+  "beat": "b07"
+ },
+ {
+  "w": "explique?",
+  "start": 45.334,
+  "end": 45.74,
+  "beat": "b07"
+ },
+ {
+  "w": "Déjamela",
+  "start": 46.19,
+  "end": 46.596,
+  "beat": "b07"
+ },
+ {
+  "w": "en",
+  "start": 46.626,
+  "end": 46.78,
+  "beat": "b07"
+ },
+ {
+  "w": "los",
+  "start": 46.81,
+  "end": 47.006,
+  "beat": "b07"
+ },
+ {
+  "w": "comentarios.",
+  "start": 47.036,
+  "end": 47.568,
+  "beat": "b07"
+ }
+]

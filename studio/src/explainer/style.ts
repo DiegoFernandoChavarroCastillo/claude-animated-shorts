@@ -67,6 +67,7 @@ export const KEYWORD = {
 // ---------------- overlays (§3.8–3.9) ----------------
 export const OVERLAY = {
   zone: { topK: 0.30, bottomK: 0.85 }, // los overlays viven entre el 30 % y el 85 % del alto
+  scale: 1.35,                         // escala general de los overlays colocados (el verificador de F3 los vio pequeños)
   enterFrames: 10,                     // entradas de 8–12 frames
   stagger: 3,                          // 3–4 frames entre elementos
   spring: { damping: 200, stiffness: 120, mass: 0.6 },
@@ -79,13 +80,14 @@ export const OVERLAY = {
 export const CAMERA = {
   pushMin: 0.12, pushDefault: 0.2, pushMax: 0.3, // %/frame; 0,12 deja margen sobre el umbral de measure.py (0,08)
   driftMaxPx: 1.5,                               // px/frame a 1080
+  baseDriftPx: 0.6,                              // deriva suave que llevan todos los planos (px/frame a 1080)
   glideFrames: 30,                               // smootherstep de 18–40 f
   zoomThroughFrames: 24,                         // 20–30 f
   crossfadeFrames: 12,
   rollMaxDeg: 3,
   kickFrames: 7,
   fov: 38,
-  heroScreenYK: 0.57,                            // centro del objeto protagonista, fracción del alto
+  heroScreenYK: 0.55,                            // centro del objeto protagonista, fracción del alto
 };
 
 /** Desenfoque de fondo (cInf, px a 1080) por tipo de plano (§3.8) */

@@ -50,3 +50,82 @@ al color de las palabras dichas, como cualquier otra.
 no se ve sobre fondo liso. (b) "Bloques de 1–4 palabras y una sola línea": contradice el plan (3–6 palabras,
 hasta 2 líneas) y R1 también tiene bloques de 2 líneas; se mantiene el plan. (c) "Reducir la fuente un 6 % si
 una palabra larga deja otra sola en la línea": caso raro; se deja para el bucle de look-match si se repite.
+
+## F2 · Composición genérica `Explainer`
+
+**D13 · Ejemplo `hielo-flota` con 7 beats y 143 palabras.** El plan pedía 5–6 beats; con la fórmula de §3.10
+(gancho, tensión, 2 de mecanismo, segunda capa, giro y CTA) salen 7. Con tiempos sintéticos dura 48,6 s; con la
+voz real (F5) y sus pausas debería acercarse a 55 s. *Alternativa:* fundir los dos beats de mecanismo.
+
+**D14 · Fuentes del ejemplo sin verificar.** No tengo acceso web en esta sesión: cité artículos generales
+(Wikipedia "Properties of water" e "Ice", Britannica "Ice") para el 9 %, los 917 g/L y los 4 °C. Son datos
+estándar, pero las URL se verifican en F6, cuando el validador exija fuentes.
+
+**D15 · Significado de `transition`.** Es la transición **hacia el beat siguiente**.
+- `glide` con el mismo decorado (mismo `env`, `light` y `hero.asset`): la cámara planea 30 f desde donde acabó el
+  beat anterior, sin fundido.
+- `glide` con otro decorado: fundido de 12 f y la cámara llega desde un lado y desde más arriba.
+- `zoom_through`: la cámara acelera hacia el objeto los últimos 24 f, fundido de 12 f y el beat siguiente arranca
+  muy cerca y se aleja.
+- `crossfade`: fundido de 12 f. `cut`: corte seco.
+
+**D16 · Catálogo provisional.** Los `env` (`cocina_noche`, `tech_oscuro`, `lago_invierno`) y los `hero.asset`
+(`vaso_agua_hielo`, `moleculas_agua`, `lago_corte`) del ejemplo apuntan a un decorado genérico (cielo, suelo con
+rejilla, siluetas y puntos de luz) y a un cubo con bisel. Están marcados `provisional: true`; F4 los sustituye.
+
+**D17 · Tiempos de beat.** Cada beat empieza 2 frames antes de su primera palabra (el cambio visual llega justo
+antes de la voz, como en el puente), termina donde empieza el siguiente y el último tiene 1 s de cola.
+
+**D18 · Movimiento mínimo de cámara.** Todo plano lleva empuje ≥ 0,12 %/frame **y** una deriva lateral suave de
+0,6 px/frame (alterna de lado en cada beat, máx. 90 px por beat). La deriva se añadió porque `measure.py` no
+detecta los empujes lentos sobre fondos lisos y desenfocados (la limitación que ya anotaba §3.2). El preset
+`drift` va a 1,2 px/frame pero con tope de 130 px por beat, para que el objeto no se salga del encuadre.
+
+**D19 · Materiales físicos en vez del sombreado de dos tonos.** El puente usaba un toon de dos tonos para su estilo
+de dibujo animado; el explainer 2.5D usa `MeshStandardMaterial` con luz ambiente + luz principal + contraluz,
+relativas a la cámara y congeladas por beat (la idea del puente). La tinta está desactivada.
+
+**D20 · Renders de prueba a escala 0,5.** Los videos de comprobación de F2 se renderizan a 540x960 para que tarden
+menos en esta GPU. Los criterios de `measure.py` son relativos, así que valen igual.
+
+**D21 · Grade inicial a ojo.** Los cuatro presets de grade son un punto de partida. Con el decorado provisional la
+saturación mediana sale 0,74 (objetivo 0,40–0,62): se calibra en F4 con los entornos de verdad.
+
+**D22 · Sombras PCF.** three 0.187 ya no tiene `PCFSoftShadowMap` y Remotion lo pide por defecto: three avisa y usa
+`PCFShadowMap`. Es solo un aviso en el log.
+
+**D29 · `measure.py` necesita textura, no solo movimiento.** Con el decorado provisional liso y desenfocado, un
+tramo con órbita de 12° (movimiento evidente) daba solo un 2 % de frames "en movimiento" y una racha estática de
+74 frames: el flujo óptico (a 180x320) no encuentra nada que seguir. Al dar textura al fondo (ventanas encendidas en
+las siluetas, rejilla más marcada, 90 puntos de luz), el mismo tramo pasó al 96,7 % y a una racha de 1 frame.
+Consecuencia para F4: **cada entorno debe tener textura y contraste en el fondo aunque vaya desenfocado**. Nota:
+R3 da una racha de 96 frames con este medidor, así que el límite de 45 de F2 es más estricto que las referencias.
+
+**D30 · Objeto protagonista un poco más arriba.** Centro al 55 % del alto (antes 57 %) y slot `bottom` de overlays
+al 79 % (antes 77 %), para que un `StatCallout` no pise la base del objeto.
+
+## F3 · Overlays
+
+**D23 · Lienzo de 1080 x 1920 y posiciones fijas.** Todos los overlays dibujan en px a 1080 dentro de un lienzo
+que se escala al tamaño real. Se colocan en "slots" dentro de la zona 30–85 %: `top` 37 %, `upper` 44 %,
+`center` 57 %, `lower` 70 %, `bottom` 77 % (configurable con `"slot"` en story.json).
+
+**D24 · Overlays anclados sin hablar con el canvas.** `useProjectedPoint` / `anchorPoint` proyectan el ancla
+usando la misma función de cámara (pura) que la escena 3D. Los anclados (`PulseRings`, `Callout3D`,
+`LightTrails`) recortan su posición y su tamaño para no entrar en la banda de subtítulos.
+
+**D25 · Duración de un overlay.** Desde su `at` hasta el final de su beat, salvo que lleve `"dur"` en frames.
+Salida con fundido de 6 frames.
+
+**D26 · Cero colores literales en `overlays/`.** Más estricto que el criterio del plan (sin hex): tampoco hay
+`rgba()`; todo sale de `PALETTE` en `style.ts`.
+
+**D27 · Iconos propios.** 18 iconos de línea en `overlays/icons.tsx` (luna, sol, reloj, ojo, teléfono, cara,
+corazón, señal, avión, chip, sensor, gráfica, cerebro, gota, nieve, check, nariz). Sin librerías ni marcas.
+**D28 · Revisión del verificador de F3 (nota 5/10) y arreglos aplicados.** Lo principal: todo se veía pequeño a
+tamaño de móvil. Aplicado: escala general ×1,35 en todos los overlays colocados (`OVERLAY.scale`), con anchos
+ajustados para no pasar del ~95 % del ancho; `Waveform` e `IntervalMarks` dentro de tarjeta; `Pill`, `Callout3D`,
+`ClockChip` y `NoSymbol` con texto más grande; anillos de `PulseRings` más visibles; `LightTrails` en cian y con
+partículas más grandes; marco de `LineBoard` en lavanda en vez de marrón. **No aplicado (para el bucle de
+look-match):** puntos violetas en los picos de la onda, `Gauge` con la etiqueta en píldora y escalar todavía más
+(×1,8 pedido). Tras los arreglos no volví a pasar el verificador; la galería sigue sin invadir la banda (36/36).
