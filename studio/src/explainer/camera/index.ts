@@ -4,6 +4,7 @@
 import { CAMERA, BASE } from "../style";
 import type { Timeline, BeatT } from "../timeline";
 import { heroDef, type V3 } from "../heroes";
+import { envDef } from "../envs";
 
 export type Cam = { pos: V3; look: V3; fov: number; roll: number };
 type Params = { az: number; el: number; dist: number; lat: number; lift: number; fov: number };
@@ -20,10 +21,11 @@ const ASPECT = BASE.width / BASE.height;
 const baseParams = (bt: BeatT): Params => {
   const h = heroDef(bt.beat.scene.hero.asset), fov = CAMERA.fov;
   const tanH = Math.tan(rad(fov / 2)) * ASPECT;
-  const dist = h.radius / (0.55 * tanH);
+  const view = envDef(bt.beat.scene.env).view;
+  const dist = (h.radius / (0.55 * tanH)) * (view?.distK ?? 1);
   const lift = dist * Math.tan(rad(fov / 2)) * (CAMERA.heroScreenYK - 0.5) * 2; // sube el punto de mira
   const az = bt.beat.scene.hero.pose === "lateral" ? 35 : 0;
-  return { az, el: 9, dist, lat: 0, lift, fov };
+  return { az, el: view?.el ?? 9, dist, lat: 0, lift, fov };
 };
 
 /** preset del beat en el frame local t (0 = inicio del beat; puede ser < 0 o > dur durante transiciones) */

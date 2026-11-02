@@ -11,6 +11,7 @@ import type { Timeline } from "./timeline";
 import { camAt, meanView } from "./camera";
 import { envDef } from "./envs";
 import { heroDef } from "./heroes";
+import { camPositions, camsInside, cullSight, sightLines } from "./envs/cull";
 import { LensBlur } from "./world/lensblur";
 import { GradeEffect, GRADES, gradeFor } from "./world/grade";
 
@@ -33,6 +34,12 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
   const world = useMemo(() => {
     const env = envDef(sc.env).build(sc.light, i * 7 + 3);
     const hero = heroDef(sc.hero.asset).build(L, sc.hero.pose);
+    // culling de línea de visión: oculta lo que tape al protagonista o contenga la cámara en algún frame del beat
+    const cams = camPositions(tl, i);
+    const hidden = cullSight(env.root, sightLines(tl, i), cams);
+    const inside = camsInside(env.root, cams);
+    if (inside) console.warn(`[cull] beat ${bt.beat.id}: ${inside} posiciones de cámara dentro de un objeto`);
+    env.root.userData.cullHidden = hidden;
     const root = new THREE.Group();
     root.add(env.root, hero.root);
     const hemi = new THREE.HemisphereLight(L.hemiSky, L.hemiGround, L.hemi);
@@ -63,11 +70,11 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
   cam.position.set(...c.pos); cam.up.set(0, 1, 0); cam.lookAt(...c.look); cam.rotateZ(c.roll);
   cam.fov = c.fov; cam.near = 0.1; cam.far = 2000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
   scene.fog = world.env.fog; scene.background = null;
-  world.env.update(f, cam); world.hero.update(f);
+  world.env.update(f, cam); world.hero.update(f, cam);
   // foco de lente fina: distancia sobre el eje de vista hasta el centro del objeto protagonista
   const fwd = new THREE.Vector3(); cam.getWorldDirection(fwd);
   fx.lens.focus = Math.max(0.3, new THREE.Vector3(...heroDef(sc.hero.asset).center).sub(cam.position).dot(fwd));
-  fx.lens.cInf = sc.dof ?? DOF.medium;
+  fx.lens.cInf = sc.dof ?? envDef(sc.env).view?.dof ?? DOF.medium;
   gradeFor(fx.grade, sc.light);
 
   return (

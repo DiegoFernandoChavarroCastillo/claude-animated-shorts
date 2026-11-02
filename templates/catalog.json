@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "notes": [
+    "Catálogo cerrado: story.json solo puede usar los ids de este archivo. studio/src/explainer/catalog.ts lo cruza con el código y falla si no coinciden.",
+    "Un beat = un entorno + una luz + un objeto protagonista + un preset de cámara. Cambia de entorno solo al cambiar de lugar o de idea grande.",
+    "Las luces marcadas en 'lights' de cada entorno son las revisadas; las demás funcionan, pero no se han revisado.",
+    "Los overlays con 'anchored: true' aceptan 'anchor' (un nombre de 'anchors' del objeto protagonista; por defecto 'hero')."
+  ],
+  "lights": {
+    "atardecer": "Cielo violeta a naranja, sol bajo con brillo. Aperturas, vuelos, exteriores cálidos.",
+    "noche": "Marino profundo, luces cálidas puntuales con bokeh. Casa de noche, dormir, calma.",
+    "dorado": "Base marino con luz dorada (calle nocturna de R2). Calles, interiores cálidos, historias.",
+    "tech": "Casi negro con rejilla y acentos cian y verde. Tecnología, datos, ciencia."
+  },
+  "envs": {
+    "cielo_atardecer": { "lights": ["atardecer", "dorado"], "when": "Vuelo, aviones, viajes, señales en el aire; planos abiertos y de apertura con sol bajo." },
+    "vista_aerea": { "lights": ["atardecer", "noche", "dorado"], "when": "Ciudades, redes, antenas, mapas, 'desde arriba'; mostrar escala o cobertura." },
+    "calle_noche_bokeh": { "lights": ["dorado", "noche"], "when": "Calle, ciudad de noche, paseos, personas o animales fuera de casa; ambiente cálido y desenfocado." },
+    "cuarto_noche": { "lights": ["noche"], "when": "Dormir, noche en casa, cama, hábitos, cuerpo en reposo; objetos personales (reloj, teléfono)." },
+    "tech_oscuro": { "lights": ["tech", "noche"], "when": "Tecnología, sensores, chips, datos, ciencia de laboratorio, moléculas; fondo neutro para diagramas." },
+    "interior_neutro": { "lights": ["atardecer", "dorado", "noche"], "when": "Interiores sin contexto concreto (cabina, sala, oficina); fondo limpio para teléfonos, maquetas y objetos." },
+    "exterior_clasico": { "lights": ["atardecer", "dorado"], "when": "Historia, anécdotas antiguas, Mediterráneo, viajes al pasado; objetos clásicos al aire libre." },
+    "macro_corte": { "lights": ["atardecer", "dorado", "noche"], "when": "Dentro de algo: piel, suelo, materiales, capas; sensores que miran a través; 'cómo es por dentro'." }
+  },
+  "heroes": {
+    "telefono": { "kind": "primitive", "poses": ["senal", "sin_senal", "bloqueo", "metricas", "control"], "anchors": ["hero", "top", "base", "screen"], "when": "Teléfono genérico: cobertura, notificaciones, batería, ajustes, pantalla bloqueada." },
+    "reloj": { "kind": "primitive", "poses": ["hora", "sueno", "pulso"], "anchors": ["hero", "top", "base", "screen", "sensor"], "when": "Reloj inteligente: hora, sueño, pulso, sensores en la muñeca." },
+    "chip": { "kind": "primitive", "poses": ["inclinado", "plano"], "anchors": ["hero", "top", "base", "die"], "when": "Chip o sensor electrónico: acelerómetro, procesador, 'lo que hay dentro del aparato'." },
+    "antena": { "kind": "primitive", "poses": ["torre"], "anchors": ["hero", "top", "base", "emisor"], "when": "Antena o torre de telefonía: cobertura, señal, redes, ondas de radio." },
+    "avion": { "kind": "primitive", "poses": ["vuelo", "frente"], "anchors": ["hero", "top", "cabina", "ventanilla", "base"], "when": "Avión de pasajeros genérico (sin aerolínea): vuelos, modo avión, viajes." },
+    "vaso_agua_hielo": { "kind": "primitive", "poses": ["centro", "lateral"], "anchors": ["hero", "top", "base", "hielo"], "when": "Vaso con agua y cubitos: agua, hielo, densidad, temperatura, bebidas." },
+    "cubo_hielo": { "kind": "primitive", "poses": ["flota"], "anchors": ["hero", "top", "base"], "when": "Un cubito de hielo solo: congelar, frío, estado sólido." },
+    "moleculas_agua": { "kind": "primitive", "poses": ["red_hexagonal", "liquido", "molecula"], "anchors": ["hero", "top", "base"], "when": "Moléculas de agua: estructura del hielo (red hexagonal), líquido desordenado o una sola molécula." },
+    "lago_corte": { "kind": "primitive", "poses": ["corte"], "anchors": ["hero", "top", "hielo", "fondo", "base"], "when": "Corte de un lago helado: capa de hielo arriba, agua a 4 °C en el fondo, fondo del lago." },
+    "perro": { "kind": "card", "poses": ["perfil", "perfil_oscuro"], "anchors": ["hero", "top", "nariz", "base"], "when": "Perro (o mascota): olfato, comportamiento animal, vínculo con personas." },
+    "persona": { "kind": "card", "poses": ["espaldas"], "anchors": ["hero", "top", "cabeza", "base"], "when": "Persona genérica de espaldas: 'tú', usuario, gente en la calle o en casa (personaje secundario)." }
+  },
+  "camera": {
+    "push_in": { "params": { "rate": "0–0,6 %/frame (por defecto 0,25; nunca baja de 0,25)" }, "when": "Plano sostenido por defecto: acercamiento lento al objeto." },
+    "drift": { "params": { "dir": "left | right" }, "when": "Deriva lateral suave; para enumerar o mostrar el entorno." },
+    "orbit_slow": { "params": { "deg": "-45..45 grados en todo el beat (por defecto 12)" }, "when": "Giro lento alrededor del objeto; para enseñar su forma o 'por dentro'." },
+    "glide": { "params": {}, "when": "Llega desde más lejos y más alto y se asienta; buen inicio de un lugar nuevo." },
+    "zoom_through": { "params": {}, "when": "Empieza muy cerca y se abre; úsalo en el beat que sigue a una transición zoom_through." },
+    "cut": { "params": {}, "when": "Plano fijo con el empuje mínimo; para golpes secos." }
+  },
+  "transitions": {
+    "glide": "Planeo de cámara (mismo lugar) o fundido con desplazamiento (otro lugar). La transición por defecto.",
+    "zoom_through": "Entra en el objeto (pantalla, ventanilla) y aparece en la escena siguiente. Firma de R3.",
+    "crossfade": "Fundido de 12 frames.",
+    "cut": "Corte duro. Solo al cambiar de lugar; como mucho 3 por minuto."
+  },
+  "overlays": {
+    "StatCallout": { "fields": { "value": "número", "label": "texto en versalitas", "prefix": "opcional", "suffix": "opcional (\" %\", \" °C\")", "decimals": "opcional" }, "anchored": false, "when": "Un número grande que cuenta desde 0. El dato más importante del beat." },
+    "BarCompare": { "fields": { "items": "2–3 { label, value, color? }", "unit": "opcional", "max": "opcional", "decimals": "opcional" }, "anchored": false, "when": "Comparar 2–3 cantidades." },
+    "Gauge": { "fields": { "value": "0..1", "label": "texto", "low": "opcional", "high": "opcional" }, "anchored": false, "when": "Un nivel entre bajo y alto (relajado/estrés, poco/mucho)." },
+    "Waveform": { "fields": { "kind": "pulse | sine | noise", "labels": "opcional, lista de píldoras" }, "anchored": false, "when": "Una señal en el tiempo: pulso, movimiento, sonido." },
+    "IntervalMarks": { "fields": { "intervals": "lista de textos (\"0,97 s\")" }, "anchored": false, "when": "Tiempos entre picos de una onda." },
+    "UICard": { "fields": { "title": "texto", "subtitle": "opcional", "icon": "opcional (ver icons)", "progress": "opcional 0..1" }, "anchored": false, "when": "Tarjeta de interfaz genérica: aviso, estado, progreso." },
+    "Pill": { "fields": { "text": "texto corto", "icon": "opcional" }, "anchored": false, "when": "Etiqueta corta de color para nombrar algo." },
+    "PhoneMock": { "fields": { "screen": "signal | lock | control | metrics", "time": "opcional", "text": "opcional", "value": "opcional" }, "anchored": false, "when": "Teléfono 2D plano encima de la escena (cuando el protagonista 3D es otro)." },
+    "WatchMock": { "fields": { "screen": "heart | sleep | steps", "value": "opcional", "unit": "opcional" }, "anchored": false, "when": "Reloj 2D plano encima de la escena." },
+    "LineBoard": { "fields": { "drawing": "hexagons | head | eye | drop", "title": "opcional" }, "anchored": false, "when": "Pizarra con un dibujo de línea que se traza." },
+    "IconFlow": { "fields": { "steps": "2–4 { label, icon? }" }, "anchored": false, "when": "Proceso en pasos: mide → analiza → estima." },
+    "PulseRings": { "fields": { "count": "opcional", "maxR": "opcional", "period": "opcional" }, "anchored": true, "when": "Anillos que salen del objeto: señal, sonido, emisión." },
+    "LightTrails": { "fields": { "count": "opcional", "bend": "opcional" }, "anchored": true, "when": "Partículas que viajan desde el objeto: señal, olor, datos." },
+    "ScanRing": { "fields": { "icon": "opcional", "r": "opcional" }, "anchored": false, "when": "Anillo de escáner alrededor de un icono: reconocer, detectar." },
+    "Callout3D": { "fields": { "text": "texto corto", "side": "left | right" }, "anchored": true, "when": "Etiqueta que señala una parte del objeto 3D." },
+    "NoSymbol": { "fields": { "icon": "opcional", "label": "opcional" }, "anchored": false, "when": "Algo que NO pasa o no se puede: icono tachado." },
+    "TitlePlaque": { "fields": { "title": "texto", "subtitle": "opcional" }, "anchored": false, "when": "Placa para citas históricas o nombres de obras." },
+    "ClockChip": { "fields": { "time": "\"02:47\"", "icon": "opcional" }, "anchored": false, "when": "Píldora con una hora." }
+  },
+  "overlay_common": { "at": "palabra del texto del beat, \"#n\" (índice de palabra) o frames desde el inicio del beat", "color": "token de color (ui.cyan, warm.gold, ui.green, ui.red, ...)", "slot": "top | upper | center | lower | bottom" },
+  "icons": ["moon", "sun", "clock", "eye", "phone", "face", "heart", "signal", "plane", "chip", "sensor", "chart", "brain", "drop", "snow", "check", "nose"],
+  "sfx": {
+    "whoosh_soft": "Transiciones glide y zoom_through.",
+    "pop": "Entrada de un overlay.",
+    "tick": "Contadores (StatCallout, BarCompare).",
+    "riser": "0,8 s antes del beat twist.",
+    "impact": "Golpe suave en un StatCallout importante."
+  }
+}

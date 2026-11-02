@@ -109,22 +109,22 @@ export type LightPreset = {
 export const LIGHTS: Record<LightName, LightPreset> = {
   atardecer: {
     sky: { top: "#2A1B4A", mid: PALETTE.mid.violet, horizon: PALETTE.warm.sunset }, fog: PALETTE.warm.rose, fogNear: 30, fogFar: 260,
-    hemiSky: "#8a7ab8", hemiGround: "#3a2440", hemi: 0.9, key: "#ffb38a", keyI: 2.2, keyAz: 20, keyEl: 12, rim: "#ffd0a0", rimI: 1.6,
+    hemiSky: "#8a7ab8", hemiGround: "#3a2440", hemi: 0.9, key: "#ffb38a", keyI: 2.2, keyAz: 20, keyEl: 12, rim: "#ffd0a0", rimI: 2.8,
     sun: true, sunColor: "#ffd2a8", ground: "#3b2f52", groundLine: "#6a4f7a", exposure: 1.0,
   },
   noche: {
     sky: { top: PALETTE.bg.night0, mid: PALETTE.bg.night1, horizon: PALETTE.bg.indigo }, fog: PALETTE.bg.night1, fogNear: 20, fogFar: 180,
-    hemiSky: "#5c64b0", hemiGround: "#141228", hemi: 0.8, key: "#ffcf8a", keyI: 1.8, keyAz: -35, keyEl: 30, rim: "#8ab4ff", rimI: 1.4,
+    hemiSky: "#5c64b0", hemiGround: "#141228", hemi: 0.8, key: "#ffcf8a", keyI: 1.8, keyAz: -35, keyEl: 30, rim: "#8ab4ff", rimI: 2.4,
     sun: false, sunColor: "#ffffff", ground: "#171633", groundLine: PALETTE.ui.grid, exposure: 1.0,
   },
   dorado: {
     sky: { top: PALETTE.bg.night0, mid: PALETTE.bg.navy, horizon: "#2b3355" }, fog: PALETTE.bg.navy, fogNear: 20, fogFar: 200,
-    hemiSky: "#6070a8", hemiGround: "#1a1420", hemi: 0.75, key: PALETTE.warm.gold, keyI: 2.2, keyAz: 40, keyEl: 25, rim: "#ffd9a0", rimI: 1.5,
+    hemiSky: "#6070a8", hemiGround: "#1a1420", hemi: 0.75, key: PALETTE.warm.gold, keyI: 2.2, keyAz: 40, keyEl: 25, rim: "#ffd9a0", rimI: 2.6,
     sun: false, sunColor: "#ffffff", ground: "#1b2038", groundLine: "#33405e", exposure: 1.0,
   },
   tech: {
     sky: { top: PALETTE.bg.night0, mid: PALETTE.bg.night1, horizon: "#1a2050" }, fog: PALETTE.bg.night0, fogNear: 15, fogFar: 150,
-    hemiSky: "#5a8ad0", hemiGround: "#0a0a20", hemi: 0.85, key: "#cfe6ff", keyI: 1.6, keyAz: -25, keyEl: 35, rim: PALETTE.ui.cyan, rimI: 1.8,
+    hemiSky: "#5a8ad0", hemiGround: "#0a0a20", hemi: 0.85, key: "#cfe6ff", keyI: 1.6, keyAz: -25, keyEl: 35, rim: PALETTE.ui.cyan, rimI: 2.6,
     sun: false, sunColor: "#ffffff", ground: PALETTE.bg.night0, groundLine: PALETTE.ui.grid, exposure: 1.0,
   },
 };

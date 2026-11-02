@@ -1,0 +1,518 @@
+[
+ {
+  "w": "Cielo",
+  "start": 0.15,
+  "end": 0.43,
+  "beat": "e01"
+ },
+ {
+  "w": "de",
+  "start": 0.46,
+  "end": 0.614,
+  "beat": "e01"
+ },
+ {
+  "w": "atardecer",
+  "start": 0.644,
+  "end": 1.092,
+  "beat": "e01"
+ },
+ {
+  "w": "sobre",
+  "start": 1.122,
+  "end": 1.402,
+  "beat": "e01"
+ },
+ {
+  "w": "un",
+  "start": 1.432,
+  "end": 1.586,
+  "beat": "e01"
+ },
+ {
+  "w": "mar",
+  "start": 1.616,
+  "end": 1.812,
+  "beat": "e01"
+ },
+ {
+  "w": "de",
+  "start": 1.842,
+  "end": 1.996,
+  "beat": "e01"
+ },
+ {
+  "w": "nubes.",
+  "start": 2.026,
+  "end": 2.306,
+  "beat": "e01"
+ },
+ {
+  "w": "Vista",
+  "start": 2.806,
+  "end": 3.086,
+  "beat": "e02"
+ },
+ {
+  "w": "aérea",
+  "start": 3.116,
+  "end": 3.396,
+  "beat": "e02"
+ },
+ {
+  "w": "de",
+  "start": 3.426,
+  "end": 3.58,
+  "beat": "e02"
+ },
+ {
+  "w": "la",
+  "start": 3.61,
+  "end": 3.764,
+  "beat": "e02"
+ },
+ {
+  "w": "ciudad",
+  "start": 3.794,
+  "end": 4.116,
+  "beat": "e02"
+ },
+ {
+  "w": "con",
+  "start": 4.146,
+  "end": 4.342,
+  "beat": "e02"
+ },
+ {
+  "w": "una",
+  "start": 4.372,
+  "end": 4.568,
+  "beat": "e02"
+ },
+ {
+  "w": "antena.",
+  "start": 4.598,
+  "end": 4.92,
+  "beat": "e02"
+ },
+ {
+  "w": "Calle",
+  "start": 5.42,
+  "end": 5.7,
+  "beat": "e03"
+ },
+ {
+  "w": "de",
+  "start": 5.73,
+  "end": 5.884,
+  "beat": "e03"
+ },
+ {
+  "w": "noche",
+  "start": 5.914,
+  "end": 6.194,
+  "beat": "e03"
+ },
+ {
+  "w": "con",
+  "start": 6.224,
+  "end": 6.42,
+  "beat": "e03"
+ },
+ {
+  "w": "farolas",
+  "start": 6.45,
+  "end": 6.814,
+  "beat": "e03"
+ },
+ {
+  "w": "y",
+  "start": 6.844,
+  "end": 6.956,
+  "beat": "e03"
+ },
+ {
+  "w": "un",
+  "start": 6.986,
+  "end": 7.14,
+  "beat": "e03"
+ },
+ {
+  "w": "perro.",
+  "start": 7.17,
+  "end": 7.45,
+  "beat": "e03"
+ },
+ {
+  "w": "Un",
+  "start": 7.95,
+  "end": 8.104,
+  "beat": "e04"
+ },
+ {
+  "w": "reloj",
+  "start": 8.134,
+  "end": 8.414,
+  "beat": "e04"
+ },
+ {
+  "w": "sobre",
+  "start": 8.444,
+  "end": 8.724,
+  "beat": "e04"
+ },
+ {
+  "w": "la",
+  "start": 8.754,
+  "end": 8.908,
+  "beat": "e04"
+ },
+ {
+  "w": "cama,",
+  "start": 8.938,
+  "end": 9.176,
+  "beat": "e04"
+ },
+ {
+  "w": "de",
+  "start": 9.396,
+  "end": 9.55,
+  "beat": "e04"
+ },
+ {
+  "w": "madrugada.",
+  "start": 9.58,
+  "end": 10.028,
+  "beat": "e04"
+ },
+ {
+  "w": "Un",
+  "start": 10.528,
+  "end": 10.682,
+  "beat": "e05"
+ },
+ {
+  "w": "chip",
+  "start": 10.712,
+  "end": 10.95,
+  "beat": "e05"
+ },
+ {
+  "w": "sobre",
+  "start": 10.98,
+  "end": 11.26,
+  "beat": "e05"
+ },
+ {
+  "w": "un",
+  "start": 11.29,
+  "end": 11.444,
+  "beat": "e05"
+ },
+ {
+  "w": "fondo",
+  "start": 11.474,
+  "end": 11.754,
+  "beat": "e05"
+ },
+ {
+  "w": "técnico",
+  "start": 11.784,
+  "end": 12.148,
+  "beat": "e05"
+ },
+ {
+  "w": "oscuro.",
+  "start": 12.178,
+  "end": 12.5,
+  "beat": "e05"
+ },
+ {
+  "w": "Un",
+  "start": 13,
+  "end": 13.154,
+  "beat": "e06"
+ },
+ {
+  "w": "teléfono",
+  "start": 13.184,
+  "end": 13.59,
+  "beat": "e06"
+ },
+ {
+  "w": "junto",
+  "start": 13.62,
+  "end": 13.9,
+  "beat": "e06"
+ },
+ {
+  "w": "a",
+  "start": 13.93,
+  "end": 14.042,
+  "beat": "e06"
+ },
+ {
+  "w": "la",
+  "start": 14.072,
+  "end": 14.226,
+  "beat": "e06"
+ },
+ {
+  "w": "ventanilla",
+  "start": 14.256,
+  "end": 14.746,
+  "beat": "e06"
+ },
+ {
+  "w": "del",
+  "start": 14.776,
+  "end": 14.972,
+  "beat": "e06"
+ },
+ {
+  "w": "avión.",
+  "start": 15.002,
+  "end": 15.282,
+  "beat": "e06"
+ },
+ {
+  "w": "Una",
+  "start": 15.782,
+  "end": 15.978,
+  "beat": "e07"
+ },
+ {
+  "w": "terraza",
+  "start": 16.008,
+  "end": 16.372,
+  "beat": "e07"
+ },
+ {
+  "w": "antigua",
+  "start": 16.402,
+  "end": 16.766,
+  "beat": "e07"
+ },
+ {
+  "w": "frente",
+  "start": 16.796,
+  "end": 17.118,
+  "beat": "e07"
+ },
+ {
+  "w": "al",
+  "start": 17.148,
+  "end": 17.302,
+  "beat": "e07"
+ },
+ {
+  "w": "mar.",
+  "start": 17.332,
+  "end": 17.528,
+  "beat": "e07"
+ },
+ {
+  "w": "Los",
+  "start": 18.028,
+  "end": 18.224,
+  "beat": "e08"
+ },
+ {
+  "w": "sensores",
+  "start": 18.254,
+  "end": 18.66,
+  "beat": "e08"
+ },
+ {
+  "w": "miran",
+  "start": 18.69,
+  "end": 18.97,
+  "beat": "e08"
+ },
+ {
+  "w": "a",
+  "start": 19,
+  "end": 19.112,
+  "beat": "e08"
+ },
+ {
+  "w": "través",
+  "start": 19.142,
+  "end": 19.464,
+  "beat": "e08"
+ },
+ {
+  "w": "de",
+  "start": 19.494,
+  "end": 19.648,
+  "beat": "e08"
+ },
+ {
+  "w": "la",
+  "start": 19.678,
+  "end": 19.832,
+  "beat": "e08"
+ },
+ {
+  "w": "piel.",
+  "start": 19.862,
+  "end": 20.1,
+  "beat": "e08"
+ },
+ {
+  "w": "Moléculas",
+  "start": 20.6,
+  "end": 21.048,
+  "beat": "e09"
+ },
+ {
+  "w": "de",
+  "start": 21.078,
+  "end": 21.232,
+  "beat": "e09"
+ },
+ {
+  "w": "agua",
+  "start": 21.262,
+  "end": 21.5,
+  "beat": "e09"
+ },
+ {
+  "w": "ordenadas",
+  "start": 21.53,
+  "end": 21.978,
+  "beat": "e09"
+ },
+ {
+  "w": "en",
+  "start": 22.008,
+  "end": 22.162,
+  "beat": "e09"
+ },
+ {
+  "w": "hexágonos.",
+  "start": 22.192,
+  "end": 22.64,
+  "beat": "e09"
+ },
+ {
+  "w": "Un",
+  "start": 23.14,
+  "end": 23.294,
+  "beat": "e10"
+ },
+ {
+  "w": "vaso",
+  "start": 23.324,
+  "end": 23.562,
+  "beat": "e10"
+ },
+ {
+  "w": "de",
+  "start": 23.592,
+  "end": 23.746,
+  "beat": "e10"
+ },
+ {
+  "w": "agua",
+  "start": 23.776,
+  "end": 24.014,
+  "beat": "e10"
+ },
+ {
+  "w": "con",
+  "start": 24.044,
+  "end": 24.24,
+  "beat": "e10"
+ },
+ {
+  "w": "hielo",
+  "start": 24.27,
+  "end": 24.55,
+  "beat": "e10"
+ },
+ {
+  "w": "flotando.",
+  "start": 24.58,
+  "end": 24.986,
+  "beat": "e10"
+ },
+ {
+  "w": "Un",
+  "start": 25.986,
+  "end": 26.14,
+  "beat": "e11"
+ },
+ {
+  "w": "lago",
+  "start": 26.17,
+  "end": 26.408,
+  "beat": "e11"
+ },
+ {
+  "w": "helado,",
+  "start": 26.438,
+  "end": 26.76,
+  "beat": "e11"
+ },
+ {
+  "w": "cortado",
+  "start": 26.98,
+  "end": 27.344,
+  "beat": "e11"
+ },
+ {
+  "w": "por",
+  "start": 27.374,
+  "end": 27.57,
+  "beat": "e11"
+ },
+ {
+  "w": "la",
+  "start": 27.6,
+  "end": 27.754,
+  "beat": "e11"
+ },
+ {
+  "w": "mitad.",
+  "start": 27.784,
+  "end": 28.064,
+  "beat": "e11"
+ },
+ {
+  "w": "Y",
+  "start": 28.564,
+  "end": 28.676,
+  "beat": "e12"
+ },
+ {
+  "w": "un",
+  "start": 28.706,
+  "end": 28.86,
+  "beat": "e12"
+ },
+ {
+  "w": "cubito",
+  "start": 28.89,
+  "end": 29.212,
+  "beat": "e12"
+ },
+ {
+  "w": "de",
+  "start": 29.242,
+  "end": 29.396,
+  "beat": "e12"
+ },
+ {
+  "w": "hielo,",
+  "start": 29.426,
+  "end": 29.706,
+  "beat": "e12"
+ },
+ {
+  "w": "solo.",
+  "start": 29.926,
+  "end": 30.164,
+  "beat": "e12"
+ }
+]

@@ -117,14 +117,15 @@ export class GradeEffect extends Effect {
   set amount(v: number) { this.uniforms.get("gradeAmount")!.value = v; }
 }
 
-// Presets por luz del estilo explainer (§3.6). Punto de partida a ojo: sombras levantadas hacia el marino (luma
-// p5 0,05–0,19, nunca negro puro), algo de saturación en medios y viñeta suave. Se recalibran en F4 con measure.py.
+// Presets por luz del estilo explainer (§3.6): sombras levantadas hacia el marino (luma p5 0,05–0,19, nunca negro
+// puro), saturación mediana 0,40–0,62 y viñeta suave. Recalibrados en F4 midiendo los stills de EnvGallery (D35):
+// tech y noche salían a 0,78–0,89 de saturación (cian y marino puros) y el atardecer, demasiado claro (mediana ~0,5).
 import type { LightName } from "../style";
 export const GRADES: Record<LightName, GradeParams> = {
-  atardecer: { ky: [0.035, 0.125, 0.275, 0.53, 0.78, 0.92, 1], sat: [1.05, 1.08, 1.0], tintS: [0.03, 0.012], tintM: [0, 0.006], tintH: [-0.01, 0.02], vig: [0.18, 0.45] },
-  noche: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [1.0, 1.1, 1.0], tintS: [0.04, -0.004], tintM: [0.01, 0], tintH: [0, 0], vig: [0.2, 0.42] },
-  dorado: { ky: [0.035, 0.12, 0.265, 0.51, 0.77, 0.92, 1], sat: [1.0, 1.1, 1.05], tintS: [0.03, 0], tintM: [0, 0.004], tintH: [-0.015, 0.015], vig: [0.2, 0.42] },
-  tech: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [1.0, 1.08, 1.0], tintS: [0.04, -0.01], tintM: [0.01, -0.004], tintH: [0, 0], vig: [0.2, 0.42] },
+  atardecer: { ky: [0.035, 0.115, 0.245, 0.46, 0.71, 0.88, 1], sat: [0.95, 0.95, 0.92], tintS: [0.03, 0.012], tintM: [0, 0.006], tintH: [-0.01, 0.02], vig: [0.22, 0.42] },
+  noche: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [0.82, 0.82, 0.9], tintS: [0.035, -0.004], tintM: [0.008, 0], tintH: [0, 0], vig: [0.2, 0.42] },
+  dorado: { ky: [0.035, 0.12, 0.26, 0.49, 0.75, 0.91, 1], sat: [0.92, 0.95, 1.0], tintS: [0.03, 0], tintM: [0, 0.004], tintH: [-0.015, 0.015], vig: [0.2, 0.42] },
+  tech: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [0.66, 0.64, 0.8], tintS: [0.025, 0.012], tintM: [0.006, 0.006], tintH: [0, 0], vig: [0.24, 0.4] },
 };
 /** aplica el preset de una luz (solo toca los uniforms cuando cambia) */
 export function gradeFor(fx: GradeEffect, light: LightName) {

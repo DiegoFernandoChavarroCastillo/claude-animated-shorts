@@ -141,3 +141,56 @@ objeto y el fondo se mueven en sentidos opuestos y se anulan en la media). Lo qu
   cerrado; sin esto, al final de un beat largo el objeto se salía del cuadro.
 - El suelo provisional lleva una subrejilla tenue y motas con semilla fija (amplía D29: los entornos de F4 también
   necesitan textura fina en suelo y fondo).
+
+## F4 · Entornos y objetos
+
+**D32 · Ids del ejemplo.** Los entornos provisionales de F2 (`cocina_noche`, `lago_invierno`) no están en la lista
+del plan y desaparecen. En `hielo-flota`, el vaso de agua (b01, b02, b07) pasa a `interior_neutro` con luz `noche`, y
+el corte de lago (b05, b06) a `interior_neutro` con `dorado`/`atardecer`. Ningún entorno del plan encaja mejor con
+"cocina" ni con "lago en invierno".
+
+**D33 · Sin modelos glTF todavía.** En esta sesión no tengo acceso web para descargar Kenney/Quaternius, y la
+inventario ya decía que faltaban (DIF 3). El cargador queda hecho (`heroes/gltf.ts`, con recoloreo por material y
+`delayRender`) y `heroes/LICENSES.md` lista "ningún modelo externo". **No está probado con un modelo real**: hay que
+probarlo con el primero que se añada.
+
+**D34 · Tarjetas (`chars/`) simplificadas.** La API `Pen` se porta tal cual, pero sin tinta (ol = 0), con degradados y
+trazos de pelo pintados. El material de tarjeta es `MeshStandardMaterial` con recorte por alfa en lugar de
+`cardshade.ts`: el sombreado de tarjetas del puente depende de toda su cadena Lambert/two-tone (`shade.ts`), que el
+explainer no usa (D19). El degradado de forma va pintado en el dibujo. Hay dos personajes: `perro` (de perfil) y
+`persona` (de espaldas).
+
+**D35 · Recalibración del grade por luz.** Los valores se midieron sobre los stills de `EnvGallery`, quitando la banda
+de subtítulos. Media final: luma p5 0,12, mediana 0,19 y saturación 0,60, dentro del rango del plan. Por escena, las
+de `tech` y `noche` quedan entre 0,65 y 0,80 de saturación: el propio token `bg.night0` (`#0A091A`) ya tiene saturación
+HSV 0,65, y R3 mide 0,61. El cielo de atardecer queda algo claro (luma mediana 0,49, frente a 0,37 de R1).
+
+**D36 · `radius` es de encuadre, no de la esfera envolvente.** La cámara se aleja para que 2 × radius ocupe ~55 % del
+ancho. Cada entorno declara `view: { el, dof, distK }`: elevación de cámara, desenfoque por defecto y factor de
+distancia (`vista_aerea` usa 2,6 para ver la ciudad y el horizonte).
+
+**D37 · Pantallas sin texto.** Las de `telefono` y `reloj` solo llevan iconos y cifras ("22:47", "5G", "98 %"), para
+que sirvan igual en español e inglés y sin interfaces de marcas reales.
+
+**D38 · Suelos y paredes grandes, mate (Lambert).** Con `MeshStandardMaterial`, al ver un suelo a ras, el especular de
+Fresnel reflejaba la luz de borde y teñía el suelo entero (cian en tech, granate en interiores). Lo detectó el
+verificador: un suelo negro seguía saliendo teal. Precisa D19: objetos y piezas pequeñas usan el material estándar, y
+los suelos y paredes grandes, `matte()`.
+
+**D39 · Culling.** Se ocultan solo los objetos marcados con `blocker()` (paredes, edificios, muebles, nubes cercanas),
+probando con segmentos cámara→protagonista al centro y a 4 puntos de su contorno, con un margen de 0,25 m. Con los
+encuadres actuales no tapa nada de verdad. `CullTest` lo demuestra con 2 obstáculos de control por entorno (8/8
+entornos 2/2) y cuenta 0 cámaras dentro de objetos o bajo el suelo en 1.248 posiciones por entorno (3 protagonistas ×
+8 cámaras, con transiciones).
+
+**D40 · Catálogo con doble comprobación.** `templates/catalog.json` está escrito a mano para el LLM. `catalog.ts` lo
+cruza con el código en los dos sentidos (ids, poses, anclas, `anchored`, iconos) y `calculateMetadata` valida cada
+story.json contra él, así que un id inventado falla antes de renderizar. La pose `lateral` (cámara a 35°) solo es
+válida si el protagonista la declara (`vaso_agua_hielo`).
+
+**D41 · Referencias de la hoja lado a lado.** R2 no está (D1) y `video3` es otro short (lingotes de oro), así que
+`calle_noche_bokeh` y `exterior_clasico` se comparan con el fotograma de luz más parecida (R3 noche y R1 atardecer),
+no con su tema.
+
+**D42 · Composiciones de desarrollo.** `EnvGallery` es un `Explainer` normal con un story de 12 beats (8 entornos y 4
+objetos extra) en `dev/`. `CullTest` es la tabla de la prueba de culling. Ninguna forma parte del pipeline.

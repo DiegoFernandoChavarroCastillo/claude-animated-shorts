@@ -13,7 +13,7 @@
       "id": "b01", "role": "hook",
       "text": "¿Por qué el hielo flota, si es agua sólida?",
       "keyword": "flota",
-      "scene": { "env": "cocina_noche", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
                  "camera": { "preset": "push_in", "rate": 0.2 }, "dof": 14 },
       "overlays": [ { "type": "PulseRings", "at": "flota", "anchor": "hero", "color": "ui.cyan" } ],
       "transition": "glide"
@@ -22,7 +22,7 @@
       "id": "b02", "role": "tension",
       "text": "Casi todas las sustancias se encogen al congelarse, y su versión sólida se hunde. Con el agua pasa justo lo contrario.",
       "keyword": "contrario.",
-      "scene": { "env": "cocina_noche", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "lateral" },
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "lateral" },
                  "camera": { "preset": "drift", "dir": "right" }, "dof": 12 },
       "overlays": [ { "type": "Pill", "at": "hunde.", "text": "SE HUNDE", "color": "ui.red" } ],
       "transition": "zoom_through"
@@ -52,7 +52,7 @@
       "id": "b05", "role": "layer2",
       "text": "Y aquí se pone interesante. El agua líquida es más densa a unos cuatro grados, así que esa agua baja al fondo de los lagos.",
       "keyword": "cuatro",
-      "scene": { "env": "lago_invierno", "light": "dorado", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
+      "scene": { "env": "interior_neutro", "light": "dorado", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
                  "camera": { "preset": "glide" }, "dof": 6 },
       "overlays": [ { "type": "StatCallout", "at": "cuatro", "value": 4, "suffix": " °C", "label": "AGUA MÁS DENSA", "color": "ui.cyan" } ],
       "sources": ["https://en.wikipedia.org/wiki/Properties_of_water"],
@@ -62,7 +62,7 @@
       "id": "b06", "role": "twist",
       "text": "Por eso los lagos se congelan desde arriba. El hielo no hunde la vida: la protege, como una tapa contra el frío.",
       "keyword": "protege,",
-      "scene": { "env": "lago_invierno", "light": "atardecer", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
+      "scene": { "env": "interior_neutro", "light": "atardecer", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
                  "camera": { "preset": "push_in", "rate": 0.15 }, "dof": 12 },
       "overlays": [ { "type": "Callout3D", "at": "tapa", "anchor": "top", "text": "Hielo: aislante" } ],
       "transition": "crossfade"
@@ -71,7 +71,7 @@
       "id": "b07", "role": "cta",
       "text": "¿Qué otra rareza del agua quieres que te explique? Déjamela en los comentarios.",
       "keyword": "comentarios.",
-      "scene": { "env": "cocina_noche", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
+      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
                  "camera": { "preset": "drift", "dir": "left" }, "dof": 14 },
       "overlays": [],
       "transition": "cut"

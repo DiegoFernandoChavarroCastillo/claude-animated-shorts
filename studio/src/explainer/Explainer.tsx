@@ -9,11 +9,13 @@ import { Scene } from "./Scene";
 import { Captions } from "./captions/Caption";
 import { OverlayLayer } from "./overlays/OverlayLayer";
 import { CAMERA, PALETTE } from "./style";
+import { validateStory } from "./catalog";
 
 const parse = (p: ExplainerProps) => ExplainerPropsSchema.parse(p);
 
 export const calcExplainerMetadata: CalculateMetadataFunction<ExplainerProps> = ({ props }) => {
   const { story, words } = parse(props);
+  validateStory(story);
   return { durationInFrames: buildTimeline(story, words, story.meta.fps).total, fps: story.meta.fps, width: story.meta.width, height: story.meta.height };
 };
 
