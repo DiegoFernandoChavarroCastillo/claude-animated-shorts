@@ -11,7 +11,7 @@
   "beats": [
     {
       "id": "b01", "role": "hook",
-      "text": "¿Por qué el hielo flota, si es agua sólida?",
+      "text": "¿Te has preguntado por qué flota el hielo, si es agua sólida?",
       "keyword": "flota",
       "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
                  "camera": { "preset": "push_in", "rate": 0.2 }, "dof": 14 },

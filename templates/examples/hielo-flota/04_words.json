@@ -1,860 +1,878 @@
 [
  {
-  "w": "¿Por",
+  "w": "¿Te",
   "start": 0.1,
-  "end": 0.38,
+  "end": 0.3,
+  "beat": "b01"
+ },
+ {
+  "w": "has",
+  "start": 0.3,
+  "end": 0.58,
+  "beat": "b01"
+ },
+ {
+  "w": "preguntado",
+  "start": 0.58,
+  "end": 1.12,
+  "beat": "b01"
+ },
+ {
+  "w": "por",
+  "start": 1.12,
+  "end": 1.36,
   "beat": "b01"
  },
  {
   "w": "qué",
-  "start": 0.38,
-  "end": 0.48,
+  "start": 1.36,
+  "end": 1.5,
+  "beat": "b01"
+ },
+ {
+  "w": "flota",
+  "start": 1.5,
+  "end": 1.76,
   "beat": "b01"
  },
  {
   "w": "el",
-  "start": 0.48,
-  "end": 0.68,
+  "start": 1.76,
+  "end": 1.98,
   "beat": "b01"
  },
  {
-  "w": "hielo",
-  "start": 0.68,
-  "end": 0.98,
-  "beat": "b01"
- },
- {
-  "w": "flota,",
-  "start": 0.98,
-  "end": 1.3,
+  "w": "hielo,",
+  "start": 1.98,
+  "end": 2.34,
   "beat": "b01"
  },
  {
   "w": "si",
-  "start": 1.3,
-  "end": 1.52,
-  "beat": "b01"
- },
- {
-  "w": "es",
-  "start": 1.52,
-  "end": 1.74,
-  "beat": "b01"
- },
- {
-  "w": "agua",
-  "start": 1.74,
-  "end": 1.96,
-  "beat": "b01"
- },
- {
-  "w": "sólida?",
-  "start": 1.96,
+  "start": 2.34,
   "end": 2.46,
   "beat": "b01"
  },
  {
+  "w": "es",
+  "start": 2.46,
+  "end": 2.68,
+  "beat": "b01"
+ },
+ {
+  "w": "agua",
+  "start": 2.68,
+  "end": 2.92,
+  "beat": "b01"
+ },
+ {
+  "w": "sólida?",
+  "start": 2.92,
+  "end": 3.445,
+  "beat": "b01"
+ },
+ {
   "w": "Casi",
-  "start": 3.04,
-  "end": 3.38,
+  "start": 4.02,
+  "end": 4.34,
   "beat": "b02"
  },
  {
   "w": "todas",
-  "start": 3.38,
-  "end": 3.68,
+  "start": 4.34,
+  "end": 4.62,
   "beat": "b02"
  },
  {
   "w": "las",
-  "start": 3.68,
-  "end": 4.0,
+  "start": 4.62,
+  "end": 4.96,
   "beat": "b02"
  },
  {
   "w": "sustancias",
-  "start": 4.0,
-  "end": 4.52,
+  "start": 4.96,
+  "end": 5.46,
   "beat": "b02"
  },
  {
   "w": "se",
-  "start": 4.52,
-  "end": 4.76,
+  "start": 5.46,
+  "end": 5.7,
   "beat": "b02"
  },
  {
   "w": "encogen",
-  "start": 4.76,
-  "end": 5.06,
+  "start": 5.7,
+  "end": 6.0,
   "beat": "b02"
  },
  {
   "w": "al",
-  "start": 5.06,
-  "end": 5.34,
+  "start": 6.0,
+  "end": 6.28,
   "beat": "b02"
  },
  {
   "w": "congelarse,",
-  "start": 5.34,
-  "end": 5.96,
+  "start": 6.28,
+  "end": 6.9,
   "beat": "b02"
  },
  {
   "w": "y",
-  "start": 5.96,
-  "end": 6.34,
+  "start": 6.9,
+  "end": 7.28,
   "beat": "b02"
  },
  {
   "w": "su",
-  "start": 6.34,
-  "end": 6.48,
+  "start": 7.28,
+  "end": 7.44,
   "beat": "b02"
  },
  {
   "w": "versión",
-  "start": 6.48,
-  "end": 6.96,
+  "start": 7.44,
+  "end": 7.9,
   "beat": "b02"
  },
  {
   "w": "sólida",
-  "start": 6.96,
-  "end": 7.36,
+  "start": 7.9,
+  "end": 8.3,
   "beat": "b02"
  },
  {
   "w": "se",
-  "start": 7.36,
-  "end": 7.6,
+  "start": 8.3,
+  "end": 8.54,
   "beat": "b02"
  },
  {
   "w": "hunde.",
-  "start": 7.6,
-  "end": 7.86,
+  "start": 8.54,
+  "end": 8.78,
   "beat": "b02"
  },
  {
   "w": "Con",
-  "start": 8.26,
-  "end": 8.46,
+  "start": 9.22,
+  "end": 9.4,
   "beat": "b02"
  },
  {
   "w": "el",
-  "start": 8.46,
-  "end": 8.72,
+  "start": 9.4,
+  "end": 9.66,
   "beat": "b02"
  },
  {
   "w": "agua",
-  "start": 8.72,
-  "end": 8.9,
+  "start": 9.66,
+  "end": 9.84,
   "beat": "b02"
  },
  {
   "w": "pasa",
-  "start": 8.9,
-  "end": 9.34,
+  "start": 9.84,
+  "end": 10.28,
   "beat": "b02"
  },
  {
   "w": "justo",
-  "start": 9.34,
-  "end": 9.72,
+  "start": 10.28,
+  "end": 10.66,
   "beat": "b02"
  },
  {
   "w": "lo",
-  "start": 9.72,
-  "end": 9.94,
+  "start": 10.66,
+  "end": 10.88,
   "beat": "b02"
  },
  {
   "w": "contrario.",
-  "start": 9.94,
-  "end": 10.46,
+  "start": 10.88,
+  "end": 11.4,
   "beat": "b02"
  },
  {
   "w": "Al",
-  "start": 11.08,
-  "end": 11.24,
+  "start": 12.02,
+  "end": 12.2,
   "beat": "b03"
  },
  {
   "w": "congelarse,",
-  "start": 11.24,
-  "end": 11.96,
+  "start": 12.2,
+  "end": 12.9,
   "beat": "b03"
  },
  {
   "w": "el",
-  "start": 11.96,
-  "end": 12.22,
+  "start": 12.9,
+  "end": 13.18,
   "beat": "b03"
  },
  {
   "w": "agua",
-  "start": 12.22,
-  "end": 12.44,
+  "start": 13.18,
+  "end": 13.38,
   "beat": "b03"
  },
  {
   "w": "se",
-  "start": 12.44,
-  "end": 12.78,
+  "start": 13.38,
+  "end": 13.72,
   "beat": "b03"
  },
  {
   "w": "expande",
-  "start": 12.78,
-  "end": 13.12,
+  "start": 13.72,
+  "end": 14.06,
   "beat": "b03"
  },
  {
   "w": "cerca",
-  "start": 13.12,
-  "end": 13.48,
+  "start": 14.06,
+  "end": 14.42,
   "beat": "b03"
  },
  {
   "w": "de",
-  "start": 13.48,
-  "end": 13.64,
+  "start": 14.42,
+  "end": 14.6,
   "beat": "b03"
  },
  {
   "w": "un",
-  "start": 13.64,
-  "end": 13.8,
+  "start": 14.6,
+  "end": 14.74,
   "beat": "b03"
  },
  {
   "w": "nueve",
-  "start": 13.8,
-  "end": 14.129,
+  "start": 14.74,
+  "end": 15.07,
   "beat": "b03"
  },
  {
   "w": "por",
-  "start": 14.129,
-  "end": 14.326,
+  "start": 15.07,
+  "end": 15.267,
   "beat": "b03"
  },
  {
   "w": "ciento.",
-  "start": 14.326,
-  "end": 14.721,
+  "start": 15.267,
+  "end": 15.663,
   "beat": "b03"
  },
  {
   "w": "Por",
-  "start": 15.051,
-  "end": 15.32,
+  "start": 15.993,
+  "end": 16.28,
   "beat": "b03"
  },
  {
   "w": "eso",
-  "start": 15.32,
-  "end": 15.5,
+  "start": 16.28,
+  "end": 16.44,
   "beat": "b03"
  },
  {
   "w": "una",
-  "start": 15.5,
-  "end": 15.68,
+  "start": 16.44,
+  "end": 16.62,
   "beat": "b03"
  },
  {
   "w": "botella",
-  "start": 15.68,
-  "end": 16.22,
+  "start": 16.62,
+  "end": 17.18,
   "beat": "b03"
  },
  {
   "w": "llena",
-  "start": 16.22,
-  "end": 16.66,
+  "start": 17.18,
+  "end": 17.6,
   "beat": "b03"
  },
  {
   "w": "revienta",
-  "start": 16.66,
-  "end": 17.22,
+  "start": 17.6,
+  "end": 18.16,
   "beat": "b03"
  },
  {
   "w": "en",
-  "start": 17.22,
-  "end": 17.36,
+  "start": 18.16,
+  "end": 18.3,
   "beat": "b03"
  },
  {
   "w": "el",
-  "start": 17.36,
-  "end": 17.56,
+  "start": 18.3,
+  "end": 18.52,
   "beat": "b03"
  },
  {
   "w": "congelador.",
-  "start": 17.56,
-  "end": 18.1,
+  "start": 18.52,
+  "end": 19.02,
   "beat": "b03"
  },
  {
   "w": "La",
-  "start": 18.68,
-  "end": 18.9,
+  "start": 19.62,
+  "end": 19.84,
   "beat": "b04"
  },
  {
   "w": "culpa",
-  "start": 18.9,
-  "end": 19.22,
+  "start": 19.84,
+  "end": 20.16,
   "beat": "b04"
  },
  {
   "w": "es",
-  "start": 19.22,
-  "end": 19.52,
+  "start": 20.16,
+  "end": 20.46,
   "beat": "b04"
  },
  {
   "w": "de",
-  "start": 19.52,
-  "end": 19.7,
+  "start": 20.46,
+  "end": 20.64,
   "beat": "b04"
  },
  {
   "w": "sus",
-  "start": 19.7,
-  "end": 19.92,
+  "start": 20.64,
+  "end": 20.84,
   "beat": "b04"
  },
  {
   "w": "moléculas.",
-  "start": 19.92,
-  "end": 20.548,
+  "start": 20.84,
+  "end": 21.492,
   "beat": "b04"
  },
  {
   "w": "En",
-  "start": 20.92,
-  "end": 21.06,
+  "start": 21.86,
+  "end": 22.0,
   "beat": "b04"
  },
  {
   "w": "el",
-  "start": 21.06,
-  "end": 21.26,
+  "start": 22.0,
+  "end": 22.18,
   "beat": "b04"
  },
  {
   "w": "hielo",
-  "start": 21.26,
-  "end": 21.52,
+  "start": 22.18,
+  "end": 22.48,
   "beat": "b04"
  },
  {
   "w": "se",
-  "start": 21.52,
-  "end": 21.74,
+  "start": 22.48,
+  "end": 22.7,
   "beat": "b04"
  },
  {
   "w": "ordenan",
-  "start": 21.74,
-  "end": 22.2,
+  "start": 22.7,
+  "end": 23.14,
   "beat": "b04"
  },
  {
   "w": "en",
-  "start": 22.2,
-  "end": 22.44,
+  "start": 23.14,
+  "end": 23.38,
   "beat": "b04"
  },
  {
   "w": "hexágonos",
-  "start": 22.44,
-  "end": 22.92,
+  "start": 23.38,
+  "end": 23.86,
   "beat": "b04"
  },
  {
   "w": "que",
-  "start": 22.92,
-  "end": 23.12,
+  "start": 23.86,
+  "end": 24.08,
   "beat": "b04"
  },
  {
   "w": "dejan",
-  "start": 23.12,
-  "end": 23.44,
-  "beat": "b04"
- },
- {
-  "w": "huecos",
-  "start": 23.44,
-  "end": 23.82,
-  "beat": "b04"
- },
- {
-  "w": "por",
-  "start": 23.82,
-  "end": 24.1,
-  "beat": "b04"
- },
- {
-  "w": "dentro.",
-  "start": 24.1,
+  "start": 24.08,
   "end": 24.4,
   "beat": "b04"
  },
  {
+  "w": "huecos",
+  "start": 24.4,
+  "end": 24.76,
+  "beat": "b04"
+ },
+ {
+  "w": "por",
+  "start": 24.76,
+  "end": 25.04,
+  "beat": "b04"
+ },
+ {
+  "w": "dentro.",
+  "start": 25.04,
+  "end": 25.34,
+  "beat": "b04"
+ },
+ {
   "w": "Un",
-  "start": 24.84,
-  "end": 24.98,
+  "start": 25.728,
+  "end": 25.92,
   "beat": "b04"
  },
  {
   "w": "litro",
-  "start": 24.98,
-  "end": 25.26,
+  "start": 25.92,
+  "end": 26.22,
   "beat": "b04"
  },
  {
   "w": "de",
-  "start": 25.26,
-  "end": 25.42,
+  "start": 26.22,
+  "end": 26.36,
   "beat": "b04"
  },
  {
   "w": "hielo",
-  "start": 25.42,
-  "end": 25.68,
+  "start": 26.36,
+  "end": 26.6,
   "beat": "b04"
  },
  {
   "w": "pesa",
-  "start": 25.68,
-  "end": 26.02,
+  "start": 26.6,
+  "end": 27.0,
   "beat": "b04"
  },
  {
   "w": "unos",
-  "start": 26.02,
-  "end": 26.3,
+  "start": 27.0,
+  "end": 27.24,
   "beat": "b04"
  },
  {
   "w": "novecientos",
-  "start": 26.3,
-  "end": 26.824,
+  "start": 27.24,
+  "end": 27.764,
   "beat": "b04"
  },
  {
   "w": "diecisiete",
-  "start": 26.824,
-  "end": 27.3,
+  "start": 27.764,
+  "end": 28.24,
   "beat": "b04"
  },
  {
   "w": "gramos,",
-  "start": 27.3,
-  "end": 27.98,
+  "start": 28.24,
+  "end": 28.92,
   "beat": "b04"
  },
  {
   "w": "y",
-  "start": 27.98,
-  "end": 28.22,
+  "start": 28.92,
+  "end": 29.18,
   "beat": "b04"
  },
  {
   "w": "uno",
-  "start": 28.22,
-  "end": 28.48,
+  "start": 29.18,
+  "end": 29.42,
   "beat": "b04"
  },
  {
   "w": "de",
-  "start": 28.48,
-  "end": 28.72,
+  "start": 29.42,
+  "end": 29.66,
   "beat": "b04"
  },
  {
   "w": "agua,",
-  "start": 28.72,
-  "end": 28.94,
+  "start": 29.66,
+  "end": 29.88,
   "beat": "b04"
  },
  {
   "w": "mil.",
-  "start": 28.94,
-  "end": 29.24,
+  "start": 29.88,
+  "end": 30.16,
   "beat": "b04"
  },
  {
   "w": "Y",
-  "start": 29.794,
-  "end": 29.98,
+  "start": 30.72,
+  "end": 30.98,
   "beat": "b05"
  },
  {
   "w": "aquí",
-  "start": 29.98,
-  "end": 30.28,
+  "start": 30.98,
+  "end": 31.22,
   "beat": "b05"
  },
  {
   "w": "se",
-  "start": 30.28,
-  "end": 30.58,
+  "start": 31.22,
+  "end": 31.54,
   "beat": "b05"
  },
  {
   "w": "pone",
-  "start": 30.58,
-  "end": 30.8,
+  "start": 31.54,
+  "end": 31.72,
   "beat": "b05"
  },
  {
   "w": "interesante.",
-  "start": 30.8,
-  "end": 31.58,
+  "start": 31.72,
+  "end": 32.48,
   "beat": "b05"
  },
  {
   "w": "El",
-  "start": 32.08,
-  "end": 32.22,
+  "start": 33.0,
+  "end": 33.16,
   "beat": "b05"
  },
  {
   "w": "agua",
-  "start": 32.22,
-  "end": 32.42,
-  "beat": "b05"
- },
- {
-  "w": "líquida",
-  "start": 32.42,
-  "end": 32.86,
-  "beat": "b05"
- },
- {
-  "w": "es",
-  "start": 32.86,
-  "end": 33.12,
-  "beat": "b05"
- },
- {
-  "w": "más",
-  "start": 33.12,
+  "start": 33.16,
   "end": 33.38,
   "beat": "b05"
  },
  {
-  "w": "densa",
+  "w": "líquida",
   "start": 33.38,
-  "end": 33.66,
+  "end": 33.78,
+  "beat": "b05"
+ },
+ {
+  "w": "es",
+  "start": 33.78,
+  "end": 34.08,
+  "beat": "b05"
+ },
+ {
+  "w": "más",
+  "start": 34.08,
+  "end": 34.32,
+  "beat": "b05"
+ },
+ {
+  "w": "densa",
+  "start": 34.32,
+  "end": 34.62,
   "beat": "b05"
  },
  {
   "w": "a",
-  "start": 33.66,
-  "end": 33.88,
+  "start": 34.62,
+  "end": 34.82,
   "beat": "b05"
  },
  {
   "w": "unos",
-  "start": 33.88,
-  "end": 34.1,
+  "start": 34.82,
+  "end": 35.04,
   "beat": "b05"
  },
  {
   "w": "cuatro",
-  "start": 34.1,
-  "end": 34.38,
+  "start": 35.04,
+  "end": 35.32,
   "beat": "b05"
  },
  {
   "w": "grados,",
-  "start": 34.38,
-  "end": 35.14,
+  "start": 35.32,
+  "end": 36.08,
   "beat": "b05"
  },
  {
   "w": "así",
-  "start": 35.24,
-  "end": 35.4,
+  "start": 36.2,
+  "end": 36.34,
   "beat": "b05"
  },
  {
   "w": "que",
-  "start": 35.4,
-  "end": 35.62,
+  "start": 36.34,
+  "end": 36.56,
   "beat": "b05"
  },
  {
   "w": "esa",
-  "start": 35.62,
-  "end": 35.8,
+  "start": 36.56,
+  "end": 36.72,
   "beat": "b05"
  },
  {
   "w": "agua",
-  "start": 35.8,
-  "end": 36.04,
+  "start": 36.72,
+  "end": 36.98,
   "beat": "b05"
  },
  {
   "w": "baja",
-  "start": 36.04,
-  "end": 36.36,
+  "start": 36.98,
+  "end": 37.3,
   "beat": "b05"
  },
  {
   "w": "al",
-  "start": 36.36,
-  "end": 36.64,
+  "start": 37.3,
+  "end": 37.58,
   "beat": "b05"
  },
  {
   "w": "fondo",
-  "start": 36.64,
-  "end": 36.84,
+  "start": 37.58,
+  "end": 37.8,
   "beat": "b05"
  },
  {
   "w": "de",
-  "start": 36.84,
-  "end": 37.02,
+  "start": 37.8,
+  "end": 37.98,
   "beat": "b05"
  },
  {
   "w": "los",
-  "start": 37.02,
-  "end": 37.22,
+  "start": 37.98,
+  "end": 38.18,
   "beat": "b05"
  },
  {
   "w": "lagos.",
-  "start": 37.22,
-  "end": 37.575,
+  "start": 38.18,
+  "end": 38.44,
   "beat": "b05"
  },
  {
   "w": "Por",
-  "start": 38.52,
-  "end": 38.7,
+  "start": 39.44,
+  "end": 39.66,
   "beat": "b06"
  },
  {
   "w": "eso",
-  "start": 38.7,
-  "end": 38.88,
+  "start": 39.66,
+  "end": 39.82,
   "beat": "b06"
  },
  {
   "w": "los",
-  "start": 38.88,
-  "end": 39.16,
+  "start": 39.82,
+  "end": 40.1,
   "beat": "b06"
  },
  {
   "w": "lagos",
-  "start": 39.16,
-  "end": 39.58,
+  "start": 40.1,
+  "end": 40.52,
   "beat": "b06"
  },
  {
   "w": "se",
-  "start": 39.58,
-  "end": 39.88,
+  "start": 40.52,
+  "end": 40.82,
   "beat": "b06"
  },
  {
   "w": "congelan",
-  "start": 39.88,
-  "end": 40.42,
+  "start": 40.82,
+  "end": 41.36,
   "beat": "b06"
  },
  {
   "w": "desde",
-  "start": 40.42,
-  "end": 40.7,
+  "start": 41.36,
+  "end": 41.62,
   "beat": "b06"
  },
  {
   "w": "arriba.",
-  "start": 40.7,
-  "end": 41.04,
+  "start": 41.62,
+  "end": 41.98,
   "beat": "b06"
  },
  {
   "w": "El",
-  "start": 41.54,
-  "end": 41.66,
+  "start": 42.48,
+  "end": 42.62,
   "beat": "b06"
  },
  {
   "w": "hielo",
-  "start": 41.66,
-  "end": 42.02,
+  "start": 42.62,
+  "end": 42.94,
   "beat": "b06"
  },
  {
   "w": "no",
-  "start": 42.02,
-  "end": 42.14,
+  "start": 42.94,
+  "end": 43.06,
   "beat": "b06"
  },
  {
   "w": "hunde",
-  "start": 42.14,
-  "end": 42.32,
+  "start": 43.06,
+  "end": 43.26,
   "beat": "b06"
  },
  {
   "w": "la",
-  "start": 42.32,
-  "end": 42.54,
+  "start": 43.26,
+  "end": 43.48,
   "beat": "b06"
  },
  {
   "w": "vida:",
-  "start": 42.54,
-  "end": 42.78,
+  "start": 43.48,
+  "end": 43.72,
   "beat": "b06"
  },
  {
   "w": "la",
-  "start": 43.14,
-  "end": 43.32,
-  "beat": "b06"
- },
- {
-  "w": "protege,",
-  "start": 43.32,
-  "end": 43.8,
-  "beat": "b06"
- },
- {
-  "w": "como",
-  "start": 43.8,
-  "end": 44.0,
-  "beat": "b06"
- },
- {
-  "w": "una",
-  "start": 44.0,
+  "start": 44.04,
   "end": 44.26,
   "beat": "b06"
  },
  {
-  "w": "tapa",
+  "w": "protege,",
   "start": 44.26,
-  "end": 44.46,
+  "end": 44.74,
+  "beat": "b06"
+ },
+ {
+  "w": "como",
+  "start": 44.74,
+  "end": 44.94,
+  "beat": "b06"
+ },
+ {
+  "w": "una",
+  "start": 44.94,
+  "end": 45.2,
+  "beat": "b06"
+ },
+ {
+  "w": "tapa",
+  "start": 45.2,
+  "end": 45.4,
   "beat": "b06"
  },
  {
   "w": "contra",
-  "start": 44.46,
-  "end": 44.82,
+  "start": 45.4,
+  "end": 45.78,
   "beat": "b06"
  },
  {
   "w": "el",
-  "start": 44.82,
-  "end": 45.08,
+  "start": 45.78,
+  "end": 46.02,
   "beat": "b06"
  },
  {
   "w": "frío.",
-  "start": 45.08,
-  "end": 45.352,
+  "start": 46.02,
+  "end": 46.296,
   "beat": "b06"
  },
  {
   "w": "¿Qué",
-  "start": 45.94,
-  "end": 46.1,
+  "start": 46.86,
+  "end": 47.04,
   "beat": "b07"
  },
  {
   "w": "otra",
-  "start": 46.1,
-  "end": 46.4,
-  "beat": "b07"
- },
- {
-  "w": "rareza",
-  "start": 46.4,
-  "end": 46.9,
-  "beat": "b07"
- },
- {
-  "w": "del",
-  "start": 46.9,
-  "end": 47.14,
-  "beat": "b07"
- },
- {
-  "w": "agua",
-  "start": 47.14,
+  "start": 47.04,
   "end": 47.34,
   "beat": "b07"
  },
  {
-  "w": "quieres",
+  "w": "rareza",
   "start": 47.34,
-  "end": 47.68,
+  "end": 47.86,
+  "beat": "b07"
+ },
+ {
+  "w": "del",
+  "start": 47.86,
+  "end": 48.06,
+  "beat": "b07"
+ },
+ {
+  "w": "agua",
+  "start": 48.06,
+  "end": 48.28,
+  "beat": "b07"
+ },
+ {
+  "w": "quieres",
+  "start": 48.28,
+  "end": 48.62,
   "beat": "b07"
  },
  {
   "w": "que",
-  "start": 47.68,
-  "end": 47.92,
+  "start": 48.62,
+  "end": 48.88,
   "beat": "b07"
  },
  {
   "w": "te",
-  "start": 47.92,
-  "end": 48.24,
+  "start": 48.88,
+  "end": 49.2,
   "beat": "b07"
  },
  {
   "w": "explique?",
-  "start": 48.24,
-  "end": 48.6,
+  "start": 49.2,
+  "end": 49.56,
   "beat": "b07"
  },
  {
   "w": "Déjamela",
-  "start": 49.24,
-  "end": 49.6,
+  "start": 50.02,
+  "end": 50.54,
   "beat": "b07"
  },
  {
   "w": "en",
-  "start": 49.6,
-  "end": 49.74,
+  "start": 50.54,
+  "end": 50.7,
   "beat": "b07"
  },
  {
   "w": "los",
-  "start": 49.74,
-  "end": 50.0,
+  "start": 50.7,
+  "end": 50.94,
   "beat": "b07"
  },
  {
   "w": "comentarios.",
-  "start": 50.0,
-  "end": 50.48,
+  "start": 50.94,
+  "end": 51.44,
   "beat": "b07"
  }
 ]

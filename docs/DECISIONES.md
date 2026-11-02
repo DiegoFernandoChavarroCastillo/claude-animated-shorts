@@ -224,3 +224,29 @@ Kokoro, en lugar del sintético de F2. Los WAV no se versionan; se regeneran con
 
 **Corrección de D33:** la terminal sí tiene internet; la que no tiene acceso es mi herramienta de web. Los modelos
 glTF CC0 se pueden descargar. Queda como tarea aparte después de F5.
+
+## F6 · Guion (decididas contigo en el chat)
+
+**D49 · Fuentes como lista "número → URL".** En `## Fuentes`, una línea por dato que repite el número tal como
+aparece en el guion (en cifras o en palabras) y lleva la URL. El validador detecta números en cifras y en palabras
+(es y en) y exige que cada uno aparezca en alguna línea de fuentes, ya sea con el mismo texto o con el mismo valor. El
+texto del guion queda limpio para la voz. "por ciento" no cuenta como el número 100, y "un", "a" y "one" solo se unen
+a palabras de escala ("un millón", "a thousand"), no a "un nueve por ciento".
+
+**D50 · Gancho estrictamente en 2.ª persona**, como dice el plan. Los ganchos de `hielo-flota` (es y en) se
+reescribieron: "¿Te has preguntado por qué flota el hielo, si es agua sólida?" y "Have you ever wondered why ice
+floats, if it's just solid water?". El inglés se alargó hasta 144 palabras para llegar al mínimo de 140. Se
+regeneraron su voz y su alineación: 2,83 y 2,89 palabras/s; 25,8 % y 25,3 % de silencio.
+
+**D51 · Formato de `02_SCRIPT.md` y detalles del validador:**
+- Formato: `lang:`, `## Guion` (o `## Script`) con líneas `[rol] texto`, y `## Fuentes` (o `## Sources`).
+- El validador comprueba también que los roles vayan en orden.
+- Para "llamada a la acción", acepta verbos de CTA ("comenta", "envíaselo", "sígueme", "tell me"...) o una pregunta.
+- La 2.ª persona se detecta por pronombres y posesivos, por verbos frecuentes en 2.ª persona y por pretéritos en
+  `-aste`/`-iste`.
+- Las pruebas están en `pipeline/tests/test_validate_script.py`: 3 guiones que pasan y 4 rotos, cada uno con un solo
+  defecto.
+
+**D52 · Ejemplos de guion.** Hay 3 temas originales en los dos idiomas: `hielo-flota` (es/en), `cielo-azul` (es/en) y
+`dedos-arrugados` (es/en). `cielo-azul` y `dedos-arrugados` solo tienen guion (sin `story.json` ni voz). Sus fuentes
+son de memoria (Wikipedia y Kareklas et al. 2013), no verificadas en esta sesión: revísalas si se publican.
