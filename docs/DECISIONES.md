@@ -250,3 +250,24 @@ regeneraron su voz y su alineación: 2,83 y 2,89 palabras/s; 25,8 % y 25,3 % de 
 **D52 · Ejemplos de guion.** Hay 3 temas originales en los dos idiomas: `hielo-flota` (es/en), `cielo-azul` (es/en) y
 `dedos-arrugados` (es/en). `cielo-azul` y `dedos-arrugados` solo tienen guion (sin `story.json` ni voz). Sus fuentes
 son de memoria (Wikipedia y Kareklas et al. 2013), no verificadas en esta sesión: revísalas si se publican.
+
+## F7 · Orquestador (decididas contigo en el chat)
+
+**D53 · `init` explícito.** `make_short.py init --id X --from <carpeta>` copia `01_research.md`, `02_SCRIPT.md` y
+`05_story.json` a `out/X/`. Después todo trabaja solo con `out/X/`.
+
+**D54 · Escala.** El render final usa 1.0 por defecto (`--scale` para cambiarlo). La prueba de F7 se hizo a 0,5 con
+un solo proceso: 6,6 minutos para 1.573 frames, mucho más rápido que los renders por CLI de F2. El bundle único y
+`renderMedia` ayudan.
+
+**D55 · Detalles técnicos del orquestador:**
+- **Checkpoints:** una etapa se salta si su artefacto existe y es más nuevo que sus entradas.
+- **`--force <etapas>`:** rehace las etapas indicadas y borra antes su artefacto, para que un render forzado e
+  interrumpido no deje el video viejo pasando por bueno. Lo destapó la prueba de interrupción.
+- **Render interrumpido:** escribe `.part.mp4` y solo renombra al terminar.
+- **Bundle:** `studio/scripts/job.mjs` empaqueta una vez en `C:/remotion-tmp/bundle` y lo reutiliza mientras no
+  cambie el código (sello por hash de `src/`, `public/` y `templates/`).
+- **Voz antes del story:** sale del guion (una línea = un beat `b01`, `b02`…). Si ya existe `05_story.json`, se toma
+  de él la voz elegida. `validate_story` comprueba que los textos del story y del guion coincidan línea a línea.
+- **QA básico:** `10_qa.md` mide duraciones, loudness del final y `measure.py`. El QA de estilo completo es de F8.
+- **`catalog.json`:** los overlays numéricos llevan `"numeric": true`, y `catalog.ts` lo cruza con el registro.

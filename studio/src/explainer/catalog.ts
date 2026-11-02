@@ -33,7 +33,10 @@ export const catalogErrors = (): string[] => {
     if (d.kind !== h.kind) errs.push(`heroes.${id}.kind: código ${d.kind}, catálogo ${h.kind}`);
     errs.push(...sameSet(`heroes.${id}.poses`, d.poses, h.poses), ...sameSet(`heroes.${id}.anchors`, Object.keys(d.anchors), h.anchors));
   }
-  for (const [id, o] of Object.entries(c.overlays)) if (OVERLAYS[id] && OVERLAYS[id].anchored !== o.anchored) errs.push(`overlays.${id}.anchored no coincide`);
+  for (const [id, o] of Object.entries(c.overlays) as [string, { anchored: boolean; numeric?: boolean }][]) {
+    if (OVERLAYS[id] && OVERLAYS[id].anchored !== o.anchored) errs.push(`overlays.${id}.anchored no coincide`);
+    if (OVERLAYS[id] && OVERLAYS[id].numeric !== Boolean(o.numeric)) errs.push(`overlays.${id}.numeric no coincide`);
+  }
   return errs;
 };
 
