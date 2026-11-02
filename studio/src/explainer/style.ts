@@ -78,9 +78,10 @@ export const OVERLAY = {
 
 // ---------------- cámara (§3.7) ----------------
 export const CAMERA = {
-  pushMin: 0.12, pushDefault: 0.2, pushMax: 0.3, // %/frame; 0,12 deja margen sobre el umbral de measure.py (0,08)
+  pushMin: 0.25, pushDefault: 0.25, pushMax: 0.3, // %/frame; measure.py lee 25–75 % del valor y su umbral es 0,08 (D31)
   driftMaxPx: 1.5,                               // px/frame a 1080
-  baseDriftPx: 0.6,                              // deriva suave que llevan todos los planos (px/frame a 1080)
+  baseDriftPx: 1.0,                              // deriva suave que llevan todos los planos (px/frame a 1080) (D31)
+  baseDriftMaxPx: 150,                           // recorrido máximo de esa deriva en un beat
   glideFrames: 30,                               // smootherstep de 18–40 f
   zoomThroughFrames: 24,                         // 20–30 f
   crossfadeFrames: 12,

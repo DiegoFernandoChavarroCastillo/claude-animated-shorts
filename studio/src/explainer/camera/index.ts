@@ -29,17 +29,25 @@ const baseParams = (bt: BeatT): Params => {
 /** preset del beat en el frame local t (0 = inicio del beat; puede ser < 0 o > dur durante transiciones) */
 const preset = (bt: BeatT, t: number, p: Params): Params => {
   const c = bt.beat.scene.camera, dur = bt.b - bt.a, q = { ...p };
+  // empuje y derivas se centran en la mitad del beat: el encuadre base (objeto al 55 % del ancho) cae a la mitad,
+  // el plano empieza algo más abierto y termina algo más cerrado sin que el objeto se salga del cuadro (D31)
+  const tc = t - dur / 2;
   // deriva lateral de fondo en todos los planos (alterna por beat): el empuje solo no lo ve el flujo óptico (§3.2)
   const wpp = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width;
-  if (c.preset !== "drift") q.lat += (bt.i % 2 ? -1 : 1) * Math.min(CAMERA.baseDriftPx, 90 / dur) * t * wpp;
-  const push = (rate: number) => { q.dist *= Math.exp((-Math.max(rate, CAMERA.pushMin) / 100) * t); };
+  if (c.preset !== "drift") q.lat += (bt.i % 2 ? -1 : 1) * Math.min(CAMERA.baseDriftPx, CAMERA.baseDriftMaxPx / dur) * tc * wpp;
+  // el empuje cierra el campo (zoom de lente) en vez de acercar la cámara: así escala todo el cuadro, fondo incluido,
+  // y no solo el objeto; con un dolly el fondo lejano casi no cambia y el plano se mide como quieto (D31)
+  const push = (rate: number) => {
+    const k = Math.exp((-Math.max(rate, CAMERA.pushMin) / 100) * tc);
+    q.fov = 2 * (180 / Math.PI) * Math.atan(Math.tan(rad(q.fov / 2)) * k);
+  };
   switch (c.preset) {
     case "push_in": push(c.rate ?? CAMERA.pushDefault); break;
     case "drift": {
       const worldPerPx = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width;
       // 1,2 px/frame (<= 1,5 del plan) pero como mucho ~130 px en todo el beat, para que el objeto no se salga
       const speed = Math.min(1.2, 130 / dur);
-      q.lat += (c.dir === "left" ? -1 : 1) * speed * t * worldPerPx; push(CAMERA.pushMin); break;
+      q.lat += (c.dir === "left" ? -1 : 1) * speed * tc * worldPerPx; push(CAMERA.pushMin); break;
     }
     case "orbit_slow": q.az += (c.deg ?? 12) * (t / dur); push(CAMERA.pushMin); break;
     case "glide": {

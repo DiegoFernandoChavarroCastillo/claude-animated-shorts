@@ -129,3 +129,15 @@ ajustados para no pasar del ~95 % del ancho; `Waveform` e `IntervalMarks` dentro
 partículas más grandes; marco de `LineBoard` en lavanda en vez de marrón. **No aplicado (para el bucle de
 look-match):** puntos violetas en los picos de la onda, `Gauge` con la etiqueta en píldora y escalar todavía más
 (×1,8 pedido). Tras los arreglos no volví a pasar el verificador; la galería sigue sin invadir la banda (36/36).
+
+**D31 · Movimiento mínimo de cámara medible (cierre del criterio de F2).** El render completo con la deriva de D18
+dio una racha quieta de 207 frames: el objeto se movía, pero el fondo lejano (la mayor parte del cuadro) casi no, y
+`measure.py` promedia todo el frame. Probé una órbita alrededor del objeto y la descarté (el suelo delante del
+objeto y el fondo se mueven en sentidos opuestos y se anulan en la media). Lo que se queda:
+- El empuje es un **zoom de lente** (se cierra el campo), no un acercamiento de cámara: escala todo el cuadro.
+- `pushMin` sube de 0,12 a **0,25 %/frame** (rango del plan 0,1–0,3); `measure.py` lee entre el 25 y el 75 % del valor.
+- La deriva base sube de 0,6 a **1,0 px/frame**, con un tope de 150 px por beat (antes 90 px).
+- Empuje y derivas se **centran en la mitad del beat**: el plano empieza algo más abierto y termina algo más
+  cerrado; sin esto, al final de un beat largo el objeto se salía del cuadro.
+- El suelo provisional lleva una subrejilla tenue y motas con semilla fija (amplía D29: los entornos de F4 también
+  necesitan textura fina en suelo y fondo).

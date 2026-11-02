@@ -31,10 +31,18 @@ const skyMaterial = (light: LightName) => {
   });
 };
 
-const gridTexture = (bg: string, line: string) => {
+const gridTexture = (bg: string, line: string, r: () => number) => {
   const cv = document.createElement("canvas"); cv.width = cv.height = 512;
   const g = cv.getContext("2d")!;
   g.fillStyle = bg; g.fillRect(0, 0, 512, 512);
+  // subrejilla tenue y motas deterministas: sin ellas el suelo entre líneas es liso y el flujo óptico no ve el
+  // movimiento de cámara (D29, D31)
+  const fine = "#" + new THREE.Color(line).lerp(new THREE.Color(1, 1, 1), 0.3).getHexString();
+  g.strokeStyle = fine; g.globalAlpha = 0.3; g.lineWidth = 2;
+  for (let k = 16; k < 512; k += 16) if (k % 64) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k, 512); g.moveTo(0, k); g.lineTo(512, k); g.stroke(); }
+  g.fillStyle = fine;
+  for (let n = 0; n < 1400; n++) { g.globalAlpha = 0.25 + 0.45 * r(); const sz = 3 + 5 * r(); g.fillRect(r() * 512, r() * 512, sz, sz); }
+  g.globalAlpha = 1;
   g.strokeStyle = line; g.lineWidth = 5;
   for (let k = 0; k <= 512; k += 64) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k, 512); g.moveTo(0, k); g.lineTo(512, k); g.stroke(); }
   const t = new THREE.CanvasTexture(cv);
@@ -58,7 +66,7 @@ const provisional = (variant: "interior" | "tech" | "exterior"): EnvDef["build"]
   const sky = new THREE.Mesh(track(new THREE.SphereGeometry(900, 48, 24)), track(skyMaterial(light)));
   sky.frustumCulled = false; sky.renderOrder = -1; root.add(sky);
   // suelo con rejilla (da textura al flujo óptico y parallax al desenfoque)
-  const tex = track(gridTexture(L.ground, L.groundLine));
+  const tex = track(gridTexture(L.ground, L.groundLine, r));
   const ground = new THREE.Mesh(track(new THREE.PlaneGeometry(800, 800)), track(new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0 })));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; root.add(ground);
   // siluetas de fondo (edificios, muebles, bloques) detrás del objeto protagonista
