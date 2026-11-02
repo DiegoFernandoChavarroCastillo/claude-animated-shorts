@@ -1,0 +1,174 @@
+{
+ "words": [
+  {
+   "w": "¿Sabías",
+   "start": 0.15,
+   "end": 0.472,
+   "beat": "b01"
+  },
+  {
+   "w": "que",
+   "start": 0.502,
+   "end": 0.698,
+   "beat": "b01"
+  },
+  {
+   "w": "tu",
+   "start": 0.728,
+   "end": 0.882,
+   "beat": "b01"
+  },
+  {
+   "w": "cerebro",
+   "start": 0.912,
+   "end": 1.276,
+   "beat": "b01"
+  },
+  {
+   "w": "produce",
+   "start": 1.306,
+   "end": 1.67,
+   "beat": "b01"
+  },
+  {
+   "w": "electricidad?",
+   "start": 1.7,
+   "end": 2.274,
+   "beat": "b01"
+  },
+  {
+   "w": "Un",
+   "start": 2.724,
+   "end": 2.878,
+   "beat": "b01"
+  },
+  {
+   "w": "electroencefalograma",
+   "start": 2.908,
+   "end": 3.818,
+   "beat": "b01"
+  },
+  {
+   "w": "la",
+   "start": 3.848,
+   "end": 4.002,
+   "beat": "b01"
+  },
+  {
+   "w": "mide",
+   "start": 4.032,
+   "end": 4.27,
+   "beat": "b01"
+  },
+  {
+   "w": "desde",
+   "start": 4.3,
+   "end": 4.58,
+   "beat": "b01"
+  },
+  {
+   "w": "fuera,",
+   "start": 4.61,
+   "end": 4.89,
+   "beat": "b01"
+  },
+  {
+   "w": "con",
+   "start": 5.11,
+   "end": 5.306,
+   "beat": "b01"
+  },
+  {
+   "w": "sensores",
+   "start": 5.336,
+   "end": 5.742,
+   "beat": "b01"
+  },
+  {
+   "w": "en",
+   "start": 5.772,
+   "end": 5.926,
+   "beat": "b01"
+  },
+  {
+   "w": "la",
+   "start": 5.956,
+   "end": 6.11,
+   "beat": "b01"
+  },
+  {
+   "w": "piel.",
+   "start": 6.14,
+   "end": 6.378,
+   "beat": "b01"
+  },
+  {
+   "w": "Cada",
+   "start": 6.828,
+   "end": 7.066,
+   "beat": "b01"
+  },
+  {
+   "w": "neurona",
+   "start": 7.096,
+   "end": 7.46,
+   "beat": "b01"
+  },
+  {
+   "w": "dispara",
+   "start": 7.49,
+   "end": 7.854,
+   "beat": "b01"
+  },
+  {
+   "w": "pulsos",
+   "start": 7.884,
+   "end": 8.206,
+   "beat": "b01"
+  },
+  {
+   "w": "diminutos,",
+   "start": 8.236,
+   "end": 8.684,
+   "beat": "b01"
+  },
+  {
+   "w": "y",
+   "start": 8.904,
+   "end": 9.016,
+   "beat": "b01"
+  },
+  {
+   "w": "juntas",
+   "start": 9.046,
+   "end": 9.368,
+   "beat": "b01"
+  },
+  {
+   "w": "forman",
+   "start": 9.398,
+   "end": 9.72,
+   "beat": "b01"
+  },
+  {
+   "w": "ondas.",
+   "start": 9.75,
+   "end": 10.03,
+   "beat": "b01"
+  }
+ ],
+ "keywords": [
+  {
+   "index": 5,
+   "variant": "box"
+  },
+  {
+   "index": 7,
+   "variant": "box"
+  },
+  {
+   "index": 25,
+   "variant": "accent"
+  }
+ ]
+}

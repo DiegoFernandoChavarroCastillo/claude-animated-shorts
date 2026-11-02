@@ -1,0 +1,186 @@
+{
+ "words": [
+  {
+   "w": "Did",
+   "start": 0.15,
+   "end": 0.346,
+   "beat": "b01"
+  },
+  {
+   "w": "you",
+   "start": 0.376,
+   "end": 0.572,
+   "beat": "b01"
+  },
+  {
+   "w": "know",
+   "start": 0.602,
+   "end": 0.84,
+   "beat": "b01"
+  },
+  {
+   "w": "your",
+   "start": 0.87,
+   "end": 1.108,
+   "beat": "b01"
+  },
+  {
+   "w": "brain",
+   "start": 1.138,
+   "end": 1.418,
+   "beat": "b01"
+  },
+  {
+   "w": "makes",
+   "start": 1.448,
+   "end": 1.728,
+   "beat": "b01"
+  },
+  {
+   "w": "electricity?",
+   "start": 1.758,
+   "end": 2.29,
+   "beat": "b01"
+  },
+  {
+   "w": "An",
+   "start": 2.74,
+   "end": 2.894,
+   "beat": "b01"
+  },
+  {
+   "w": "electroencephalogram",
+   "start": 2.924,
+   "end": 3.834,
+   "beat": "b01"
+  },
+  {
+   "w": "measures",
+   "start": 3.864,
+   "end": 4.27,
+   "beat": "b01"
+  },
+  {
+   "w": "it",
+   "start": 4.3,
+   "end": 4.454,
+   "beat": "b01"
+  },
+  {
+   "w": "from",
+   "start": 4.484,
+   "end": 4.722,
+   "beat": "b01"
+  },
+  {
+   "w": "outside,",
+   "start": 4.752,
+   "end": 5.116,
+   "beat": "b01"
+  },
+  {
+   "w": "using",
+   "start": 5.336,
+   "end": 5.616,
+   "beat": "b01"
+  },
+  {
+   "w": "sensors",
+   "start": 5.646,
+   "end": 6.01,
+   "beat": "b01"
+  },
+  {
+   "w": "on",
+   "start": 6.04,
+   "end": 6.194,
+   "beat": "b01"
+  },
+  {
+   "w": "your",
+   "start": 6.224,
+   "end": 6.462,
+   "beat": "b01"
+  },
+  {
+   "w": "skin.",
+   "start": 6.492,
+   "end": 6.73,
+   "beat": "b01"
+  },
+  {
+   "w": "Each",
+   "start": 7.18,
+   "end": 7.418,
+   "beat": "b01"
+  },
+  {
+   "w": "neuron",
+   "start": 7.448,
+   "end": 7.77,
+   "beat": "b01"
+  },
+  {
+   "w": "fires",
+   "start": 7.8,
+   "end": 8.08,
+   "beat": "b01"
+  },
+  {
+   "w": "tiny",
+   "start": 8.11,
+   "end": 8.348,
+   "beat": "b01"
+  },
+  {
+   "w": "pulses,",
+   "start": 8.378,
+   "end": 8.7,
+   "beat": "b01"
+  },
+  {
+   "w": "and",
+   "start": 8.92,
+   "end": 9.116,
+   "beat": "b01"
+  },
+  {
+   "w": "together",
+   "start": 9.146,
+   "end": 9.552,
+   "beat": "b01"
+  },
+  {
+   "w": "they",
+   "start": 9.582,
+   "end": 9.82,
+   "beat": "b01"
+  },
+  {
+   "w": "form",
+   "start": 9.85,
+   "end": 10.088,
+   "beat": "b01"
+  },
+  {
+   "w": "waves.",
+   "start": 10.118,
+   "end": 10.398,
+   "beat": "b01"
+  }
+ ],
+ "keywords": [
+  {
+   "index": 6,
+   "variant": "box"
+  },
+  {
+   "index": 8,
+   "variant": "box"
+  },
+  {
+   "index": 27,
+   "variant": "accent"
+  }
+ ]
+}
