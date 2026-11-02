@@ -1,0 +1,125 @@
+# Progreso del estilo "Explainer 2.5D"
+
+Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D55).
+
+## Reglas del proyecto (acordadas con Diego)
+
+- No se pasa a la fase siguiente sin que Diego escriba **"aprobado"**.
+- Al terminar cada fase: qué se hizo, cada criterio de aceptación (cumple / no cumple), stills y **commit**.
+- Desde F5, **cada decisión técnica se consulta en el chat** (con la opción recomendada primero) y se anota después
+  en `docs/DECISIONES.md`.
+- **Nunca** se sube a Git nada de `references_local/` ni de `out/`.
+
+## Fases
+
+| Fase | Qué | Estado | Commit |
+|---|---|---|---|
+| F0 | Inventario (`docs/INVENTARIO.md`), entorno, proyecto Remotion en `studio/` | ✅ aprobada | `82761c0` |
+| F1 | Tokens de estilo y subtítulos palabra por palabra con caja de selección | ✅ aprobada (verificador 8/10) | `7d92956` |
+| F2 | Composición `Explainer` desde `story.json` + `words.json`, cámara y transiciones | ✅ aprobada (ver pendiente 1) | `b62c5f1`, `debbb1f` |
+| F3 | 18 overlays de datos (`overlays/`) | ✅ aprobada | `b62c5f1` |
+| F4 | 8 entornos, 11 objetos protagonistas, tarjetas pintadas, culling, `catalog.json` | ✅ aprobada (verificador 6,5/10) | `a4e1fb7` |
+| F5 | Voz local (Kokoro/Piper), alineación (Whisper medium), SFX, mezcla a −14 LUFS | ✅ aprobada | `109fedd` |
+| F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
+| F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
+| F8 | QA de estilo (`style_check`, hojas lado a lado, bucle de look-match §9) | ⏳ siguiente | — |
+| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | pendiente | — |
+| F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
+
+## Cómo se hace un video hoy
+
+1. Claude escribe `out/<id>/01_research.md`, `02_SCRIPT.md` (con `templates/prompts/script_es.md` o `script_en.md`)
+   y `05_story.json` (con `templates/prompts/story_es_en.md` y `templates/catalog.json`).
+   Para probar con el ejemplo: `make_short.py init --id hielo-flota --from templates\examples\hielo-flota`.
+2. Todo lo demás es determinista:
+
+   ```powershell
+   .venv\Scripts\python.exe pipeline\make_short.py all --id hielo-flota            # 1080x1920
+   .venv\Scripts\python.exe pipeline\make_short.py all --id hielo-flota --scale 0.5 # prueba rápida
+   ```
+
+   Etapas: validate-script → tts → align → validate-story → stills → render → mix → mux → qa. Cada una deja su
+   artefacto en `out/<id>/` y se salta si ya está al día; `--force render,mix` rehace etapas concretas; `--review`
+   para tras validar el guion. Registro en `out/<id>/log.md`.
+3. Tiempos medidos en este PC (Intel HD 530, 7,8 GB de RAM), video de 52 s a escala 0,5: voz 2 min,
+   alineación 1,4 min, stills 1,6 min, render 6,6 min, mezcla + unión + QA ~1 min.
+
+## Mapa del código
+
+| Ruta | Qué es |
+|---|---|
+| `studio/src/explainer/style.ts` | Única fuente del look: paleta, subtítulos, overlays, cámara, luces, post |
+| `studio/src/explainer/Explainer.tsx`, `Scene.tsx`, `timeline.ts`, `camera/` | Compositor, escena 3D por beat, tiempos y cámara |
+| `studio/src/explainer/captions/` | Subtítulos palabra a palabra y caja de la palabra clave |
+| `studio/src/explainer/overlays/` | 18 overlays de datos + `registry.ts` |
+| `studio/src/explainer/envs/` | 8 entornos (uno por archivo), `kit.ts` (piezas comunes) y `cull.ts` (culling) |
+| `studio/src/explainer/heroes/` | Objetos protagonistas: `primitive/`, `cards.ts`, `gltf.ts` (sin modelos aún), `LICENSES.md` |
+| `studio/src/explainer/chars/` | API `Pen` portada y personajes pintados (perro, persona) |
+| `studio/src/explainer/catalog.ts` + `templates/catalog.json` | Catálogo para el LLM, cruzado con el código |
+| `studio/src/explainer/dev/`, `EnvGallery`, `CullTest`, `KitGallery`, `CaptionTest` | Composiciones de prueba |
+| `studio/scripts/job.mjs` | Bundle único + stills + render para el orquestador |
+| `studio/scripts/stills.mjs` | Stills sueltos para desarrollo |
+| `pipeline/` | Python: `make_short.py`, `voice.py`, `tts/`, `align.py`, `sfx_plan.py`, `sfx_synth.py`, `mix.py`, `validate_script.py`, `validate_story.py`, `qa_basic.py`, `setup_audio.ps1`, `tests/` |
+| `templates/prompts/` | Prompts de guion (es/en) y de `story.json` |
+| `templates/examples/` | `hielo-flota` (es) y `hielo-flota-en` completos; `cielo-azul` y `dedos-arrugados` solo guion |
+| `tools/medicion/` | Medición de referencias y renders (`measure.py`, `audio.py`…) |
+| `tools/qa/` | Comprobaciones de subtítulos y de la banda reservada |
+
+## Continuar en otro PC (Windows)
+
+1. **Programas** (PowerShell como administrador):
+
+   ```powershell
+   winget install --id Git.Git -e
+   winget install --id Python.Python.3.11 -e
+   winget install --id OpenJS.NodeJS.LTS -e
+   winget install --id Gyan.FFmpeg -e
+   winget install --id Microsoft.VCRedist.2015+.x64 -e   # sin él, PyTorch (Kokoro) no carga
+   winget install --id UB-Mannheim.TesseractOCR -e       # solo para tools/medicion (OCR de subtítulos)
+   git config --global core.longpaths true
+   ```
+
+   Para Tesseract en español, ver los comandos al principio de `requirements.txt`. Abre una terminal nueva para que
+   se actualice el PATH.
+2. **Código**:
+
+   ```powershell
+   git clone https://github.com/DiegoFernandoChavarroCastillo/claude-animated-shorts
+   cd claude-animated-shorts
+   git checkout estilo-explainer
+   ```
+
+3. **Python y audio**: `powershell -ExecutionPolicy Bypass -File pipeline\setup_audio.ps1`. Crea `.venv` con
+   `py -3.11`, instala `requirements.txt` y comprueba PyTorch, ffmpeg, espeak-ng y Kokoro. Si falta algo, dice qué.
+4. **Remotion**: `cd studio`, luego `npm ci` y `npx tsc --noEmit` (debe salir sin errores).
+5. **Referencias** (no van en Git): copia a mano la carpeta `references_local/videos/` (video1–video5.mp4) del PC
+   original. R1 = `video5`, R3 = `video4` (D1). Hacen falta para el QA de estilo (F8) y el look-match.
+6. **Descargas automáticas la primera vez** (necesitan internet): modelo de Kokoro (~330 MB), Whisper medium
+   (~1,5 GB) y voces de Piper (2 × 60 MB, solo si se usa Piper). Se guardan en la caché de Hugging Face del usuario
+   y en `pipeline/models/` (no versionada).
+7. **Temporales de Remotion**: por defecto `C:/remotion-tmp` (variable `REMOTION_TMP`). Cada bundle copia
+   `public/`; el bundle de `make_short` se reutiliza mientras no cambie el código.
+8. **Prueba de humo**:
+
+   ```powershell
+   .venv\Scripts\python.exe pipeline\tests\test_validate_script.py
+   .venv\Scripts\python.exe pipeline\make_short.py init --id hielo-flota --from templates\examples\hielo-flota
+   .venv\Scripts\python.exe pipeline\make_short.py all --id hielo-flota --scale 0.5
+   ```
+
+## Pendientes conocidos (para F8 o antes)
+
+1. **Plano quieto más largo: 178 frames** (máximo 45) en el video completo de `hielo-flota`. Es el criterio de F2
+   que se dejó para medir en el video completo (D31). Falla en las escenas oscuras de `interior_neutro` con luz
+   `noche`, donde el flujo óptico no ve el movimiento de cámara. Se trata en F8.
+2. **Color del ejemplo**: luma mediana 0,12 (mínimo 0,14) y saturación 0,67 (máximo 0,62). El ejemplo pasa casi
+   todo el tiempo en escenas de noche y tech. Se trata en F8.
+3. **Voz algo robótica** y **sin pausas en las comas**: Kokoro apenas pausa en las comas y la voz sale seca. Hay
+   opciones propuestas en el chat del 2 de noviembre; pendiente de decidir.
+4. **Modelos glTF CC0 (Kenney)**: el cargador está hecho pero sin probar con un modelo real. Descargar 2–3 modelos,
+   probarlos y actualizar `heroes/LICENSES.md` (corrección de D33).
+5. **Fuentes no verificadas**: las de los guiones de ejemplo se escribieron de memoria (D14, D52). Hay que
+   verificarlas antes de publicar.
+6. **R2 (el perro) no está** en `references_local/` (D1); `video3` es otro short.
+7. **Overlays de F3**: tras los arreglos al 5/10 del verificador no se volvió a pasar el verificador (D28).

@@ -1,5 +1,7 @@
 # Claude Animated Shorts
 
+> **Rama `estilo-explainer`**: en curso, un nuevo estilo de shorts explicativos (es/en, voz local, subtítulos palabra a palabra). Estado, cómo continuar en otro PC y pendientes: [`docs/PROGRESO.md`](docs/PROGRESO.md). Plan: [`docs/PLAN_ESTILO_EXPLAINER.md`](docs/PLAN_ESTILO_EXPLAINER.md).
+
 The free Claude skill from the video **"How to Make Viral Animated Shorts Using Claude (Full Workflow)"**.
 
 It makes 55-70 s vertical animated story shorts: 2D characters in a colourful 3D world, with ink outlines, a painted town, lens blur, gliding cameras, a march score and sound effects. Everything is rendered with three.js inside Remotion on your own PC, with no AI video generator.
