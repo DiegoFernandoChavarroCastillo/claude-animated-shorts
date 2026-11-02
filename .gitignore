@@ -1,0 +1,11 @@
+# Material de referencia de otras cuentas: solo estudio local, nunca al repo (plan §11)
+references_local/
+# Salidas de render y audio por video
+out/
+*.wav
+*.mp4
+# Entornos y dependencias
+.venv/
+node_modules/
+__pycache__/
+_cache/

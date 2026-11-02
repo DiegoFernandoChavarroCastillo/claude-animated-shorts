@@ -1,0 +1,247 @@
+{
+ "avion_modo_avion": {
+  "frames": 1606,
+  "luma_p5": 0.187,
+  "luma_med": 0.366,
+  "luma_p95": 0.725,
+  "sat_med": 0.409,
+  "sat_p90": 0.601,
+  "palette": [
+   [
+    "#1d1c34",
+    19.7
+   ],
+   [
+    "#99646f",
+    15.8
+   ],
+   [
+    "#423c33",
+    15.1
+   ],
+   [
+    "#695937",
+    12.4
+   ],
+   [
+    "#c08f8f",
+    11.6
+   ],
+   [
+    "#614976",
+    11.1
+   ],
+   [
+    "#f38a6e",
+    7.9
+   ],
+   [
+    "#e5d9ca",
+    6.4
+   ]
+  ],
+  "pct_frames_moving": 75.7,
+  "pan_px_per_frame_med_at720": 1.12,
+  "pan_p95": 7.25,
+  "zoom_in_pct_frames": 35.3,
+  "zoom_out_pct_frames": 9.5,
+  "zoom_rate_median_pct_per_frame_when_zooming": 0.248,
+  "longest_static_run_frames": 46
+ },
+ "perro_olor": {
+  "frames": 1834,
+  "luma_p5": 0.094,
+  "luma_med": 0.212,
+  "luma_p95": 0.669,
+  "sat_med": 0.51,
+  "sat_p90": 0.682,
+  "palette": [
+   [
+    "#0f1833",
+    28.5
+   ],
+   [
+    "#29231e",
+    24.0
+   ],
+   [
+    "#4f3926",
+    16.0
+   ],
+   [
+    "#6e583e",
+    11.1
+   ],
+   [
+    "#9e7c56",
+    9.3
+   ],
+   [
+    "#dcae6d",
+    4.7
+   ],
+   [
+    "#e9e3c8",
+    3.9
+   ],
+   [
+    "#9ca5af",
+    2.4
+   ]
+  ],
+  "pct_frames_moving": 33.0,
+  "pan_px_per_frame_med_at720": 0.16,
+  "pan_p95": 2.33,
+  "zoom_in_pct_frames": 6.2,
+  "zoom_out_pct_frames": 5.9,
+  "zoom_rate_median_pct_per_frame_when_zooming": 0.323,
+  "longest_static_run_frames": 83
+ },
+ "reloj_sueno": {
+  "frames": 3723,
+  "luma_p5": 0.051,
+  "luma_med": 0.148,
+  "luma_p95": 0.47,
+  "sat_med": 0.611,
+  "sat_p90": 0.686,
+  "palette": [
+   [
+    "#161232",
+    37.4
+   ],
+   [
+    "#0a091a",
+    22.4
+   ],
+   [
+    "#272758",
+    14.4
+   ],
+   [
+    "#494877",
+    8.8
+   ],
+   [
+    "#777dac",
+    5.4
+   ],
+   [
+    "#8b4548",
+    4.6
+   ],
+   [
+    "#c0796d",
+    3.6
+   ],
+   [
+    "#c9bbc3",
+    3.3
+   ]
+  ],
+  "pct_frames_moving": 38.2,
+  "pan_px_per_frame_med_at720": 0.17,
+  "pan_p95": 1.09,
+  "zoom_in_pct_frames": 1.1,
+  "zoom_out_pct_frames": 2.1,
+  "zoom_rate_median_pct_per_frame_when_zooming": 0.106,
+  "longest_static_run_frames": 96
+ },
+ "secuestro_escape": {
+  "frames": 1754,
+  "luma_p5": 0.074,
+  "luma_med": 0.185,
+  "luma_p95": 0.507,
+  "sat_med": 0.499,
+  "sat_p90": 0.621,
+  "palette": [
+   [
+    "#120e0d",
+    30.7
+   ],
+   [
+    "#212136",
+    22.9
+   ],
+   [
+    "#472e26",
+    17.3
+   ],
+   [
+    "#704a35",
+    9.1
+   ],
+   [
+    "#3b557a",
+    8.3
+   ],
+   [
+    "#ede1c6",
+    6.2
+   ],
+   [
+    "#c47f53",
+    3.4
+   ],
+   [
+    "#838e9c",
+    2.2
+   ]
+  ],
+  "pct_frames_moving": 60.7,
+  "pan_px_per_frame_med_at720": 0.55,
+  "pan_p95": 6.09,
+  "zoom_in_pct_frames": 18.6,
+  "zoom_out_pct_frames": 11.9,
+  "zoom_rate_median_pct_per_frame_when_zooming": 0.257,
+  "longest_static_run_frames": 45
+ },
+ "claude_noche": {
+  "frames": 1647,
+  "luma_p5": 0.058,
+  "luma_med": 0.203,
+  "luma_p95": 0.695,
+  "sat_med": 0.338,
+  "sat_p90": 0.59,
+  "palette": [
+   [
+    "#28222e",
+    32.8
+   ],
+   [
+    "#2c3353",
+    17.0
+   ],
+   [
+    "#131017",
+    16.4
+   ],
+   [
+    "#543833",
+    11.5
+   ],
+   [
+    "#f2f0f2",
+    10.8
+   ],
+   [
+    "#906150",
+    5.0
+   ],
+   [
+    "#496ac8",
+    3.7
+   ],
+   [
+    "#b4aeb2",
+    2.7
+   ]
+  ],
+  "pct_frames_moving": 19.2,
+  "pan_px_per_frame_med_at720": 0.06,
+  "pan_p95": 2.22,
+  "zoom_in_pct_frames": 4.7,
+  "zoom_out_pct_frames": 2.7,
+  "zoom_rate_median_pct_per_frame_when_zooming": 0.252,
+  "longest_static_run_frames": 116
+ }
+}

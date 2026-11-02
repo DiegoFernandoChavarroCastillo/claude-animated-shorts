@@ -1,0 +1,25 @@
+# Dependencias de Python del proyecto (probadas con Python 3.11.9 en Windows).
+#
+# Instalación en otro PC (PowerShell, desde la raíz del repo):
+#   py -3.11 -m venv .venv
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt
+#
+# Programas del sistema que pip no instala (PowerShell como administrador):
+#   winget install --id OpenJS.NodeJS.LTS -e        # Node + npm (proyecto Remotion en studio/)
+#   winget install --id Gyan.FFmpeg -e              # ffmpeg / ffprobe en el PATH
+#   winget install --id UB-Mannheim.TesseractOCR -e # OCR de subtítulos (tools/medicion)
+#   Invoke-WebRequest https://github.com/tesseract-ocr/tessdata_fast/raw/main/spa.traineddata -OutFile "C:\Program Files\Tesseract-OCR\tessdata\spa.traineddata"
+#   [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Tesseract-OCR", "User")
+#   git config --global core.longpaths true
+# Las dependencias de Node se instalan aparte con `npm install` dentro de studio/.
+
+# audio (templates/audio: DSP, SFX, mezcla)
+numpy==2.4.6
+scipy==1.17.1
+# QA y hojas lado a lado (templates/scripts)
+pillow==13.0.0
+# medición de referencias (tools/medicion)
+opencv-python==5.0.0.93
+pytesseract==0.3.13
+
+# Se añadirán en la Fase 5 (TTS y alineación): kokoro, soundfile, faster-whisper
