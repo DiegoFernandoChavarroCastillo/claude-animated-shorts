@@ -379,3 +379,14 @@ Arreglo general en la etapa de voz (`pipeline/tts/prosody.py`):
 - Probado y descartado: remuestreo de velocidad variable. Suma una subida a una curva que sigue cayendo; para que el
   final suba de verdad haría falta ~+9 semitonos, y eso deforma el timbre.
 - Diego eligió +3 de oído frente a +5. Test: `pipeline/tests/test_prosody.py`.
+
+**D62 · Tratamiento de voz y pausas en las comas (muestras A/B, decidido con Diego, 2 nov).** Cuatro muestras del
+mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y D = B + C. **Diego eligió C.**
+- **Tratamiento** (`pipeline/voice_fx.py`, aplicado en `mix.py`; `03_voice.wav` queda limpio para la alineación):
+  paso alto a 80 Hz, −2 dB a 300 Hz, +2,5 dB a 3,5 kHz, +1,5 dB por encima de 10 kHz, compresión 2,5:1 (envolvente
+  RMS de 10 ms) y sala pequeña (RT60 0,35 s) al 12 %.
+- **Pausas en las comas: descartadas.** Kokoro solo pausa en algunas comas (120 ms en "congelarse,", nada en
+  "hielo,"), pero el resultado sin pausas extra sonó mejor. La técnica queda documentada por si se retoma: la coma
+  se sitúa en el audio con `pred_dur` de Kokoro (600 muestras por unidad a 24 kHz).
+- **Efecto en `hielo-flota`:** QA OK. El % de silencio baja de 24,1 a **22,8** (rango 22–32) porque la cola de la
+  sala y la compresión rellenan los huecos. Si un guion queda por debajo de 22, bajar `ROOM_WET` de 0,12 a 0,08.

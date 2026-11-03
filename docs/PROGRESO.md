@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D61).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D62).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -24,7 +24,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D61).
 | F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
 | F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ aprobada (look-match 6,8/10; además D60 ll/y y D61 entonación de pregunta) | `59d85d9`, `938ab0e`, `d0f99b4`, `553546c`, `b945b3b` |
-| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ siguiente (antes: muestras A/B de voz, pendiente 3) | — |
+| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ siguiente | — |
 | F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
 
 ## Cómo se hace un video hoy
@@ -61,7 +61,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D61).
 | `studio/src/explainer/dev/`, `EnvGallery`, `CullTest`, `KitGallery`, `CaptionTest` | Composiciones de prueba |
 | `studio/scripts/job.mjs` | Bundle único + stills + render para el orquestador |
 | `studio/scripts/stills.mjs` | Stills sueltos para desarrollo |
-| `pipeline/` | Python: `make_short.py`, `voice.py`, `tts/`, `align.py`, `sfx_plan.py`, `sfx_synth.py`, `mix.py`, `validate_script.py`, `validate_story.py`, `qa_basic.py`, `setup_audio.ps1`, `tests/` |
+| `pipeline/` | Python: `make_short.py`, `voice.py`, `tts/` (con `prosody.py`), `voice_fx.py`, `align.py`, `sfx_plan.py`, `sfx_synth.py`, `mix.py`, `validate_script.py`, `validate_story.py`, `qa_basic.py`, `setup_audio.ps1`, `tests/` |
 | `templates/prompts/` | Prompts de guion (es/en) y de `story.json` |
 | `templates/examples/` | `hielo-flota` (es) y `hielo-flota-en` completos; `cielo-azul` y `dedos-arrugados` solo guion |
 | `tools/medicion/` | Medición de referencias y renders (`measure.py`, `audio.py`…) |
@@ -137,8 +137,8 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
 1. ~~Plano quieto más largo~~ y ~~color del ejemplo~~: resueltos en F8 (D58, D59). `hielo-flota` da QA OK.
 2. **Bloqueantes de F10 según el verificador** (`docs/LOOKMATCH.md`): moléculas en red hexagonal visible y corte del
    lago con el hielo flotando arriba (`heroes/primitive/science.ts`).
-3. **Voz algo robótica** y **sin pausas en las comas**: Kokoro apenas pausa en las comas y la voz sale seca. Hay
-   Decidido con Diego (2 nov): después de F8, preparar muestras A/B con (a) silencio explícito de ~200 ms en cada coma y (b) tratamiento de voz (presencia, compresión ligera, un poco de sala). Descartados por ahora: velocidad/mezcla de voces y otro motor.
+3. ~~Voz algo robótica~~: resuelto con el tratamiento de voz de D62 (muestras A/B). Las pausas extra en las comas
+   se descartaron de oído. Vigilar el % de silencio (22,8 en `hielo-flota`, mínimo 22).
 4. **Modelos glTF CC0 (Kenney)**: el cargador está hecho pero sin probar con un modelo real. Descargar 2–3 modelos,
    probarlos y actualizar `heroes/LICENSES.md` (corrección de D33).
 5. **Fuentes no verificadas**: las de los guiones de ejemplo se escribieron de memoria (D14, D52). Hay que

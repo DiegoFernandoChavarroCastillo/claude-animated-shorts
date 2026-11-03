@@ -2,6 +2,7 @@
 
     python pipeline\\mix.py --voice <03_voice.wav> --plan <08_sfx_plan.json> --out <08_mix.wav>
 
+- La voz pasa antes por voice_fx.treat (ecualización, compresión ligera y sala, D62).
 - La mezcla dura exactamente lo que el video (duration_s del plan de SFX): la voz se rellena con silencio.
 - Cada SFX se nivela a (loudness de la voz − 10 dB + ajuste por tipo): entre 8 y 12 dB por debajo de la voz.
 - Master a −14 LUFS integrados con el limitador del repo original (4x sobremuestreo, look-ahead) a −1,2 dBTP, para
@@ -22,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PipelineError, load_json, run_main, write_json  # noqa: E402
 from dsp import SR, dbg, integrated, momentary_max, ns, read_wav, true_peak, write_wav  # noqa: E402
 from sfx_synth import REL_DB, SFX  # noqa: E402
+from voice_fx import treat  # noqa: E402
 
 TARGET_LUFS = -14.0
 CEIL_DBTP = -1.2
@@ -81,7 +83,8 @@ def main():
     if sr != SR:
         raise PipelineError(f"la voz debe estar a {SR} Hz (está a {sr})")
     v = np.atleast_2d(v)
-    v = np.vstack([v, v]) if v.shape[0] == 1 else v
+    v = treat(v.mean(0))[None, :]                     # tratamiento de voz (voice_fx.py, D62)
+    v = np.vstack([v, v])
     n = ns(plan["duration_s"])
     if v.shape[1] > n:
         raise PipelineError(f"la voz ({v.shape[1] / SR:.2f} s) es más larga que el video ({plan['duration_s']} s)")
