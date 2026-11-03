@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D60).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D61).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -105,6 +105,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D60).
 
    ```powershell
    .venv\Scripts\python.exe pipeline\tests\test_validate_script.py
+   .venv\Scripts\python.exe pipeline\tests\test_prosody.py
    .venv\Scripts\python.exe pipeline\make_short.py init --id hielo-flota --from templates\examples\hielo-flota
    .venv\Scripts\python.exe pipeline\make_short.py all --id hielo-flota --scale 0.5
    ```

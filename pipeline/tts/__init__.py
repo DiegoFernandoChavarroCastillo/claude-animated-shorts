@@ -3,6 +3,7 @@
     synth(text_segments, lang, voice, speed, pauses_ms, out_wav) -> out_wav
 
 Se sintetiza frase a frase y se concatenan las frases con silencios explícitos, así las pausas del guion son exactas.
+Las preguntas de sí/no reciben un final ascendente (tts/prosody.py, D61), porque Kokoro las termina bajando.
 Salida: WAV mono 48 kHz 24 bits. Además se escribe <out>.segments.json con el inicio y fin de cada frase (lo usa la
 alineación para no confundir frases repetidas).
 
@@ -17,6 +18,7 @@ import numpy as np
 from scipy import signal
 
 from common import SR, LEAD_MS, PipelineError, write_json
+from tts.prosody import is_yes_no_question, question_rise
 
 ENGINES = {"kokoro": "tts.kokoro_tts", "piper": "tts.piper_tts", "chatterbox": "tts.chatterbox_tts"}
 
@@ -56,7 +58,10 @@ def synth(text_segments: list[str], lang: str, voice: str, speed: float, pauses_
     parts, meta, t = [np.zeros(int(SR * LEAD_MS / 1000))], [], LEAD_MS / 1000
     for i, (txt, pause) in enumerate(zip(text_segments, pauses_ms)):
         x, sr = gen.say(txt, speed)
-        x = to48k(trim(np.asarray(x, dtype=np.float64), sr), sr)
+        x = trim(np.asarray(x, dtype=np.float64), sr)
+        if is_yes_no_question(txt, lang):
+            x = question_rise(x, sr)
+        x = to48k(x, sr)
         meta.append({**(seg_meta[i] if seg_meta else {}), "text": txt, "start": round(t, 3), "end": round(t + len(x) / SR, 3)})
         parts += [x, np.zeros(int(SR * pause / 1000))]
         t += len(x) / SR + pause / 1000

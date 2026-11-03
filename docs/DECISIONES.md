@@ -366,3 +366,16 @@ evitarlo desde el guion:
 - `templates/prompts/script_es.md`, regla 8: pide al guionista que no junte esos sonidos y da ejemplos de cómo
   reescribir.
 - Ejemplo `hielo-flota`: "una botella llena" pasa a "una botella con agua" (147 palabras).
+
+**D61 · Entonación de pregunta (decidido con Diego, 2 nov).** Kokoro termina igual una pregunta que una afirmación:
+en `em_alex`, `em_santa`, `ef_dora` y en inglés (`am_fenrir`), el tono cae 4–5 semitonos al final, también con "?".
+Los fonemas sí llevan el "?", pero el modelo no lo usa, y reescribir la frase no lo arregla (probadas 5 variantes).
+Arreglo general en la etapa de voz (`pipeline/tts/prosody.py`):
+- En las **preguntas de sí/no** se reescribe la curva de tono de los últimos ~0,5 s sonoros, que sube de forma
+  gradual hasta **+3 semitonos**. Se hace con el vocoder WORLD (`pyworld`, nueva dependencia), que cambia el tono sin
+  cambiar el timbre. Solo se vuelve a sintetizar ese tramo, empalmado con un fundido de 20 ms.
+- Las preguntas con interrogativo ("¿Qué…?", "¿Por qué…?", "What…?", aunque empiecen por "y"/"and") no se tocan:
+  al hablar también terminan bajando.
+- Probado y descartado: remuestreo de velocidad variable. Suma una subida a una curva que sigue cayendo; para que el
+  final suba de verdad haría falta ~+9 semitonos, y eso deforma el timbre.
+- Diego eligió +3 de oído frente a +5. Test: `pipeline/tests/test_prosody.py`.

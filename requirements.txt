@@ -30,4 +30,5 @@ torch==2.15.0
 soundfile==0.14.0
 faster-whisper==1.2.1
 piper-tts==1.8.0
+pyworld==0.3.5        # entonación de pregunta (pipeline/tts/prosody.py, D61)
 # chatterbox-tts: opcional, solo con GPU NVIDIA (no instalado)
