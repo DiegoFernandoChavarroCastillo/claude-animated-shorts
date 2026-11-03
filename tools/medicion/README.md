@@ -16,6 +16,8 @@ para el OCR, Tesseract con el idioma `spa` (en Windows: instalador UB-Mannheim, 
 
 `medidas_referencias.json` tiene la salida de `measure.py` para los 5 videos.
 
+`tools/qa/style_check.py` reúne todo esto en un solo informe con los rangos objetivo (F8, D57).
+
 Métricas que se miden directamente con ffmpeg (PowerShell; en bash cambia `Select-String` por `grep`):
 
 ```powershell

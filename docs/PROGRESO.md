@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D56).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D57).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -65,7 +65,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D56).
 | `templates/prompts/` | Prompts de guion (es/en) y de `story.json` |
 | `templates/examples/` | `hielo-flota` (es) y `hielo-flota-en` completos; `cielo-azul` y `dedos-arrugados` solo guion |
 | `tools/medicion/` | Medición de referencias y renders (`measure.py`, `audio.py`…) |
-| `tools/qa/` | Comprobaciones de subtítulos y de la banda reservada |
+| `tools/qa/` | `style_check.py` (QA de estilo y OCR de subtítulos, F8), comprobaciones de subtítulos y de la banda reservada |
 
 ## Continuar en otro PC (Windows)
 

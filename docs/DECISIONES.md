@@ -285,3 +285,26 @@ núcleos, 11 GB de RAM, sin GPU NVIDIA usable). Cambios:
   `measure.py` (luma mediana 0,116, saturación 0,677, racha estática 178) y la misma mezcla (−14,0 LUFS). Lo que se
   mida en F8 en este PC vale para el otro. Tiempos: voz 36 s, alineación 2,9 min (con la descarga de Whisper),
   stills 41 s, render 5,2 min.
+
+## F8 · QA de estilo (decididas contigo en el chat)
+
+**D57 · Calibración de `style_check.py`.**
+- **Referencias:** como R2 (el perro) no está, cuentan **R1 (`video5`), R3 (`video4`) y R4 (`video2`)**. R5 (`video1`)
+  se mide pero es informativa: tiene 3 fallos (saturación 0,34, racha 116, silencio 4,6 % por la música). El 80 %
+  se cuenta por video: al menos 8 de 9 métricas.
+- **Palabras/s en las referencias:** se transcriben una vez con Whisper medium. El resultado se guarda en
+  `references_local/medidas/<video>.words.json` (no versionado). En nuestros videos se usa `04_words.json`.
+- **Rangos ajustados** (el resto, como el plan):
+  - Cortes duros: **≤3,5/min** (antes ≤3). R4 tiene 3 cortes de escena reales en 58,6 s (3,07/min).
+  - Palabras/s: **2,5–3,0** (antes 2,6–3,0). Whisper da 2,57 en R3. El plan decía 2,8–2,9, medido de otra forma.
+- **Resultado:** R1 8/9 (falla cortes: 7,8/min), R3 9/9 y R4 8/9 (falla silencio: 1,5 %, por la música de fondo).
+  Informe en `references_local/medidas/style_refs.md`.
+- **Subtítulos por OCR:** los frames se sacan de `07_video.mp4` con ffmpeg (uno por bloque, a mitad de su última
+  palabra), sin volver a renderizar. Los bloques se calculan con las reglas de `chunker.ts`, salvo el corte por
+  ancho, que necesita medir la fuente. Por eso solo se busca la **última palabra** de cada bloque, que siempre está
+  visible. Se pasa con ≥90 % de palabras encontradas y el 100 % de las encontradas dentro de la banda del 12–30 %.
+  Tesseract `--psm 6` sobre una máscara del texto claro: en `hielo-flota` lee 29 de 31 bloques, y los 2 fallos son
+  errores del OCR (el subtítulo está bien). `--psm 11` lee peor (28 de 31).
+- **Integración:** la etapa `qa` de `make_short.py` escribe un único `10_qa.md` con el QA básico, el de estilo y el
+  de subtítulos. Si algo sale ❌, avisa pero no falla. La regla de diseño de F2 (racha ≤45 frames, D31) sigue como fila
+  propia del QA básico. Es más estricta que el rango de las referencias (≤100).

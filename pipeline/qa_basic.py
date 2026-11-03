@@ -1,19 +1,23 @@
-"""QA básico del video final (etapa 10, F7). F8 añade el QA de estilo completo (style_check, hojas lado a lado).
+"""QA del video final (etapa 10): QA básico (F7) más el de estilo y subtítulos (F8, tools/qa/style_check.py).
 
-Comprueba: duración de video, audio y final; loudness y true peak del final (ffmpeg ebur128); movimiento, luz y color
-con tools/medicion/measure.py frente a los objetivos del plan (§3.6, §3.7).
+Básico: duración de video, audio y final, desfase y true peak del final (ffmpeg ebur128), y la regla de diseño de F2
+para la racha estática (≤45 frames, más estricta que el rango de las referencias, D31). Estilo: luz, color, cortes,
+frames únicos, loudness, silencio y palabras/s frente a los rangos calibrados con las referencias (D57), y OCR de
+la última palabra de cada bloque de subtítulo sobre 07_video.mp4.
 """
 from __future__ import annotations
 
-import json
 import re
 import subprocess
 import sys
 from pathlib import Path
 
-from common import ROOT
+from common import ROOT, load_json
 
-TARGETS = {"luma_p5": (0.05, 0.19), "luma_med": (0.14, 0.38), "sat_med": (0.40, 0.62), "longest_static_run_frames": (0, 45)}
+sys.path.insert(0, str(ROOT / "tools/qa"))
+from style_check import check  # noqa: E402
+
+DESIGN_STATIC_MAX = 45   # regla de F2 (D31): todos nuestros planos llevan empuje
 
 
 def probe_dur(p: Path) -> float:
@@ -43,14 +47,12 @@ def report(d: Path) -> tuple[bool, str]:
     row("duración video (s)", round(v, 2))
     row("duración mezcla (s)", round(a, 2))
     row("diferencia video − audio (s)", round(abs(v - a), 3), (0, 0.1))
-    I, P = ebur(d / "09_final.mp4")
-    row("loudness final (LUFS)", I, (-14.5, -13.5))
+    _, P = ebur(d / "09_final.mp4")
     row("true peak final (dBTP)", P, (-99, -1.0))
-    r = subprocess.run([sys.executable, str(ROOT / "tools/medicion/measure.py"), str(d / "07_video.mp4")], capture_output=True, text=True)
-    m = json.loads(r.stdout.strip().splitlines()[-1]) if r.returncode == 0 and r.stdout.strip() else {}
-    for k, rng in TARGETS.items():
-        row(f"measure.py {k}", m.get(k), rng)
-    row("measure.py % frames con movimiento", m.get("pct_frames_moving"))
-    md = ["# QA básico", "", f"Resultado: **{'OK' if ok else 'con avisos'}** (F8 añadirá el QA de estilo completo).", "",
-          "| medida | valor | objetivo | |", "|---|---|---|---|", *rows, ""]
+    lang = load_json(d / "05_story.json")["meta"]["lang"]
+    style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4")
+    row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, DESIGN_STATIC_MAX))
+    ok &= style_ok
+    md = ["# QA", "", f"Resultado: **{'OK' if ok else 'con avisos'}**.", "", "## Básico", "",
+          "| medida | valor | objetivo | |", "|---|---|---|---|", *rows, "", "## Estilo y subtítulos", "", *style_md]
     return ok, "\n".join(md)

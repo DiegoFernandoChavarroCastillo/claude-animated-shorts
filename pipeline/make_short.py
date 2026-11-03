@@ -213,8 +213,8 @@ class Run:
             from qa_basic import report
             ok, md = report(self.d)
             out.write_text(md, encoding="utf-8")
-            return "QA básico " + ("OK" if ok else "con avisos")
-        self.stage("qa", out, [self.p("09_final.mp4")], run)
+            return "QA " + ("OK" if ok else "con avisos")
+        self.stage("qa", out, [self.p("09_final.mp4"), self.p("07_video.mp4"), self.p("04_words.json")], run)
 
     def run(self, stages: list[str]):
         fns = {"validate-script": self.validate_script, "tts": self.tts, "align": self.align, "validate-story": self.validate_story,
