@@ -28,6 +28,10 @@ local (Kokoro), así que el texto se lee **tal cual**: escribe como se habla.
 5. Nada de relleno ni de "¡hola!": la primera palabra ya es el gancho.
 6. Nada inventado: si un dato no está en `01_research.md` con fuente, no va.
 7. Un tono cercano y concreto, de tú a tú.
+8. **Evita juntar dos sonidos "ll"/"y" seguidos** entre palabras: una palabra que termina en "lla", "llo", "ya",
+   "yo"… seguida de otra que empieza por "ll" o "y" + vocal ("una botella llena", "la calle llena", "su playa ya…").
+   La voz alarga la primera palabra y hace una pausa como si hubiera una coma ("botella, llena"). Reescribe para
+   separarlas: "una botella con agua", "la calle repleta". El validador lo marca como error.
 
 ## Formato de salida: `02_SCRIPT.md`
 

@@ -29,7 +29,7 @@
     },
     {
       "id": "b03", "role": "mechanism",
-      "text": "Al congelarse, el agua se expande cerca de un nueve por ciento. Por eso una botella llena revienta en el congelador.",
+      "text": "Al congelarse, el agua se expande cerca de un nueve por ciento. Por eso una botella con agua revienta en el congelador.",
       "keyword": "expande",
       "scene": { "env": "tech_oscuro", "light": "tech", "hero": { "kind": "primitive", "asset": "moleculas_agua", "pose": "red_hexagonal" },
                  "camera": { "preset": "orbit_slow", "deg": 12 }, "dof": 8 },

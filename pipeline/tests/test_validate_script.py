@@ -18,6 +18,7 @@ BAD = {
     "bad_numero_sin_fuente.md": "número sin fuente: 'trescientos millones'",
     "bad_sin_giro.md": "falta el beat de giro",
     "bad_frase_larga.md": "frase de",
+    "bad_ll_seguidas.md": "'calle llena': dos sonidos ll/y seguidos",
 }
 
 

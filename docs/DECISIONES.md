@@ -355,3 +355,14 @@ y encuadres del ejemplo; las moléculas, el lago y el acento quedan para F10.
 - **Probado y descartado:** órbita en b06, porque el suelo y el fondo se anulan en el flujo óptico (como en D31) y
   dejaba una racha de 86 frames. Tope de escala ×1,8 y niebla 7–45 m, que borraban la textura que necesita el
   detector.
+
+**D60 · Dos sonidos ll/y seguidos (decidido con Diego, 2 nov).** En "una botella llena", Kokoro alargaba "botella"
+(0,56 s) y dejaba un silencio de ~120 ms antes de "llena", y sonaba como si hubiera una coma. Los fonemas que recibe
+el modelo no llevan pausa (`βotˈeʎa ʎˈena`): es la prosodia de Kokoro al juntar dos sílabas con "ll". Se decidió
+evitarlo desde el guion:
+- `validate_script.py` (solo `es`) da **error** cuando una palabra termina en "ll"/"y" + vocal y la siguiente, sin
+  puntuación en medio, empieza por "ll" o "y" + vocal. La "y" sola (conjunción), "muy" u "hoy" no cuentan. Test nuevo:
+  `bad_ll_seguidas.md`.
+- `templates/prompts/script_es.md`, regla 8: pide al guionista que no junte esos sonidos y da ejemplos de cómo
+  reescribir.
+- Ejemplo `hielo-flota`: "una botella llena" pasa a "una botella con agua" (147 palabras).

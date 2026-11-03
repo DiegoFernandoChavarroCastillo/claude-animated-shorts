@@ -19,7 +19,8 @@ Formato del guion:
     - nueve por ciento: https://...      (el número tal como aparece en el guion, en cifras o en palabras)
 
 Comprueba: 140–185 palabras; gancho ≤12 palabras y en 2.ª persona; hay beats de tensión y de giro; la última línea
-es una llamada a la acción; cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras.
+es una llamada a la acción; cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras;
+en español, no hay dos palabras seguidas unidas por el mismo sonido ll/y ("botella llena").
 Sale con código 0 si pasa y 1 si falla, con un motivo por línea.
 """
 from __future__ import annotations
@@ -36,6 +37,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import run_main  # noqa: E402
 
 ROLES = ("hook", "tension", "mechanism", "layer2", "twist", "cta")
+# Kokoro (es) alarga la palabra y mete una pausa cuando una termina en sílaba ll/y + vocal y la siguiente empieza por
+# ll/y + vocal: "botella llena" suena "botella, llena" (2 nov, tras F8). "y" sola (conjunción), "muy" u "hoy" no cuentan.
+LL_END = re.compile(r"(ll|y)[aeiouáéíóú]$", re.I)
+LL_START = re.compile(r"^(ll|y[aeiouáéíóú])", re.I)
 WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 140, 185, 12, 22
 
 
@@ -192,6 +197,13 @@ def parse(md: str) -> Script:
     return s
 
 
+def ll_clashes(text: str) -> list[str]:
+    """pares de palabras seguidas, sin puntuación entre ellas, unidas por el sonido ll/y"""
+    ws = text.split()
+    return [f"{a} {b}" for a, b in zip(ws, ws[1:])
+            if re.fullmatch(r"[\wáéíóúüñ]+", a, re.I) and LL_END.search(a) and LL_START.match(b.strip("¿¡\"«“"))]
+
+
 def sentences(text: str) -> list[str]:
     return [p for p in re.split(r"(?<=[.?!…:;])\s+", text) if p.strip()]
 
@@ -237,6 +249,11 @@ def validate(md: str) -> tuple[list[str], dict]:
             n = len(sent.split())
             if n > SENTENCE_MAX:
                 errs.append(f"frase de {n} palabras (máximo {SENTENCE_MAX}): {sent[:60]!r}…")
+    if lang == "es":
+        for r, t in s.lines:
+            for pair in ll_clashes(t):
+                errs.append(f"'{pair}': dos sonidos ll/y seguidos; la voz hace una pausa como si hubiera una coma. "
+                            f"Reescribe para separarlos ([{r}] {t[:50]}…)")
     stats = {"lang": lang, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources)}
     return errs, stats
 
