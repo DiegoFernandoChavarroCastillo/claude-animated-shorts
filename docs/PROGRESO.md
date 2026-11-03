@@ -23,8 +23,8 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D61).
 | F5 | Voz local (Kokoro/Piper), alineación (Whisper medium), SFX, mezcla a −14 LUFS | ✅ aprobada | `109fedd` |
 | F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
-| F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ criterios cumplidos; falta "aprobado" | `59d85d9`, `938ab0e`, ver git log |
-| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | pendiente | — |
+| F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ aprobada (look-match 6,8/10; además D60 ll/y y D61 entonación de pregunta) | `59d85d9`, `938ab0e`, `d0f99b4`, `553546c`, `b945b3b` |
+| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ siguiente (antes: muestras A/B de voz, pendiente 3) | — |
 | F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
 
 ## Cómo se hace un video hoy
