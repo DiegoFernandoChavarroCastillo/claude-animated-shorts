@@ -15,7 +15,13 @@ export const interior_neutro: EnvDef = {
     const panel = canvasTex(ctx, 1024, 512, (g) => {
       g.fillStyle = hex(wallCol); g.fillRect(0, 0, 1024, 512);
       // paneles verticales con juntas suaves y grano fino
-      for (let k = 0; k < 8; k++) { const gr = g.createLinearGradient(k * 128, 0, k * 128 + 128, 0); gr.addColorStop(0, "rgba(0,0,0,0.12)"); gr.addColorStop(0.1, "rgba(255,255,255,0.04)"); gr.addColorStop(1, "rgba(0,0,0,0.04)"); g.fillStyle = gr; g.fillRect(k * 128, 0, 128, 512); }
+      // juntas marcadas y un tono distinto por panel: dan al fondo estructura que se lee al moverse la cámara (D58)
+      for (let k = 0; k < 8; k++) {
+        const gr = g.createLinearGradient(k * 128, 0, k * 128 + 128, 0); gr.addColorStop(0, "rgba(0,0,0,0.32)"); gr.addColorStop(0.06, "rgba(255,255,255,0.07)"); gr.addColorStop(1, "rgba(0,0,0,0.06)");
+        g.fillStyle = gr; g.fillRect(k * 128, 0, 128, 512);
+        g.fillStyle = r() < 0.5 ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)"; g.fillRect(k * 128, 0, 128, 512);
+      }
+      g.fillStyle = "rgba(0,0,0,0.22)"; g.fillRect(0, 150, 1024, 4); g.fillRect(0, 380, 1024, 4);
       speckle(g, r, 1024, 512, "#000000", 1600, 1, 3, 0.03, 0.1);
       speckle(g, r, 1024, 512, PALETTE.light.cream, 900, 1, 3, 0.03, 0.08);
     });
@@ -43,8 +49,15 @@ export const interior_neutro: EnvDef = {
       const ring = new THREE.Mesh(ringGeo, ringMat); ring.position.set(x, 4.2, z); ring.lookAt(0, 4.2, 6); ring.translateZ(0.02); ctx.root.add(ring);
     }
     // suelo liso con brillo suave
-    const floorTex = canvasTex(ctx, 512, 512, (g) => { g.fillStyle = hex(wallCol, 0.85, PALETTE.mid.lavender, 0.25); g.fillRect(0, 0, 512, 512); speckle(g, r, 512, 512, "#000000", 1500, 1, 3, 0.04, 0.12); speckle(g, r, 512, 512, PALETTE.mid.lavender, 800, 1, 3, 0.04, 0.12); });
-    floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping; floorTex.repeat.set(20, 20);
+    // baldosas grandes (~1,25 m) con juntas y tono variable: el suelo liso no daba nada que seguir al flujo óptico (D58)
+    const floorTex = canvasTex(ctx, 512, 512, (g) => {
+      g.fillStyle = hex(wallCol, 0.85, PALETTE.mid.lavender, 0.25); g.fillRect(0, 0, 512, 512);
+      for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { g.fillStyle = r() < 0.5 ? "rgba(0,0,0,0.10)" : "rgba(255,255,255,0.05)"; g.fillRect(x * 128, y * 128, 128, 128); }
+      speckle(g, r, 512, 512, "#000000", 1500, 1, 3, 0.04, 0.12); speckle(g, r, 512, 512, PALETTE.mid.lavender, 800, 1, 3, 0.04, 0.12);
+      g.fillStyle = "rgba(0,0,0,0.35)"; for (let k = 0; k < 4; k++) { g.fillRect(k * 128, 0, 3, 512); g.fillRect(0, k * 128, 512, 3); }
+      g.fillStyle = "rgba(255,255,255,0.06)"; for (let k = 0; k < 4; k++) { g.fillRect(k * 128 + 3, 0, 2, 512); g.fillRect(0, k * 128 + 3, 512, 2); }
+    });
+    floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping; floorTex.repeat.set(40, 40);
     ground(ctx, matte(ctx, { map: floorTex }), 200);
     // luz cálida que entra por las ventanillas y motas de polvo
     const win = new THREE.DirectionalLight(L.sky.horizon, 0.7); win.position.set(0, 5, -10); ctx.root.add(win);

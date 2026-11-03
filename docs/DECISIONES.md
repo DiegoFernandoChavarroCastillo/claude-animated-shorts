@@ -308,3 +308,26 @@ núcleos, 11 GB de RAM, sin GPU NVIDIA usable). Cambios:
 - **Integración:** la etapa `qa` de `make_short.py` escribe un único `10_qa.md` con el QA básico, el de estilo y el
   de subtítulos. Si algo sale ❌, avisa pero no falla. La regla de diseño de F2 (racha ≤45 frames, D31) sigue como fila
   propia del QA básico. Es más estricta que el rango de las referencias (≤100).
+
+**D58 · Arreglo de los pendientes 1 (racha estática) y 2 (color).** Diagnóstico beat a beat: todos los beats salían
+igual de oscuros (luma 0,11–0,14) y saturados (0,58–0,72), así que el problema estaba en el grade y no en un entorno.
+Los azules muy oscuros tienen saturación HSV alta aunque se vean apagados (`#171633` = 0,73). La cámara sí se movía,
+pero el flujo óptico no lo veía: el suelo y la pared lisos dan flujo ~0 y bajan la media de todo el cuadro. Arreglos:
+- **Grade (`world/grade.ts`):** curva con tonos medios más altos (p. ej. noche: 0,1 → 0,195, 0,25 → 0,37,
+  0,5 → 0,59) y menos saturación en sombras (noche 0,82 → 0,55; tech 0,66 → 0,48). Medido sobre 14 stills:
+  luma 0,124 → 0,181, saturación 0,668 → 0,538.
+- **Otros entornos (`EnvGallery`, un still por entorno y luz):** con el grade original pasaban 4 de 12 combinaciones
+  (luma 0,14–0,38 y saturación 0,40–0,62). La primera subida de `atardecer` sobreexponía los entornos claros, así que
+  `atardecer` solo sube las sombras y `dorado` conserva más saturación en sombras. Ahora pasan **8 de 12**. Siguen
+  fuera `cielo_atardecer` (0,49, ya lo estaba), `tech_oscuro` con `noche` (0,086 / 0,75, ya lo estaba),
+  `vista_aerea` (0,380, en el borde) y `calle_noche_bokeh` (saturación 0,38). Con un grade por luz no se pueden
+  cuadrar todos: queda pendiente permitir un ajuste de grade por entorno.
+- **Textura en `interior_neutro`:** baldosas de ~1,25 m con juntas y tono variable en el suelo, y juntas de panel
+  marcadas en la pared. El zoom que lee el detector en b02 sube de 0,03 a 0,10 %/frame (umbral 0,08).
+- **Cámara:** `pushMin` sube de 0,25 a **0,30 %/frame** (el máximo del plan). La deriva del preset `drift` pasa de
+  como mucho 130 px a **200 px por beat** (±100). El objeto, al 55 % del ancho, tiene ~240 px de margen a cada lado.
+- **Resultado en `hielo-flota`** (escala 0,5): luma mediana 0,181, saturación 0,52, racha estática **30 frames**
+  (cumple la regla de diseño de ≤45, D31). `style_check` da 9/9.
+- **OCR de subtítulos:** con el fondo más claro, la máscara "claro y poco saturado" cogía bordes de ventanillas y
+  nubes, y el acierto bajó al 71 %. Ahora la máscara solo coge casi blanco (la última palabra es la activa, `#FFFFFF`)
+  dentro de la franja del 8–36 % del alto. Resultado: 100 % de 31 bloques, todos dentro de la banda.

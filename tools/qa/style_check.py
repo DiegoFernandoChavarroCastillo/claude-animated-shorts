@@ -47,6 +47,7 @@ SENTENCE_END = re.compile(r"[.?!…][\"»”)]*$")
 SOFT_END = re.compile(r"[,;:][\"»”)]*$")
 MIN_WORDS, MAX_WORDS, BREAK_PAUSE_S = 3, 6, 0.35
 BAND = (0.12, 0.30)
+OCR_ROWS = (0.08, 0.36)   # franja que se pasa al OCR: la banda con margen, para ver si algo se sale
 TESS_LANG = {"es": "spa", "en": "eng"}
 
 
@@ -165,15 +166,17 @@ def caption_ocr(video: Path, words: list[dict], lang: str) -> dict:
                 res.append({"frame": f, "expect": words[b[-1]]["w"], "found": False, "band": False, "ocr": "(sin frame)"}); continue
             im = np.asarray(Image.open(png).convert("RGB")).astype(np.int16)
             h, wd = im.shape[:2]
-            top = im[: int(h * 0.45)]
-            # texto = claro y poco saturado (blanco activo, gris dicho), negro sobre blanco para Tesseract
+            # solo la franja de los subtítulos, y solo casi blanco: la última palabra es la activa (#FFFFFF, 700).
+            # Con "claro y poco saturado" entraban bordes de ventanillas y nubes en escenas claras (D58)
+            y0 = int(h * OCR_ROWS[0])
+            top = im[y0: int(h * OCR_ROWS[1])]
             mx, mn = top.max(-1), top.min(-1)
-            ink = (mx > 110) & (mx - mn < 45)
+            ink = (mn > 190) & (mx - mn < 40)
             img = Image.fromarray(np.where(ink, 0, 255).astype(np.uint8))
             k2 = max(1, round(1080 / wd))
             img = img.resize((wd * k2, top.shape[0] * k2), Image.LANCZOS)
             d = pytesseract.image_to_data(img, lang=TESS_LANG.get(lang, "spa"), config="--psm 6", output_type=pytesseract.Output.DICT)
-            toks = [(norm(t), (d["top"][i] + d["height"][i] / 2) / k2 / h) for i, t in enumerate(d["text"]) if norm(t)]
+            toks = [(norm(t), (y0 + (d["top"][i] + d["height"][i] / 2) / k2) / h) for i, t in enumerate(d["text"]) if norm(t)]
             target = norm(words[b[-1]]["w"])
             best = max(toks, key=lambda t: difflib.SequenceMatcher(None, t[0], target).ratio(), default=None)
             found = best is not None and difflib.SequenceMatcher(None, best[0], target).ratio() >= 0.75

@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D57).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D58).
 
 ## Reglas del proyecto (acordadas con Diego)
 

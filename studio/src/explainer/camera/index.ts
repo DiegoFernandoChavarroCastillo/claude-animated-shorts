@@ -47,8 +47,9 @@ const preset = (bt: BeatT, t: number, p: Params): Params => {
     case "push_in": push(c.rate ?? CAMERA.pushDefault); break;
     case "drift": {
       const worldPerPx = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width;
-      // 1,2 px/frame (<= 1,5 del plan) pero como mucho ~130 px en todo el beat, para que el objeto no se salga
-      const speed = Math.min(1.2, 130 / dur);
+      // 1,2 px/frame (<= 1,5 del plan) pero como mucho ~200 px en todo el beat (±100): el objeto, al 55 % del ancho,
+      // tiene ~240 px de margen a cada lado (D58)
+      const speed = Math.min(1.2, 200 / dur);
       q.lat += (c.dir === "left" ? -1 : 1) * speed * tc * worldPerPx; push(CAMERA.pushMin); break;
     }
     case "orbit_slow": q.az += (c.deg ?? 12) * (t / dur); push(CAMERA.pushMin); break;

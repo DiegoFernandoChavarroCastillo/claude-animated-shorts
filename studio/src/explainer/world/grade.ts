@@ -122,10 +122,10 @@ export class GradeEffect extends Effect {
 // tech y noche salían a 0,78–0,89 de saturación (cian y marino puros) y el atardecer, demasiado claro (mediana ~0,5).
 import type { LightName } from "../style";
 export const GRADES: Record<LightName, GradeParams> = {
-  atardecer: { ky: [0.035, 0.115, 0.245, 0.46, 0.71, 0.88, 1], sat: [0.95, 0.95, 0.92], tintS: [0.03, 0.012], tintM: [0, 0.006], tintH: [-0.01, 0.02], vig: [0.22, 0.42] },
-  noche: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [0.82, 0.82, 0.9], tintS: [0.035, -0.004], tintM: [0.008, 0], tintH: [0, 0], vig: [0.2, 0.42] },
-  dorado: { ky: [0.035, 0.12, 0.26, 0.49, 0.75, 0.91, 1], sat: [0.92, 0.95, 1.0], tintS: [0.03, 0], tintM: [0, 0.004], tintH: [-0.015, 0.015], vig: [0.2, 0.42] },
-  tech: { ky: [0.04, 0.125, 0.265, 0.5, 0.76, 0.91, 1], sat: [0.66, 0.64, 0.8], tintS: [0.025, 0.012], tintM: [0.006, 0.006], tintH: [0, 0], vig: [0.24, 0.4] },
+  atardecer: { ky: [0.045, 0.17, 0.305, 0.455, 0.7, 0.875, 1], sat: [0.6, 0.9, 0.92], tintS: [0.03, 0.012], tintM: [0, 0.006], tintH: [-0.01, 0.02], vig: [0.22, 0.42] },
+  noche: { ky: [0.05, 0.195, 0.37, 0.59, 0.8, 0.92, 1], sat: [0.55, 0.76, 0.9], tintS: [0.035, -0.004], tintM: [0.008, 0], tintH: [0, 0], vig: [0.2, 0.42] },
+  dorado: { ky: [0.045, 0.19, 0.365, 0.58, 0.79, 0.92, 1], sat: [0.78, 0.95, 1.0], tintS: [0.03, 0], tintM: [0, 0.004], tintH: [-0.015, 0.015], vig: [0.2, 0.42] },
+  tech: { ky: [0.05, 0.195, 0.37, 0.59, 0.8, 0.92, 1], sat: [0.48, 0.58, 0.8], tintS: [0.025, 0.012], tintM: [0.006, 0.006], tintH: [0, 0], vig: [0.24, 0.4] },
 };
 /** aplica el preset de una luz (solo toca los uniforms cuando cambia) */
 export function gradeFor(fx: GradeEffect, light: LightName) {
