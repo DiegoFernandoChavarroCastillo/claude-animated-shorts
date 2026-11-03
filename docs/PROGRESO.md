@@ -24,8 +24,8 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D63).
 | F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
 | F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ aprobada (look-match 6,8/10; además D60 ll/y y D61 entonación de pregunta) | `59d85d9`, `938ab0e`, `d0f99b4`, `553546c`, `b945b3b` |
-| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ en curso: falta la prueba en una sesión nueva | — |
-| F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
+| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ✅ aprobada (prueba en sesión nueva: `celular-calienta`) | `eb21221` |
+| F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 
 ## Cómo se hace un video hoy
 
@@ -152,3 +152,9 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
    Queda para F10 (D58, D59).
 9. **Mejoras no bloqueantes del look-match**: b07 termina en el mismo encuadre que b01, movimiento poco visible dentro
    de b04, mancha de luz de noche más fuerte, profundidad en el suelo, color de acento y más etiquetas de dato.
+10. **Prueba de F9 (`celular-calienta`, 2 nov):** en una sesión nueva, el prompt "Hazme un short de curiosidad de un
+   minuto sobre por qué el celular se calienta al cargarlo" (sin nombrar el skill) activó `explainer-short` y llegó
+   hasta `09_final.mp4` (1080x1920, 59,6 s) sin intervención. Coste aproximado: ~$2,8 en equivalente de API (Opus
+   principal + Haiku para 7 búsquedas), el 3 % del uso de las últimas 24 h. QA final a escala 1 **con avisos**: racha
+   estática de 66 frames (regla de diseño ≤45; a escala 0,5 había salido OK) y OCR al 94 % (no lee "al" y "de"). Para
+   F10: averiguar por qué la racha cambia con la escala y si el OCR debe ignorar palabras de ≤2 letras.
