@@ -390,3 +390,16 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   se sitúa en el audio con `pred_dur` de Kokoro (600 muestras por unidad a 24 kHz).
 - **Efecto en `hielo-flota`:** QA OK. El % de silencio baja de 24,1 a **22,8** (rango 22–32) porque la cola de la
   sala y la compresión rellenan los huecos. Si un guion queda por debajo de 22, bajar `ROOM_WET` de 0,12 a 0,08.
+
+## F9 · Skill y documentación (decididas con Diego)
+
+**D63 · Qué pasa a `legacy/` y en qué idioma va el skill.**
+- A `legacy/`: el `SKILL.md` anterior (`legacy/SKILL_cartoon-3d-short.md`), `templates/bridge/` (→
+  `legacy/bridge/src/`), su guion y su sandbox, los scripts `bridge_*` (→ `legacy/scripts/`) y `references/` (→
+  `legacy/references/`). La copia de Studio pasa de `studio/src/videos/bridge` a `studio/src/legacy/bridge`;
+  `BridgeShort` sigue registrada como prueba del motor.
+- Se quedan: `templates/audio/` (el pipeline usa `dsp.py` y `sfx_gen.py`). `sbs_sheet.py` y `short_qa.py` pasan a
+  `tools/qa/`, como pedía el plan (§5).
+- `SKILL.md` en **español**, como el resto de la documentación, con disparadores en español e inglés en la
+  descripción. El README explica la instalación en Windows y en Linux, y cómo enlazar el repo como skill
+  (`ln -s` / `mklink /J`).

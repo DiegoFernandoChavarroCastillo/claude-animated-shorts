@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REFS = {"R1": "video5", "R3": "video4"}   # D1
-SBS = ROOT / "templates/scripts/sbs_sheet.py"
+SBS = ROOT / "tools/qa/sbs_sheet.py"
 
 
 def grab(video: Path, frames: list[int], out: Path, tag: str) -> list[Path]:

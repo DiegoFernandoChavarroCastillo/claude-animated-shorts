@@ -1,6 +1,6 @@
 import React from "react";
 import { Composition } from "remotion";
-import { BridgeShort, BRIDGE_FRAMES } from "./videos/bridge/Bridge";
+import { BridgeShort, BRIDGE_FRAMES } from "./legacy/bridge/Bridge";
 import { CaptionTest, captionTestFrames } from "./explainer/CaptionTest";
 import { Explainer, calcExplainerMetadata } from "./explainer/Explainer";
 import { KitGallery, galleryFrames } from "./explainer/KitGallery";

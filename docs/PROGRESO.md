@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D62).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D63).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -24,7 +24,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D62).
 | F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
 | F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ aprobada (look-match 6,8/10; además D60 ll/y y D61 entonación de pregunta) | `59d85d9`, `938ab0e`, `d0f99b4`, `553546c`, `b945b3b` |
-| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ siguiente | — |
+| F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ⏳ en curso: falta la prueba en una sesión nueva | — |
 | F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
 
 ## Cómo se hace un video hoy
@@ -65,7 +65,9 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D62).
 | `templates/prompts/` | Prompts de guion (es/en) y de `story.json` |
 | `templates/examples/` | `hielo-flota` (es) y `hielo-flota-en` completos; `cielo-azul` y `dedos-arrugados` solo guion |
 | `tools/medicion/` | Medición de referencias y renders (`measure.py`, `audio.py`…) |
-| `tools/qa/` | `style_check.py` (QA de estilo y OCR de subtítulos, F8), comprobaciones de subtítulos y de la banda reservada |
+| `tools/qa/` | `style_check.py` (QA de estilo y OCR de subtítulos, F8), `lookmatch_sheets.py` y `sbs_sheet.py` (hojas lado a lado), `short_qa.py`, comprobaciones de subtítulos y de la banda |
+| `SKILL.md` | El skill `explainer-short` (F9) |
+| `legacy/` | Skill anterior `cartoon-3d-short`, código del puente, sus scripts y `references/` (F9) |
 
 ## Continuar en otro PC (Windows)
 
