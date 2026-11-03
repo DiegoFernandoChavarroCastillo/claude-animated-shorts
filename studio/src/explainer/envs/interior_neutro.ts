@@ -11,7 +11,11 @@ export const interior_neutro: EnvDef = {
   build: (light, seed) => {
     const ctx = makeCtx(light, seed), { L, r } = ctx;
     sky(ctx, { clouds: 0, stars: 0 });
-    const wallCol = new THREE.Color(PALETTE.bg.indigo).lerp(new THREE.Color(PALETTE.mid.lavender), 0.3);
+    // la hora del día tiñe la sala, no solo lo que se ve por las ventanillas (look-match F8, ronda 1)
+    const warmK = { atardecer: 0.22, dorado: 0.2, noche: 0, tech: 0 }[light];
+    // color de la hora: el horizonte del cielo, salvo en "dorado", cuyo horizonte es marino y el oro está en la luz principal
+    const hourCol = light === "dorado" ? L.key : L.sky.horizon;
+    const wallCol = new THREE.Color(PALETTE.bg.indigo).lerp(new THREE.Color(PALETTE.mid.lavender), 0.3).lerp(new THREE.Color(hourCol), warmK);
     const panel = canvasTex(ctx, 1024, 512, (g) => {
       g.fillStyle = hex(wallCol); g.fillRect(0, 0, 1024, 512);
       // paneles verticales con juntas suaves y grano fino
@@ -22,6 +26,13 @@ export const interior_neutro: EnvDef = {
         g.fillStyle = r() < 0.5 ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)"; g.fillRect(k * 128, 0, 128, 512);
       }
       g.fillStyle = "rgba(0,0,0,0.22)"; g.fillRect(0, 150, 1024, 4); g.fillRect(0, 380, 1024, 4);
+      // mancha de luz de la hora detrás del protagonista (entra por ventanillas fuera de cuadro) y bordes más oscuros:
+      // da la hora del día y separa al objeto de la pared (look-match F8, ronda 3)
+      const glow = g.createRadialGradient(512, 330, 20, 512, 330, 430);
+      glow.addColorStop(0, hex(hourCol, 1)); glow.addColorStop(1, hex(hourCol) + "00");
+      g.globalAlpha = 0.14 + warmK; g.fillStyle = glow; g.fillRect(0, 0, 1024, 512); g.globalAlpha = 1;
+      const shade = g.createLinearGradient(0, 0, 0, 512); shade.addColorStop(0, "rgba(0,0,0,0.35)"); shade.addColorStop(0.55, "rgba(0,0,0,0)");
+      g.fillStyle = shade; g.fillRect(0, 0, 1024, 512);
       speckle(g, r, 1024, 512, "#000000", 1600, 1, 3, 0.03, 0.1);
       speckle(g, r, 1024, 512, PALETTE.light.cream, 900, 1, 3, 0.03, 0.08);
     });
@@ -37,16 +48,20 @@ export const interior_neutro: EnvDef = {
       g.fillStyle = gr; g.fillRect(0, 0, 256, 384);
       g.fillStyle = hex(PALETTE.light.cream, 1); g.globalAlpha = 0.6; for (let k = 0; k < 6; k++) { g.beginPath(); g.ellipse(40 + r() * 180, 300 + r() * 60, 40 + r() * 40, 10 + r() * 8, 0, 0, Math.PI * 2); g.fill(); } g.globalAlpha = 1;
     });
+    // ventanillas más bajas y algo menores: sus marcos quedan bajo la banda de subtítulos (12–30 % del alto), detrás
+    // del protagonista, como los teléfonos delante de la ventanilla de R1 (look-match F8, ronda 1)
+    const WIN_Y = 2.3;
     const ovalShape = new THREE.Shape(); ovalShape.absellipse(0, 0, 1.25, 1.85, 0, Math.PI * 2, false, 0);
     const winGeo = ctx.track(new THREE.ShapeGeometry(ovalShape, 32));
     { const uv = winGeo.attributes.uv, p = winGeo.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / 2.5 + 0.5, p.getY(i) / 3.7 + 0.5); }
     const winMat = ctx.track(new THREE.MeshBasicMaterial({ map: view, color: new THREE.Color(1.5, 1.5, 1.5) }));
     const ringGeo = ctx.track(new THREE.RingGeometry(1, 1.22, 48)); ringGeo.scale(1.25, 1.85, 1);
     const ringMat = std(ctx, { color: hex(PALETTE.light.cream, 0.85), roughness: 0.5 });
-    for (const a of [-0.42, -0.14, 0.14, 0.42]) {
+    // separadas hacia los lados: el protagonista queda delante de pared lisa, no de un marco (look-match F8, ronda 2)
+    for (const a of [-0.66, -0.36, 0.36, 0.66]) {
       const x = Math.sin(a) * 15.8, z = 6 - Math.cos(a) * 15.8;
-      const w = new THREE.Mesh(winGeo, winMat); w.position.set(x, 4.2, z); w.lookAt(0, 4.2, 6); ctx.root.add(w);
-      const ring = new THREE.Mesh(ringGeo, ringMat); ring.position.set(x, 4.2, z); ring.lookAt(0, 4.2, 6); ring.translateZ(0.02); ctx.root.add(ring);
+      const w = new THREE.Mesh(winGeo, winMat); w.position.set(x, WIN_Y, z); w.lookAt(0, WIN_Y, 6); w.scale.setScalar(0.85); ctx.root.add(w);
+      const ring = new THREE.Mesh(ringGeo, ringMat); ring.position.set(x, WIN_Y, z); ring.lookAt(0, WIN_Y, 6); ring.scale.setScalar(0.85); ring.translateZ(0.02); ctx.root.add(ring);
     }
     // suelo liso con brillo suave
     // baldosas grandes (~1,25 m) con juntas y tono variable: el suelo liso no daba nada que seguir al flujo óptico (D58)
@@ -60,8 +75,10 @@ export const interior_neutro: EnvDef = {
     floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping; floorTex.repeat.set(40, 40);
     ground(ctx, matte(ctx, { map: floorTex }), 200);
     // luz cálida que entra por las ventanillas y motas de polvo
-    const win = new THREE.DirectionalLight(L.sky.horizon, 0.7); win.position.set(0, 5, -10); ctx.root.add(win);
+    // la luz de las ventanillas hace de contraluz del protagonista; más fuerte con sol bajo
+    const win = new THREE.DirectionalLight(hourCol, { atardecer: 2.4, dorado: 1.9, noche: 0.7, tech: 0.7 }[light]); win.position.set(0, 4, -10); ctx.root.add(win);
     lightDots(ctx, 26, L.sky.horizon, { x: [-8, 8], y: [1, 7], z: [-9, -3] }, [0.03, 0.06], 2.5, 0.2);
-    return ctx.done(fogOf(L, 20, 70, hex(wallCol, 0.7)));
+    // niebla más cercana: la pared (10–16 m) se separa del protagonista (look-match F8, ronda 1)
+    return ctx.done(fogOf(L, 12, 60, hex(wallCol, 0.7)));
   },
 };

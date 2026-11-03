@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D58).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D59).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -23,7 +23,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D58).
 | F5 | Voz local (Kokoro/Piper), alineación (Whisper medium), SFX, mezcla a −14 LUFS | ✅ aprobada | `109fedd` |
 | F6 | Prompts de guion (es/en), `validate_script.py`, prompt de `story.json` | ✅ aprobada | `7203530` |
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
-| F8 | QA de estilo (`style_check`, hojas lado a lado, bucle de look-match §9) | ⏳ siguiente | — |
+| F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ criterios cumplidos; falta "aprobado" | `59d85d9`, `938ab0e`, ver git log |
 | F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | pendiente | — |
 | F10 | Prueba de punta a punta con un tema nuevo | pendiente | — |
 
@@ -131,13 +131,11 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
 4. **Temporales:** por defecto `~/remotion-tmp` (no `/tmp`, que suele ir en RAM). Se cambia con `REMOTION_TMP`.
 5. **Referencias y prueba de humo:** como en Windows (pasos 5 y 8), con `.venv/bin/python` y rutas con `/`.
 
-## Pendientes conocidos (para F8 o antes)
+## Pendientes conocidos (para F9–F10)
 
-1. **Plano quieto más largo: 178 frames** (máximo 45) en el video completo de `hielo-flota`. Es el criterio de F2
-   que se dejó para medir en el video completo (D31). Falla en las escenas oscuras de `interior_neutro` con luz
-   `noche`, donde el flujo óptico no ve el movimiento de cámara. Se trata en F8.
-2. **Color del ejemplo**: luma mediana 0,12 (mínimo 0,14) y saturación 0,67 (máximo 0,62). El ejemplo pasa casi
-   todo el tiempo en escenas de noche y tech. Se trata en F8.
+1. ~~Plano quieto más largo~~ y ~~color del ejemplo~~: resueltos en F8 (D58, D59). `hielo-flota` da QA OK.
+2. **Bloqueantes de F10 según el verificador** (`docs/LOOKMATCH.md`): moléculas en red hexagonal visible y corte del
+   lago con el hielo flotando arriba (`heroes/primitive/science.ts`).
 3. **Voz algo robótica** y **sin pausas en las comas**: Kokoro apenas pausa en las comas y la voz sale seca. Hay
    Decidido con Diego (2 nov): después de F8, preparar muestras A/B con (a) silencio explícito de ~200 ms en cada coma y (b) tratamiento de voz (presencia, compresión ligera, un poco de sala). Descartados por ahora: velocidad/mezcla de voces y otro motor.
 4. **Modelos glTF CC0 (Kenney)**: el cargador está hecho pero sin probar con un modelo real. Descargar 2–3 modelos,
@@ -146,3 +144,8 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
    verificarlas antes de publicar.
 6. **R2 (el perro) no está** en `references_local/` (D1); `video3` es otro short.
 7. **Overlays de F3**: tras los arreglos al 5/10 del verificador no se volvió a pasar el verificador (D28).
+8. **Grade por entorno**: con un grade por luz, 5 de 12 combinaciones de `EnvGallery` quedan fuera de rango
+   (`cielo_atardecer`, `vista_aerea` en el borde, `calle_noche_bokeh`, `interior_neutro`+`dorado`, `tech_oscuro`+`noche`).
+   Queda para F10 (D58, D59).
+9. **Mejoras no bloqueantes del look-match**: b07 termina en el mismo encuadre que b01, movimiento poco visible dentro
+   de b04, mancha de luz de noche más fuerte, profundidad en el suelo, color de acento y más etiquetas de dato.

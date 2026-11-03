@@ -39,31 +39,39 @@ export const chip: HeroDef = {
 };
 
 const ice = (b: ReturnType<typeof bin>, s: number) => new THREE.Mesh(b.track(new RoundedBoxGeometry(s, s, s, 3, s * 0.18)),
-  b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color("#d8f1ff"), roughness: 0.15, metalness: 0, transparent: true, opacity: 0.82,
-    emissive: new THREE.Color(PALETTE.ui.cyan).multiplyScalar(0.12) })));
+  b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color("#e6f6ff"), roughness: 0.15, metalness: 0, transparent: true, opacity: 0.95,
+    emissive: new THREE.Color(PALETTE.ui.cyan).multiplyScalar(0.3) })));
 
 export const vaso_agua_hielo: HeroDef = {
   kind: "primitive",
   when: "Vaso con agua y cubitos: agua, hielo, densidad, temperatura, bebidas.",
   poses: ["centro", "lateral"],
-  center: [0, 1.15, 0], radius: 1.1,
+  center: [0, 1.15, 0], radius: 0.95, // algo menor que el vaso real: el encuadre lo deja al ~60 % del ancho
   anchors: { hero: [0, 1.2, 0], top: [0, 2.25, 0], base: [0, 0.05, 0], hielo: [0, 1.9, 0] },
   build: () => {
     const b = bin(), root = new THREE.Group();
     const glass = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.8, 0.66, 2.2, 48, 1, true)),
       b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color("#cfe7ff"), roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.25, side: THREE.DoubleSide, depthWrite: false })));
     glass.position.y = 1.1; glass.renderOrder = 2;
+    // borde del vidrio (Fresnel): el vaso casi transparente se perdía contra el fondo (look-match F8, ronda 1)
+    const edge = new THREE.Mesh(glass.geometry, b.track(new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+      uniforms: { col: { value: new THREE.Color(0.75, 0.9, 1.1) } },
+      vertexShader: "varying vec3 n; varying vec3 v; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); n = normalize(normalMatrix * normal); v = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }",
+      fragmentShader: "uniform vec3 col; varying vec3 n; varying vec3 v; void main(){ float f = pow(1.0 - abs(dot(normalize(n), normalize(v))), 3.0); gl_FragColor = vec4(col * f, 1.0); }",
+    })));
+    edge.position.y = 1.1; edge.renderOrder = 3;
     const bottom = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.66, 0.66, 0.12, 48)), b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color("#cfe7ff"), roughness: 0.1, transparent: true, opacity: 0.5 })));
     bottom.position.y = 0.06;
     const water = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.76, 0.66, 1.55, 48)),
-      b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color(PALETTE.ui.cyan).lerp(new THREE.Color(PALETTE.bg.indigo), 0.4), roughness: 0.1, transparent: true, opacity: 0.55,
-        emissive: new THREE.Color(PALETTE.ui.cyan).multiplyScalar(0.08) })));
+      b.track(new THREE.MeshStandardMaterial({ color: new THREE.Color(PALETTE.ui.cyan).lerp(new THREE.Color(PALETTE.bg.indigo), 0.4), roughness: 0.1, transparent: true, opacity: 0.7,
+        emissive: new THREE.Color(PALETTE.ui.cyan).multiplyScalar(0.16) })));
     water.position.y = 0.9; water.renderOrder = 1;
     const cubes = [[-0.25, 0.1, 0.4], [0.28, -0.15, -0.6], [0.05, 0.3, 1.1]].map(([x, z, a]) => { const c = ice(b, 0.5); c.position.set(x, 1.68, z); c.rotation.set(a * 0.4, a, a * 0.3); return c; });
     // brillo del borde (bloom suave) y bolitas de aire
     const rim = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.8, 0.012, 6, 64)), b.track(new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 1.8, 2) })));
     rim.rotation.x = Math.PI / 2; rim.position.y = 2.2;
-    root.add(bottom, water, ...cubes, glass, rim);
+    root.add(bottom, water, ...cubes, glass, edge, rim);
     shadows(bottom);
     return {
       root,
@@ -139,7 +147,7 @@ export const moleculas_agua: HeroDef = {
     return {
       root,
       update: (f) => {
-        g.rotation.y = 0.4 + f * 0.004; g.rotation.x = 0.25;
+        g.rotation.y = 0.4 + f * 0.007; g.rotation.x = 0.25;
         if (p === "liquido") kids.forEach((k, i) => { k.rotation.x += 0; k.position.y += 0.0015 * Math.sin(f * 0.07 + i); });
       },
       dispose: b.dispose,

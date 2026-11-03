@@ -36,7 +36,7 @@
     "persona": { "kind": "card", "poses": ["espaldas"], "anchors": ["hero", "top", "cabeza", "base"], "when": "Persona genérica de espaldas: 'tú', usuario, gente en la calle o en casa (personaje secundario)." }
   },
   "camera": {
-    "push_in": { "params": { "rate": "0–0,6 %/frame (por defecto 0,25; nunca baja de 0,25)" }, "when": "Plano sostenido por defecto: acercamiento lento al objeto." },
+    "push_in": { "params": { "rate": "0–0,6 %/frame (por defecto 0,30; nunca baja de 0,30; en beats largos el cambio de escala total se limita a ×2,4)" }, "when": "Plano sostenido por defecto: acercamiento lento al objeto." },
     "drift": { "params": { "dir": "left | right" }, "when": "Deriva lateral suave; para enumerar o mostrar el entorno." },
     "orbit_slow": { "params": { "deg": "-45..45 grados en todo el beat (por defecto 12)" }, "when": "Giro lento alrededor del objeto; para enseñar su forma o 'por dentro'." },
     "glide": { "params": {}, "when": "Llega desde más lejos y más alto y se asienta; buen inicio de un lugar nuevo." },

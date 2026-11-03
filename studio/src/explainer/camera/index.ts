@@ -39,8 +39,11 @@ const preset = (bt: BeatT, t: number, p: Params): Params => {
   if (c.preset !== "drift") q.lat += (bt.i % 2 ? -1 : 1) * Math.min(CAMERA.baseDriftPx, CAMERA.baseDriftMaxPx / dur) * tc * wpp;
   // el empuje cierra el campo (zoom de lente) en vez de acercar la cámara: así escala todo el cuadro, fondo incluido,
   // y no solo el objeto; con un dolly el fondo lejano casi no cambia y el plano se mide como quieto (D31)
+  // en beats largos el empuje se limita a CAMERA.pushMaxZoom en todo el beat: centrado en la mitad, 0,3 %/frame
+  // durante 10 s abría el plano ×1,6 al empezar y lo cerraba ×0,6 al acabar (look-match F8, ronda 1)
   const push = (rate: number) => {
-    const k = Math.exp((-Math.max(rate, CAMERA.pushMin) / 100) * tc);
+    const r = Math.min(Math.max(rate, CAMERA.pushMin) / 100, Math.log(CAMERA.pushMaxZoom) / dur);
+    const k = Math.exp(-r * tc);
     q.fov = 2 * (180 / Math.PI) * Math.atan(Math.tan(rad(q.fov / 2)) * k);
   };
   switch (c.preset) {
@@ -85,7 +88,7 @@ const paramsAt = (tl: Timeline, i: number, f: number, depth = 0): Params => {
   if (tin && depth < 8) {
     if (tin.type === "glide" && tin.sameSet) {
       // mismo decorado: la cámara planea desde donde acabó el beat anterior
-      p = mix(paramsAt(tl, i - 1, tin.at, depth + 1), p, glide(t / CAMERA.glideFrames));
+      p = mix(paramsAt(tl, i - 1, tin.at, depth + 1), p, glide(t / CAMERA.glideSameSetFrames));
     } else if (tin.type === "glide") {
       // otro decorado: llega desde un lado, más alta, mientras se funden las imágenes
       const s = glide((t + tin.half) / CAMERA.glideFrames);

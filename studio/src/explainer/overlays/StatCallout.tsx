@@ -13,6 +13,9 @@ export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, pre
   const col = tok(c, PALETTE.warm.gold);
   return (
     <Place slot={slot} style={{ opacity: exit, textAlign: "center" }}>
+      {/* velo oscuro suave detrás del número: las líneas brillantes del fondo (suelo tech) lo cruzaban (look-match F8) */}
+      <div style={{ position: "absolute", inset: "-30% -12%", zIndex: -1, opacity: k,
+        background: "radial-gradient(ellipse at center, rgba(5,6,20,0.8) 0%, rgba(5,6,20,0.55) 45%, rgba(5,6,20,0) 72%)" }} />
       <div style={{ fontFamily: DISPLAY_FAMILY, fontWeight: 800, fontSize: OVERLAY.statSizeK * W, lineHeight: 1, color: col, whiteSpace: "nowrap",
         transform: `scale(${0.85 + 0.15 * k})`, opacity: k, textShadow: `0 0 40px ${PALETTE.ui.shadow}` }}>
         {prefix}{fmt(shown, lang, decimals)}{suffix}

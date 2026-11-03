@@ -81,8 +81,10 @@ export const CAMERA = {
   pushMin: 0.3, pushDefault: 0.3, pushMax: 0.3,   // %/frame; measure.py lee 25–75 % del valor y su umbral es 0,08 (D31, D58)
   driftMaxPx: 1.5,                               // px/frame a 1080
   baseDriftPx: 1.0,                              // deriva suave que llevan todos los planos (px/frame a 1080) (D31)
-  baseDriftMaxPx: 150,                           // recorrido máximo de esa deriva en un beat
+  baseDriftMaxPx: 220,                           // recorrido máximo de esa deriva en un beat (±110 px; antes 150, F8)
   glideFrames: 30,                               // smootherstep de 18–40 f
+  glideSameSetFrames: 50,                        // planeo entre beats del mismo decorado: sin saltos de escala
+  pushMaxZoom: 2.6,                              // cambio de escala máximo del empuje en todo un beat
   zoomThroughFrames: 24,                         // 20–30 f
   crossfadeFrames: 12,
   rollMaxDeg: 3,

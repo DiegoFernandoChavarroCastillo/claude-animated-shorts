@@ -331,3 +331,27 @@ pero el flujo óptico no lo veía: el suelo y la pared lisos dan flujo ~0 y baja
 - **OCR de subtítulos:** con el fondo más claro, la máscara "claro y poco saturado" cogía bordes de ventanillas y
   nubes, y el acierto bajó al 71 %. Ahora la máscara solo coge casi blanco (la última palabra es la activa, `#FFFFFF`)
   dentro de la franja del 8–36 % del alto. Resultado: 100 % de 31 bloques, todos dentro de la banda.
+
+**D59 · Arreglos del look-match de F8 (rondas 1–4, `docs/LOOKMATCH.md`).** Decidido con Diego: arreglos del sistema
+y encuadres del ejemplo; las moléculas, el lago y el acento quedan para F10.
+- **`interior_neutro`:** ventanillas más bajas (y = 2,3), al 85 % y separadas hacia los lados (±0,36 y ±0,66 rad):
+  el texto cae sobre pared lisa y el protagonista no tiene un marco detrás. La sala se tiñe con el color de la hora
+  (`atardecer` 0,22, `dorado` 0,20) en pared, mancha de luz detrás del protagonista y luz de ventana (contraluz). En
+  `dorado` ese color es el de la luz principal (oro), porque su horizonte es marino. Niebla 12–60 m (antes 20–70) y
+  la parte alta de la pared más oscura.
+- **Cámara:** el empuje de un beat se limita a un cambio de escala total de **×2,6** (`pushMaxZoom`). Con 0,3 %/frame,
+  un beat de 10 s pasaba de ×1,6 a ×0,6 y el planeo al beat siguiente se veía como un salto. El planeo entre beats
+  del mismo decorado dura **50 frames** (`glideSameSetFrames`, antes 30). La deriva de base llega a **±110 px**
+  (`baseDriftMaxPx` 220, antes 150).
+- **Vaso:** borde de vidrio Fresnel (aditivo), hielo más opaco y emisivo, agua más visible y `radius` 0,95 (antes 1,1),
+  así que el encuadre lo deja algo mayor.
+- **Moléculas:** giro de 0,007 rad/frame (antes 0,004).
+- **`StatCallout`:** velo oscuro radial tras el número, porque las líneas del suelo tech lo cruzaban.
+- **Ejemplo `hielo-flota` (es/en):** b02 en órbita de 45°, b06 en deriva lateral y b07 con `zoom_through`, para no
+  repetir los planos de b01 y b05.
+- **Resultado:** look-match de 5,5 a **6,8/10**. QA completo OK: estilo 9/9, OCR 100 %, racha 41 frames.
+- **Coste:** en `EnvGallery`, `interior_neutro`+`dorado` cae a 0,36 de saturación (ámbar claro), así que pasan
+  7 de 12 combinaciones (con el grade original pasaban 4). Queda para F10, junto con el grade por entorno.
+- **Probado y descartado:** órbita en b06, porque el suelo y el fondo se anulan en el flujo óptico (como en D31) y
+  dejaba una racha de 86 frames. Tope de escala ×1,8 y niebla 7–45 m, que borraban la textura que necesita el
+  detector.
