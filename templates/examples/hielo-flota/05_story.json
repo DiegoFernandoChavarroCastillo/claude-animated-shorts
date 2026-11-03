@@ -4,7 +4,7 @@
     "lang": "es",
     "title": "Por qué el hielo flota",
     "fps": 30, "width": 1080, "height": 1920,
-    "voice": { "engine": "kokoro", "voice": "em_alex", "speed": 1.0 },
+    "voice": { "engine": "chatterbox", "voice": "diego", "speed": 1.0 },
     "music": false,
     "captionEmphasis": "box"
   },

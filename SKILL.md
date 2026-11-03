@@ -1,6 +1,6 @@
 ---
 name: explainer-short
-description: Hace un short vertical explicativo de 55–62 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Kokoro) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
+description: Hace un short vertical explicativo de 55–62 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
 ---
 
 # Explainer short (es / en)
@@ -16,7 +16,7 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 1. Idioma: el que pida el usuario (`es` o `en`). Si no lo dice, el del prompt.
 2. `id` del video: corto, en minúsculas y con guiones (`hielo-flota`). Todo va a `out/<id>/`, que no se sube a Git.
 3. Si el usuario pide revisar el guion antes de seguir (o dice `--review`), para tras el paso 3 y espera su "ok".
-4. Si falta el entorno (`.venv`, `studio/node_modules`), sigue `docs/PROGRESO.md` → "Continuar en otro PC".
+4. Si falta el entorno (`.venv`, `studio/node_modules`, `.venv-chatterbox`), sigue el `README.md` → "Instalación".
 
 ## Pipeline
 
@@ -125,8 +125,13 @@ Entrega:
   marca la racha estática, cambia `orbit_slow` por `drift` o `push_in` en ese beat.
 - **% de silencio justo:** con el tratamiento de voz queda cerca del mínimo (22,8 en `hielo-flota`). Si sale por
   debajo de 22, baja `ROOM_WET` en `pipeline/voice_fx.py` de 0,12 a 0,08.
-- **Primera ejecución:** descarga Kokoro (~330 MB) y Whisper medium (~1,5 GB). Necesita internet.
-- **Tiempos de referencia** (portátil Intel UHD, video de 52 s a escala 0,5): voz 35 s, alineación ~1 min, stills
+- **Primera ejecución:** descarga Whisper medium (~1,5 GB) y, con `setup_chatterbox.py`, los modelos de Chatterbox
+  (~6 GB). Necesita internet.
+- **Voz:** en español, `"voice": "diego"` (`voices_local/diego.wav`). Si no existe, el pipeline avisa y usa la voz
+  del modelo, que suena con acento extranjero: díselo al usuario en la entrega.
+- **Voz lenta:** Chatterbox tarda ~13 min por video en CPU. Para pruebas rápidas del plan visual, usa
+  `"engine": "kokoro"` en el story y vuelve a Chatterbox para el render final (`--force tts`).
+- **Tiempos de referencia** (portátil Intel UHD, video de 52 s a escala 0,5): voz ~13 min con Chatterbox (35 s con Kokoro), alineación ~1 min, stills
   40 s, render 5–6 min, mezcla + QA ~1 min. A escala 1, el render tarda unas 4 veces más.
 
 ## Legado

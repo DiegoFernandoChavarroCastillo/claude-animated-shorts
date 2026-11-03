@@ -32,7 +32,7 @@ STUDIO = ROOT / "studio"
 # Fuera de Windows, en el home: /tmp suele ser tmpfs (RAM) y cada bundle copia public/
 TMP = os.environ.get("REMOTION_TMP") or ("C:/remotion-tmp" if os.name == "nt" else str(Path.home() / "remotion-tmp"))
 BUNDLE = f"{TMP}/bundle"
-VOICE_DEFAULT = {"es": "em_alex", "en": "am_fenrir"}   # D46
+VOICE_DEFAULT = {"es": ("chatterbox", "diego"), "en": ("chatterbox", "default")}   # D64 (antes Kokoro, D46)
 STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa"]
 
 
@@ -117,7 +117,7 @@ class Run:
         s = parse(self.p("02_SCRIPT.md").read_text(encoding="utf-8"))
         if s.errors:
             raise PipelineError("02_SCRIPT.md no se puede leer: " + "; ".join(s.errors))
-        st = {"meta": {"id": self.id, "lang": s.lang, "title": self.id, "voice": {"engine": "kokoro", "voice": VOICE_DEFAULT[s.lang], "speed": 1.0}},
+        st = {"meta": {"id": self.id, "lang": s.lang, "title": self.id, "voice": {"engine": VOICE_DEFAULT[s.lang][0], "voice": VOICE_DEFAULT[s.lang][1], "speed": 1.0}},
               "beats": [{"id": f"b{k + 1:02d}", "role": r, "text": t} for k, (r, t) in enumerate(s.lines)]}
         p = self.p("_voice_story.json")
         write_json(p, st)

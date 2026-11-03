@@ -4,7 +4,7 @@
     "lang": "en",
     "title": "Why ice floats",
     "fps": 30, "width": 1080, "height": 1920,
-    "voice": { "engine": "kokoro", "voice": "am_fenrir", "speed": 1.0 },
+    "voice": { "engine": "chatterbox", "voice": "default", "speed": 1.0 },
     "music": false,
     "captionEmphasis": "box"
   },

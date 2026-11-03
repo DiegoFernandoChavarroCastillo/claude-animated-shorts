@@ -20,9 +20,9 @@ FPS = 30
 SR = 48000
 
 # pausas entre frases (plan §7.4): 300–600 ms entre frases, 800–1000 ms antes del beat twist
-PAUSE_SENTENCE_MS = 380
-PAUSE_BEAT_MS = 560
-PAUSE_TWIST_MS = 950
+PAUSE_SENTENCE_MS = 640    # D64: variante B elegida de oído (antes 380/560/950)
+PAUSE_BEAT_MS = 940
+PAUSE_TWIST_MS = 1600
 LEAD_MS = 150      # silencio al empezar
 TAIL_MS = 1000     # cola tras la última palabra (= TAIL_S de timeline.ts)
 

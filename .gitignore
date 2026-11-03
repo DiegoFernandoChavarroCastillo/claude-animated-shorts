@@ -5,8 +5,9 @@ out/
 *.wav
 *.mp4
 # Entornos y dependencias
-.venv/
+.venv*/
 node_modules/
 __pycache__/
 _cache/
 pipeline/models/
+voices_local/

@@ -5,7 +5,7 @@ solo prompt:
 - escenas 3D estilizadas con un objeto protagonista;
 - subtítulos palabra por palabra con caja de selección;
 - overlays de datos con su fuente;
-- voz local gratuita (Kokoro) y efectos de sonido sintetizados.
+- voz local gratuita (Chatterbox, con Kokoro como respaldo rápido) y efectos de sonido sintetizados.
 
 Todo se renderiza con three.js dentro de Remotion en tu PC. No usa ningún generador de video por IA ni claves de API.
 
@@ -21,7 +21,7 @@ hace el resto (voz, alineación por palabra, validaciones, render, mezcla a −1
 | `pipeline/` | Orquestador y etapas en Python (TTS, alineación, SFX, mezcla, validadores, QA) |
 | `templates/` | Prompts (guion es/en, story, verificador), catálogo cerrado y ejemplos completos |
 | `tools/` | Medición de referencias y QA de estilo (`style_check.py`, hojas lado a lado) |
-| `docs/` | Plan, decisiones (D1–D63), progreso y notas del look-match |
+| `docs/` | Plan, decisiones (D1–D64), progreso y notas del look-match |
 | `legacy/` | El skill anterior (`cartoon-3d-short`, el video del puente) y sus referencias |
 
 ## Instalación
@@ -68,7 +68,20 @@ Python (3.11) y dependencias:
 
 Remotion: `cd studio && npm ci && npx tsc --noEmit` (debe salir sin errores).
 
+Voz (Chatterbox, el motor por defecto): `.venv/bin/python pipeline/setup_chatterbox.py` (Windows:
+`.venv\Scripts\python.exe pipeline\setup_chatterbox.py`; con GPU NVIDIA añade `--cuda`). Crea su propio entorno
+`.venv-chatterbox` y descarga ~6 GB de modelos. En CPU genera la voz de un video en ~13 min. Sin él, pon
+`"engine": "kokoro"` en el story para usar el motor rápido.
+
 La primera ejecución descarga Kokoro (~330 MB) y Whisper medium (~1,5 GB).
+
+### Tu voz (recomendado para español)
+
+Chatterbox imita la voz de una muestra. La que trae el modelo es de una persona que habla inglés, y en español suena
+con acento extranjero. Graba 15–25 s con el celular, en un cuarto sin eco y con el tono de narrador que quieras.
+Guárdala como `voices_local/<nombre>.wav` (o `.m4a` y conviértela con
+`ffmpeg -i voz.m4a -ac 1 -ar 24000 voices_local/<nombre>.wav`) y pon `"voice": "<nombre>"` en el story.
+`voices_local/` no se sube a Git.
 
 ### 3. Instalar el skill en Claude Code
 
@@ -119,7 +132,8 @@ guion antes del render, añade "para tras el guion" (o `--review`).
 
 - **Temporales de Remotion:** cada bundle copia `public/`. Por defecto van a `C:/remotion-tmp` (Windows) o
   `~/remotion-tmp` (Linux/macOS); se cambia con `REMOTION_TMP`.
-- **Voces:** Kokoro es Apache-2.0. Revisa la licencia de cualquier otra voz antes de monetizar.
+- **Voces:** Chatterbox es MIT y marca cada audio con una marca de agua inaudible (Perth); Kokoro es Apache-2.0.
+  Revisa la licencia de cualquier otra voz antes de monetizar.
 - **Remotion:** gratis para personas y equipos de hasta 3 personas, incluso para uso comercial. A partir de 4 personas
   necesita licencia de empresa.
 - **Contenido:** la historia, los datos y la voz son siempre propios. Las referencias sirven para el lenguaje visual,

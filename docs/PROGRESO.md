@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D63).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -61,7 +61,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D63).
 | `studio/src/explainer/dev/`, `EnvGallery`, `CullTest`, `KitGallery`, `CaptionTest` | Composiciones de prueba |
 | `studio/scripts/job.mjs` | Bundle único + stills + render para el orquestador |
 | `studio/scripts/stills.mjs` | Stills sueltos para desarrollo |
-| `pipeline/` | Python: `make_short.py`, `voice.py`, `tts/` (con `prosody.py`), `voice_fx.py`, `align.py`, `sfx_plan.py`, `sfx_synth.py`, `mix.py`, `validate_script.py`, `validate_story.py`, `qa_basic.py`, `setup_audio.ps1`, `tests/` |
+| `pipeline/` | Python: `make_short.py`, `voice.py`, `tts/` (con `prosody.py` y Chatterbox: `chatterbox_tts.py` + `chatterbox_worker.py`), `setup_chatterbox.py`, `voice_fx.py`, `align.py`, `sfx_plan.py`, `sfx_synth.py`, `mix.py`, `validate_script.py`, `validate_story.py`, `qa_basic.py`, `setup_audio.ps1`, `tests/` |
 | `templates/prompts/` | Prompts de guion (es/en) y de `story.json` |
 | `templates/examples/` | `hielo-flota` (es) y `hielo-flota-en` completos; `cielo-azul` y `dedos-arrugados` solo guion |
 | `tools/medicion/` | Medición de referencias y renders (`measure.py`, `audio.py`…) |
@@ -158,3 +158,6 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
    principal + Haiku para 7 búsquedas), el 3 % del uso de las últimas 24 h. QA final a escala 1 **con avisos**: racha
    estática de 66 frames (regla de diseño ≤45; a escala 0,5 había salido OK) y OCR al 94 % (no lee "al" y "de"). Para
    F10: averiguar por qué la racha cambia con la escala y si el OCR debe ignorar palabras de ≤2 letras.
+11. **Voz (D64, 3 nov):** Chatterbox con la voz de Diego es el motor por defecto. En `hielo-flota`, la racha estática
+   sube a 70 frames (regla de diseño ≤45) y el silencio llega al 32 % (máximo del rango): la voz es más pausada y los
+   beats más largos. Para F10: vigilarlo y, si hace falta, bajar las pausas a ×1,3.

@@ -403,3 +403,43 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
 - `SKILL.md` en **español**, como el resto de la documentación, con disparadores en español e inglés en la
   descripción. El README explica la instalación en Windows y en Linux, y cómo enlazar el repo como skill
   (`ln -s` / `mklink /J`).
+
+## Voz: Chatterbox como motor por defecto (decidido con Diego, 2–3 nov)
+
+**D64 · Chatterbox sustituye a Kokoro.** A Diego la voz de Kokoro no le convencía.
+- **Prueba A/B** con el mismo fragmento de `hielo-flota`, el mismo proceso (pregunta ascendente y tratamiento de voz,
+  D61 y D62) y −16 LUFS: Kokoro `em_alex`, Pocket TTS (Kyutai, `spanish_24l`, voz "lola") y Chatterbox con el modelo
+  de **español latinoamericano** (`ResembleAI/Chatterbox-Multilingual-es-mx-latam`). **Ganó Chatterbox.** Arregla
+  además la pronunciación española de Kokoro ("susTHancias"). VoiceStudio se descartó: es una interfaz sobre varios
+  motores, no un motor.
+- **Ritmo:** Chatterbox habla a ~3,2 palabras/s (el rango es 2,5–3,0). Probados `cfg_weight` 0,3 (3,1), 0,2 (2,88) y
+  la voz por defecto estirada al 88 % con rubberband (2,87). Diego eligió **`cfg_weight` 0,2** de oído. La
+  velocidad fina que pide `voice.py` se aplica estirando con rubberband, sin volver a sintetizar.
+- **Idiomas:** `es` con el modelo latino y `en` con el multilingüe V3, con la voz por defecto del modelo. Kokoro queda
+  como respaldo rápido (`voice.engine = "kokoro"`).
+- **Instalación:** `pipeline/setup_chatterbox.py` crea `.venv-chatterbox` (Chatterbox fija PyTorch 2.6 y Kokoro usa
+  2.15), instala Chatterbox fijado al commit `5de7a54` de GitHub (la versión de PyPI no carga los modelos V3) y arma
+  `pipeline/models/chatterbox/{es-latam,mtl-v3}`. El decodificador `s3gen_v3.pt` viene sin dos tablas fijas
+  (filtros mel y ventana); el setup las copia del propio código y comprueba que no falte nada más.
+- **Integración:** `tts/chatterbox_tts.py` lanza `tts/chatterbox_worker.py` con el Python de `.venv-chatterbox`. El
+  worker carga el modelo una vez por video.
+- **Coste:** en CPU (este portátil) ~13 veces el tiempo real: unos 13 min de voz para un video de 60 s, más ~1 min de
+  carga. Kokoro tardaba 35 s. Corre en segundo plano y no gasta tokens.
+- **Licencia:** MIT. Cada audio lleva una marca de agua inaudible (Perth) de Resemble AI.
+- **Ritmo, corrección (3 nov):** estirar la voz (rubberband al 85 %, el reajuste automático de `voice.py`) sonó
+  "arrastrado y artificial". Las referencias hablan a ~4 palabras/s mientras hablan y bajan a ~2,8 de media con las
+  pausas. Por eso, con Chatterbox, `voice.py` ajusta **las pausas** y nunca la voz. Diego eligió de oído la variante
+  con pausas ×1,68, que pasan a ser las de todos los videos (`common.py`): 640 ms entre frases, 940 ms entre beats y
+  1,6 s antes del giro (antes 380/560/950).
+- **Voz de referencia (3 nov):** con la voz por defecto, Diego notó un acento de "gringo hablando español". Causa:
+  Chatterbox imita la voz de una muestra, y la que trae el repo (`conds.pt`) es de una persona que habla inglés.
+  Con 9 s de Kokoro como referencia sonó mejor, lo que confirmó la causa. Diego grabó su voz (18 s con el celular,
+  pico −4,9 dBFS, ~64 dB entre voz y fondo) y es la **voz por defecto en español**: `"voice": "diego"` →
+  `voices_local/diego.wav` (carpeta no versionada: es un dato personal). En inglés sigue la voz por defecto del
+  modelo, que es nativa. Si el archivo no existe en otro PC, el motor avisa y usa la voz por defecto.
+- **Resultado con la voz de Diego (`hielo-flota`, escala 0,5), aprobado por Diego:** 53,7 s, 2,69 palabras/s, 32,0 %
+  de silencio (en el máximo del rango) y racha estática de 70 frames (cumple ≤100 de las referencias y no cumple la
+  regla de diseño ≤45). La voz clonada habla más pausado que la del modelo, así que las pausas ×1,68 se notan más. Si
+  algún video se pasa de 32 % de silencio, la salida es bajar las pausas a ×1,3 (500/730/1200 ms).
+- **Caché:** el audio crudo de cada frase se guarda en `_cache/chatterbox/`. Un reajuste de pausas o un `--force tts`
+  sin cambios en el texto no vuelve a sintetizar.

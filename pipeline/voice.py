@@ -4,7 +4,8 @@
                               [--engine kokoro] [--voice em_alex] [--speed 1.0] [--force]
 
 Ritmo: tras sintetizar mide palabras/s (palabras del guion / duración del WAV). Si la media sale de 2,6–3,0,
-reajusta la velocidad hacia 2,8 y repite una vez.
+reajusta hacia 2,8 y repite una vez. Kokoro y Piper cambian la velocidad. Chatterbox cambia las pausas entre frases,
+porque estirar su voz suena arrastrado y artificial (D64); sus frases salen de caché, así que el reajuste es rápido.
 """
 from __future__ import annotations
 
@@ -47,16 +48,21 @@ def main():
     segs = segments(story)
     nwords = sum(len(words_of(b["text"])) for b in story["beats"])
     report = []
+    pauses = [s.pause_after_ms for s in segs]
     for attempt in range(2):
-        synth([s.text for s in segs], meta["lang"], voice, speed, [s.pause_after_ms for s in segs], out, eng,
+        synth([s.text for s in segs], meta["lang"], voice, speed, pauses, out, eng,
               [{"beat": s.beat, "role": s.role} for s in segs])
         dur = wav_seconds(out)
         wps = nwords / dur
-        report.append({"speed": round(speed, 3), "dur_s": round(dur, 2), "wps": round(wps, 3)})
-        print(f"[voz] {eng}/{voice} speed {speed:.3f}: {dur:.2f} s, {nwords} palabras, {wps:.2f} pal/s")
+        report.append({"speed": round(speed, 3), "pauses_ms": sum(pauses), "dur_s": round(dur, 2), "wps": round(wps, 3)})
+        print(f"[voz] {eng}/{voice} speed {speed:.3f}, pausas {sum(pauses)} ms: {dur:.2f} s, {nwords} palabras, {wps:.2f} pal/s")
         if WPS_LO <= wps <= WPS_HI or attempt == 1:
             break
-        speed = max(0.7, min(1.4, speed * WPS_TARGET / wps))
+        if eng == "chatterbox":
+            k = max(0.5, min(2.0, 1 + (nwords / WPS_TARGET - dur) * 1000 / max(1, sum(pauses))))
+            pauses = [int(p * k) for p in pauses]
+        else:
+            speed = max(0.7, min(1.4, speed * WPS_TARGET / wps))
     write_json(a.out / (a.name + ".report.json"), {"engine": eng, "voice": voice, "attempts": report, "words": nwords})
 
 

@@ -14,8 +14,8 @@ que no esté en él hace fallar la validación.
 
 1. **Un beat por línea del guion**, en el mismo orden: `id` = `b01`, `b02`…; `role` = la etiqueta de la línea;
    `text` = la línea **exacta** (misma ortografía y puntuación: los subtítulos y la voz salen de aquí).
-2. `meta`: `id` del video, `lang`, `title`, `voice` (es: `kokoro`/`em_alex`, alternativa `em_santa`; en:
-   `kokoro`/`am_fenrir`, alternativa `af_heart`), `music: false`, `captionEmphasis: "box"` (o `"accent"` para temas
+2. `meta`: `id` del video, `lang`, `title`, `voice` (es: `chatterbox`/`diego`, la voz grabada del usuario;
+   en: `chatterbox`/`default`; respaldo rápido: `kokoro` con `em_alex` en es o `am_fenrir` en en), `music: false`, `captionEmphasis: "box"` (o `"accent"` para temas
    muy técnicos).
 3. `keyword`: **una palabra por beat** que lleva la caja de selección, copiada del `text` (la idea clave, no un
    artículo). En el gancho, el verbo o el objeto sorprendente.
@@ -55,7 +55,7 @@ motivo exacto (id inexistente, pose que no existe, `at` que no es una palabra de
     "lang": "es",
     "title": "Por qué el hielo flota",
     "fps": 30, "width": 1080, "height": 1920,
-    "voice": { "engine": "kokoro", "voice": "em_alex", "speed": 1.0 },
+    "voice": { "engine": "chatterbox", "voice": "diego", "speed": 1.0 },
     "music": false,
     "captionEmphasis": "box"
   },
