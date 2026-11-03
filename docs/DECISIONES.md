@@ -271,3 +271,17 @@ un solo proceso: 6,6 minutos para 1.573 frames, mucho más rápido que los rende
   de él la voz elegida. `validate_story` comprueba que los textos del story y del guion coincidan línea a línea.
 - **QA básico:** `10_qa.md` mide duraciones, loudness del final y `measure.py`. El QA de estilo completo es de F8.
 - **`catalog.json`:** los overlays numéricos llevan `"numeric": true`, y `catalog.ts` lo cruza con el registro.
+## Cambio de PC a Linux (2 nov, antes de F8)
+
+**D56 · El proyecto también corre en Linux (CachyOS).** Desde F8 se trabaja en un portátil Linux (Intel UHD, 4
+núcleos, 11 GB de RAM, sin GPU NVIDIA usable). Cambios:
+- **Venv con `uv`** y Python 3.11, porque el sistema trae 3.14. **PyTorch en versión CPU** (índice
+  `download.pytorch.org/whl/cpu`): la versión por defecto de pip en Linux trae ~3 GB de librerías CUDA que aquí no
+  sirven.
+- **`REMOTION_TMP` por defecto:** `C:/remotion-tmp` en Windows y `~/remotion-tmp` en el resto (`make_short.py`,
+  `job.mjs`, `stills.mjs`). No se usa `/tmp` porque suele ser tmpfs (RAM). Antes, sin la variable, en Linux se creaba
+  una carpeta `C:` dentro del repo.
+- **Mismo resultado que en Windows:** la prueba de humo de `hielo-flota` (escala 0,5) da las mismas medidas de
+  `measure.py` (luma mediana 0,116, saturación 0,677, racha estática 178) y la misma mezcla (−14,0 LUFS). Lo que se
+  mida en F8 en este PC vale para el otro. Tiempos: voz 36 s, alineación 2,9 min (con la descarga de Whisper),
+  stills 41 s, render 5,2 min.

@@ -3,13 +3,14 @@
 //   node scripts/job.mjs stills <bundleDir> <props.json> <outDir> <f1,f2,...> [--scale 0.5]
 //   node scripts/job.mjs render <bundleDir> <props.json> <out.mp4> [--scale 1] [--concurrency 1]
 // El render escribe primero <out>.part.mp4 y lo renombra al terminar: un render interrumpido no deja un artefacto
-// que el orquestador tome por bueno. Temporales en REMOTION_TMP (por defecto C:/remotion-tmp).
+// que el orquestador tome por bueno. Temporales en REMOTION_TMP (por defecto C:/remotion-tmp en Windows y ~/remotion-tmp en el resto).
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-const tmp = process.env.REMOTION_TMP || "C:/remotion-tmp";
+const tmp = process.env.REMOTION_TMP || (process.platform === "win32" ? "C:/remotion-tmp" : path.join(os.homedir(), "remotion-tmp"));
 fs.mkdirSync(tmp, { recursive: true });
 process.env.TEMP = process.env.TMP = tmp;
 

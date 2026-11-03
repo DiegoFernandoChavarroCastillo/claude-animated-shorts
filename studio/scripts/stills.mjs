@@ -1,10 +1,11 @@
 // usage: node scripts/stills.mjs <outDir> <Comp@f1,f2,...> [<Comp2@...> ...] [--scale 0.5]
 // Empaqueta una vez y renderiza stills JPEG en <outDir>/<Comp>_<frame>.jpg. Remotion usa su Chrome Headless Shell.
-// Variables: REMOTION_TMP (carpeta temporal, por defecto C:/remotion-tmp: cada bundle copia public/ y no se borra),
+// Variables: REMOTION_TMP (carpeta temporal, por defecto C:/remotion-tmp en Windows y ~/remotion-tmp en el resto: cada bundle copia public/ y no se borra),
 // STILLS_PROPS (inputProps en JSON), STILLS_GL (por defecto angle), STILLS_ENTRY (otra entrada), STILLS_DEBUG.
 import fs from "node:fs";
 import path from "node:path";
-const tmp = process.env.REMOTION_TMP || "C:/remotion-tmp";
+import os from "node:os";
+const tmp = process.env.REMOTION_TMP || (process.platform === "win32" ? "C:/remotion-tmp" : path.join(os.homedir(), "remotion-tmp"));
 fs.mkdirSync(tmp, { recursive: true });
 process.env.TEMP = process.env.TMP = tmp;
 const { bundle } = await import("@remotion/bundler");

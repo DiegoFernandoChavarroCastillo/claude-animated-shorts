@@ -29,7 +29,8 @@ from common import ROOT, PipelineError, load_json, write_json  # noqa: E402
 
 PY = sys.executable
 STUDIO = ROOT / "studio"
-TMP = os.environ.get("REMOTION_TMP", "C:/remotion-tmp")
+# Fuera de Windows, en el home: /tmp suele ser tmpfs (RAM) y cada bundle copia public/
+TMP = os.environ.get("REMOTION_TMP") or ("C:/remotion-tmp" if os.name == "nt" else str(Path.home() / "remotion-tmp"))
 BUNDLE = f"{TMP}/bundle"
 VOICE_DEFAULT = {"es": "em_alex", "en": "am_fenrir"}   # D46
 STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa"]

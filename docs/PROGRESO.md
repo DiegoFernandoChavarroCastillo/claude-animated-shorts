@@ -1,7 +1,7 @@
 # Progreso del estilo "Explainer 2.5D"
 
 Estado al **2 de noviembre de 2026**, rama `estilo-explainer`. Plan completo en `docs/PLAN_ESTILO_EXPLAINER.md`;
-cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D55).
+cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D56).
 
 ## Reglas del proyecto (acordadas con Diego)
 
@@ -42,8 +42,9 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D55).
    Etapas: validate-script → tts → align → validate-story → stills → render → mix → mux → qa. Cada una deja su
    artefacto en `out/<id>/` y se salta si ya está al día; `--force render,mix` rehace etapas concretas; `--review`
    para tras validar el guion. Registro en `out/<id>/log.md`.
-3. Tiempos medidos en este PC (Intel HD 530, 7,8 GB de RAM), video de 52 s a escala 0,5: voz 2 min,
-   alineación 1,4 min, stills 1,6 min, render 6,6 min, mezcla + unión + QA ~1 min.
+3. Tiempos medidos en el PC Windows (Intel HD 530, 7,8 GB de RAM), video de 52 s a escala 0,5: voz 2 min,
+   alineación 1,4 min, stills 1,6 min, render 6,6 min, mezcla + unión + QA ~1 min. En el portátil Linux (Intel UHD,
+   11 GB): voz 36 s, alineación 2,9 min con la descarga de Whisper, stills 41 s, render 5,2 min.
 
 ## Mapa del código
 
@@ -107,6 +108,28 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D55).
    .venv\Scripts\python.exe pipeline\make_short.py init --id hielo-flota --from templates\examples\hielo-flota
    .venv\Scripts\python.exe pipeline\make_short.py all --id hielo-flota --scale 0.5
    ```
+
+## Continuar en otro PC (Linux)
+
+Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos cambios:
+
+1. **Programas:** `sudo pacman -S git ffmpeg espeak-ng nodejs-lts-krypton npm tesseract tesseract-data-spa
+   tesseract-data-eng uv` (en Debian/Ubuntu, los equivalentes con `apt`; `uv` con su instalador oficial).
+2. **Python** (desde la raíz del repo; `setup_audio.ps1` es solo para Windows):
+
+   ```bash
+   uv python install 3.11
+   uv venv --python 3.11 .venv
+   uv pip install --python .venv/bin/python torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+   uv pip install --python .venv/bin/python -r requirements.txt \
+       --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match
+   ```
+
+   PyTorch va en versión CPU. Con GPU NVIDIA, usa el índice CUDA que corresponda.
+3. **Remotion:** `cd studio && npm ci && npx tsc --noEmit`. npm avisa de que bloqueó el `postinstall` de esbuild.
+   No hace falta: el binario `@esbuild/linux-x64` ya viene instalado.
+4. **Temporales:** por defecto `~/remotion-tmp` (no `/tmp`, que suele ir en RAM). Se cambia con `REMOTION_TMP`.
+5. **Referencias y prueba de humo:** como en Windows (pasos 5 y 8), con `.venv/bin/python` y rutas con `/`.
 
 ## Pendientes conocidos (para F8 o antes)
 
