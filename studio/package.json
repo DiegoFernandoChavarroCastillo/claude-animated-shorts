@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check-catalog": "node scripts/check_catalog.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

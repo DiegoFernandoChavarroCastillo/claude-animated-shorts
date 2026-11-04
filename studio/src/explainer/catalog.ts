@@ -58,11 +58,15 @@ export const storyErrors = (story: Story): string[] => {
       if (h.kind !== s.hero.kind) errs.push(`${b.id}: hero.kind "${s.hero.kind}" no corresponde a ${s.hero.asset} (${h.kind})`);
       if (s.hero.pose && !h.poses.includes(s.hero.pose)) errs.push(`${b.id}: pose "${s.hero.pose}" no existe para ${s.hero.asset}`);
     }
+    const cam = s.camera;
+    if (cam.preset === "follow_anchor" && (!cam.anchor || (h && !h.anchors.includes(cam.anchor)))) errs.push(`${b.id}: follow_anchor necesita camera.anchor, un ancla de ${s.hero.asset}`);
     for (const o of b.overlays) {
       const d = overlays[o.type];
       if (!d) { errs.push(`${b.id}: overlay "${o.type}" no existe`); continue; }
       const anchor = (o as { anchor?: string }).anchor;
       if (anchor && (!d.anchored || (h && !h.anchors.includes(anchor)))) errs.push(`${b.id}: ${o.type} con anchor "${anchor}" no válido`);
+      const to = (o as { to?: string }).to;
+      if (o.type === "FlowArrow" && (!to || (h && !h.anchors.includes(to)))) errs.push(`${b.id}: FlowArrow necesita "to", un ancla de ${s.hero.asset}`);
     }
     for (const x of b.sfx) if (!(x.type in c.sfx)) errs.push(`${b.id}: sfx "${x.type}" no existe`);
   }

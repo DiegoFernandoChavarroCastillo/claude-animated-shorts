@@ -5,7 +5,7 @@ import { z } from "zod";
 export const LANGS = ["es", "en"] as const;
 export const ROLES = ["hook", "tension", "mechanism", "layer2", "twist", "cta"] as const;
 export const LIGHT_NAMES = ["atardecer", "noche", "dorado", "tech"] as const;
-export const CAMERA_PRESETS = ["push_in", "drift", "glide", "zoom_through", "orbit_slow", "cut"] as const;
+export const CAMERA_PRESETS = ["push_in", "drift", "glide", "zoom_through", "orbit_slow", "cut", "pull_out", "orbit_fast", "crane_up", "crane_down", "dolly_side", "whip_pan", "dutch_tilt", "follow_anchor", "spiral_in", "arc_over"] as const;
 export const TRANSITIONS = ["glide", "zoom_through", "cut", "crossfade"] as const;
 export const HERO_KINDS = ["primitive", "gltf", "card"] as const;
 
@@ -22,8 +22,9 @@ export const SceneSchema = z.object({
   camera: z.object({
     preset: z.enum(CAMERA_PRESETS),
     rate: z.number().min(0).max(0.6).optional(),   // %/frame (push_in)
-    deg: z.number().min(-45).max(45).optional(),   // grados totales (orbit_slow)
-    dir: z.enum(["left", "right"]).optional(),     // drift
+    deg: z.number().min(-90).max(90).optional(),   // grados totales (orbit_slow, orbit_fast, spiral_in, arc_over, dutch_tilt)
+    dir: z.enum(["left", "right"]).optional(),     // drift, dolly_side, whip_pan
+    anchor: z.string().optional(),                 // follow_anchor: ancla del héroe
   }),
   dof: z.number().min(0).max(24).optional(),       // cInf en px a 1080
 });

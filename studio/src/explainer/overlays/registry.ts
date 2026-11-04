@@ -18,6 +18,8 @@ import { Callout3D } from "./Callout3D";
 import { NoSymbol } from "./NoSymbol";
 import { TitlePlaque } from "./TitlePlaque";
 import { ClockChip } from "./ClockChip";
+import { Arrow3D, Highlight, ZoomLens, FlowArrow } from "./Guides";
+import { Timeline, Thermometer, VersusCard, Checklist, Steps, Equation, ScaleBar, TrendArrow, WarningTag } from "./Panels";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Comp = React.FC<any>;
@@ -41,4 +43,18 @@ export const OVERLAYS: Record<string, { component: Comp; anchored: boolean; nume
   NoSymbol: { component: NoSymbol, anchored: false, numeric: false },
   TitlePlaque: { component: TitlePlaque, anchored: false, numeric: false },
   ClockChip: { component: ClockChip, anchored: false, numeric: false },
+  // F11: guías (ancladas) y paneles de apoyo
+  Arrow3D: { component: Arrow3D, anchored: true, numeric: false },
+  Highlight: { component: Highlight, anchored: true, numeric: false },
+  ZoomLens: { component: ZoomLens, anchored: true, numeric: false },
+  FlowArrow: { component: FlowArrow, anchored: true, numeric: false },
+  Timeline: { component: Timeline, anchored: false, numeric: false },
+  Thermometer: { component: Thermometer, anchored: false, numeric: true },
+  VersusCard: { component: VersusCard, anchored: false, numeric: false },
+  Checklist: { component: Checklist, anchored: false, numeric: false },
+  Steps: { component: Steps, anchored: false, numeric: false },
+  Equation: { component: Equation, anchored: false, numeric: false },
+  ScaleBar: { component: ScaleBar, anchored: false, numeric: true },
+  TrendArrow: { component: TrendArrow, anchored: false, numeric: true },
+  WarningTag: { component: WarningTag, anchored: false, numeric: false },
 };

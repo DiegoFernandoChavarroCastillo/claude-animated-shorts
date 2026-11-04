@@ -7,7 +7,7 @@ import { heroDef, type V3 } from "../heroes";
 import { envDef } from "../envs";
 
 export type Cam = { pos: V3; look: V3; fov: number; roll: number };
-type Params = { az: number; el: number; dist: number; lat: number; lift: number; fov: number };
+type Params = { az: number; el: number; dist: number; lat: number; lift: number; fov: number; roll: number; focus: V3 };
 
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 /** smootherstep simétrico (el "glide" del puente) */
@@ -25,7 +25,7 @@ const baseParams = (bt: BeatT): Params => {
   const dist = (h.radius / (0.55 * tanH)) * (view?.distK ?? 1);
   const lift = dist * Math.tan(rad(fov / 2)) * (CAMERA.heroScreenYK - 0.5) * 2; // sube el punto de mira
   const az = bt.beat.scene.hero.pose === "lateral" ? 35 : 0;
-  return { az, el: view?.el ?? 9, dist, lat: 0, lift, fov };
+  return { az, el: view?.el ?? 9, dist, lat: 0, lift, fov, roll: 0, focus: [0, 0, 0] };
 };
 
 /** preset del beat en el frame local t (0 = inicio del beat; puede ser < 0 o > dur durante transiciones) */
@@ -36,7 +36,7 @@ const preset = (bt: BeatT, t: number, p: Params): Params => {
   const tc = t - dur / 2;
   // deriva lateral de fondo en todos los planos (alterna por beat): el empuje solo no lo ve el flujo óptico (§3.2)
   const wpp = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width;
-  if (c.preset !== "drift") q.lat += (bt.i % 2 ? -1 : 1) * Math.min(CAMERA.baseDriftPx, CAMERA.baseDriftMaxPx / dur) * tc * wpp;
+  if (c.preset !== "drift" && c.preset !== "dolly_side") q.lat += (bt.i % 2 ? -1 : 1) * Math.min(CAMERA.baseDriftPx, CAMERA.baseDriftMaxPx / dur) * tc * wpp;
   // el empuje cierra el campo (zoom de lente) en vez de acercar la cámara: así escala todo el cuadro, fondo incluido,
   // y no solo el objeto; con un dolly el fondo lejano casi no cambia y el plano se mide como quieto (D31)
   // en beats largos el empuje se limita a CAMERA.pushMaxZoom en todo el beat: centrado en la mitad, 0,3 %/frame
@@ -62,24 +62,59 @@ const preset = (bt: BeatT, t: number, p: Params): Params => {
     }
     case "zoom_through": q.dist *= 0.3 + 0.7 * easeOut((t + 6) / 30); push(CAMERA.pushMin); break;
     case "cut": push(CAMERA.pushMin); break;
+    // ---- presets de F11 (ampliación del catálogo): todos conservan el empuje mínimo, así que nunca quedan quietos ----
+    case "pull_out": {
+      // se aleja abriendo el campo (lo contrario de push_in): revela el contexto
+      const r = Math.min(Math.max(c.rate ?? CAMERA.pushDefault, CAMERA.pushMin) / 100, Math.log(CAMERA.pushMaxZoom) / dur);
+      q.fov = 2 * (180 / Math.PI) * Math.atan(Math.tan(rad(q.fov / 2)) * Math.exp(r * tc)); break;
+    }
+    case "orbit_fast": q.az += (c.deg ?? 35) * (t / dur); push(CAMERA.pushMin); break;
+    case "crane_up": q.el += 14 * (tc / dur); push(CAMERA.pushMin); break;
+    case "crane_down": q.el -= 14 * (tc / dur); push(CAMERA.pushMin); break;
+    case "dolly_side": {
+      // travelling con paralaje: la cámara se desliza y gira un poco en sentido contrario (más recorrido que drift)
+      const wp = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width, d = c.dir === "left" ? -1 : 1;
+      q.lat += d * Math.min(2.4, 360 / dur) * tc * wp; q.az -= d * 10 * (tc / dur); push(CAMERA.pushMin); break;
+    }
+    case "whip_pan": {
+      // entra barriendo desde un lado en los primeros ~12 frames y se asienta con el empuje mínimo
+      const d = c.dir === "left" ? -1 : 1;
+      q.lat += d * 0.6 * q.dist * (1 - easeOut(t / 12)); q.roll = d * 0.04 * (1 - easeOut(t / 12)); push(CAMERA.pushMin); break;
+    }
+    case "dutch_tilt": q.roll = rad(c.deg ?? 6) * glide(t / 24); push(CAMERA.pushMin); break;
+    case "follow_anchor": {
+      // la mirada viaja del centro del objeto al ancla con nombre mientras se acerca
+      const a = heroDef(bt.beat.scene.hero.asset), h = a.anchors[c.anchor ?? "hero"] ?? a.center, u = glide(t / dur);
+      q.focus = [(h[0] - a.center[0]) * u, (h[1] - a.center[1]) * u, (h[2] - a.center[2]) * u];
+      q.dist *= 1 - 0.3 * u; push(CAMERA.pushMin); break;
+    }
+    case "spiral_in": {
+      const u = glide(t / dur);
+      q.az += (c.deg ?? 40) * (1 - u); q.dist *= 1 + 0.45 * (1 - u); q.el += 6 * (1 - u); push(CAMERA.pushMin); break;
+    }
+    case "arc_over": {
+      // arco por encima: sube y gira a la vez (para enseñar una pieza desde otro ángulo)
+      q.el += 16 * (tc / dur); q.az += (c.deg ?? 20) * (tc / dur); push(CAMERA.pushMin); break;
+    }
   }
   return q;
 };
 
 const posOf = (p: Params, center: V3): Cam => {
-  const look: V3 = [center[0], center[1] + p.lift, center[2]];
+  const look: V3 = [center[0] + p.focus[0], center[1] + p.lift + p.focus[1], center[2] + p.focus[2]];
   const ce = Math.cos(rad(p.el)), right: V3 = [Math.cos(rad(p.az)), 0, -Math.sin(rad(p.az))];
   const pos: V3 = [
     look[0] + p.dist * ce * Math.sin(rad(p.az)) + right[0] * p.lat,
     look[1] + p.dist * Math.sin(rad(p.el)),
     look[2] + p.dist * ce * Math.cos(rad(p.az)) + right[2] * p.lat,
   ];
-  return { pos, look: [look[0] + right[0] * p.lat, look[1], look[2] + right[2] * p.lat], fov: p.fov, roll: 0 };
+  return { pos, look: [look[0] + right[0] * p.lat, look[1], look[2] + right[2] * p.lat], fov: p.fov, roll: p.roll };
 };
 
 const mix = (a: Params, b: Params, k: number): Params =>
   ({ az: a.az + (b.az - a.az) * k, el: a.el + (b.el - a.el) * k, dist: a.dist * Math.pow(b.dist / a.dist, k),
-    lat: a.lat + (b.lat - a.lat) * k, lift: a.lift + (b.lift - a.lift) * k, fov: a.fov + (b.fov - a.fov) * k });
+    lat: a.lat + (b.lat - a.lat) * k, lift: a.lift + (b.lift - a.lift) * k, fov: a.fov + (b.fov - a.fov) * k,
+    roll: a.roll + (b.roll - a.roll) * k, focus: [0, 1, 2].map((i) => a.focus[i] + (b.focus[i] - a.focus[i]) * k) as V3 });
 
 const paramsAt = (tl: Timeline, i: number, f: number, depth = 0): Params => {
   const bt = tl.beats[i], t = f - bt.a;

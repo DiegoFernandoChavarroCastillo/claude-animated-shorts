@@ -58,6 +58,9 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: pose '{hero['pose']}' no existe para {hero.get('asset')} ({', '.join(h['poses'])})")
         if s.get("camera", {}).get("preset") not in cat["camera"]:
             errs.append(f"{bid}: preset de cámara '{s.get('camera', {}).get('preset')}' no existe")
+        cam = s.get("camera", {})
+        if cam.get("preset") == "follow_anchor" and (not cam.get("anchor") or (h and cam["anchor"] not in h["anchors"])):
+            errs.append(f"{bid}: follow_anchor necesita camera.anchor, un ancla de {hero.get('asset')}")
         if b.get("transition", "glide") not in cat["transitions"]:
             errs.append(f"{bid}: transición '{b.get('transition')}' no existe")
         text = b.get("text", "")
@@ -77,6 +80,8 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: {o['type']} con at '{o.get('at')}' que no es una palabra del beat")
             if "anchor" in o and (not d["anchored"] or (h and o["anchor"] not in h["anchors"])):
                 errs.append(f"{bid}: {o['type']} con anchor '{o['anchor']}' no válido")
+            if o.get("type") == "FlowArrow" and (not o.get("to") or (h and o["to"] not in h["anchors"])):
+                errs.append(f"{bid}: FlowArrow necesita 'to', un ancla de {hero.get('asset')}")
         if numeric and not b.get("sources"):
             errs.append(f"{bid}: overlay con número sin 'sources'")
         for x in b.get("sfx", []):
