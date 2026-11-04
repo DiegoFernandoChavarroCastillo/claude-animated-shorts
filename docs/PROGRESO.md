@@ -135,6 +135,14 @@ Probado en CachyOS (Arch) el 2 nov (D56). Mismos pasos que en Windows, con estos
 4. **Temporales:** por defecto `~/remotion-tmp` (no `/tmp`, que suele ir en RAM). Se cambia con `REMOTION_TMP`.
 5. **Referencias y prueba de humo:** como en Windows (pasos 5 y 8), con `.venv/bin/python` y rutas con `/`.
 
+## F11 · Resultado de la prueba (3 nov)
+
+`garganta-gripe` rehecho como `garganta-gripe-v2` (mismo guion y voz; solo cambia `05_story.json`): 8 beats con 6
+objetos distintos (garganta en corte ×3, virus, célula, persona, neurona, caja) y 5 entornos, frente a `persona` ×8 y 3
+entornos. QA a escala 0,5, **con avisos**: racha estática 103 → 50 frames (límite de diseño 45, de referencias 100), OCR
+86,7 % (como antes; con los cielos claros de `interior_cuerpo` y `microscopio` bajó a 76,7 %, por eso se oscurecieron) y
+silencio 32,6 % (la voz, ya conocido en D64). **Sin pasar** por el agente verificador de look-match: falta.
+
 ## Pendientes conocidos (para F9–F10)
 
 1. ~~Plano quieto más largo~~ y ~~color del ejemplo~~: resueltos en F8 (D58, D59). `hielo-flota` da QA OK.

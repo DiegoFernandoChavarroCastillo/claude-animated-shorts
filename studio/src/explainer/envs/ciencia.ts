@@ -30,12 +30,12 @@ export const interior_cuerpo: EnvDef = {
   view: { el: 8, dof: 11 },
   build: (light, seed) => {
     const ctx = makeCtx(light, seed);
-    sky(ctx, { clouds: 0, stars: 0, colors: { top: "#3a1530", mid: "#7a2e4a", horizon: "#c0586a" } });
+    sky(ctx, { clouds: 0, stars: 0, colors: { top: "#1e0a1a", mid: "#4a1a30", horizon: "#8a3a52" } });
     floor(ctx, "#7a2e45", "#a84a5a", "#d9747e");
-    sphereBg(ctx, 9, "#ff7a8a", { x: [-14, 14], y: [2, 9], z: [-28, -12] }, [3, 7], 0.12);
+    sphereBg(ctx, 9, "#ff7a8a", { x: [-14, 14], y: [2, 9], z: [-28, -12] }, [3, 7], 0.05);
     lightDots(ctx, 40, "#ff6a7a", { x: [-12, 12], y: [0.4, 8], z: [-26, -4] }, [0.08, 0.22], 1.6, 0.5);
     lightDots(ctx, 14, "#ffd0b8", { x: [-10, 10], y: [0.4, 7], z: [-20, -5] }, [0.04, 0.1], 1.8, 0.4);
-    return ctx.done(fogOf(ctx.L, 14, 70, "#5a1f38"));
+    return ctx.done(fogOf(ctx.L, 14, 70, "#3a1226"));
   },
 };
 
@@ -47,11 +47,11 @@ export const microscopio: EnvDef = {
     const ctx = makeCtx(light, seed);
     sky(ctx, { clouds: 0, stars: 0, colors: { top: "#04121a", mid: "#0b2a36", horizon: "#16525c" } });
     floor(ctx, "#08222c", "#1d6a74", "#5fd4f4", 10);
-    const halo = new THREE.Mesh(ctx.track(new THREE.CircleGeometry(40, 64)), ctx.track(new THREE.MeshBasicMaterial({ map: canvasTex(ctx, 256, 256, (g) => { const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, "rgba(95,212,244,0.55)"); gr.addColorStop(1, "rgba(95,212,244,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256); }), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })));
+    const halo = new THREE.Mesh(ctx.track(new THREE.CircleGeometry(40, 64)), ctx.track(new THREE.MeshBasicMaterial({ map: canvasTex(ctx, 256, 256, (g) => { const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, "rgba(95,212,244,0.28)"); gr.addColorStop(1, "rgba(95,212,244,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256); }), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })));
     halo.position.set(0, 8, -50); ctx.root.add(halo);
     lightDots(ctx, 70, PALETTE.ui.cyan, { x: [-14, 14], y: [0.3, 10], z: [-34, -3] }, [0.03, 0.12], 1.5, 0.6);
     lightDots(ctx, 26, PALETTE.ui.green, { x: [-12, 12], y: [0.3, 9], z: [-28, -4] }, [0.04, 0.12], 1.5, 0.5);
-    sphereBg(ctx, 7, "#5fd4f4", { x: [-16, 16], y: [1, 9], z: [-34, -14] }, [1.5, 4], 0.1);
+    sphereBg(ctx, 7, "#5fd4f4", { x: [-16, 16], y: [1, 9], z: [-34, -14] }, [1.5, 4], 0.05);
     return ctx.done(fogOf(ctx.L, 14, 80, "#04121a"));
   },
 };
@@ -171,7 +171,7 @@ export const mente_abstracta: EnvDef = {
   view: { el: 7, dof: 12 },
   build: (light, seed) => {
     const ctx = makeCtx(light, seed), { r } = ctx;
-    sky(ctx, { clouds: 0, stars: 0.3, colors: { top: "#120a2e", mid: "#2a1a5a", horizon: "#6a3a8a" } });
+    sky(ctx, { clouds: 0, stars: 0.3, colors: { top: "#0c0620", mid: "#1e1244", horizon: "#4a2a6a" } });
     floor(ctx, "#241448", "#5a3a9a", "#b8a0ff", 10);
     const shapes = [() => new THREE.IcosahedronGeometry(1, 0), () => new THREE.TorusGeometry(1, 0.3, 10, 24), () => new THREE.OctahedronGeometry(1, 0), () => new THREE.SphereGeometry(1, 16, 12)];
     for (let i = 0; i < 16; i++) {
