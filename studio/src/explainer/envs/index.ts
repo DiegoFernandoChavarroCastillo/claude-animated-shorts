@@ -10,11 +10,13 @@ import { tech_oscuro } from "./tech_oscuro";
 import { interior_neutro } from "./interior_neutro";
 import { exterior_clasico } from "./exterior_clasico";
 import { macro_corte } from "./macro_corte";
+import { interior_cuerpo, microscopio, espacio_profundo, paisaje_natural, bosque_dia, cocina, taller_antiguo, laboratorio, mente_abstracta } from "./ciencia";
 
 export type { EnvDef, EnvInstance } from "./kit";
 
 export const ENVS: Record<string, EnvDef> = {
   cielo_atardecer, vista_aerea, calle_noche_bokeh, cuarto_noche, tech_oscuro, interior_neutro, exterior_clasico, macro_corte,
+  interior_cuerpo, microscopio, espacio_profundo, paisaje_natural, bosque_dia, cocina, taller_antiguo, laboratorio, mente_abstracta,
 };
 
 export const envDef = (id: string) => {
