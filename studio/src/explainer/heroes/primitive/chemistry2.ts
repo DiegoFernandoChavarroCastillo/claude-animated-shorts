@@ -12,7 +12,7 @@ export const molecula_atomos: HeroDef = {
   kind: "primitive",
   when: "Moléculas de uso cotidiano: dióxido de carbono, metano, oxígeno, efecto invernadero, gases, combustión, enlaces y estructura de una molécula.",
   poses: ["co2", "metano", "oxigeno"],
-  center: [0, 1.4, 0], radius: 1.35,
+  center: [0, 1.4, 0], radius: 1.1,
   anchors: { hero: [0, 1.4, 0], top: [0, 2.5, 0], base: [0, 0.2, 0], carbono: [0, 1.4, 0.3], enlace: [0.5, 1.4, 0.2], oxigeno: [1.2, 1.4, 0] },
   build: (_L, pose) => {
     const p = poseOf(molecula_atomos, pose, "molecula_atomos"), b = bin(), root = new THREE.Group(), g = new THREE.Group();

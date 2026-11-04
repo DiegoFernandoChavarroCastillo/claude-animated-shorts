@@ -144,6 +144,15 @@ entornos. QA a escala 0,5, **con avisos**: racha estática 103 → 50 frames (l�
 86,7 % (como antes; con los cielos claros de `interior_cuerpo` y `microscopio` bajó a 76,7 %, por eso se oscurecieron) y
 silencio 32,6 % (la voz, ya conocido en D64). **Sin pasar** por el agente verificador de look-match: falta.
 
+## F12 · Prueba: `sin-gravedad` (3 nov)
+
+Primer video con las fórmulas nuevas (gancho `y_si`, estructura `cadena`, cierre `bucle`, elegidos por el usuario).
+Verificador de look-match, ronda 1: **5,1/10** (luz 4, profundidad 4, cámara 4; objetos pequeños). Arreglos al entorno
+`espacio_profundo` (más claro, suelo con rejilla en vez de un bloque negro, nebulosas más suaves, `distK` 0,85), tamaños de
+objeto y etiquetas de `ForceArrows`. QA final a escala 1: estilo 9/9, luminosidad mediana 0,19 (antes 0,116), OCR 97,1 %
+(antes 88,6 %), pero **racha estática 99 frames** (cumple las referencias, ≤100; no la regla de diseño, ≤45). Estaba en el
+plano de la molécula (b05); cambiar la cámara a `drift` no la movió. No se volvió a pasar el verificador tras los arreglos.
+
 ## Pendientes conocidos (para F9–F10)
 
 1. ~~Plano quieto más largo~~ y ~~color del ejemplo~~: resueltos en F8 (D58, D59). `hielo-flota` da QA OK.

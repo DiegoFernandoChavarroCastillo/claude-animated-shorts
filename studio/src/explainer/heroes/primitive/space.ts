@@ -78,7 +78,7 @@ export const sol: HeroDef = {
   kind: "primitive",
   when: "El Sol y las estrellas: luz, calor, fusión, manchas solares, auroras, cuánto tarda la luz, por qué brillan las estrellas.",
   poses: ["activo"],
-  center: [0, 1.35, 0], radius: 1.35,
+  center: [0, 1.35, 0], radius: 1.15,
   anchors: { hero: [0, 1.35, 0], top: [0, 2.7, 0], base: [0, 0.1, 0], protuberancia: [1.0, 2.1, 0.2], mancha: [-0.4, 1.6, 1.0] },
   build: (_L, pose) => {
     poseOf(sol, pose, "sol");

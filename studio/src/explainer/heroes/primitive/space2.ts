@@ -44,7 +44,7 @@ export const satelite: HeroDef = {
   kind: "primitive",
   when: "Satélites: GPS, cómo funciona la ubicación del móvil, comunicaciones, la estación espacial, por qué un satélite no cae, tiempo que tarda la señal, basura espacial.",
   poses: ["orbita"],
-  center: [0, 1.4, 0], radius: 1.2,
+  center: [0, 1.4, 0], radius: 1.0,
   anchors: { hero: [0, 1.4, 0], top: [0, 2.6, 0], base: [0, 0.1, 0], panel: [1.4, 1.4, 0], antena: [0, 2.2, 0], senal: [0, 0.4, 0] },
   build: (_L, pose) => {
     poseOf(satelite, pose, "satelite");

@@ -125,7 +125,7 @@ export const gravedad_pozo: HeroDef = {
   kind: "primitive",
   when: "Gravedad y espacio-tiempo: masa que curva el espacio, órbitas, por qué caen las cosas, relatividad, por qué la Luna no cae, peso.",
   poses: ["pozo"],
-  center: [0, 0.9, 0], radius: 1.9,
+  center: [0, 0.9, 0], radius: 1.5,
   anchors: { hero: [0, 0.9, 0], top: [0, 2.2, 0], base: [0, 0.05, 0], masa: [0, 0.3, 0], orbita: [1.5, 0.9, 0.6], malla: [-1.7, 1.2, 0] },
   build: (_L, pose) => {
     poseOf(gravedad_pozo, pose, "gravedad_pozo");

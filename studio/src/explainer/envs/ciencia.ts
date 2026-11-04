@@ -57,24 +57,25 @@ export const microscopio: EnvDef = {
 };
 
 export const espacio_profundo: EnvDef = {
-  when: "Espacio exterior: planetas, estrellas, galaxias, agujeros negros, cohetes, el universo; fondo negro con estrellas y nebulosas.",
+  when: "Espacio exterior: planetas, estrellas, galaxias, agujeros negros, cohetes, el universo; fondo azul noche con estrellas, nebulosas suaves y un suelo tenue con rejilla.",
   lights: ["tech", "noche"],
-  view: { el: 4, dof: 4, distK: 1.1 },
+  view: { el: 5, dof: 5, distK: 0.85 },
   build: (light, seed) => {
     const ctx = makeCtx(light, seed);
-    sky(ctx, { clouds: 0, stars: 3.2, colors: { top: "#020208", mid: "#05061a", horizon: "#0b0c2e" } });
-    const g = ground(ctx, matte(ctx, { color: new THREE.Color("#04050f") }), 300); g.position.y = -0.02;
-    sphereBg(ctx, 5, "#7a3ab8", { x: [-40, 40], y: [4, 30], z: [-90, -50] }, [14, 28], 0.1);
-    sphereBg(ctx, 4, "#3a6ae0", { x: [-40, 40], y: [2, 26], z: [-90, -50] }, [12, 24], 0.08);
-    lightDots(ctx, 110, "#ffffff", { x: [-40, 40], y: [0.5, 28], z: [-80, -10] }, [0.04, 0.1], 2, 0.1);
-    return ctx.done(fogOf(ctx.L, 60, 300, "#020208"));
+    sky(ctx, { clouds: 0, stars: 3.2, colors: { top: "#0b0f33", mid: "#1c2260", horizon: "#3a3f94" } });
+    floor(ctx, "#171b4a", "#4a52b8", "#9aa4ff", 20, 300);   // un suelo azul noche con rejilla tenue: ya no es un bloque negro (look-match F12)
+    sphereBg(ctx, 4, "#7a3ab8", { x: [-40, 40], y: [4, 30], z: [-90, -50] }, [14, 28], 0.05);
+    sphereBg(ctx, 3, "#3a6ae0", { x: [-40, 40], y: [2, 26], z: [-90, -50] }, [12, 24], 0.04);
+    lightDots(ctx, 130, "#ffffff", { x: [-40, 40], y: [0.5, 28], z: [-80, -10] }, [0.04, 0.1], 2, 0.1);
+    lightDots(ctx, 30, "#9ab4ff", { x: [-14, 14], y: [0.3, 9], z: [-30, -4] }, [0.03, 0.08], 1.6, 0.4);
+    return ctx.done(fogOf(ctx.L, 30, 200, "#1c2260"));
   },
 };
 
 export const paisaje_natural: EnvDef = {
   when: "Naturaleza abierta: montañas, mar, costas, volcanes, nubes, clima, geología, hielo, tormentas; paisaje amplio de cielo y colinas.",
   lights: ["atardecer", "dorado"],
-  view: { el: 8, dof: 6, distK: 1.1 },
+  view: { el: 8, dof: 6, distK: 0.9 },
   build: (light, seed) => {
     const ctx = makeCtx(light, seed), { L, r } = ctx;
     sky(ctx, { clouds: 0.5, stars: 0.1, low: 0.05 });

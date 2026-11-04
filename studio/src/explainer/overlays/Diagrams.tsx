@@ -182,12 +182,12 @@ export const ForceArrows: React.FC<ForceArrowsProps> = ({ dur, arrows, center = 
         <rect x={290} y={220} width={140} height={120} rx={24} fill={PALETTE.ui.card} stroke={PALETTE.light.white} strokeWidth={6} />
         <text x={360} y={292} textAnchor="middle" fill="#fff" fontSize={34} fontWeight={800} fontFamily={DISPLAY_FAMILY}>{center}</text>
         {arrows.slice(0, 4).map((a, i) => {
-          const k = enter(i * 3), [dx, dy] = D[a.dir], L = (a.size ?? 1) * 170 * k, sx = 360 + dx * 80 * (dx ? 1 : 0) + dx * 0, sy = 280 + dy * 70, ex = sx + dx * L, ey = sy + dy * L, col = cols[i % 4], nx = -dy, ny = dx, h = 26;
+          const k = enter(i * 3), [dx, dy] = D[a.dir], L = (a.size ?? 1) * 190 * k, sx = 360 + dx * 80 * (dx ? 1 : 0) + dx * 0, sy = 280 + dy * 70, ex = sx + dx * L, ey = sy + dy * L, col = cols[i % 4], nx = -dy, ny = dx, h = 26;
           return (
             <g key={i} opacity={k} style={{ filter: `drop-shadow(0 0 10px ${col})` }}>
-              <line x1={sx} y1={sy} x2={ex - dx * 8} y2={ey - dy * 8} stroke={col} strokeWidth={14} strokeLinecap="round" />
-              <polygon points={`${ex + dx * 10},${ey + dy * 10} ${ex - dx * 20 + nx * h},${ey - dy * 20 + ny * h} ${ex - dx * 20 - nx * h},${ey - dy * 20 - ny * h}`} fill={col} />
-              <text x={ex + dx * 20 + (dx ? dx * 10 : 0)} y={ey + dy * 20 + (dy ? dy * 18 : 12)} textAnchor={dx > 0 ? "start" : dx < 0 ? "end" : "middle"} fill="#fff" fontSize={36} fontWeight={800} fontFamily={DISPLAY_FAMILY}>{a.label}</text>
+              <line x1={sx} y1={sy} x2={ex - dx * 8} y2={ey - dy * 8} stroke={col} strokeWidth={20} strokeLinecap="round" />
+              <polygon points={`${ex + dx * 14},${ey + dy * 14} ${ex - dx * 26 + nx * 36},${ey - dy * 26 + ny * 36} ${ex - dx * 26 - nx * 36},${ey - dy * 26 - ny * 36}`} fill={col} />
+              <text x={ex + dx * 20 + (dx ? dx * 10 : 0)} y={ey + dy * 20 + (dy ? dy * 18 : 12)} textAnchor={dx > 0 ? "start" : dx < 0 ? "end" : "middle"} fill="#fff" fontSize={52} fontWeight={800} fontFamily={DISPLAY_FAMILY} style={{ paintOrder: "stroke", stroke: "#05050f", strokeWidth: 8 }}>{a.label}</text>
             </g>
           );
         })}
