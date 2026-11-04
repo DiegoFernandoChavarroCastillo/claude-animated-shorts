@@ -19,6 +19,8 @@ import { NoSymbol } from "./NoSymbol";
 import { TitlePlaque } from "./TitlePlaque";
 import { ClockChip } from "./ClockChip";
 import { Arrow3D, Highlight, ZoomLens, FlowArrow } from "./Guides";
+import { Speedometer, BatteryLevel, ProgressRing, Countdown, Stopwatch, ColorScale, DotGrid, LineChart } from "./Meters";
+import { Compass, Venn, Pyramid, BigWord, ECG, OrbitDiagram, ReactionEq, NumberLine, ForceArrows, DepthScale, ThoughtBubble, FoodChain } from "./Diagrams";
 import { Timeline, Thermometer, VersusCard, Checklist, Steps, Equation, ScaleBar, TrendArrow, WarningTag } from "./Panels";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,4 +59,25 @@ export const OVERLAYS: Record<string, { component: Comp; anchored: boolean; nume
   ScaleBar: { component: ScaleBar, anchored: false, numeric: true },
   TrendArrow: { component: TrendArrow, anchored: false, numeric: true },
   WarningTag: { component: WarningTag, anchored: false, numeric: false },
+  // F11 (2.ª tanda): medidores y gráficas, diagramas generales y de tema
+  Speedometer: { component: Speedometer, anchored: false, numeric: true },
+  BatteryLevel: { component: BatteryLevel, anchored: false, numeric: true },
+  ProgressRing: { component: ProgressRing, anchored: false, numeric: true },
+  Countdown: { component: Countdown, anchored: false, numeric: true },
+  Stopwatch: { component: Stopwatch, anchored: false, numeric: true },
+  ColorScale: { component: ColorScale, anchored: false, numeric: false },
+  DotGrid: { component: DotGrid, anchored: false, numeric: true },
+  LineChart: { component: LineChart, anchored: false, numeric: true },
+  Compass: { component: Compass, anchored: false, numeric: false },
+  Venn: { component: Venn, anchored: false, numeric: false },
+  Pyramid: { component: Pyramid, anchored: false, numeric: false },
+  BigWord: { component: BigWord, anchored: false, numeric: false },
+  ECG: { component: ECG, anchored: false, numeric: true },
+  OrbitDiagram: { component: OrbitDiagram, anchored: false, numeric: false },
+  ReactionEq: { component: ReactionEq, anchored: false, numeric: false },
+  NumberLine: { component: NumberLine, anchored: false, numeric: true },
+  ForceArrows: { component: ForceArrows, anchored: false, numeric: false },
+  DepthScale: { component: DepthScale, anchored: false, numeric: false },
+  ThoughtBubble: { component: ThoughtBubble, anchored: false, numeric: false },
+  FoodChain: { component: FoodChain, anchored: false, numeric: false },
 };

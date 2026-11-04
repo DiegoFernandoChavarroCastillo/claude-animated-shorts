@@ -17,7 +17,7 @@ hace el resto (voz, alineación por palabra, validaciones, render, mezcla a −1
 | Ruta | Qué es |
 |---|---|
 | `SKILL.md` | El skill `explainer-short`: pipeline, reglas y errores conocidos |
-| `studio/` | Proyecto Remotion: composición `Explainer`, 17 entornos, 72 objetos protagonistas, 31 overlays, 16 cámaras, subtítulos |
+| `studio/` | Proyecto Remotion: composición `Explainer`, 17 entornos, 126 objetos protagonistas, 51 overlays, 16 cámaras, subtítulos |
 | `pipeline/` | Orquestador y etapas en Python (TTS, alineación, SFX, mezcla, validadores, QA) |
 | `templates/` | Prompts (guion es/en, story, verificador), catálogo cerrado y ejemplos completos |
 | `tools/` | Medición de referencias y QA de estilo (`style_check.py`, hojas lado a lado), `catalog_search.py` (buscar objetos por tema) y `gallery.py` (probar objetos) |

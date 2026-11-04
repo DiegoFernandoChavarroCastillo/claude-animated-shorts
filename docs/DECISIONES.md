@@ -467,4 +467,11 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   `tools/add_heroes.py` copia poses/anclas/"when" del código al catálogo, `tools/gallery.py` renderiza una hoja de
   stills de cualquier lista `objeto:pose:entorno`, y `studio/scripts/check_catalog.mjs` (`npm run check-catalog`)
   comprueba catálogo y código sin abrir el navegador.
+- **D69 (3 nov) · Segunda tanda.** Diego pidió más variedad: «el medidor de velocidad ya se usó en el del hielo y en el de la
+  garganta; no todos los videos pueden usar el mismo». Se añadieron **54 objetos** (6 por rama: cuerpo, micro, mente,
+  química, física, espacio, Tierra, vida, hogar/historia/mates/tecnología; 126 en total) y **20 overlays** (12 generales:
+  `Speedometer`, `BatteryLevel`, `ProgressRing`, `Countdown`, `Stopwatch`, `ColorScale`, `DotGrid`, `LineChart`, `Compass`,
+  `Venn`, `Pyramid`, `BigWord`; 8 de tema: `ECG`, `OrbitDiagram`, `ReactionEq`, `NumberLine`, `ForceArrows`, `DepthScale`,
+  `ThoughtBubble`, `FoodChain`; 51 en total). Cada medidor cuenta una idea distinta (nivel, proporción, tiempo, velocidad,
+  tendencia), para no repetir `Gauge` en todos los videos. El catálogo avisa de que los medidores numéricos piden `sources`.
 

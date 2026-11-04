@@ -74,7 +74,29 @@ OV = {  # tipo -> (héroe/entorno de fondo, campos)
     "TrendArrow": ("esfera_flotante", "tech_oscuro", {"dir": "up", "value": "+12 %", "label": "CASOS"}),
     "WarningTag": ("esfera_flotante", "tech_oscuro", {"text": "OJO CON ESTO"}),
 }
-for t, (h, e, f) in ({} if SOLO2 else OV).items():
+OV2 = {
+    "Speedometer": ("esfera_flotante", "tech_oscuro", {"value": 72, "max": 120, "unit": " km/h", "label": "VELOCIDAD"}),
+    "BatteryLevel": ("esfera_flotante", "tech_oscuro", {"value": 0.18, "label": "ENERGÍA"}),
+    "ProgressRing": ("esfera_flotante", "tech_oscuro", {"value": 0.64, "label": "COMPLETADO"}),
+    "Countdown": ("esfera_flotante", "tech_oscuro", {"from": 10, "unit": " s", "label": "TIEMPO"}),
+    "Stopwatch": ("esfera_flotante", "tech_oscuro", {"seconds": 12.4, "label": "REACCIÓN"}),
+    "ColorScale": ("esfera_flotante", "tech_oscuro", {"from": "FRÍO", "to": "CALIENTE", "pos": 0.7, "label": "AQUÍ"}),
+    "DotGrid": ("esfera_flotante", "tech_oscuro", {"filled": 12, "label": "12 DE CADA 100"}),
+    "LineChart": ("esfera_flotante", "tech_oscuro", {"points": [3, 5, 4, 8, 12, 15], "labels": ["1", "2", "3", "4", "5", "6"], "unit": " °C", "label": "TEMPERATURA"}),
+    "Compass": ("esfera_flotante", "tech_oscuro", {"deg": 70, "label": "NORTE MAGNÉTICO"}),
+    "Venn": ("esfera_flotante", "tech_oscuro", {"a": "Virus", "b": "Bacterias", "both": "Infectan"}),
+    "Pyramid": ("esfera_flotante", "tech_oscuro", {"levels": ["Halcón", "Ratón", "Insectos", "Plantas"]}),
+    "BigWord": ("esfera_flotante", "tech_oscuro", {"word": "MITO", "sub": "NO ES CIERTO"}),
+    "ECG": ("corazon", "interior_cuerpo", {"bpm": 120, "label": "EN CARRERA"}),
+    "OrbitDiagram": ("planeta", "espacio_profundo", {"center": "SOL", "orbiter": "TIERRA", "period": "1 AÑO"}),
+    "ReactionEq": ("matraz", "laboratorio", {"parts": ["H₂", "+", "O₂", "→", "H₂O"]}),
+    "NumberLine": ("esfera_flotante", "tech_oscuro", {"min": 0, "max": 14, "value": 7.4, "marks": [{"v": 7, "label": "AGUA"}, {"v": 2, "label": "LIMÓN"}], "label": "pH"}),
+    "ForceArrows": ("esfera_flotante", "tech_oscuro", {"center": "BOLA", "arrows": [{"label": "PESO", "dir": "down"}, {"label": "EMPUJE", "dir": "up"}, {"label": "ROCE", "dir": "left", "size": 0.7}]}),
+    "DepthScale": ("esfera_flotante", "tech_oscuro", {"top": "SUPERFICIE", "bottom": "11 000 m", "marks": [{"at": 0.2, "label": "LUZ"}, {"at": 0.55, "label": "OSCURIDAD"}, {"at": 0.95, "label": "ABISMO"}], "marker": 0.55}),
+    "ThoughtBubble": ("persona", "mente_abstracta", {"text": "¿Dónde dejé las llaves?", "icon": "brain"}),
+    "FoodChain": ("esfera_flotante", "tech_oscuro", {"nodes": [{"label": "SOL", "icon": "sun"}, {"label": "PLANTA", "icon": "leaf"}, {"label": "INSECTO", "icon": "bug"}, {"label": "AVE", "icon": "fish"}]}),
+}
+for t, (h, e, f) in (OV2 if SOLO2 else OV).items():
     add("Mira este dato clave sobre el tema ahora mismo", e, h, None, overlays=[{"type": t, "at": "clave", **f}], dest=f"overlays/{t}.jpg", fracs=(0.8,))
 
 CAMS = {"pull_out": {}, "orbit_fast": {"deg": 60}, "crane_up": {}, "crane_down": {}, "dolly_side": {"dir": "right"}, "whip_pan": {"dir": "left"},
