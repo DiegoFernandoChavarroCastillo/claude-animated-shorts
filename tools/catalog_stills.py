@@ -19,12 +19,13 @@ ROOT = Path(__file__).resolve().parents[1]
 out = Path(sys.argv[1]).resolve(); scale = sys.argv[sys.argv.index("--scale") + 1] if "--scale" in sys.argv else "0.75"
 cat = load()
 src = ROOT / "studio/src/explainer/heroes/primitive"
-ENV_OF = {"body": "interior_cuerpo", "micro": "microscopio", "space": "espacio_profundo", "physics": "tech_oscuro", "chemistry": "laboratorio",
+ENV_OF = {"body2": "interior_cuerpo", "micro2": "microscopio", "mind2": "mente_abstracta", "chemistry2": "laboratorio", "physics2": "tech_oscuro", "space2": "espacio_profundo", "earth2": "paisaje_natural", "life2": "bosque_dia", "home2": "cocina",
+          "body": "interior_cuerpo", "micro": "microscopio", "space": "espacio_profundo", "physics": "tech_oscuro", "chemistry": "laboratorio",
           "earth": "paisaje_natural", "mind": "mente_abstracta", "life": "bosque_dia", "home": "cocina", "generic": "tech_oscuro"}
 ENV_OVERRIDE = {"pez": "macro_corte", "puente": "cielo_atardecer", "piramide": "taller_antiguo", "palanca": "taller_antiguo", "bateria": "tech_oscuro",
                 "wifi_router": "interior_neutro", "pantalla_led": "tech_oscuro", "numeros_flotantes": "tech_oscuro", "forma_fibonacci": "tech_oscuro",
                 "ave_vuelo": "cielo_atardecer", "nube_rayo": "cielo_atardecer", "ola_marea": "cielo_atardecer", "iceberg": "cielo_atardecer",
-                "capas_tierra": "tech_oscuro", "ojo": "mente_abstracta", "ojo_ilusion": "mente_abstracta", "cohete": "espacio_profundo"}
+                "capas_tierra": "tech_oscuro", "medusa": "macro_corte", "murcielago": "espacio_profundo", "candado_cifrado": "tech_oscuro", "engranajes": "taller_antiguo", "catapulta": "taller_antiguo", "pitagoras": "tech_oscuro", "moneda_azar": "tech_oscuro", "arcoiris": "paisaje_natural", "aurora": "paisaje_natural", "ondas_gota": "tech_oscuro", "mitocondria": "microscopio", "tubos_ensayo": "laboratorio", "ojo": "mente_abstracta", "ojo_ilusion": "mente_abstracta", "cohete": "espacio_profundo"}
 hero_env = {}
 for f, env in ENV_OF.items():
     for m in re.finditer(r"export const (\w+): HeroDef", (src / f"{f}.ts").read_text(encoding="utf-8")):
@@ -44,12 +45,14 @@ def add(text, env, hero, pose, cam=None, overlays=None, light=None, dest="", fra
     jobs.append((bid, dest, list(fracs)))
 
 
-NEW_H = [k for k in cat["heroes"] if k in hero_env]
+SOLO2 = "--solo2" in sys.argv
+SEGUNDA = {m.group(1) for f in ENV_OF if f.endswith("2") for m in re.finditer(r"export const (\w+): HeroDef", (src / f"{f}.ts").read_text(encoding="utf-8"))}
+NEW_H = [k for k in cat["heroes"] if k in hero_env and (not SOLO2 or k in SEGUNDA)]
 for h in NEW_H:
     for pose in cat["heroes"][h]["poses"]:
         add(f"Así se ve {h.replace('_', ' ')} en la pose {pose} ahora mismo", hero_env[h], h, pose, dest=f"objetos/{h}__{pose}.jpg", fracs=(0.65,))
 
-NEW_E = ["interior_cuerpo", "microscopio", "espacio_profundo", "paisaje_natural", "bosque_dia", "cocina", "taller_antiguo", "laboratorio", "mente_abstracta"]
+NEW_E = [] if SOLO2 else ["interior_cuerpo", "microscopio", "espacio_profundo", "paisaje_natural", "bosque_dia", "cocina", "taller_antiguo", "laboratorio", "mente_abstracta"]
 ENV_HERO = {"interior_cuerpo": "corazon", "microscopio": "celula", "espacio_profundo": "planeta", "paisaje_natural": "volcan_corte", "bosque_dia": "planta_fotosintesis",
             "cocina": "olla_hierve", "taller_antiguo": "palanca", "laboratorio": "matraz", "mente_abstracta": "cerebro"}
 for e in NEW_E:
@@ -71,16 +74,16 @@ OV = {  # tipo -> (héroe/entorno de fondo, campos)
     "TrendArrow": ("esfera_flotante", "tech_oscuro", {"dir": "up", "value": "+12 %", "label": "CASOS"}),
     "WarningTag": ("esfera_flotante", "tech_oscuro", {"text": "OJO CON ESTO"}),
 }
-for t, (h, e, f) in OV.items():
+for t, (h, e, f) in ({} if SOLO2 else OV).items():
     add("Mira este dato clave sobre el tema ahora mismo", e, h, None, overlays=[{"type": t, "at": "clave", **f}], dest=f"overlays/{t}.jpg", fracs=(0.8,))
 
 CAMS = {"pull_out": {}, "orbit_fast": {"deg": 60}, "crane_up": {}, "crane_down": {}, "dolly_side": {"dir": "right"}, "whip_pan": {"dir": "left"},
         "dutch_tilt": {"deg": 8}, "follow_anchor": {"anchor": "ventriculo"}, "spiral_in": {"deg": 40}, "arc_over": {"deg": 25}}
-for c, p in CAMS.items():
+for c, p in ({} if SOLO2 else CAMS).items():
     add("Esta es la cámara " + c.replace("_", " ") + " mirando el corazón con calma", "interior_cuerpo", "corazon", "latido", cam={"preset": c, **p}, dest=f"camaras/{c}.jpg", fracs=(0.03, 0.5, 0.97))
 
 ICONS = "virus cell atom planet thermo arrow warning bolt flask leaf dna lungs bone magnet wave rocket globe star fire cloud mountain fish bug bulb gear scale book hourglass pill cross sound".split()
-for i in range(0, len(ICONS), 4):
+for i in range(0, 0 if SOLO2 else len(ICONS), 4):
     ch = ICONS[i:i + 4]
     add("Estos son los iconos nuevos del catálogo ahora mismo", "tech_oscuro", "esfera_flotante", "orbe",
         overlays=[{"type": "IconFlow", "at": "iconos", "steps": [{"label": n.upper(), "icon": n} for n in ch]}], dest=f"iconos/iconos_{i // 4 + 1:02d}__{'_'.join(ch)}.jpg", fracs=(0.8,))
