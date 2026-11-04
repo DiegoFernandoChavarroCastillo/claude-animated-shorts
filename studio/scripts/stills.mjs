@@ -1,7 +1,7 @@
 // usage: node scripts/stills.mjs <outDir> <Comp@f1,f2,...> [<Comp2@...> ...] [--scale 0.5]
 // Empaqueta una vez y renderiza stills JPEG en <outDir>/<Comp>_<frame>.jpg. Remotion usa su Chrome Headless Shell.
 // Variables: REMOTION_TMP (carpeta temporal, por defecto C:/remotion-tmp en Windows y ~/remotion-tmp en el resto: cada bundle copia public/ y no se borra),
-// STILLS_PROPS (inputProps en JSON), STILLS_GL (por defecto angle), STILLS_ENTRY (otra entrada), STILLS_DEBUG.
+// STILLS_PROPS (inputProps en JSON) o STILLS_PROPS_FILE (ruta a un JSON, para props grandes), STILLS_GL (por defecto angle), STILLS_ENTRY (otra entrada), STILLS_DEBUG.
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -16,7 +16,7 @@ const scale = si >= 0 ? Number(args.splice(si, 2)[1]) : 0.5;
 const [outDir, ...specs] = args;
 fs.mkdirSync(outDir, { recursive: true });
 const chromiumOptions = { gl: process.env.STILLS_GL || "angle" };
-const inputProps = process.env.STILLS_PROPS ? JSON.parse(process.env.STILLS_PROPS) : {};
+const inputProps = process.env.STILLS_PROPS_FILE ? JSON.parse(fs.readFileSync(process.env.STILLS_PROPS_FILE, "utf8")) : process.env.STILLS_PROPS ? JSON.parse(process.env.STILLS_PROPS) : {};
 const onBrowserLog = (l) => { if (process.env.STILLS_DEBUG || l.type === "error" || l.type === "warning") console.log(`[${l.type}]`, l.text.slice(0, 300)); };
 const t0 = Date.now();
 const serveUrl = await bundle({ entryPoint: path.resolve(process.env.STILLS_ENTRY || "src/index.ts"), publicDir: path.resolve("public") });
