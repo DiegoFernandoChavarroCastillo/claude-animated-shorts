@@ -4,7 +4,7 @@
 
 Falla si: un env / luz / hero (kind, asset, pose) / overlay / ancla / preset de cámara / transición / sfx no existe en
 templates/catalog.json; un "at" no resuelve a una palabra del beat; un beat mechanism no tiene overlay; hay más de 3
-"cut" por minuto; un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
+"cut" por minuto; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
 además, el texto de los beats debe ser el del guion aprobado, línea a línea.
 """
 from __future__ import annotations
@@ -18,6 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, load_json, norm, run_main, words_of  # noqa: E402
 
 CUTS_PER_MIN = 3
+MAX_HERO_RUN = 3        # beats seguidos con el mismo objeto protagonista (garganta-gripe usó 8 de 8 y salió plano)
+MAX_HERO_SHARE = 0.65   # fracción máxima de beats con el mismo objeto (celular-calienta: 5 de 8 = 0,62 pasa)
 WPS = 2.8  # para estimar la duración si no hay words.json
 
 
@@ -89,6 +91,18 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
             if not resolves(x.get("at"), text):
                 errs.append(f"{bid}: sfx con at '{x.get('at')}' que no es una palabra del beat")
+    # variedad visual: un mismo protagonista no puede ocupar casi todo el video
+    assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in beats]
+    run = best = 1
+    for a, b in zip(assets, assets[1:]):
+        run = run + 1 if a == b else 1
+        best = max(best, run)
+    if best > MAX_HERO_RUN:
+        errs.append(f"el mismo objeto protagonista sale en {best} beats seguidos (máximo {MAX_HERO_RUN}): usa otro del catálogo "
+                    f"(tools/catalog_search.py) o apunta el hueco en 05_gaps.md")
+    top, n = max(((a, assets.count(a)) for a in set(assets)), key=lambda t: t[1])
+    if len(beats) >= 5 and n / len(beats) > MAX_HERO_SHARE:
+        errs.append(f"'{top}' es el protagonista de {n} de {len(beats)} beats (máximo {MAX_HERO_SHARE:.0%}): reparte los objetos")
     # cortes por minuto (la transición del último beat no se usa)
     dur = (words[-1]["end"] + 1.0) if words else sum(len(words_of(b.get("text", ""))) for b in beats) / WPS
     cuts = sum(1 for b in beats[:-1] if b.get("transition") == "cut")
