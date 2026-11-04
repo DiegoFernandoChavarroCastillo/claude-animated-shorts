@@ -51,8 +51,11 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 
 ### 4. Plan visual (`05_story.json`)
 
-- Lee **entero** `templates/catalog.json`: solo se pueden usar sus ids (entornos, luces, objetos y poses, cámaras,
-  transiciones, overlays, iconos, SFX). Cada entrada dice cuándo usarla ("when").
+- Solo se pueden usar los ids de `templates/catalog.json` (entornos, luces, objetos y poses, cámaras, transiciones,
+  overlays, iconos, SFX); cada entrada dice cuándo usarla ("when"). El catálogo es grande: primero lista los conceptos
+  visuales del guion y búscalos con `PY tools/catalog_search.py <palabras>` (ver `templates/prompts/story_es_en.md`).
+- **Huecos:** si un concepto central no tiene objeto, usa uno genérico o el más cercano, no `persona` repetida, y apúntalo
+  en `out/<id>/05_gaps.md`. El validador falla con el mismo objeto en más de 3 beats seguidos o en más del 65 %.
 - Un beat por línea del guion, con el `text` **idéntico** (los subtítulos y la voz salen de ahí).
 - Cambia de entorno solo al cambiar de lugar o de idea. Cada `mechanism` lleva su objeto protagonista y al menos un
   overlay de dato.
@@ -107,7 +110,8 @@ Entrega:
 | Catálogo cerrado para el story | `templates/catalog.json` (cruzado con el código en `studio/src/explainer/catalog.ts`) |
 | Ejemplos | `templates/examples/` (`hielo-flota` completo; `cielo-azul` y `dedos-arrugados` solo guion) |
 | Look del video (paleta, subtítulos, cámara, luces) | `studio/src/explainer/style.ts` y `world/grade.ts` |
-| Entornos, objetos, overlays | `studio/src/explainer/envs/`, `heroes/`, `overlays/` |
+| Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`), `overlays/` (`Guides`, `Panels`) |
+| Buscar en el catálogo, probar objetos | `tools/catalog_search.py`, `tools/gallery.py` (galería con stills), `tools/add_heroes.py` |
 | Orquestador y etapas | `pipeline/` (`make_short.py`, `voice.py`, `tts/`, `align.py`, `mix.py`, `voice_fx.py`…) |
 | QA | `pipeline/qa_basic.py`, `tools/qa/style_check.py`, `tools/qa/lookmatch_sheets.py` |
 | Decisiones y estado | `docs/DECISIONES.md`, `docs/PROGRESO.md`, `docs/LOOKMATCH.md` |

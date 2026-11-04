@@ -443,3 +443,28 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   algún video se pasa de 32 % de silencio, la salida es bajar las pausas a ×1,3 (500/730/1200 ms).
 - **Caché:** el audio crudo de cada frase se guarda en `_cache/chatterbox/`. Un reajuste de pausas o un `--force tts`
   sin cambios en el texto no vuelve a sintetizar.
+
+## F11 · Ampliación del catálogo (cámaras, overlays, objetos y entornos de ciencia)
+
+- **D65 (3 nov) · Por qué.** `garganta-gripe` usó `persona/espaldas` en 8 de 8 beats (QA con avisos, racha estática de
+  103 frames) porque el catálogo no tenía nada de anatomía ni de microbiología, y el skill no avisó. Se amplía el
+  catálogo a 72 objetos y 17 entornos por temas (cuerpo, micro, cerebro, química, física, espacio, Tierra, vida, hogar,
+  historia, matemáticas), con 10 cámaras y 13 overlays nuevos.
+- **D66 · Todo en código, sin glTF.** Se pensó un híbrido (primitivas + modelos CC0). En la práctica los 72 objetos se
+  hicieron con primitivas de three.js y texturas de Canvas2D, con la paleta del proyecto (`heroes/primitive/kit.ts`):
+  el estilo sale coherente, no hay licencias que seguir y el cargador glTF (nunca probado) sigue sin usarse. Los
+  animales (abeja, ave, pez) son formas simples, no tarjetas pintadas.
+- **D67 · Red de seguridad.** `validate_story.py` falla si un objeto se repite en más de 3 beats seguidos o en más del
+  65 % de los beats (el ejemplo `celular-calienta`, con 5 de 8, pasa). `tools/catalog_search.py` busca por `tags`,
+  id y "when" (sin acentos) para no leer 100 filas. `esfera_flotante`, `caja_etiquetada` y `diagrama_flujo` son los
+  respaldos para conceptos abstractos. Los huecos se anotan en `out/<id>/05_gaps.md`.
+- **D68 · Cámaras y ayudas visuales.** 10 presets (`pull_out`, `orbit_fast`, `crane_up/down`, `dolly_side`, `whip_pan`,
+  `dutch_tilt`, `follow_anchor`, `spiral_in`, `arc_over`) que conservan el empuje mínimo, para no empeorar la racha
+  estática. Overlays nuevos: guías ancladas (`Arrow3D`, `Highlight`, `ZoomLens`, `FlowArrow`, que exige `to`) y paneles
+  (`Timeline`, `Thermometer`, `VersusCard`, `Checklist`, `Steps`, `Equation`, `ScaleBar`, `TrendArrow`, `WarningTag`),
+  más 31 iconos.
+- **Herramientas.** `tools/catalog_io.py` mantiene el formato manual de `catalog.json` (diff pequeño),
+  `tools/add_heroes.py` copia poses/anclas/"when" del código al catálogo, `tools/gallery.py` renderiza una hoja de
+  stills de cualquier lista `objeto:pose:entorno`, y `studio/scripts/check_catalog.mjs` (`npm run check-catalog`)
+  comprueba catálogo y código sin abrir el navegador.
+

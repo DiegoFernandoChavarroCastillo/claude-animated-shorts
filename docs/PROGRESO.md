@@ -25,6 +25,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 | F7 | Orquestador `make_short.py` con checkpoints y un solo bundle de Remotion | ✅ criterios cumplidos; Diego revisó el video | `f1e6876` |
 | F8 | QA de estilo (`style_check`, OCR de subtítulos, hojas lado a lado, look-match §9: 5,5 → 6,8/10) | ✅ aprobada (look-match 6,8/10; además D60 ll/y y D61 entonación de pregunta) | `59d85d9`, `938ab0e`, `d0f99b4`, `553546c`, `b945b3b` |
 | F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ✅ aprobada (prueba en sesión nueva: `celular-calienta`) | `eb21221` |
+| F11 | Ampliación del catálogo: 72 objetos, 17 entornos, 10 cámaras, 13 overlays (D65–D68) | ✅ implementada; falta que Diego revise los videos de prueba | rama `ampliar-catalogo` |
 | F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 
 ## Cómo se hace un video hoy

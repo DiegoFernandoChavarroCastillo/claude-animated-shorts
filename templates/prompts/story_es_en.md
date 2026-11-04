@@ -10,6 +10,20 @@ que no esté en él hace fallar la validación.
 - `templates/catalog.json`: entornos, luces, objetos protagonistas con sus poses y anclas, presets de cámara,
   transiciones, overlays con sus campos, iconos y SFX. Cada entrada trae un "when" (cuándo usarla).
 
+## Antes de escribir: busca los objetos (F11)
+
+El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a ojo**. Haz lo siguiente:
+
+1. Lista los **conceptos visuales** del guion: lo que cada línea nombra o explica (una garganta, un virus, una
+   célula, un planeta, una reacción…).
+2. Para cada uno, busca con `python tools/catalog_search.py <palabras>` (ej. `garganta virus`, `agujero negro`). Devuelve
+   objetos, entornos y overlays con su puntuación, poses y anclas. Una puntuación ≥ 3 es un buen candidato.
+3. Si un concepto central **no tiene objeto** (puntuación 0), no lo fuerces con `persona`: usa uno genérico
+   (`esfera_flotante`, `caja_etiquetada`, `diagrama_flujo`) o el más cercano, y apunta el hueco en
+   `out/<id>/05_gaps.md` (concepto, qué se usó en su lugar, qué objeto haría falta). Díselo al usuario en la entrega.
+4. **Varía el protagonista**: el validador falla si un mismo objeto sale en más de 3 beats seguidos o en más del 65 %
+   de los beats. Alterna objetos y entornos según cambie la idea (el cuerpo → la célula → el virus).
+
 ## Reglas
 
 1. **Un beat por línea del guion**, en el mismo orden: `id` = `b01`, `b02`…; `role` = la etiqueta de la línea;
@@ -26,7 +40,11 @@ que no esté en él hace fallar la validación.
    - `hero`: un objeto protagonista por beat (`kind` y `asset` del catálogo; `pose` de su lista). Es lo que la voz
      nombra o explica en ese momento.
    - `camera`: `push_in` por defecto; `orbit_slow` para enseñar la forma; `drift` para enumerar; `glide` al llegar a
-     un lugar nuevo; `zoom_through` en el beat que sigue a una transición `zoom_through`.
+     un lugar nuevo; `zoom_through` en el beat que sigue a una transición `zoom_through`. Más: `pull_out` revela el
+     contexto, `orbit_fast`/`spiral_in`/`arc_over` enseñan el objeto desde otro ángulo, `crane_up`/`crane_down` suben o
+     bajan, `dolly_side` recorre de lado, `whip_pan` da un golpe de energía al cambiar de idea, `dutch_tilt` inclina el
+     horizonte para tensión y `follow_anchor` (con `camera.anchor`) lleva la mirada a una parte del objeto. **Dos beats
+     seguidos con el mismo objeto no repiten preset de cámara.**
    - `dof` (desenfoque de fondo, px a 1080): primer plano 12–16, plano medio 8–12, plano abierto 2–6. Si no lo pones,
      se usa el del entorno.
 5. **Cada beat `mechanism` = un objeto protagonista + al menos un overlay de dato** (`StatCallout`, `BarCompare`,
@@ -36,8 +54,12 @@ que no esté en él hace fallar la validación.
    `"#n"`. Los anclados (`PulseRings`, `LightTrails`, `Callout3D`) pueden llevar `anchor` con un ancla del protagonista.
    Colores con tokens (`ui.cyan`, `warm.gold`, `ui.green`, `ui.red`). Textos de overlay cortos (≤4 palabras) y en el
    idioma del video.
-   - gancho: `PulseRings` o `Pill`; tensión: `Pill` o `NoSymbol`; segunda capa histórica: `TitlePlaque`;
-     giro: `Callout3D` o `NoSymbol`; CTA: normalmente ninguno.
+   - gancho: `PulseRings`, `Highlight` o `Pill`; tensión: `Pill`, `WarningTag` o `NoSymbol`; segunda capa histórica:
+     `TitlePlaque` o `Timeline`; giro: `Callout3D`, `Arrow3D` o `NoSymbol`; CTA: normalmente ninguno.
+   - **Ayudas visuales** (F11): `Arrow3D` (flecha a una parte), `Highlight` (aro o marco), `ZoomLens` (lupa con un
+     icono), `FlowArrow` (recorrido de un ancla `anchor` a otra `to`), `Timeline`, `Thermometer`, `VersusCard`,
+     `Checklist`, `Steps`, `Equation`, `ScaleBar`, `TrendArrow`, `WarningTag`. Una guía anclada se combina con un panel;
+     dos paneles en el mismo hueco se pisan (usa `slot`).
 7. **Fuentes**: un beat con un overlay numérico lleva `sources` con las URL de `## Fuentes` del guion para ese dato.
 8. **Transiciones** (`transition`, hacia el beat siguiente): `glide` por defecto, `zoom_through` para "entrar" en el
    objeto (pantalla, ventanilla, chip), `crossfade` entre ideas, `cut` solo al cambiar de lugar y **como mucho 3 por
