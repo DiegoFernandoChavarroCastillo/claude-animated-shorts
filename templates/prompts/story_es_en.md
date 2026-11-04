@@ -24,6 +24,26 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
 4. **Varía el protagonista**: el validador falla si un mismo objeto sale en más de 3 beats seguidos o en más del 65 %
    de los beats. Alterna objetos y entornos según cambie la idea (el cuerpo → la célula → el virus).
 
+## Objeto que falta: créalo en este video (F14)
+
+Si un concepto **central** del guion sale con puntuación 0 y se puede hacer con formas simples (una rejilla, una lámina con
+cargas, un corte de muñeca con LED), no lo sustituyas por un objeto que no encaja: **créalo**. Reglas:
+
+1. **Máximo 2 prefabs por video.** Busca primero en el catálogo y en `studio/src/explainer/heroes/primitive/custom.ts`.
+2. Escríbelo en `custom.ts` (un `HeroDef` con `kind`, `when`, `poses`, `radius`, `center`, `anchors`, `build`; ~50–70 líneas; usa
+   los ayudantes de `kit.ts`; nada de `Math.random`). Si el guion pide un efecto en una palabra, dale **acciones propias**
+   (`actions` + `act`), p. ej. `chispa`, `amontonar`.
+3. Regístralo en `heroes/index.ts` y en el catálogo: `python tools/add_heroes.py tags.json` (tags en español, un `when` claro).
+4. **Prueba visual obligatoria** antes del story: `python tools/gallery.py <dir> hero:pose:env:light:camera` y mira el still.
+   Cosas que fallaron siempre a la primera: objeto casi negro (en entornos oscuros usa `glowMat`, `metalness` bajo), objeto
+   pequeño (sube el `radius`), una parte escondida dentro de otra (alarga o baja la opacidad).
+5. Un prefab **plano o frontal** pide cámara con movimiento real (`orbit_slow` ≥40°, `spiral_in`, `push_in` rápido); con
+   `drift` o un `push_in` suave el QA marca racha estática.
+6. Si se puede reutilizar (un plano de ondas, un vaso que late), ponle un nombre general y una pose por variante.
+
+Duración: el video final debe durar **más de 60 s y menos de 120 s** (≈175–300 palabras), así que espera **10–20 beats**.
+Con un guion largo, reparte objetos y entornos; el límite de cortes sigue siendo 3 por minuto.
+
 ## Acciones: que el video se sienta vivo (F13)
 
 Un objeto que solo gira se siente como un modelo 3D con subtítulos. Un video vivo **muestra lo que la voz dice** en el

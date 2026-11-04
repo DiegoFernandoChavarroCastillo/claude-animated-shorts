@@ -79,13 +79,13 @@
         "mechanism": 1
       },
       "max": {
-        "mechanism": 4
+        "mechanism": 7
       },
       "ejemplo": "templates/examples/hielo-flota/02_SCRIPT.md"
     },
     "lista": {
-      "nombre": "Lista de 3 a 6 cosas",
-      "resumen": "Entre tres y seis hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno).",
+      "nombre": "Lista de 3 a 9 cosas",
+      "resumen": "Entre tres y nueve hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno).",
       "mejor_para": "Un tema con varios datos sorprendentes e independientes (rarezas del agua, del cuerpo, del espacio).",
       "orden": [
         "hook",
@@ -102,7 +102,7 @@
         "item": 3
       },
       "max": {
-        "item": 6
+        "item": 9
       },
       "ejemplo": "templates/examples/agua-rara-lista/02_SCRIPT.md"
     },
@@ -125,7 +125,7 @@
         "versus": 2
       },
       "max": {
-        "versus": 4
+        "versus": 7
       },
       "ejemplo": "templates/examples/agua-contra-hielo/02_SCRIPT.md"
     },
@@ -149,8 +149,8 @@
         "mechanism": 1
       },
       "max": {
-        "story": 3,
-        "mechanism": 3
+        "story": 4,
+        "mechanism": 5
       },
       "ejemplo": "templates/examples/dedos-historia/02_SCRIPT.md"
     },
@@ -173,7 +173,7 @@
         "chain": 3
       },
       "max": {
-        "chain": 5
+        "chain": 8
       },
       "ejemplo": "templates/examples/atardecer-cadena/02_SCRIPT.md"
     }

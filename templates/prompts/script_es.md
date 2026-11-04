@@ -1,6 +1,6 @@
 # Prompt: guion de un short explainer (español)
 
-Escribes el guion de un short vertical de **55–62 segundos** que explica algo cotidiano con datos reales. La voz es
+Escribes el guion de un short vertical de **más de 60 y menos de 120 segundos** (objetivo 70–100 s; es obligatorio para monetizar en YouTube, TikTok, Instagram y Facebook) que explica algo cotidiano con datos reales. La voz es
 local (Kokoro), así que el texto se lee **tal cual**: escribe como se habla.
 
 ## Entrada
@@ -34,7 +34,7 @@ dato o el momento. Y el video tiene que **contestar lo que el gancho promete** a
 | `structure:` | Roles en orden | Qué es |
 |---|---|---|
 | `mito` | [hook] → [tension] → [mechanism] → [layer2] → [twist] → [cta] | Desmiente una idea y explica cómo funciona de verdad (la fórmula original). Mínimos: mechanism ≥ 1 |
-| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Entre tres y seis hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno). Mínimos: item ≥ 3 |
+| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Entre tres y nueve hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno). Mínimos: item ≥ 3 |
 | `versus` | [hook] → [tension] → [versus] → [layer2] → [twist] → [cta] | Compara dos cosas punto por punto y cierra con el veredicto. Mínimos: versus ≥ 2 |
 | `historia` | [hook] → [story] → [mechanism] → [layer2] → [twist] → [cta] | Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica. Mínimos: story ≥ 2, mechanism ≥ 1 |
 | `cadena` | [hook] → [tension] → [chain] → [layer2] → [twist] → [cta] | Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador. Mínimos: chain ≥ 3 |
@@ -62,15 +62,17 @@ Notas por rol:
 | Beat | Rol | Tiempo aprox. | Qué hace |
 |---|---|---|---|
 | 1 | `[hook]` gancho | 0–4 s | Pregunta sobre algo cotidiano o afirmación sorprendente, **en 2.ª persona** ("te", "tu", "¿sabías…?"), **≤12 palabras**. |
-| 2 | `[tension]` tensión | 4–12 s | El mito o la duda, y su desmentido. O un "pero ¿cómo…?". |
-| 3 | `[mechanism]` mecanismo | 12–40 s | 2–4 pasos (una línea por paso). Cada paso tiene algo que se pueda **ver** y al menos uno lleva un **número grande con fuente**. |
-| 4 | `[layer2]` segunda capa | 40–48 s | "Y aquí se pone interesante…": un dato extra, o una anécdota histórica o cultural real. Opcional. |
-| 5 | `[twist]` giro | 48–55 s | Una frase que reencuadra todo: "no es para X: es para Y". |
-| 6 | `[cta]` llamada a la acción | últimos 3–5 s | Pregunta para comentarios, "envíaselo a…" o "sígueme". |
+| 2 | `[tension]` tensión | 4–14 s | El mito o la duda, y su desmentido. O un "pero ¿cómo…?". |
+| 3 | `[mechanism]` mecanismo | 14–65 s | 2–4 pasos (una línea por paso). Cada paso tiene algo que se pueda **ver** y al menos uno lleva un **número grande con fuente**. |
+| 4 | `[layer2]` segunda capa | 65–80 s | "Y aquí se pone interesante…": un dato extra, o una anécdota histórica o cultural real. Opcional. |
+| 5 | `[twist]` giro | 80–90 s | Una frase que reencuadra todo: "no es para X: es para Y". |
+| 6 | `[cta]` llamada a la acción | últimos 4–6 s | Pregunta para comentarios, "envíaselo a…" o "sígueme". |
 
 ## Reglas
 
-1. **140–185 palabras** en total (apunta a ~150). Ritmo: ~2,8 palabras/s contando las pausas.
+1. **175–300 palabras** en total (apunta a ~220–250 ≈ 85–95 s). Ritmo real de la voz: ~2,6 palabras/s contando las pausas, así que
+   175 palabras ≈ 67 s y 300 ≈ 115 s. **El video final debe durar más de 60 s y menos de 120 s**: el QA lo exige. Con más tiempo,
+   añade pasos al mecanismo/cadena/lista (más líneas, cada una con algo que se vea), no frases largas ni relleno.
 2. **Una idea por frase** y **ninguna frase de más de 22 palabras**.
 3. **Números en palabras** ("nueve por ciento", "novecientos diecisiete"), como se dicen. Cada número del guion lleva
    una línea en `## Fuentes` que lo repite tal cual, seguido de la URL.

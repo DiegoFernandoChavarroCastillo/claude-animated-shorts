@@ -21,7 +21,7 @@ Formato del guion:
     ## Fuentes
     - nueve por ciento: https://...      (el número tal como aparece en el guion, en cifras o en palabras)
 
-Comprueba: 140–185 palabras; gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
+Comprueba: 175–300 palabras (el video debe durar entre 60 y 120 s para monetizar); gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
 tipo); los roles, su orden y cuántas líneas lleva cada uno según la estructura; la última línea es el cierre (y, si se
 declara `closing:`, que tenga la forma de ese cierre); cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras;
 en español, no hay dos palabras seguidas unidas por el mismo sonido ll/y ("botella llena").
@@ -48,7 +48,9 @@ HOOKS, CLOSINGS = tuple(FORMULAS["hooks"]), tuple(FORMULAS["closings"])
 # ll/y + vocal: "botella llena" suena "botella, llena" (2 nov, tras F8). "y" sola (conjunción), "muy" u "hoy" no cuentan.
 LL_END = re.compile(r"(ll|y)[aeiouáéíóú]$", re.I)
 LL_START = re.compile(r"^(ll|y[aeiouáéíóú])", re.I)
-WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 140, 185, 12, 22
+# Duración obligatoria del video: más de 60 s y menos de 120 s (monetización en YouTube, TikTok, Instagram y Facebook).
+# La voz real da ~2,6 palabras/s con pausas: 175 palabras ≈ 67 s y 300 ≈ 115 s.
+WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 175, 300, 12, 22
 
 
 def fold(s: str) -> str:

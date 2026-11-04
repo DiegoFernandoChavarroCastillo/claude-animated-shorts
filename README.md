@@ -1,6 +1,6 @@
 # Explainer short (skill de Claude Code)
 
-Skill de Claude Code que hace **shorts verticales explicativos de 55–62 s** (1080x1920) en **español o inglés** con un
+Skill de Claude Code que hace **shorts verticales explicativos de 60–120 s (más de 60 y menos de 120, para monetizar)** (1080x1920) en **español o inglés** con un
 solo prompt:
 - escenas 3D estilizadas con un objeto protagonista;
 - subtítulos palabra por palabra con caja de selección;

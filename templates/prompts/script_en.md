@@ -1,6 +1,6 @@
 # Prompt: script for an explainer short (English)
 
-You write the script for a **55–62 second** vertical short that explains something everyday with real facts. The voice
+You write the script for a vertical short of **over 60 and under 120 seconds** (aim for 70–100 s; mandatory to monetize on YouTube, TikTok, Instagram and Facebook) that explains something everyday with real facts. The voice
 is local TTS (Kokoro) and reads the text **as written**: write the way people speak.
 
 ## Input
@@ -34,7 +34,7 @@ thing, the fact or the moment. And the video must **answer what the hook promise
 | `structure:` | Roles in order | What it is |
 |---|---|---|
 | `mito` | [hook] → [tension] → [mechanism] → [layer2] → [twist] → [cta] | Desmiente una idea y explica cómo funciona de verdad (la fórmula original). Mínimos: mechanism ≥ 1 |
-| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Entre tres y seis hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno). Mínimos: item ≥ 3 |
+| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Entre tres y nueve hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno). Mínimos: item ≥ 3 |
 | `versus` | [hook] → [tension] → [versus] → [layer2] → [twist] → [cta] | Compara dos cosas punto por punto y cierra con el veredicto. Mínimos: versus ≥ 2 |
 | `historia` | [hook] → [story] → [mechanism] → [layer2] → [twist] → [cta] | Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica. Mínimos: story ≥ 2, mechanism ≥ 1 |
 | `cadena` | [hook] → [tension] → [chain] → [layer2] → [twist] → [cta] | Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador. Mínimos: chain ≥ 3 |
@@ -62,15 +62,17 @@ Role notes:
 | Beat | Role | Approx. time | What it does |
 |---|---|---|---|
 | 1 | `[hook]` | 0–4 s | A question about something everyday or a surprising claim, **in the 2nd person** ("you", "your"), **≤12 words**. |
-| 2 | `[tension]` | 4–12 s | The myth or doubt, and its debunk. Or a "but how…?". |
-| 3 | `[mechanism]` | 12–40 s | 2–4 steps (one line per step). Each step has something you can **see**, and at least one carries a **big number with a source**. |
-| 4 | `[layer2]` | 40–48 s | "And here's where it gets interesting…": one extra fact, or a real historical or cultural anecdote. Optional. |
-| 5 | `[twist]` | 48–55 s | One sentence that reframes everything: "it's not for X: it's for Y". |
-| 6 | `[cta]` | last 3–5 s | A question for the comments, "send this to…" or "follow for more". |
+| 2 | `[tension]` | 4–14 s | The myth or doubt, and its debunk. Or a "but how…?". |
+| 3 | `[mechanism]` | 14–65 s | 2–4 steps (one line per step). Each step has something you can **see**, and at least one carries a **big number with a source**. |
+| 4 | `[layer2]` | 65–80 s | "And here's where it gets interesting…": one extra fact, or a real historical or cultural anecdote. Optional. |
+| 5 | `[twist]` | 80–90 s | One sentence that reframes everything: "it's not for X: it's for Y". |
+| 6 | `[cta]` | last 4–6 s | A question for the comments, "send this to…" or "follow for more". |
 
 ## Rules
 
-1. **140–185 words** in total (aim for ~150). Pace: ~2.8 words/s including pauses.
+1. **175–300 words** in total (aim for ~220–250 ≈ 85–95 s). Real voice pace: ~2.6 words/s including pauses, so 175 words ≈ 67 s
+   and 300 ≈ 115 s. **The final video must run over 60 s and under 120 s**: QA enforces it. For more time, add steps to the
+   mechanism/chain/list (more lines, each with something visible), not long sentences or filler.
 2. **One idea per sentence**, and **no sentence longer than 22 words**.
 3. **Numbers in words** ("nine percent", "nine hundred seventeen"), the way they are said. Every number in the script
    gets a line in `## Sources` that repeats it exactly, followed by the URL.

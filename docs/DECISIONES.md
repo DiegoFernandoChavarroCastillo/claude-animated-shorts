@@ -519,3 +519,16 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   arriba hasta la palabra), `squash` y `stretch` deforman en vez de escalar. Los efectos de cámara están en `camAt` (puros del
   frame), así los overlays anclados los siguen. `tools/actions_gallery.py` renderiza una hoja con cada efecto.
 
+## F14 · Prefabs por video y duración 60–120 s
+
+- **D78 (4 nov) · Prefabs creados en cada video.** Diego notó que faltaban animaciones intermedias (rejilla del microondas con
+  ondas, aluminio con cargas que corren a la punta). Se probó crear objetos sencillos por video en
+  `heroes/primitive/custom.ts` y registrarlos en el catálogo para reutilizarlos. Resultado en 2 videos (`microondas-metal`,
+  `reloj-pulso`; 3 prefabs de ~50–70 líneas): ~10–15 min por prefab, sin coste de render, y siempre hubo que corregir algo
+  tras ver el still (material, tamaño, encuadre). Regla: máximo 2 por video, búsqueda previa, prueba con `gallery.py`, y cámara
+  con movimiento para prefabs planos. Ver `SKILL.md` y `templates/prompts/story_es_en.md`.
+- **D79 (4 nov) · Duración obligatoria: más de 60 s y menos de 120 s.** Para monetizar en YouTube, TikTok, Instagram y Facebook.
+  El guion pasa de 140–185 a **175–300 palabras** (la voz real da ~2,6 palabras/s: 167 palabras = 64 s), el máximo de líneas por
+  estructura sube (`mechanism` 7, `item` 9, `versus` 7, `story` 4, `chain` 8) y `qa_basic.py` marca ❌ si el video final no está
+  entre 60,1 y 119,9 s. Los ejemplos de `templates/examples/` siguen valiendo como forma, no como duración.
+

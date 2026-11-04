@@ -44,7 +44,7 @@ def report(d: Path) -> tuple[bool, str]:
         rows.append(f"| {name} | {val}{unit} | {'' if rng is None else f'{rng[0]}–{rng[1]}'} | {'✅' if good else '❌'} |")
 
     v, a, f = probe_dur(d / "07_video.mp4"), probe_dur(d / "08_mix.wav"), probe_dur(d / "09_final.mp4")
-    row("duración video (s)", round(v, 2))
+    row("duración video (s): más de 60 y menos de 120 (monetización)", round(v, 2), (60.1, 119.9))
     row("duración mezcla (s)", round(a, 2))
     row("diferencia video − audio (s)", round(abs(v - a), 3), (0, 0.1))
     _, P = ebur(d / "09_final.mp4")

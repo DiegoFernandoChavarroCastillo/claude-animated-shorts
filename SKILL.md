@@ -1,6 +1,6 @@
 ---
 name: explainer-short
-description: Hace un short vertical explicativo de 55–62 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
+description: Hace un short vertical explicativo de más de 60 s y menos de 120 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
 ---
 
 # Explainer short (es / en)
@@ -60,8 +60,9 @@ Cuando ya hay hechos con fuente y **antes de escribir el guion**, Claude propone
 ### 2. Guion (`02_SCRIPT.md`)
 
 Sigue el prompt del idioma al pie de la letra, con el gancho, la estructura y el cierre elegidos en el paso 1b (la
-estructura `mito` es hook → tension → mechanism → layer2 → twist → cta; las otras están en el prompt). Siempre: 140–185
-palabras, gancho ≤12 palabras en 2.ª persona, números en palabras y con fuente, frases de ≤22 palabras.
+estructura `mito` es hook → tension → mechanism → layer2 → twist → cta; las otras están en el prompt). Siempre: 175–300
+palabras (**el video debe durar más de 60 s y menos de 120 s**, requisito para monetizar en YouTube, TikTok, Instagram y
+Facebook; la voz da ~2,6 palabras/s, así que ~220–250 palabras ≈ 85–95 s), gancho ≤12 palabras en 2.ª persona, números en palabras y con fuente, frases de ≤22 palabras.
 Cosas de la voz que el validador también comprueba o que conviene saber:
 - **(es) No juntes dos sonidos "ll"/"y" seguidos** entre palabras ("una botella llena"): la voz hace una pausa como
   si hubiera una coma. El validador lo marca como error (D60).
@@ -83,6 +84,14 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 - Cambia de entorno solo al cambiar de lugar o de idea. Cada `mechanism` lleva su objeto protagonista y al menos un
   overlay de dato.
 - Varía los encuadres: dos beats seguidos con el mismo objeto no deben repetir preset de cámara.
+- **Objeto que falta (F14):** si un concepto central no tiene objeto en el catálogo (puntuación 0 en `catalog_search.py`) y
+  se puede hacer sencillo, **créalo en este video**: hasta **2 prefabs por video** en `studio/src/explainer/heroes/primitive/custom.ts`
+  (~50–70 líneas cada uno, con acciones propias si el guion lo pide), regístralos en `heroes/index.ts` y en el catálogo con
+  `PY tools/add_heroes.py <tags.json>`. Reglas: (1) **busca antes de crear** en el catálogo y en `custom.ts`; (2) **prueba visual
+  obligatoria** con `PY tools/gallery.py` (mira el still; en la práctica siempre hubo que corregir encuadre, material o tamaño;
+  en entornos oscuros evita `metalness` alto); (3) un prefab plano o frontal pide cámara con movimiento real (`orbit_slow`,
+  `spiral_in`, `push_in` rápido), o la racha estática del QA falla; (4) no más de 2 por video, el resto va a `05_gaps.md`.
+  Medido en 2 videos: ~10–15 min por prefab, sin coste de render.
 - **Dale vida (F13):** ponle **acciones** a la mitad de los beats como mínimo: lo que el objeto hace cuando se dice la palabra (una
   línea roja que rodea la Tierra al decir "ecuador", la persona que sube al decir "despedido", chispas al decir "revienta").
   Mira "Acciones" en `templates/prompts/story_es_en.md` (qué verbo pide qué acción) y las propias de cada objeto con
@@ -96,7 +105,9 @@ align → validate-story → stills → render → mix → mux → qa. Cada etap
 `--force tts,render` rehace etapas concretas. Registro en `out/<id>/log.md`. Si una etapa falla, el mensaje dice por
 qué. Arregla la causa (normalmente `05_story.json`) y relanza el mismo comando.
 
-Mira los stills de `out/<id>/06_stills/` antes de seguir. Si algo se ve roto, corrige el story y relanza.
+Mira los stills de `out/<id>/06_stills/` antes de seguir. Si algo se ve roto, corrige el story y relanza. Fíjate en tres cosas
+que solo se ven aquí: etiquetas (`Callout3D`) fuera de cuadro, píldoras con texto cortado y overlays en `slot: top` que tapan
+los subtítulos (banda 12–30 % desde arriba; usa `lower`). Ahorra un render de ~7 min cada uno.
 
 ### 6. Revisión visual (look-match, §9 del plan)
 
@@ -165,6 +176,9 @@ Entrega:
   del modelo, que suena con acento extranjero: díselo al usuario en la entrega.
 - **Voz lenta:** Chatterbox tarda ~13 min por video en CPU. Para pruebas rápidas del plan visual, usa
   `"engine": "kokoro"` en el story y vuelve a Chatterbox para el render final (`--force tts`).
+- **Duración (60–120 s):** el QA marca ❌ si el video dura ≤60 s o ≥120 s. Si sale corto, añade líneas al guion (no relleno) y
+  repite desde la voz; si sale largo, quita un paso. Un video de ~65 s tarda ~15 min de voz y ~7 min de render a escala 1;
+  uno de 110 s, aprox. 25 min y 12 min (escala lineal con la duración).
 - **Tiempos de referencia** (portátil Intel UHD, video de 52 s a escala 0,5): voz ~13 min con Chatterbox (35 s con Kokoro), alineación ~1 min, stills
   40 s, render 5–6 min, mezcla + QA ~1 min. A escala 1, el render tarda unas 4 veces más.
 
