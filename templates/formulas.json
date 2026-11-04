@@ -84,8 +84,8 @@
       "ejemplo": "templates/examples/hielo-flota/02_SCRIPT.md"
     },
     "lista": {
-      "nombre": "Lista de 3 o 4 cosas",
-      "resumen": "Tres o cuatro hechos cortos del mismo tema, uno por línea, con el más fuerte al final.",
+      "nombre": "Lista de 3 a 6 cosas",
+      "resumen": "Entre tres y seis hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno).",
       "mejor_para": "Un tema con varios datos sorprendentes e independientes (rarezas del agua, del cuerpo, del espacio).",
       "orden": [
         "hook",
@@ -102,7 +102,7 @@
         "item": 3
       },
       "max": {
-        "item": 4
+        "item": 6
       },
       "ejemplo": "templates/examples/agua-rara-lista/02_SCRIPT.md"
     },
@@ -217,7 +217,7 @@
   },
   "elegir": {
     "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
-    "estructura": "mito si hay creencia + mecanismo; lista si hay 3-4 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
+    "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
     "cierre": "envia o pregunta para datos que se comparten; sigue si hay un siguiente tema natural; bucle si el gancho es muy fuerte; reto_casa si se puede comprobar en casa."
   }
 }

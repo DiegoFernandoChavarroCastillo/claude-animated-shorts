@@ -34,7 +34,7 @@ thing, the fact or the moment. And the video must **answer what the hook promise
 | `structure:` | Roles in order | What it is |
 |---|---|---|
 | `mito` | [hook] → [tension] → [mechanism] → [layer2] → [twist] → [cta] | Desmiente una idea y explica cómo funciona de verdad (la fórmula original). Mínimos: mechanism ≥ 1 |
-| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Tres o cuatro hechos cortos del mismo tema, uno por línea, con el más fuerte al final. Mínimos: item ≥ 3 |
+| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Entre tres y seis hechos cortos del mismo tema, uno por línea, con el más fuerte al final (con 5 o 6, una frase corta cada uno). Mínimos: item ≥ 3 |
 | `versus` | [hook] → [tension] → [versus] → [layer2] → [twist] → [cta] | Compara dos cosas punto por punto y cierra con el veredicto. Mínimos: versus ≥ 2 |
 | `historia` | [hook] → [story] → [mechanism] → [layer2] → [twist] → [cta] | Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica. Mínimos: story ≥ 2, mechanism ≥ 1 |
 | `cadena` | [hook] → [tension] → [chain] → [layer2] → [twist] → [cta] | Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador. Mínimos: chain ≥ 3 |
