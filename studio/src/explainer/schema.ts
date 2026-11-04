@@ -13,6 +13,8 @@ export const HERO_KINDS = ["primitive", "gltf", "card"] as const;
 export const AtSchema = z.union([z.string().min(1), z.number().int().min(0)]);
 
 export const OverlaySpecSchema = z.looseObject({ type: z.string(), at: AtSchema.optional() });
+/** acción sincronizada con una palabra: algo que el objeto (o la escena 3D) hace mientras la voz lo dice (F13) */
+export const ActionSpecSchema = z.looseObject({ type: z.string(), at: AtSchema.optional(), dur: z.number().int().min(1).max(300).optional() });
 export const SfxSpecSchema = z.object({ type: z.string(), at: AtSchema });
 
 export const SceneSchema = z.object({
@@ -36,6 +38,7 @@ export const BeatSchema = z.object({
   keyword: z.string().optional(),
   scene: SceneSchema,
   overlays: z.array(OverlaySpecSchema).default([]),
+  actions: z.array(ActionSpecSchema).default([]),
   sfx: z.array(SfxSpecSchema).default([]),
   transition: z.enum(TRANSITIONS).default("glide"),  // transición HACIA el beat siguiente
   sources: z.array(z.string()).optional(),
@@ -60,5 +63,6 @@ export const ExplainerPropsSchema = z.object({ story: StorySchema, words: z.arra
 export type Story = z.infer<typeof StorySchema>;
 export type Beat = z.infer<typeof BeatSchema>;
 export type OverlaySpec = z.infer<typeof OverlaySpecSchema>;
+export type ActionSpec = z.infer<typeof ActionSpecSchema>;
 export type WordT = z.infer<typeof WordSchema>;
 export type ExplainerProps = z.input<typeof ExplainerPropsSchema>;

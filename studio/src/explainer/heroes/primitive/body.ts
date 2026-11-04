@@ -10,6 +10,7 @@ const done = (root: THREE.Object3D, b: ReturnType<typeof bin>, update: (f: numbe
 export const garganta_corte: HeroDef = {
   kind: "primitive",
   when: "Garganta en corte: dolor de garganta, gripe y resfriado, amígdalas, úvula, tragar, voz, virus que entran por la nariz.",
+  actions: { inflamar: "Las amígdalas y la pared se ponen rojas e inflamadas: dolor de garganta, infección, inflamación, defensas que reaccionan." },
   poses: ["sana", "inflamada", "virus"],
   center: [0, 1.3, 0], radius: 1.0,
   anchors: { hero: [0, 1.2, 0], top: [0, 2.6, 0], base: [0, 0.05, 0], nasofaringe: [0, 2.1, -0.3], amigdalas: [0.42, 1.2, -0.25], uvula: [0, 1.75, -0.3], laringe: [0, 0.35, -0.2] },
@@ -22,7 +23,7 @@ export const garganta_corte: HeroDef = {
     [half, halfOut].forEach((m) => { m.position.y = 1.2; }); [dome, domeOut].forEach((m) => { m.position.y = 2.4; });
     const rimM = glowMat(b, col(TONE.flesh, "#ffffff", 0.55), 0.3, { roughness: 0.5 });
     const rims = [rod(b, [0.62, 2.4, 0], [0.5, 0, 0], 0.05, rimM), rod(b, [-0.62, 2.4, 0], [-0.5, 0, 0], 0.05, rimM)];
-    const hot = p === "inflamada" || p === "virus", tonM = glowMat(b, hot ? TONE.glowRed : col(TONE.flesh, TONE.fleshDark, 0.5), hot ? 0.5 : 0.2, { roughness: 0.5 });
+    let heat = 0; const hot = p === "inflamada" || p === "virus", baseTon = col(TONE.flesh, TONE.fleshDark, 0.5), tonM = glowMat(b, hot ? TONE.glowRed : col(TONE.flesh, TONE.fleshDark, 0.5), hot ? 0.5 : 0.2, { roughness: 0.5 });
     const tons = [-1, 1].map((s) => place(ball(b, 0.22, tonM, 24), [s * 0.42, 1.15, -0.3]));
     tons.forEach((t) => t.scale.set(0.9, 1.4, 0.8));
     const uvula = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(0.07, 0.2, 6, 12)), tonM); uvula.position.set(0, 1.72, -0.32);
@@ -32,12 +33,14 @@ export const garganta_corte: HeroDef = {
     // virus (genéricos) que bajan por detrás de la nariz y se pegan a la pared
     const vir = p === "virus" ? scatter(7, 5, (r) => [(r() - 0.5) * 0.6, r(), -0.1 - r() * 0.3] as [number, number, number]).map((q) => { const v = virusBody(b, 0.075); v.position.set(...q); g.add(v); return { v, q }; }) : [];
     g.position.y = 0; root.add(g); shadows(g);
-    return done(root, b, (f) => {
+    const inst = done(root, b, (f) => {
       g.rotation.y = 0.32 * Math.sin(f * 0.012);
       const k = 0.5 + 0.5 * Math.sin(f * 0.12);
-      if (hot) { tonM.emissive.copy(col(TONE.glowRed)).multiplyScalar(0.3 + 0.35 * k); (patch.material as THREE.MeshBasicMaterial).opacity = 0.45 + 0.4 * k; patch.scale.setScalar(1 + 0.08 * k); }
+      const h = Math.max(hot ? 1 : 0, heat);
+      if (h > 0) { tonM.emissive.copy(col(TONE.glowRed)).multiplyScalar((0.3 + 0.35 * k) * h); if (!hot) tonM.color.copy(baseTon).lerp(col(TONE.glowRed), heat * 0.7); (patch.material as THREE.MeshBasicMaterial).opacity = (0.45 + 0.4 * k) * h; patch.scale.setScalar(1 + 0.08 * k); }
       vir.forEach(({ v, q }, i) => { const t = (q[1] * 3 + f * 0.012 + i * 0.13) % 1; v.position.set(q[0] * (1 - 0.5 * t), 2.3 - 1.4 * t, q[2]); v.rotation.y = f * 0.03 + i; });
     });
+    return { ...inst, act: (name, u) => { if (name === "inflamar") heat = 1 - (1 - u) ** 3; } };
   },
 };
 
@@ -72,6 +75,7 @@ export const pulmones: HeroDef = {
 export const corazon: HeroDef = {
   kind: "primitive",
   when: "Corazón: latido, pulso, sangre, presión, miedo y emociones, ejercicio, cuántas veces late al día.",
+  actions: { acelerar: "El corazón se acelera: miedo, ejercicio, emoción, fiebre, estrés, correr." },
   poses: ["latido", "rapido"],
   center: [0, 1.25, 0], radius: 1.25,
   anchors: { hero: [0, 1.25, 0], top: [0, 2.5, 0], base: [0, 0.1, 0], aorta: [0.3, 2.2, 0], ventriculo: [-0.2, 0.9, 0.5], vena: [-0.55, 2.2, 0] },
@@ -86,12 +90,13 @@ export const corazon: HeroDef = {
       tube(b, [[-0.5, 1.85, 0], [-0.55, 2.45, 0]], 0.13, vein), tube(b, [[0.45, 1.75, 0.1], [0.5, 2.35, 0.1]], 0.12, vein),
       tube(b, [[-0.3, 0.45, 0.1], [-0.3, 0.05, 0.1]], 0.12, art));
     body.position.y = 0; g.add(body); root.add(g); shadows(g);
-    const rate = p === "rapido" ? 0.34 : 0.2;
-    return done(root, b, (f) => {
-      const ph = Math.max(0, Math.sin(f * rate)) ** 6, k = 1 + 0.07 * ph;
+    const rate = p === "rapido" ? 0.34 : 0.2; let extra = 0;
+    const inst = done(root, b, (f) => {
+      const ph = Math.max(0, Math.sin(f * rate + extra)) ** 6, k = 1 + 0.07 * ph;
       body.scale.setScalar(k); body.position.y = 1.2 * (1 - k); m.emissive.copy(col(TONE.blood)).multiplyScalar(0.18 + 0.3 * ph);
       g.rotation.y = 0.45 * Math.sin(f * 0.01);
     });
+    return { ...inst, act: (name, _u, spec, t) => { if (name === "acelerar") { const d = typeof spec.dur === "number" ? spec.dur : 30, r1 = rate * 1.9, m = Math.min(t, d); extra = (r1 - rate) * ((m * m) / (2 * d) + Math.max(0, t - d)); } } };
   },
 };
 

@@ -27,6 +27,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 | F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ✅ aprobada (prueba en sesión nueva: `celular-calienta`) | `eb21221` |
 | F11 | Ampliación del catálogo: 72 objetos, 17 entornos, 10 cámaras, 13 overlays (D65–D68) | ✅ implementada; falta que Diego revise los videos de prueba | rama `ampliar-catalogo` |
 | F12 | Ganchos, estructuras y cierres variables y elegidos por el usuario (D70–D73) | ✅ implementada (validador, prompts, ejemplos, pruebas); falta probarla con un video nuevo | rama `ampliar-catalogo` |
+| F13 | Acciones sincronizadas con la voz: 10 genéricas, 6 marcadores 3D y 5 propias de objetos (D74–D76) | ✅ implementada y probada en frames de `sin-gravedad`; falta un video completo con ellas | rama `ampliar-catalogo` |
 | F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 
 ## Cómo se hace un video hoy

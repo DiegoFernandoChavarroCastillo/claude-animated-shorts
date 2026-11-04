@@ -494,3 +494,22 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   mínimas: detectan un gancho `pregunta` sin «?», no uno aburrido. Los roles nuevos (`item`, `versus`, `story`, `chain`) se
   añadieron a `schema.ts`, y `validate_story.py` pide overlay también en `item`, `versus` y `chain`.
 
+## F13 · Acciones sincronizadas con la voz
+
+- **D74 (4 nov) · Por qué.** Con `sin-gravedad` Diego notó que el video era «solo ver un modelo 3D moviéndose con subtítulos y
+  voz». Faltaba que el objeto **muestre lo que se dice**: al decir «ecuador», una línea roja rodea la Tierra; al decir
+  «saldrías despedido», la persona sube. Se añade un sistema de **acciones** (`actions` en cada beat, con `at` = la palabra
+  que las dispara), que Claude usa en todos los videos.
+- **D75 · Tres clases.** `generic` (mueven el objeto entero: `lift`, `topple`, `fly`, `shake`, `pulse`, `scale`, `spin`, `tilt`,
+  `hop`, `slide`; son una función pura del frame, `genericPose`), `marker` (algo en 3D pegado al objeto: `ring`, `arrow`,
+  `speed`, `halo`, `burst`, `shockwave`; `MarkerRig`) y **propias de un objeto** (`HeroDef.actions` + `HeroInstance.act`:
+  `ecuador` y `eje` en `planeta`, `llamarada` en `sol`, `acelerar` en `corazon`, `inflamar` en `garganta_corte`).
+  Todas empiezan en la palabra, suben durante `dur` frames y se mantienen hasta el final del beat.
+- **D76 · Cómo se garantiza que se usen.** El prompt del plan visual trae una tabla «si la voz dice… usa…». `validate_story.py`
+  rechaza acciones que no existen, anclas inválidas, un `at` que no es una palabra del beat y más de 3 por beat, y con
+  `--require-actions` (que `make_short.py` pasa siempre) exige acciones en **al menos la mitad de los beats**. El verificador de
+  look-match tiene una nueva área, «Vida». Los overlays anclados siguen al objeto cuando una acción lo mueve, y `sfx_plan.py`
+  añade un sonido por acción (whoosh, impacto o pop). Los ejemplos `hielo-flota` (es/en) ya llevan acciones.
+- **Límites.** Las acciones propias existen solo para 4 objetos; el resto usa las genéricas y los marcadores. Se pueden
+  añadir más en `HeroDef.actions` (ver `heroes/primitive/space.ts`, `planeta`). Un objeto que sale del cuadro deja el plano vacío.
+

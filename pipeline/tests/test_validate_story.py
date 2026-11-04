@@ -44,4 +44,31 @@ for role in ("item", "versus", "chain", "mechanism"):
 ok = not has(validate(with_role("story")), "sin overlay")
 print("OK " if ok else "MAL", "rol story no pide overlay")
 fails += not ok
+# acciones (F13)
+def with_actions(acts_by_beat: dict, n: int = 6) -> dict:
+    st = story(["telefono", "chip", "perro", "persona", "reloj", "planeta"][:n])
+    for k, acts in acts_by_beat.items():
+        st["beats"][k]["actions"] = acts
+    return st
+
+
+for name, st, frag in [
+    ("acción desconocida", with_actions({0: [{"type": "volar_alto", "at": "una"}]}), "acción 'volar_alto' no existe"),
+    ("acción de otro objeto", with_actions({0: [{"type": "ecuador", "at": "una"}]}), "acción 'ecuador' no existe"),
+    ("ancla inválida", with_actions({0: [{"type": "arrow", "at": "una", "anchor": "no_existe"}]}), "anchor 'no_existe' no válido"),
+    ("at que no es palabra", with_actions({0: [{"type": "pulse", "at": "zzz"}]}), "no es una palabra del beat"),
+    ("4 acciones en un beat", with_actions({0: [{"type": "pulse", "at": "una"}] * 4}), "4 acciones (máximo 3"),
+]:
+    ok = has(validate(st), frag)
+    print("OK " if ok else "MAL", f"acciones: {name} falla")
+    fails += not ok
+ok = not any("acción" in e for e in validate(with_actions({5: [{"type": "ecuador", "at": "una"}], 0: [{"type": "lift", "at": "dos"}]})))
+print("OK " if ok else "MAL", "acciones válidas (genérica y propia del objeto) pasan")
+fails += not ok
+ok = has(validate(with_actions({0: [{"type": "pulse", "at": "una"}]}), require_actions=True), "solo 1 de 6 beats llevan acciones")
+print("OK " if ok else "MAL", "--require-actions exige la mitad de los beats")
+fails += not ok
+ok = not has(validate(with_actions({0: [{"type": "pulse", "at": "una"}], 1: [{"type": "pulse", "at": "una"}], 2: [{"type": "pulse", "at": "una"}]}), require_actions=True), "llevan acciones")
+print("OK " if ok else "MAL", "--require-actions pasa con la mitad")
+fails += not ok
 sys.exit(1 if fails else 0)

@@ -1,6 +1,6 @@
 // story.json + words.json -> frames de cada beat, transición, palabra clave y overlay (plan §6). Función pura:
 // la usan calculateMetadata (duración total), la capa 3D (cámara por beat) y la capa 2D (subtítulos y overlays).
-import type { Beat, OverlaySpec, Story, WordT } from "./schema";
+import type { ActionSpec, Beat, OverlaySpec, Story, WordT } from "./schema";
 import type { Keyword } from "./captions/chunker";
 import { CAMERA } from "./style";
 
@@ -13,7 +13,10 @@ export type BeatT = {
   tIn: Trans | null; tOut: Trans | null;
 };
 export type OverlayT = { beat: number; frame: number; end: number; spec: OverlaySpec; key: string };
-export type Timeline = { fps: number; total: number; beats: BeatT[]; keywords: Keyword[]; overlays: OverlayT[] };
+/** acción resuelta: empieza en `start` (palabra `at`), sube durante `dur` frames y se mantiene hasta el final del beat */
+export type ActionT = { beat: number; start: number; end: number; dur: number; spec: ActionSpec; key: string };
+export type Timeline = { fps: number; total: number; beats: BeatT[]; keywords: Keyword[]; overlays: OverlayT[]; actions: ActionT[] };
+export const ACTION_DUR_DEFAULT = 30;
 
 const LEAD_F = 2;      // el cambio visual llega 0–3 frames antes de la palabra (como en el original)
 const TAIL_S = 1.0;    // cola tras la última palabra
@@ -65,7 +68,10 @@ export const buildTimeline = (story: Story, words: WordT[], fps = 30): Timeline 
   const overlays: OverlayT[] = beats.flatMap((bt) => bt.beat.overlays.map((spec, k) => ({
     beat: bt.i, frame: resolveAt(bt, words, spec.at, fps), end: bt.b, spec, key: `${bt.beat.id}_${k}`,
   })));
-  return { fps, total, beats, keywords, overlays };
+  const actions: ActionT[] = beats.flatMap((bt) => bt.beat.actions.map((spec, k) => ({
+    beat: bt.i, start: resolveAt(bt, words, spec.at, fps), end: bt.b, dur: spec.dur ?? ACTION_DUR_DEFAULT, spec, key: `${bt.beat.id}_a${k}`,
+  })));
+  return { fps, total, beats, keywords, overlays, actions };
 };
 
 /** beats visibles en el frame f: el actual y, dentro de una ventana de transición, el siguiente con su opacidad */

@@ -3,76 +3,284 @@
     "id": "hielo-flota-en",
     "lang": "en",
     "title": "Why ice floats",
-    "fps": 30, "width": 1080, "height": 1920,
-    "voice": { "engine": "chatterbox", "voice": "default", "speed": 1.0 },
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "voice": {
+      "engine": "chatterbox",
+      "voice": "default",
+      "speed": 1.0
+    },
     "music": false,
     "captionEmphasis": "box"
   },
   "beats": [
     {
-      "id": "b01", "role": "hook",
+      "id": "b01",
+      "role": "hook",
       "text": "Have you ever wondered why ice floats, if it's just solid water?",
       "keyword": "floats,",
-      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
-                 "camera": { "preset": "push_in", "rate": 0.2 }, "dof": 14 },
-      "overlays": [ { "type": "PulseRings", "at": "floats,", "anchor": "hero", "color": "ui.cyan" } ],
-      "transition": "glide"
+      "scene": {
+        "env": "interior_neutro",
+        "light": "noche",
+        "hero": {
+          "kind": "primitive",
+          "asset": "vaso_agua_hielo",
+          "pose": "centro"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.2
+        },
+        "dof": 14
+      },
+      "overlays": [
+        {
+          "type": "PulseRings",
+          "at": "floats,",
+          "anchor": "hero",
+          "color": "ui.cyan"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "pulse",
+          "at": "ice"
+        }
+      ]
     },
     {
-      "id": "b02", "role": "tension",
+      "id": "b02",
+      "role": "tension",
       "text": "Almost every substance shrinks when it freezes, and its solid form sinks. Water does exactly the opposite, and that changes everything.",
       "keyword": "opposite,",
-      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "lateral" },
-                 "camera": { "preset": "orbit_slow", "deg": 45 }, "dof": 12 },
-      "overlays": [ { "type": "Pill", "at": "sinks.", "text": "IT SINKS", "color": "ui.red" } ],
-      "transition": "zoom_through"
+      "scene": {
+        "env": "interior_neutro",
+        "light": "noche",
+        "hero": {
+          "kind": "primitive",
+          "asset": "vaso_agua_hielo",
+          "pose": "lateral"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": 45
+        },
+        "dof": 12
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "sinks.",
+          "text": "IT SINKS",
+          "color": "ui.red"
+        }
+      ],
+      "transition": "zoom_through",
+      "actions": [
+        {
+          "type": "spin",
+          "at": "opposite",
+          "dur": 40
+        }
+      ]
     },
     {
-      "id": "b03", "role": "mechanism",
+      "id": "b03",
+      "role": "mechanism",
       "text": "When water freezes, it expands by about nine percent. That's why a full bottle of water can burst in the freezer.",
       "keyword": "expands",
-      "scene": { "env": "tech_oscuro", "light": "tech", "hero": { "kind": "primitive", "asset": "moleculas_agua", "pose": "red_hexagonal" },
-                 "camera": { "preset": "orbit_slow", "deg": 12 }, "dof": 8 },
-      "overlays": [ { "type": "StatCallout", "at": "nine", "value": 9, "suffix": " %", "label": "MORE VOLUME WHEN FROZEN", "color": "warm.gold" } ],
-      "sources": ["https://en.wikipedia.org/wiki/Properties_of_water", "https://en.wikipedia.org/wiki/Ice"],
-      "transition": "glide"
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "moleculas_agua",
+          "pose": "red_hexagonal"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": 12
+        },
+        "dof": 8
+      },
+      "overlays": [
+        {
+          "type": "StatCallout",
+          "at": "nine",
+          "value": 9,
+          "suffix": " %",
+          "label": "MORE VOLUME WHEN FROZEN",
+          "color": "warm.gold"
+        }
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/Properties_of_water",
+        "https://en.wikipedia.org/wiki/Ice"
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "scale",
+          "at": "expands",
+          "to": 1.25,
+          "dur": 40
+        },
+        {
+          "type": "burst",
+          "at": "burst",
+          "anchor": "top"
+        }
+      ]
     },
     {
-      "id": "b04", "role": "mechanism",
+      "id": "b04",
+      "role": "mechanism",
       "text": "Blame the molecules. In ice, they lock into hexagons that leave gaps inside. A liter of ice weighs about nine hundred seventeen grams, and a liter of water, a thousand.",
       "keyword": "hexagons",
-      "scene": { "env": "tech_oscuro", "light": "tech", "hero": { "kind": "primitive", "asset": "moleculas_agua", "pose": "red_hexagonal" },
-                 "camera": { "preset": "push_in", "rate": 0.25 }, "dof": 10 },
-      "overlays": [ { "type": "BarCompare", "at": "liter", "unit": "g per liter",
-                      "items": [ { "label": "Ice", "value": 917, "color": "ui.cyan" }, { "label": "Water", "value": 1000, "color": "warm.gold" } ] } ],
-      "sources": ["https://en.wikipedia.org/wiki/Ice", "https://www.britannica.com/science/ice"],
-      "transition": "crossfade"
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "moleculas_agua",
+          "pose": "red_hexagonal"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.25
+        },
+        "dof": 10
+      },
+      "overlays": [
+        {
+          "type": "BarCompare",
+          "at": "liter",
+          "unit": "g per liter",
+          "items": [
+            {
+              "label": "Ice",
+              "value": 917,
+              "color": "ui.cyan"
+            },
+            {
+              "label": "Water",
+              "value": 1000,
+              "color": "warm.gold"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ice",
+        "https://www.britannica.com/science/ice"
+      ],
+      "transition": "crossfade",
+      "actions": [
+        {
+          "type": "halo",
+          "at": "gaps",
+          "color": "ui.cyan"
+        }
+      ]
     },
     {
-      "id": "b05", "role": "layer2",
+      "id": "b05",
+      "role": "layer2",
       "text": "And here's where it gets interesting. Liquid water is densest at about four degrees, so that water sinks to the bottom of lakes.",
       "keyword": "four",
-      "scene": { "env": "interior_neutro", "light": "dorado", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
-                 "camera": { "preset": "glide" }, "dof": 6 },
-      "overlays": [ { "type": "StatCallout", "at": "four", "value": 4, "suffix": " °C", "label": "DENSEST WATER", "color": "ui.cyan" } ],
-      "sources": ["https://en.wikipedia.org/wiki/Properties_of_water"],
-      "transition": "cut"
+      "scene": {
+        "env": "interior_neutro",
+        "light": "dorado",
+        "hero": {
+          "kind": "primitive",
+          "asset": "lago_corte",
+          "pose": "corte"
+        },
+        "camera": {
+          "preset": "glide"
+        },
+        "dof": 6
+      },
+      "overlays": [
+        {
+          "type": "StatCallout",
+          "at": "four",
+          "value": 4,
+          "suffix": " °C",
+          "label": "DENSEST WATER",
+          "color": "ui.cyan"
+        }
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/Properties_of_water"
+      ],
+      "transition": "cut",
+      "actions": [
+        {
+          "type": "arrow",
+          "at": "bottom",
+          "anchor": "fondo",
+          "dir": "down"
+        }
+      ]
     },
     {
-      "id": "b06", "role": "twist",
+      "id": "b06",
+      "role": "twist",
       "text": "That's why lakes freeze from the top down. Ice doesn't bury life: it protects it, like a lid against the cold.",
       "keyword": "protects",
-      "scene": { "env": "interior_neutro", "light": "atardecer", "hero": { "kind": "primitive", "asset": "lago_corte", "pose": "corte" },
-                 "camera": { "preset": "drift", "dir": "left" }, "dof": 12 },
-      "overlays": [ { "type": "Callout3D", "at": "lid", "anchor": "top", "text": "Ice: insulator" } ],
-      "transition": "crossfade"
+      "scene": {
+        "env": "interior_neutro",
+        "light": "atardecer",
+        "hero": {
+          "kind": "primitive",
+          "asset": "lago_corte",
+          "pose": "corte"
+        },
+        "camera": {
+          "preset": "drift",
+          "dir": "left"
+        },
+        "dof": 12
+      },
+      "overlays": [
+        {
+          "type": "Callout3D",
+          "at": "lid",
+          "anchor": "top",
+          "text": "Ice: insulator"
+        }
+      ],
+      "transition": "crossfade",
+      "actions": [
+        {
+          "type": "halo",
+          "at": "protects",
+          "anchor": "hielo",
+          "color": "ui.cyan"
+        }
+      ]
     },
     {
-      "id": "b07", "role": "cta",
+      "id": "b07",
+      "role": "cta",
       "text": "What other weird thing about water should I explain next? Tell me in the comments below.",
       "keyword": "comments",
-      "scene": { "env": "interior_neutro", "light": "noche", "hero": { "kind": "primitive", "asset": "vaso_agua_hielo", "pose": "centro" },
-                 "camera": { "preset": "zoom_through" }, "dof": 14 },
+      "scene": {
+        "env": "interior_neutro",
+        "light": "noche",
+        "hero": {
+          "kind": "primitive",
+          "asset": "vaso_agua_hielo",
+          "pose": "centro"
+        },
+        "camera": {
+          "preset": "zoom_through"
+        },
+        "dof": 14
+      },
       "overlays": [],
       "transition": "cut"
     }

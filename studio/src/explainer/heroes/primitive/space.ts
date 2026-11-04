@@ -28,6 +28,7 @@ const planetTex = (b: Bin, kind: string) => screenTex(b.track, 512, 256, (g) => 
 export const planeta: HeroDef = {
   kind: "primitive",
   when: "Planeta: la Tierra y otros planetas (Marte, gigantes con anillos), día y noche, estaciones, gravedad, atmósfera, el sistema solar.",
+  actions: { ecuador: "Una línea roja se dibuja alrededor del ecuador: cuando se nombra el ecuador, la latitud cero, la zona más rápida o más cálida.", eje: "Aparece el eje de rotación de polo a polo: cuando se habla del eje, la inclinación, los polos o el giro." },
   poses: ["tierra", "marte", "gigante"],
   center: [0, 1.35, 0], radius: 1.25,
   anchors: { hero: [0, 1.35, 0], top: [0, 2.6, 0], base: [0, 0.1, 0], polo: [0, 2.35, 0], ecuador: [1.1, 1.35, 0.4], anillo: [1.6, 1.4, 0] },
@@ -41,8 +42,14 @@ export const planeta: HeroDef = {
       const ring = new THREE.Mesh(b.track(new THREE.RingGeometry(1.25, 2.1, 96)), b.track(new THREE.MeshStandardMaterial({ color: "#e5c89a", side: THREE.DoubleSide, transparent: true, opacity: 0.75, roughness: 0.8, emissive: new THREE.Color("#e5c89a").multiplyScalar(0.25) })));
       ring.rotation.x = Math.PI / 2 - 0.35; body.add(ring);
     }
+    const eq = new THREE.Mesh(new THREE.BufferGeometry(), b.track(new THREE.MeshBasicMaterial({ color: col("#ff3b3b").multiplyScalar(2.2), fog: false }))); eq.visible = false; body.add(eq); let eqN = -1;
+    const axis = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.025, 0.025, R * 2.9, 8)), beam(b, TONE.cyan, 2)); axis.visible = false; axis.scale.y = 0.001; body.add(axis);
     body.rotation.z = p === "tierra" ? 0.41 : 0.2; body.position.y = 1.35; g.add(body); root.add(g); shadows(g);
-    return done(root, b, (f) => { sph.rotation.y = f * 0.008; g.position.y = 0.03 * Math.sin(f * 0.03); });
+    const inst = done(root, b, (f) => { sph.rotation.y = f * 0.008; g.position.y = 0.03 * Math.sin(f * 0.03); });
+    return { ...inst, dispose: () => { eq.geometry.dispose(); inst.dispose(); }, act: (name, u) => {
+      if (name === "ecuador") { const n = Math.round(u * 96); eq.visible = n > 0; if (n !== eqN) { eqN = n; eq.geometry.dispose(); eq.geometry = new THREE.TorusGeometry(R * 1.012, 0.04, 8, 96, Math.max(0.02, (Math.PI * 2 * n) / 96)); eq.rotation.x = Math.PI / 2; } }
+      else if (name === "eje") { axis.visible = u > 0; axis.scale.y = Math.max(0.001, 1 - (1 - u) ** 3); }
+    } };
   },
 };
 
@@ -77,6 +84,7 @@ export const luna_fases: HeroDef = {
 export const sol: HeroDef = {
   kind: "primitive",
   when: "El Sol y las estrellas: luz, calor, fusión, manchas solares, auroras, cuánto tarda la luz, por qué brillan las estrellas.",
+  actions: { llamarada: "Una llamarada gigante se alza desde el borde del Sol: erupciones solares, tormentas solares, explosiones, energía que sale." },
   poses: ["activo"],
   center: [0, 1.35, 0], radius: 1.15,
   anchors: { hero: [0, 1.35, 0], top: [0, 2.7, 0], base: [0, 0.1, 0], protuberancia: [1.0, 2.1, 0.2], mancha: [-0.4, 1.6, 1.0] },
@@ -91,8 +99,11 @@ export const sol: HeroDef = {
     const star = new THREE.Mesh(b.track(new THREE.SphereGeometry(1, 64, 48)), beam(b, "#ffffff", 1.15, { map: tex })); star.position.y = 1.35;
     const glow = [halo(b, "rgba(255,190,70,0.95)", 5.2, 0.9), halo(b, "rgba(255,120,40,0.6)", 8, 0.45)]; glow.forEach((h) => { h.position.set(0, 1.35, -0.6); g.add(h); });
     const loops = [0, 1, 2].map((i) => { const a = [0.35, 1.25, 2.7][i], t = tube(b, Array.from({ length: 14 }, (_, k) => { const u = k / 13, r = 1 + 0.5 * Math.sin(u * Math.PI); const ang = a + (u - 0.5) * 0.7; return [Math.cos(ang) * r, 1.35 + Math.sin(ang) * r, 0.1] as P3; }), 0.035, beam(b, "#ff9a3a", 1.5, { transparent: true, opacity: 0.85 })); return t; });
-    g.add(star, ...loops); root.add(g);
-    return done(root, b, (f) => { star.rotation.y = f * 0.004; glow.forEach((h, i) => h.scale.setScalar(1 + 0.04 * Math.sin(f * 0.05 + i))); loops.forEach((l, i) => { l.rotation.z = 0.05 * Math.sin(f * 0.03 + i); }); });
+    const flare = new THREE.Group(), arcPts = Array.from({ length: 24 }, (_, k) => { const t = k / 23, a = 0.9 + (t - 0.5) * 0.9, r = 1 + 0.95 * Math.sin(Math.PI * t); return [Math.cos(a) * r, Math.sin(a) * r, 0.15] as P3; });
+    flare.add(tube(b, arcPts, 0.07, beam(b, "#ffb04a", 2, { transparent: true, opacity: 0.95 }), 40)); flare.position.set(0, 1.35, 0); flare.scale.setScalar(0.001); flare.visible = false;
+    g.add(star, ...loops, flare); root.add(g);
+    const inst = done(root, b, (f) => { star.rotation.y = f * 0.004; glow.forEach((h, i) => h.scale.setScalar(1 + 0.04 * Math.sin(f * 0.05 + i))); loops.forEach((l, i) => { l.rotation.z = 0.05 * Math.sin(f * 0.03 + i); }); });
+    return { ...inst, act: (name, u) => { if (name === "llamarada") { flare.visible = u > 0; flare.scale.setScalar(Math.max(0.001, 1 - (1 - u) ** 3)); } } };
   },
 };
 

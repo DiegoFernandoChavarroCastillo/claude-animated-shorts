@@ -6,6 +6,7 @@ import { ENVS } from "./envs";
 import { HEROES } from "./heroes";
 import { OVERLAYS } from "./overlays/registry";
 import { ICONS } from "./overlays/icons";
+import { ACTION_DEFS } from "./actions";
 import { CAMERA_PRESETS, LIGHT_NAMES, TRANSITIONS, type Story } from "./schema";
 
 export const CATALOG = catalog;
@@ -26,12 +27,14 @@ export const catalogErrors = (): string[] => {
   errs.push(...sameSet("transitions", TRANSITIONS, Object.keys(c.transitions)));
   errs.push(...sameSet("overlays", Object.keys(OVERLAYS), Object.keys(c.overlays)));
   errs.push(...sameSet("icons", ICONS, c.icons));
+  errs.push(...sameSet("actions", Object.keys(ACTION_DEFS), Object.keys((c as unknown as { actions: object }).actions)));
   for (const [id, e] of Object.entries(c.envs)) if (ENVS[id]) errs.push(...sameSet(`envs.${id}.lights`, ENVS[id].lights, e.lights));
   for (const [id, h] of Object.entries(c.heroes) as [string, Cat["heroes"][keyof Cat["heroes"]]][]) {
     const d = HEROES[id];
     if (!d) continue;
     if (d.kind !== h.kind) errs.push(`heroes.${id}.kind: código ${d.kind}, catálogo ${h.kind}`);
     errs.push(...sameSet(`heroes.${id}.poses`, d.poses, h.poses), ...sameSet(`heroes.${id}.anchors`, Object.keys(d.anchors), h.anchors));
+    errs.push(...sameSet(`heroes.${id}.actions`, Object.keys(d.actions ?? {}), Object.keys((h as unknown as { actions?: object }).actions ?? {})));
   }
   for (const [id, o] of Object.entries(c.overlays) as [string, { anchored: boolean; numeric?: boolean }][]) {
     if (OVERLAYS[id] && OVERLAYS[id].anchored !== o.anchored) errs.push(`overlays.${id}.anchored no coincide`);
@@ -67,6 +70,12 @@ export const storyErrors = (story: Story): string[] => {
       if (anchor && (!d.anchored || (h && !h.anchors.includes(anchor)))) errs.push(`${b.id}: ${o.type} con anchor "${anchor}" no válido`);
       const to = (o as { to?: string }).to;
       if (o.type === "FlowArrow" && (!to || (h && !h.anchors.includes(to)))) errs.push(`${b.id}: FlowArrow necesita "to", un ancla de ${s.hero.asset}`);
+    }
+    for (const a of b.actions) {
+      const own = (h as unknown as { actions?: Record<string, string> } | undefined)?.actions ?? {};
+      if (!(a.type in ACTION_DEFS) && !(a.type in own)) errs.push(`${b.id}: acción "${a.type}" no existe (ni genérica ni de ${s.hero.asset})`);
+      const anc = (a as { anchor?: string }).anchor;
+      if (anc && h && !h.anchors.includes(anc)) errs.push(`${b.id}: acción ${a.type} con anchor "${anc}" no válido`);
     }
     for (const x of b.sfx) if (!(x.type in c.sfx)) errs.push(`${b.id}: sfx "${x.type}" no existe`);
   }

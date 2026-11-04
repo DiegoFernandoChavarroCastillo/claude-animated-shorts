@@ -11,6 +11,7 @@ import type { Timeline } from "./timeline";
 import { camAt, meanView } from "./camera";
 import { envDef } from "./envs";
 import { heroDef } from "./heroes";
+import { MarkerRig, genericPose, heroActions } from "./actions";
 import { camPositions, camsInside, cullSight, sightLines } from "./envs/cull";
 import { LensBlur } from "./world/lensblur";
 import { GradeEffect, GRADES, gradeFor } from "./world/grade";
@@ -41,7 +42,10 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
     if (inside) console.warn(`[cull] beat ${bt.beat.id}: ${inside} posiciones de cámara dentro de un objeto`);
     env.root.userData.cullHidden = hidden;
     const root = new THREE.Group();
-    root.add(env.root, hero.root);
+    // el objeto va dentro de un grupo que mueven las acciones (subir, caer, crecer…) junto con los marcadores 3D (F13)
+    const rig = new MarkerRig(tl, i), heroWrap = new THREE.Group();
+    heroWrap.add(hero.root, rig.root);
+    root.add(env.root, heroWrap);
     const hemi = new THREE.HemisphereLight(L.hemiSky, L.hemiGround, L.hemi);
     const key = new THREE.DirectionalLight(L.key, L.keyI), rim = new THREE.DirectionalLight(L.rim, L.rimI);
     key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004;
@@ -55,9 +59,9 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
     key.position.copy(dirAt(L.keyAz, L.keyEl)).add(new THREE.Vector3(...c)); key.target.position.set(...c);
     rim.position.copy(dirAt(180 + L.keyAz * 0.5, 20)).add(new THREE.Vector3(...c)); rim.target.position.set(...c);
     root.add(hemi, key, key.target, rim, rim.target);
-    return { root, env, hero };
+    return { root, env, hero, rig, heroWrap };
   }, [tl, i, sc, L]);
-  useEffect(() => () => { world.env.dispose(); world.hero.dispose(); }, [world]);
+  useEffect(() => () => { world.env.dispose(); world.hero.dispose(); world.rig.dispose(); }, [world]);
 
   const fx = useMemo(() => ({
     lens: new LensBlur({ maxCoC: DOF.maxCoC, nearScale: DOF.nearScale }),
@@ -71,6 +75,10 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
   cam.fov = c.fov; cam.near = 0.1; cam.far = 2000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
   scene.fog = world.env.fog; scene.background = null;
   world.env.update(f, cam); world.hero.update(f, cam);
+  const P = genericPose(tl, i, f);
+  world.heroWrap.position.set(...P.pos); world.heroWrap.rotation.set(...P.rot); world.heroWrap.scale.setScalar(P.scale);
+  world.rig.update(f, cam);
+  for (const a of heroActions(tl, i)) world.hero.act?.(a.spec.type, f < a.start ? 0 : Math.min(1, (f - a.start) / a.dur), a.spec as Record<string, unknown>, Math.max(0, f - a.start));
   // foco de lente fina: distancia sobre el eje de vista hasta el centro del objeto protagonista
   const fwd = new THREE.Vector3(); cam.getWorldDirection(fwd);
   fx.lens.focus = Math.max(0.3, new THREE.Vector3(...heroDef(sc.hero.asset).center).sub(cam.position).dot(fwd));

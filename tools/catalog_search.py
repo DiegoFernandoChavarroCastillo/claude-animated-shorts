@@ -43,7 +43,7 @@ def main():
         rows = sorted(((score(e if isinstance(e, dict) else {"when": e}, i, terms), i, e) for i, e in c[section].items()), key=lambda r: -r[0])
         print(f"\n## {section}")
         for s, i, e in [r for r in rows if r[0] > 0][:n] or [(0, "(nada)", {})]:
-            extra = f" poses={e.get('poses')} anchors={e.get('anchors')}" if section == "heroes" and e else ""
+            extra = (f" poses={e.get('poses')} anchors={e.get('anchors')}" + (f" acciones={list(e['actions'])}" if e.get('actions') else "")) if section == "heroes" and e else ""
             print(f"  {s:>2}  {i}{extra}\n      {e.get('when', '') if isinstance(e, dict) else e}")
 
 

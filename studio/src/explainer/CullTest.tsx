@@ -22,7 +22,7 @@ const testStory = (env: string, light: Story["beats"][number]["scene"]["light"])
   let k = 0;
   for (const [asset, kind] of HEROES) for (const camera of CAMS) {
     const id = `t${k}`;
-    beats.push({ id, role: "mechanism", text: "a b c d", scene: { env, light, hero: { kind, asset }, camera }, overlays: [], sfx: [], transition: TRANSITIONS[k % TRANSITIONS.length] });
+    beats.push({ id, role: "mechanism", text: "a b c d", scene: { env, light, hero: { kind, asset }, camera }, overlays: [], actions: [], sfx: [], transition: TRANSITIONS[k % TRANSITIONS.length] });
     for (let w = 0; w < 4; w++) words.push({ w: "a", start: k * 5 + w * 0.5 + 0.2, end: k * 5 + w * 0.5 + 0.6, beat: id });
     k++;
   }

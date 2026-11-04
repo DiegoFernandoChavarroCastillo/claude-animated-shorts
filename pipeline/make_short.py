@@ -158,7 +158,7 @@ class Run:
 
         def run():
             r = subprocess.run([PY, "pipeline/validate_story.py", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")),
-                                "--script", str(self.p("02_SCRIPT.md"))], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+                                "--script", str(self.p("02_SCRIPT.md")), "--require-actions"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
                                env=dict(os.environ, PYTHONIOENCODING="utf-8"))
             out.write_text(r.stdout, encoding="utf-8")
             if r.returncode != 0:

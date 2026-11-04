@@ -4,7 +4,8 @@
 
 Reglas: whoosh_soft en cada transición glide / zoom_through; pop al entrar cada overlay; tick en los contadores
 (StatCallout, BarCompare); impact suave al terminar la cuenta de un StatCallout; riser de 0,8 s antes del beat twist;
-más los "sfx" que el story.json pida a mano. Los frames siguen las mismas reglas que timeline.ts.
+más un efecto por cada acción del beat (ACTION_SFX: salir volando = whoosh, onda de choque o chispas = impact, anillo o halo = pop)
+y los "sfx" que el story.json pida a mano. Los frames siguen las mismas reglas que timeline.ts.
 """
 from __future__ import annotations
 
@@ -19,6 +20,8 @@ from common import FPS, TAIL_MS, PipelineError, load_json, norm, run_main, write
 LEAD_F = 2                  # timeline.ts: el beat empieza 2 frames antes de su primera palabra
 STAT_COUNT_F = 24           # StatCallout cuenta en 24 frames (prog(0, 24))
 BAR_FILL_F = (6, 30)        # BarCompare llena la barra i entre 6 + 4i y 30 + 4i
+ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "whoosh_soft", "shockwave": "impact", "burst": "impact", "topple": "impact",
+              "shake": "impact", "hop": "pop", "pulse": "pop", "ring": "pop", "arrow": "pop", "halo": "pop"}   # F13: acciones con sonido; el resto, mudas
 
 
 def beat_frames(story: dict, words: list[dict]):
@@ -67,9 +70,13 @@ def plan(story: dict, words: list[dict]) -> dict:
                 for i_bar in range(len(o.get("items", []))):
                     for k in range(4):
                         add("tick", f0 + BAR_FILL_F[0] + 4 * i_bar + k * 5, f"{b['id']}: barra {i_bar + 1}")
+        for a in b.get("actions", []):
+            if a.get("type") in ACTION_SFX:
+                add(ACTION_SFX[a["type"]], resolve_at(bt, words, a.get("at")), f"{b['id']}: acción {a['type']}")
         for s in b.get("sfx", []):
             add(s["type"], resolve_at(bt, words, s.get("at")), f"{b['id']}: pedido en story.json")
     ev.sort(key=lambda e: e["t"])
+    ev = [e for k, e in enumerate(ev) if "acción" not in e["why"] or not any(o["type"] == e["type"] and 0 <= e["t"] - o["t"] < 0.12 for o in ev[:k])]   # una acción no duplica un sonido que ya suena
     for e in ev:
         e["t"] = max(0.0, e["t"])
     return {"duration_s": round(total / FPS, 3), "frames": total, "events": ev}

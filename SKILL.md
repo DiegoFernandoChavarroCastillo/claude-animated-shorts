@@ -83,6 +83,10 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 - Cambia de entorno solo al cambiar de lugar o de idea. Cada `mechanism` lleva su objeto protagonista y al menos un
   overlay de dato.
 - Varía los encuadres: dos beats seguidos con el mismo objeto no deben repetir preset de cámara.
+- **Dale vida (F13):** ponle **acciones** a la mitad de los beats como mínimo: lo que el objeto hace cuando se dice la palabra (una
+  línea roja que rodea la Tierra al decir "ecuador", la persona que sube al decir "despedido", chispas al decir "revienta").
+  Mira "Acciones" en `templates/prompts/story_es_en.md` (qué verbo pide qué acción) y las propias de cada objeto con
+  `PY tools/catalog_search.py <tema>`. El pipeline falla si hay menos de la mitad de los beats con acciones.
 - Ejemplo completo: `templates/examples/hielo-flota/` (y `hielo-flota-en/`).
 
 ### 5. Pipeline determinista
@@ -116,6 +120,7 @@ Entrega:
 
 ## Reglas
 
+- **El objeto reacciona a lo que dice la voz:** acciones sincronizadas con las palabras (mínimo la mitad de los beats), no solo un modelo girando.
 - **Subtítulos siempre activos.** Palabra por palabra, con la palabra clave del beat en caja de selección.
 - **Idioma configurable** (`es`/`en`), el mismo en voz, subtítulos y overlays.
 - **Fuentes obligatorias:** cada número del video tiene una fuente en `02_SCRIPT.md` (`## Fuentes`).
@@ -134,6 +139,7 @@ Entrega:
 | Catálogo cerrado para el story | `templates/catalog.json` (cruzado con el código en `studio/src/explainer/catalog.ts`) |
 | Ejemplos | `templates/examples/` (`hielo-flota` completo; solo guion: `cielo-azul`, `dedos-arrugados` y uno por estructura: `agua-rara-lista`, `agua-contra-hielo`, `dedos-historia`, `atardecer-cadena`) |
 | Look del video (paleta, subtítulos, cámara, luces) | `studio/src/explainer/style.ts` y `world/grade.ts` |
+| Acciones sincronizadas con la voz | `studio/src/explainer/actions/index.ts` (genéricas y marcadores), `HeroDef.actions` + `HeroInstance.act` (propias de cada objeto) |
 | Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`, y sus segundas tandas `*2.ts`), `overlays/` (`Guides`, `Panels`, `Meters`, `Diagrams`) |
 | Buscar en el catálogo, probar objetos | `tools/catalog_search.py`, `tools/gallery.py` (galería con stills), `tools/add_heroes.py` |
 | Orquestador y etapas | `pipeline/` (`make_short.py`, `voice.py`, `tts/`, `align.py`, `mix.py`, `voice_fx.py`…) |

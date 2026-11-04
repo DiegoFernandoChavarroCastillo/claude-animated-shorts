@@ -19,7 +19,7 @@ const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "hd-")), "h.mjs");
 await build({ stdin: { contents: 'import { HEROES } from "./src/explainer/heroes"; export default HEROES;', resolveDir: process.cwd(), loader: "ts" },
   bundle: true, platform: "node", format: "esm", outfile: out, logLevel: "error", loader: { ".glb": "dataurl" } });
 const H = (await import(out)).default;
-console.log(JSON.stringify(Object.fromEntries(Object.entries(H).map(([k, h]) => [k, { kind: h.kind, poses: h.poses, anchors: Object.keys(h.anchors), when: h.when }]))));
+console.log(JSON.stringify(Object.fromEntries(Object.entries(H).map(([k, h]) => [k, { kind: h.kind, poses: h.poses, anchors: Object.keys(h.anchors), when: h.when, actions: h.actions ?? {} }]))));
 """
 raw = subprocess.check_output(["node", "--input-type=module", "-e", js], cwd=ROOT / "studio", text=True)
 code = json.loads(raw.strip().splitlines()[-1])
@@ -30,6 +30,9 @@ for k, h in code.items():
     if k not in cat["heroes"]:
         new += 1
     old = cat["heroes"].get(k, {})
+    h = {**h, **({} if h.get("actions") else {"actions": None})}
+    if h.get("actions") is None:
+        del h["actions"]
     cat["heroes"][k] = {**h, "tags": tags.get(k, old.get("tags", []))}
     if not cat["heroes"][k]["tags"]:
         del cat["heroes"][k]["tags"]

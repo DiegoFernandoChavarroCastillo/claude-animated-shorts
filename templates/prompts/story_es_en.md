@@ -24,6 +24,78 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
 4. **Varía el protagonista**: el validador falla si un mismo objeto sale en más de 3 beats seguidos o en más del 65 %
    de los beats. Alterna objetos y entornos según cambie la idea (el cuerpo → la célula → el virus).
 
+## Acciones: que el video se sienta vivo (F13)
+
+Un objeto que solo gira se siente como un modelo 3D con subtítulos. Un video vivo **muestra lo que la voz dice** en el
+momento en que lo dice: cuando se nombra el ecuador, una línea roja rodea la Tierra; cuando sales despedido, la persona
+sube; cuando algo explota, saltan chispas. Eso lo hacen las **acciones** (`actions` en cada beat, con `at` = la palabra
+que las dispara). Catálogo completo en `catalog.json` → `actions` y `heroes.<id>.actions`.
+
+**Cómo elegirlas.** Para cada beat, lee la frase y pregúntate: *¿qué hace o qué muestra esto que se pueda ver?* Busca el
+verbo o el sustantivo fuerte y ponle una acción en esa palabra (`"at": "despedido"`). Prueba primero con las **propias del
+objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflamar` en `garganta_corte`, `llamarada` en
+`sol`, `acelerar` en `corazon`); después, con las genéricas.
+
+| Si la voz dice… | Usa |
+|---|---|
+| sale despedido, vuela, se va, se escapa, se dispersa | `fly` (con `dir`), o `lift` si solo se eleva |
+| se eleva, levita, flota, sube | `lift` |
+| se cae, se desploma, se desmaya | `topple` |
+| tiembla, vibra, calor, miedo, impacto | `shake` |
+| late, se activa, "aquí está la clave" | `pulse` |
+| crece, se hincha, se expande / se encoge, se comprime | `scale` (`to` mayor o menor que 1) |
+| gira, da vueltas | `spin` |
+| salta, rebota | `hop` |
+| rodea, alrededor, ecuador, órbita, barrera, límite | `ring` (o la propia `ecuador` en `planeta`); inclina con `tilt` si la cámara está baja |
+| señala una parte, "mira aquí", sentido de una fuerza | `arrow` con `anchor` y `dir` |
+| viaja, corre, velocidad, cae a toda prisa | `speed` (líneas de velocidad, con `dir`) |
+| se calienta, se enciende, energía, atención | `halo` con `anchor` |
+| choca, estalla, se rompe, chispa | `burst`; golpe en el suelo o sonido: `shockwave` |
+
+**Reglas.**
+1. **Al menos la mitad de los beats** llevan una acción (el pipeline falla si no) y **como mucho 3 por beat**. Los beats de
+   gancho, mecanismo y giro son los que más las piden; el cierre puede ir sin ellas.
+2. **Cada acción ilustra algo que se dice.** No decores sin sentido: si no hay un verbo o un sustantivo que mostrar, no pongas una.
+3. **El `at` es la palabra exacta del beat** (la 1.ª vez que aparece). La acción sube durante `dur` frames (30 por defecto;
+   40–50 para movimientos grandes como `fly` o `scale`) y se queda hasta el final del beat. `shake`, `pulse` y `hop` se
+   resuelven solas y vuelven a su sitio.
+4. **Varía:** no repitas la misma acción en beats seguidos ni pongas `lift`, `fly` y `speed` juntas siempre. Combina una que
+   mueva el objeto con un marcador que lo explique (p. ej. `fly` + `speed`; `ring` + `halo`).
+5. **Los overlays anclados siguen al objeto** cuando una acción lo mueve (suben con él).
+6. **Suenan:** `fly`, `speed` y `lift` meten un whoosh; `shockwave`, `burst`, `shake` y `topple`, un impacto suave; `ring`,
+   `arrow`, `halo`, `pulse` y `hop`, un pop. No añadas `sfx` a mano para lo mismo.
+7. **Ojo con la cámara:** una acción que saca al objeto del cuadro (`fly` con `dist` grande) deja el plano vacío después. Úsala
+   al final de la frase o combínala con un overlay que se quede. Un `ring` en un plano bajo se ve de canto: inclínalo (`tilt` 40–70).
+
+**Acciones genéricas (mueven el objeto entero)**
+
+| `type` | Cuándo | Campos |
+|---|---|---|
+| `lift` | Se eleva y flota: sale despedido hacia arriba, levita, se eleva, pierde peso, 'sube'. | `height`, `hold` |
+| `topple` | Se desploma de lado como un árbol: se cae, se desmaya, se derrumba, pierde el equilibrio. | `dir` |
+| `fly` | Sale volando y se aleja, acelerando: se escapa, se va, se dispersa, es lanzado, desaparece. | `dir`, `dist` |
+| `shake` | Tiembla o vibra: terremoto, miedo, calor, impacto, motor, tensión. | `amp` |
+| `pulse` | Un latido o golpe de tamaño: late, se acelera, se activa, 'aquí está la clave'. | `scale` |
+| `scale` | Crece o se encoge y se queda así: se expande, se infla, se hincha, se reduce, se comprime. | `to` |
+| `spin` | Da una vuelta rápida: gira, rueda, rota, da vueltas. | `turns` |
+| `tilt` | Se inclina y se queda: se inclina, se ladea, cae hacia un lado sin llegar al suelo. | `deg` |
+| `hop` | Salta una o varias veces: rebota, salta, brinca, se emociona. | `height`, `count` |
+| `slide` | Se desplaza de lado: avanza, se mueve, se aparta, recorre. | `x`, `z` |
+
+**Marcadores 3D (añaden algo pegado al objeto)**
+
+| `type` | Cuándo | Campos |
+|---|---|---|
+| `ring` | Una línea brillante que lo rodea: ecuador, órbita, alrededor, cinturón, límite, barrera. | `anchor`, `r`, `axis`, `tilt`, `color` |
+| `arrow` | Una flecha 3D que señala o muestra el sentido de un movimiento o una fuerza. | `anchor`, `dir`, `len`, `color` |
+| `speed` | Líneas de velocidad que cruzan el plano: viaja, corre, sale disparado, cae, a toda velocidad. | `dir`, `color` |
+| `halo` | Un resplandor que late sobre una parte: calor, energía, atención, se enciende, se activa. | `anchor`, `size`, `color` |
+| `burst` | Una explosión de chispas: choque, ruptura, estallido, contacto, chispa. | `anchor`, `color`, `speed` |
+| `shockwave` | Una onda que se expande desde el suelo o una parte: impacto, golpe, terremoto, sonido, aparece de golpe. | `anchor`, `color` |
+
+Ejemplo (`templates/examples/hielo-flota/05_story.json`): `{ "type": "scale", "at": "expande", "to": 1.25, "dur": 40 }` en la
+frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor": "top" }` en «…la botella revienta».
+
 ## Según la estructura del guion (cabecera `structure:`)
 
 - `mito`: como siempre: tensión con `Pill`/`NoSymbol`, mecanismo con objeto y dato.
@@ -75,7 +147,8 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
 8. **Transiciones** (`transition`, hacia el beat siguiente): `glide` por defecto, `zoom_through` para "entrar" en el
    objeto (pantalla, ventanilla, chip), `crossfade` entre ideas, `cut` solo al cambiar de lugar y **como mucho 3 por
    minuto**.
-9. `sfx` solo si hace falta algo extra: los whoosh, pops, ticks, riser e impact se añaden solos (`sfx_plan.py`).
+9. **Acciones** (sección de arriba): al menos la mitad de los beats, ancladas a la palabra que las dispara.
+10. `sfx` solo si hace falta algo extra: los whoosh, pops, ticks, riser e impact se añaden solos (`sfx_plan.py`), también para las acciones.
 
 Al terminar, la validación es automática: `calculateMetadata` cruza el story.json con el catálogo y falla con el
 motivo exacto (id inexistente, pose que no existe, `at` que no es una palabra del beat…).

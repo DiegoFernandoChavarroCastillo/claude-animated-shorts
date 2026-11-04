@@ -4,7 +4,7 @@
 
 Falla si: un env / luz / hero (kind, asset, pose) / overlay / ancla / preset de cámara / transición / sfx no existe en
 templates/catalog.json; un "at" no resuelve a una palabra del beat; un beat mechanism, item, versus o chain no tiene overlay; hay más de 3
-"cut" por minuto; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
+"cut" por minuto; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; una acción que no existe, con ancla inválida, con "at" que no es una palabra o más de 3 por beat (con --require-actions, menos de la mitad de los beats con acciones); un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
 además, el texto de los beats debe ser el del guion aprobado, línea a línea.
 """
 from __future__ import annotations
@@ -19,6 +19,8 @@ from common import ROOT, load_json, norm, run_main, words_of  # noqa: E402
 
 CUTS_PER_MIN = 3
 OVERLAY_ROLES = ("mechanism", "item", "versus", "chain")   # beats que explican un paso o un punto: llevan un overlay de dato
+MAX_ACTIONS = 3          # acciones por beat (F13)
+MIN_ACTION_SHARE = 0.5   # fracción mínima de beats con al menos una acción cuando se exige (--require-actions)
 MAX_HERO_RUN = 3        # beats seguidos con el mismo objeto protagonista (garganta-gripe usó 8 de 8 y salió plano)
 MAX_HERO_SHARE = 0.65   # fracción máxima de beats con el mismo objeto (celular-calienta: 5 de 8 = 0,62 pasa)
 WPS = 2.8  # para estimar la duración si no hay words.json
@@ -36,7 +38,7 @@ def resolves(at, text: str) -> bool:
     return norm(str(at)) in {norm(w) for w in ws}
 
 
-def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None) -> list[str]:
+def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None, require_actions: bool = False) -> list[str]:
     cat = load_json(ROOT / "templates" / "catalog.json")
     errs: list[str] = []
     beats = story.get("beats", [])
@@ -87,6 +89,20 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: FlowArrow necesita 'to', un ancla de {hero.get('asset')}")
         if numeric and not b.get("sources"):
             errs.append(f"{bid}: overlay con número sin 'sources'")
+        acts = b.get("actions", [])
+        if len(acts) > MAX_ACTIONS:
+            errs.append(f"{bid}: {len(acts)} acciones (máximo {MAX_ACTIONS} por beat)")
+        own = (h or {}).get("actions", {})
+        for a in acts:
+            t = a.get("type")
+            if t not in cat.get("actions", {}) and t not in own:
+                errs.append(f"{bid}: acción '{t}' no existe (ni genérica ni de {hero.get('asset')}; propias: {', '.join(own) or 'ninguna'})")
+            if a.get("anchor") and h and a["anchor"] not in h["anchors"]:
+                errs.append(f"{bid}: acción {t} con anchor '{a['anchor']}' no válido")
+            if not resolves(a.get("at"), text):
+                errs.append(f"{bid}: acción {t} con at '{a.get('at')}' que no es una palabra del beat")
+            if a.get("dur") is not None and not isinstance(a["dur"], int):
+                errs.append(f"{bid}: acción {t} con dur que no es un entero de frames")
         for x in b.get("sfx", []):
             if x.get("type") not in cat["sfx"]:
                 errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
@@ -104,6 +120,12 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
     top, n = max(((a, assets.count(a)) for a in set(assets)), key=lambda t: t[1])
     if len(beats) >= 5 and n / len(beats) > MAX_HERO_SHARE:
         errs.append(f"'{top}' es el protagonista de {n} de {len(beats)} beats (máximo {MAX_HERO_SHARE:.0%}): reparte los objetos")
+    if require_actions:
+        with_actions = sum(1 for b in beats if b.get("actions"))
+        need = -(-len(beats) // 2)
+        if with_actions < need:
+            errs.append(f"solo {with_actions} de {len(beats)} beats llevan acciones (hacen falta al menos {need}): que el objeto reaccione a lo que dice la voz "
+                        f"(ver 'Acciones' en templates/prompts/story_es_en.md)")
     # cortes por minuto (la transición del último beat no se usa)
     dur = (words[-1]["end"] + 1.0) if words else sum(len(words_of(b.get("text", ""))) for b in beats) / WPS
     cuts = sum(1 for b in beats[:-1] if b.get("transition") == "cut")
@@ -135,9 +157,10 @@ def main():
     ap.add_argument("story", type=Path)
     ap.add_argument("--words", type=Path)
     ap.add_argument("--script", type=Path)
+    ap.add_argument("--require-actions", action="store_true", help="exige acciones en al menos la mitad de los beats")
     a = ap.parse_args()
     errs = validate(load_json(a.story), load_json(a.words) if a.words else None,
-                    script_lines(a.script.read_text(encoding="utf-8")) if a.script else None)
+                    script_lines(a.script.read_text(encoding="utf-8")) if a.script else None, a.require_actions)
     print(f"{'PASA' if not errs else 'FALLA'}: {a.story}")
     for e in errs:
         print(f"  - {e}")

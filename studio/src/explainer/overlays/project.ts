@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { useCurrentFrame } from "remotion";
 import { BASE } from "../style";
 import { camAt, type Cam } from "../camera";
+import { genericPose } from "../actions";
 import { heroDef, type V3 } from "../heroes";
 import type { Timeline } from "../timeline";
 import type { Pt } from "./common";
@@ -24,8 +25,10 @@ export const projectPoint = (c: Cam, p: V3): Pt | null => {
 /** ancla con nombre del objeto protagonista del beat, proyectada en el frame actual */
 export const anchorPoint = (tl: Timeline, beat: number, anchor: string, f: number): Pt | null => {
   const h = heroDef(tl.beats[beat].beat.scene.hero.asset);
-  const p = h.anchors[anchor] ?? h.center;
-  return projectPoint(camAt(tl, beat, f), p);
+  const a = h.anchors[anchor] ?? h.center, P = genericPose(tl, beat, f);
+  // si una acción mueve el objeto (sube, cae, crece), el ancla se mueve con él
+  const v3 = new THREE.Vector3(...a).multiplyScalar(P.scale).applyEuler(new THREE.Euler(...P.rot)).add(new THREE.Vector3(...P.pos));
+  return projectPoint(camAt(tl, beat, f), [v3.x, v3.y, v3.z]);
 };
 
 export const useProjectedPoint = (tl: Timeline, beat: number, anchor = "hero") => anchorPoint(tl, beat, anchor, useCurrentFrame());

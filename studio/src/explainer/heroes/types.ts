@@ -5,11 +5,16 @@ import type { LightPreset } from "../style";
 
 export type V3 = [number, number, number];
 export type HeroKind = "primitive" | "gltf" | "card";
-export type HeroInstance = { root: THREE.Object3D; update: (f: number, cam: THREE.Camera) => void; dispose: () => void };
+export type HeroInstance = {
+  root: THREE.Object3D; update: (f: number, cam: THREE.Camera) => void; dispose: () => void;
+  /** acciones propias del objeto (`HeroDef.actions`): se llama en cada frame con el progreso u (0..1) y los frames t desde el inicio */
+  act?: (name: string, u: number, spec: Record<string, unknown>, t: number) => void;
+};
 export type HeroDef = {
   kind: HeroKind;
   when: string;                // una línea para el catálogo: cuándo usarlo
   poses: string[];             // la primera es la de por defecto
+  actions?: Record<string, string>; // acciones propias (nombre -> cuándo usarla); las implementa HeroInstance.act
   center: V3;                  // centro de encuadre (m); el suelo está en y = 0
   radius: number;              // radio de ENCUADRE: la cámara se aleja para que 2 x radius ocupe ~55 % del ancho
   anchors: Record<string, V3>; // puntos con nombre para overlays anclados (PulseRings, Callout3D)

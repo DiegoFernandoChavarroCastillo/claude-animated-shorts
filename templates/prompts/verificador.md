@@ -29,6 +29,7 @@ Tu trabajo es compararlo con las referencias y decir con franqueza dónde se ale
 | Overlays | Tamaño, tipografía, colocación (fuera de la banda de subtítulos), integración con la escena |
 | Cámara | Movimiento continuo y suave, empujes, derivas, que ningún plano parezca congelado |
 | Ritmo | Variedad de planos, cambios de escena, densidad de información frente a la referencia |
+| Vida | El objeto reacciona a lo que dice la voz (sube, cae, se señala una parte, aparece una línea o un halo) y no solo gira; las acciones están en la palabra correcta, no son decoración y no sacan al objeto del cuadro sin motivo. En `05_story.json`, mira el campo `actions` de cada beat |
 
 **Formato de respuesta:**
 
