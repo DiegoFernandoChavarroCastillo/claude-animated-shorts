@@ -512,4 +512,10 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   añade un sonido por acción (whoosh, impacto o pop). Los ejemplos `hielo-flota` (es/en) ya llevan acciones.
 - **Límites.** Las acciones propias existen solo para 4 objetos; el resto usa las genéricas y los marcadores. Se pueden
   añadir más en `HeroDef.actions` (ver `heroes/primitive/space.ts`, `planeta`). Un objeto que sale del cuadro deja el plano vacío.
+- **D77 (4 nov) · Más efectos generales.** Diego pidió más efectos reutilizables («se encoge, se agranda, etc.»). Se pasa de 16 a
+  **41 acciones**: 26 genéricas (nuevas: `grow`, `shrink`, `appear`, `vanish`, `drop`, `swing`, `wobble`, `squash`, `stretch`,
+  `flip`, `circle`, `zigzag`, `sway`, `sink`, `turn`, `blink`), 13 marcadores 3D (nuevos: `sparkle`, `beam`, `steam`, `mark`,
+  `orbiter`, `rain`, `ripple`) y 2 de cámara (`punch`, `camshake`). `appear` y `drop` cambian cómo empieza el beat (invisible o
+  arriba hasta la palabra), `squash` y `stretch` deforman en vez de escalar. Los efectos de cámara están en `camAt` (puros del
+  frame), así los overlays anclados los siguen. `tools/actions_gallery.py` renderiza una hoja con cada efecto.
 

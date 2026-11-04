@@ -27,7 +27,7 @@ export const anchorPoint = (tl: Timeline, beat: number, anchor: string, f: numbe
   const h = heroDef(tl.beats[beat].beat.scene.hero.asset);
   const a = h.anchors[anchor] ?? h.center, P = genericPose(tl, beat, f);
   // si una acción mueve el objeto (sube, cae, crece), el ancla se mueve con él
-  const v3 = new THREE.Vector3(...a).multiplyScalar(P.scale).applyEuler(new THREE.Euler(...P.rot)).add(new THREE.Vector3(...P.pos));
+  const v3 = new THREE.Vector3(a[0] * P.stretch[0], a[1] * P.stretch[1], a[2] * P.stretch[2]).multiplyScalar(P.scale).applyEuler(new THREE.Euler(...P.rot)).add(new THREE.Vector3(...P.pos));
   return projectPoint(camAt(tl, beat, f), [v3.x, v3.y, v3.z]);
 };
 

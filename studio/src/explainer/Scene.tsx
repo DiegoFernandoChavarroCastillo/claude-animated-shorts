@@ -76,7 +76,7 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
   scene.fog = world.env.fog; scene.background = null;
   world.env.update(f, cam); world.hero.update(f, cam);
   const P = genericPose(tl, i, f);
-  world.heroWrap.position.set(...P.pos); world.heroWrap.rotation.set(...P.rot); world.heroWrap.scale.setScalar(P.scale);
+  world.heroWrap.position.set(...P.pos); world.heroWrap.rotation.set(...P.rot); world.heroWrap.scale.set(P.scale * P.stretch[0], P.scale * P.stretch[1], P.scale * P.stretch[2]);
   world.rig.update(f, cam);
   for (const a of heroActions(tl, i)) world.hero.act?.(a.spec.type, f < a.start ? 0 : Math.min(1, (f - a.start) / a.dur), a.spec as Record<string, unknown>, Math.max(0, f - a.start));
   // foco de lente fina: distancia sobre el eje de vista hasta el centro del objeto protagonista

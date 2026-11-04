@@ -5,6 +5,7 @@ import { CAMERA, BASE } from "../style";
 import type { Timeline, BeatT } from "../timeline";
 import { heroDef, type V3 } from "../heroes";
 import { envDef } from "../envs";
+import { cameraFx } from "../actions";
 
 export type Cam = { pos: V3; look: V3; fov: number; roll: number };
 type Params = { az: number; el: number; dist: number; lat: number; lift: number; fov: number; roll: number; focus: V3 };
@@ -141,8 +142,11 @@ const paramsAt = (tl: Timeline, i: number, f: number, depth = 0): Params => {
   return p;
 };
 
-export const camAt = (tl: Timeline, i: number, f: number): Cam =>
-  posOf(paramsAt(tl, i, f), heroDef(tl.beats[i].beat.scene.hero.asset).center);
+export const camAt = (tl: Timeline, i: number, f: number): Cam => {
+  const c = posOf(paramsAt(tl, i, f), heroDef(tl.beats[i].beat.scene.hero.asset).center), fx = cameraFx(tl, i, f);
+  // efectos de cámara de las acciones (punch, camshake): zoom de golpe y temblor, funciones puras del frame
+  return { pos: [c.pos[0] + fx.shake[0], c.pos[1] + fx.shake[1], c.pos[2] + fx.shake[2]], look: c.look, fov: c.fov * fx.fovK, roll: c.roll + fx.roll };
+};
 
 /** dirección horizontal media de la cámara en el beat (para fijar la luz relativa a cámara, congelada por beat) */
 export const meanView = (tl: Timeline, i: number): [number, number] => {

@@ -51,6 +51,25 @@ objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflama
 | viaja, corre, velocidad, cae a toda prisa | `speed` (líneas de velocidad, con `dir`) |
 | se calienta, se enciende, energía, atención | `halo` con `anchor` |
 | choca, estalla, se rompe, chispa | `burst`; golpe en el suelo o sonido: `shockwave` |
+| se agranda, crece, aumenta / se encoge, disminuye | `grow` / `shrink` (o `scale` con `to`) |
+| aparece, nace, surge / desaparece, se esfuma | `appear` / `vanish` |
+| se suelta, aterriza, se deja caer | `drop` (el objeto espera arriba hasta la palabra) |
+| se balancea, oscila / se tambalea | `swing` / `wobble` |
+| se aplasta, absorbe un golpe / se estira, es succionado | `squash` / `stretch` |
+| da la vuelta, voltea / se gira hacia otro lado | `flip` / `turn` |
+| da una vuelta alrededor, patrulla / serpentea, esquiva | `circle` / `zigzag` |
+| respira, está tranquilo, flota quieto | `sway` (dura todo el beat) |
+| se hunde, se sumerge | `sink` |
+| parpadea, titila, alerta | `blink` |
+| brilla, magia, descubrimiento | `sparkle` |
+| láser, rayo de luz, señal que llega | `beam` |
+| vapor, humo, burbujas, hierve | `steam` (`kind`: steam, bubbles o smoke) |
+| ¿misterio?, ¡alerta!, correcto, falso, cariño | `mark` (`text`: ?, !, ✓, ✗, ♥) |
+| algo que lo acompaña girando, satélite, luna | `orbiter` |
+| llueve, nieva | `rain` (`kind`: rain o snow) |
+| sonido, vibración, eco, ondas | `ripple` |
+| ¡de repente!, el dato clave, una revelación | `punch` (zoom de golpe en la cámara) |
+| terremoto, explosión, golpe fuerte | `camshake` (y `shake` en el objeto) |
 
 **Reglas.**
 1. **Al menos la mitad de los beats** llevan una acción (el pipeline falla si no) y **como mucho 3 por beat**. Los beats de
@@ -67,7 +86,7 @@ objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflama
 7. **Ojo con la cámara:** una acción que saca al objeto del cuadro (`fly` con `dist` grande) deja el plano vacío después. Úsala
    al final de la frase o combínala con un overlay que se quede. Un `ring` en un plano bajo se ve de canto: inclínalo (`tilt` 40–70).
 
-**Acciones genéricas (mueven el objeto entero)**
+**Acciones genéricas (mueven o deforman el objeto entero)**
 
 | `type` | Cuándo | Campos |
 |---|---|---|
@@ -81,6 +100,22 @@ objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflama
 | `tilt` | Se inclina y se queda: se inclina, se ladea, cae hacia un lado sin llegar al suelo. | `deg` |
 | `hop` | Salta una o varias veces: rebota, salta, brinca, se emociona. | `height`, `count` |
 | `slide` | Se desplaza de lado: avanza, se mueve, se aparta, recorre. | `x`, `z` |
+| `grow` | Se agranda y se queda grande: crece, se agranda, se infla, aumenta, se hace enorme. | `to` |
+| `shrink` | Se encoge y se queda pequeño: se encoge, se reduce, disminuye, se hace diminuto, se comprime. | `to` |
+| `appear` | Aparece de la nada con un pequeño rebote: surge, nace, aparece, se forma, se descubre. Antes de la palabra no se ve. | — |
+| `vanish` | Desaparece encogiéndose y girando: se desvanece, desaparece, se esfuma, se evapora. | — |
+| `drop` | Se suelta y cae con rebote desde arriba (hasta la palabra, se queda arriba): se suelta, cae, aterriza, se deja caer. | `height` |
+| `swing` | Se balancea como un péndulo y se va calmando: oscila, se balancea, se mece, va y viene. | `deg`, `cycles` |
+| `wobble` | Se tambalea y recupera el equilibrio: se tambalea, pierde el equilibrio, se agita, se desestabiliza. | `amp` |
+| `squash` | Se aplasta un momento y vuelve: se aplasta, se comprime, rebota, absorbe un golpe, aterriza. | `amount` |
+| `stretch` | Se estira en vertical y se queda así: se estira, se alarga, se espaguetiza, es succionado, se afina. | `to` |
+| `flip` | Da una voltereta hacia atrás: se da la vuelta, voltea, se invierte, cambia de lado. | `turns` |
+| `circle` | Describe un círculo en el suelo y vuelve: da una vuelta alrededor, orbita, recorre, patrulla. | `r`, `turns` |
+| `zigzag` | Avanza en zigzag: serpentea, esquiva, zigzaguea, se mueve de forma irregular. | `amp`, `z` |
+| `sway` | Se mece suavemente sin parar mientras dura el beat: respira, flota, está tranquilo, ondea. | `amp` |
+| `sink` | Se hunde despacio por debajo del suelo: se hunde, se sumerge, se entierra, se pierde en el fondo. | `depth` |
+| `turn` | Se gira hacia otro lado y se queda: se voltea, mira hacia otro lado, cambia de dirección. | `deg` |
+| `blink` | Parpadea o destella varias veces: parpadea, se enciende y se apaga, titila, intermitente, alerta. | `count` |
 
 **Marcadores 3D (añaden algo pegado al objeto)**
 
@@ -91,7 +126,21 @@ objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflama
 | `speed` | Líneas de velocidad que cruzan el plano: viaja, corre, sale disparado, cae, a toda velocidad. | `dir`, `color` |
 | `halo` | Un resplandor que late sobre una parte: calor, energía, atención, se enciende, se activa. | `anchor`, `size`, `color` |
 | `burst` | Una explosión de chispas: choque, ruptura, estallido, contacto, chispa. | `anchor`, `color`, `speed` |
+| `sparkle` | Destellos que titilan alrededor del objeto: brilla, es especial, magia, energía, hermoso, descubrimiento. | `color` |
+| `beam` | Un haz de luz o un rayo recto desde una parte: láser, rayo, luz que llega, señal, apunta, emite. | `anchor`, `dir`, `len`, `color` |
+| `steam` | Partículas que suben desde una parte: vapor, humo, burbujas, calor, hierve, respira, se evapora. | `kind`, `anchor` |
+| `mark` | Un símbolo flotante sobre el objeto: ? (duda, misterio), ! (alerta, sorpresa), ✓ (correcto), ✗ (falso, error), ♥ (cariño, corazón). | `text`, `anchor` |
+| `orbiter` | Una bolita que gira alrededor del objeto sin parar: satélite, luna, electrón, órbita, algo que lo acompaña. | `r`, `tilt`, `color` |
+| `rain` | Lluvia o nieve que cae sobre el objeto: llueve, nieva, tormenta, gotas, cae agua. | `kind` |
+| `ripple` | Ondas que salen una tras otra del suelo o de una parte: sonido, vibración, señal, latido, eco, ondas. | `anchor`, `color` |
 | `shockwave` | Una onda que se expande desde el suelo o una parte: impacto, golpe, terremoto, sonido, aparece de golpe. | `anchor`, `color` |
+
+**Efectos de cámara (un instante)**
+
+| `type` | Cuándo | Campos |
+|---|---|---|
+| `punch` | Un golpe de zoom hacia dentro y vuelta: ¡impacto!, de repente, el dato clave, un giro, una revelación. | `amount` |
+| `camshake` | La cámara tiembla un momento: terremoto, explosión, golpe, peligro, caída. | `amp` |
 
 Ejemplo (`templates/examples/hielo-flota/05_story.json`): `{ "type": "scale", "at": "expande", "to": 1.25, "dur": 40 }` en la
 frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor": "top" }` en «…la botella revienta».

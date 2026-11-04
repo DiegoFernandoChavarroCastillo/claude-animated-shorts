@@ -21,7 +21,10 @@ LEAD_F = 2                  # timeline.ts: el beat empieza 2 frames antes de su 
 STAT_COUNT_F = 24           # StatCallout cuenta en 24 frames (prog(0, 24))
 BAR_FILL_F = (6, 30)        # BarCompare llena la barra i entre 6 + 4i y 30 + 4i
 ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "whoosh_soft", "shockwave": "impact", "burst": "impact", "topple": "impact",
-              "shake": "impact", "hop": "pop", "pulse": "pop", "ring": "pop", "arrow": "pop", "halo": "pop"}   # F13: acciones con sonido; el resto, mudas
+              "shake": "impact", "hop": "pop", "pulse": "pop", "ring": "pop", "arrow": "pop", "halo": "pop",
+              "appear": "pop", "vanish": "whoosh_soft", "drop": "impact", "flip": "whoosh_soft", "circle": "whoosh_soft", "zigzag": "whoosh_soft",
+              "sink": "whoosh_soft", "blink": "pop", "squash": "pop", "sparkle": "pop", "beam": "pop", "mark": "pop", "ripple": "pop",
+              "punch": "impact", "camshake": "impact"}   # F13: acciones con sonido; el resto, mudas
 
 
 def beat_frames(story: dict, words: list[dict]):
