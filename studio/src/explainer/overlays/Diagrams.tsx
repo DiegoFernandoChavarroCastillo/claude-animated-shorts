@@ -76,7 +76,7 @@ export type BigWordProps = BaseProps & { word: string; sub?: string };
 /** una palabra enorme como sello (el concepto clave) con un subrayado que se traza */
 export const BigWord: React.FC<BigWordProps> = ({ dur, word, sub, color: c, slot = "center" }) => {
   const { enter, exit, prog } = useAnim(dur);
-  const k = enter(0), col = tok(c, PALETTE.warm.gold), size = word.length > 9 ? 120 : word.length > 6 ? 160 : 210;
+  const k = enter(0), col = tok(c, PALETTE.warm.gold), size = Math.min(210, Math.floor(760 / (word.length * 0.78)));   // el sello no debe pasar de ~760 px de ancho (antes se cortaba con 11 letras)
   return (
     <Place slot={slot} style={{ opacity: exit * k, textAlign: "center", transform: `scale(${0.7 + 0.3 * k}) rotate(${(1 - k) * -4}deg)` }}>
       <div style={{ fontFamily: DISPLAY_FAMILY, fontWeight: 800, fontSize: size, color: PALETTE.light.white, lineHeight: 1, whiteSpace: "nowrap", textShadow: `0 0 40px ${col}88`, letterSpacing: "0.02em" }}>{word}</div>
