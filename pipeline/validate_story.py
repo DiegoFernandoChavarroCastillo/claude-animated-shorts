@@ -3,7 +3,7 @@
     python pipeline\\validate_story.py <05_story.json> [--words 04_words.json] [--script 02_SCRIPT.md]
 
 Falla si: un env / luz / hero (kind, asset, pose) / overlay / ancla / preset de cámara / transición / sfx no existe en
-templates/catalog.json; un "at" no resuelve a una palabra del beat; un beat mechanism no tiene overlay; hay más de 3
+templates/catalog.json; un "at" no resuelve a una palabra del beat; un beat mechanism, item, versus o chain no tiene overlay; hay más de 3
 "cut" por minuto; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
 además, el texto de los beats debe ser el del guion aprobado, línea a línea.
 """
@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, load_json, norm, run_main, words_of  # noqa: E402
 
 CUTS_PER_MIN = 3
+OVERLAY_ROLES = ("mechanism", "item", "versus", "chain")   # beats que explican un paso o un punto: llevan un overlay de dato
 MAX_HERO_RUN = 3        # beats seguidos con el mismo objeto protagonista (garganta-gripe usó 8 de 8 y salió plano)
 MAX_HERO_SHARE = 0.65   # fracción máxima de beats con el mismo objeto (celular-calienta: 5 de 8 = 0,62 pasa)
 WPS = 2.8  # para estimar la duración si no hay words.json
@@ -69,8 +70,8 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
         if b.get("keyword") and not resolves(b["keyword"], text):
             errs.append(f"{bid}: keyword '{b['keyword']}' no está en el texto")
         ovs = b.get("overlays", [])
-        if b.get("role") == "mechanism" and not ovs:
-            errs.append(f"{bid}: beat mechanism sin overlay de dato")
+        if b.get("role") in OVERLAY_ROLES and not ovs:
+            errs.append(f"{bid}: beat {b['role']} sin overlay de dato")
         numeric = False
         for o in ovs:
             d = cat["overlays"].get(o.get("type"))

@@ -7,7 +7,57 @@ local (Kokoro), así que el texto se lee **tal cual**: escribe como se habla.
 
 - El tema y el archivo `01_research.md` con los hechos. Cada dato ya tiene **al menos 2 fuentes**; usa solo esos datos.
 
-## Fórmula (medida en las referencias)
+## Gancho, estructura y cierre (F12)
+
+Antes de escribir, el usuario elige **un tipo de gancho, una estructura y un cierre** (`SKILL.md`, paso 2). Los tres se
+declaran en la cabecera del guion (`hook:`, `structure:`, `closing:`) y el validador comprueba que el guion tenga la
+forma de cada uno. Catálogo con ejemplos y por qué funciona cada tipo: `templates/formulas.json`; la evidencia y sus
+límites, en `docs/FORMULAS.md`. Si el usuario no eligió, usa `hook: mito`, `structure: mito` y el cierre que mejor encaje.
+
+**Regla de oro del gancho: concreto y con pago.** Un gancho vago ("esto te va a sorprender") no vale: nombra la cosa, el
+dato o el momento. Y el video tiene que **contestar lo que el gancho promete** antes del giro, sin trampas.
+
+### Tipos de gancho (≤12 palabras y en 2.ª persona, siempre)
+
+| `hook:` | Nombre | Forma | Ejemplo |
+|---|---|---|---|
+| `pregunta` | Pregunta cotidiana | Pregunta en 2.ª persona sobre algo que el espectador ha vivido o visto. | ¿Te has preguntado por qué flota el hielo, si es agua sólida? |
+| `mito` | Mito o creencia | Nombra lo que el espectador cree o le dijeron, para desmentirlo en la tensión. | ¿Te dijeron que el cielo es azul porque refleja el mar? |
+| `dato` | Dato imposible | Un dato concreto y verificable con su cifra, sobre algo del espectador, que suena increíble. | Al congelarse, el agua de tu botella crece un nueve por ciento. |
+| `y_si` | ¿Y si…? | Una hipótesis de qué pasaría si algo cotidiano fuera distinto. | ¿Qué pasaría si el hielo se hundiera en tu vaso? |
+| `escena` | Escena en curso | Un momento en presente, en 2.ª persona, ya empezado (sin introducción ni saludo). | Estás en la ducha y tus dedos parecen pasas. |
+| `reto` | Apuesta o reto | Un reto directo al espectador: a que no sabes… | Apuesto a que no sabes por qué el atardecer es rojo. |
+| `error` | Error común | Dice que el espectador lleva tiempo haciendo o creyendo algo mal. | Llevas años creyendo que el cielo es azul por el mar. |
+
+### Estructuras (`structure:`; por defecto `mito`)
+
+| `structure:` | Roles en orden | Qué es |
+|---|---|---|
+| `mito` | [hook] → [tension] → [mechanism] → [layer2] → [twist] → [cta] | Desmiente una idea y explica cómo funciona de verdad (la fórmula original). Mínimos: mechanism ≥ 1 |
+| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Tres o cuatro hechos cortos del mismo tema, uno por línea, con el más fuerte al final. Mínimos: item ≥ 3 |
+| `versus` | [hook] → [tension] → [versus] → [layer2] → [twist] → [cta] | Compara dos cosas punto por punto y cierra con el veredicto. Mínimos: versus ≥ 2 |
+| `historia` | [hook] → [story] → [mechanism] → [layer2] → [twist] → [cta] | Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica. Mínimos: story ≥ 2, mechanism ≥ 1 |
+| `cadena` | [hook] → [tension] → [chain] → [layer2] → [twist] → [cta] | Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador. Mínimos: chain ≥ 3 |
+
+Notas por rol:
+- `[item]` (lista): una cosa por línea, de menos a más sorprendente. Abre cada una con "Primero", "Segundo"… (no con
+  "uno", "dos", "tres": son números y piden fuente). Cada una con algo que se pueda ver.
+- `[versus]`: cada línea compara un punto de A y de B con las mismas palabras para los dos lados. El giro da el veredicto.
+- `[story]` (historia): hechos reales con fuente: qué se creía y qué se descubrió. `[mechanism]` explica después la ciencia.
+- `[chain]` (cadena): cada línea arranca donde acabó la anterior ("Esa luz…", "Por eso…").
+- El `[twist]` y el `[cta]` existen en todas las estructuras.
+
+### Cierres (`closing:`; siempre en la línea `[cta]`)
+
+| `closing:` | Nombre | Forma | Ejemplo |
+|---|---|---|---|
+| `pregunta` | Pregunta a los comentarios | Pregunta qué otro tema quiere ver el espectador y pide que lo comente. | ¿Qué otra rareza del agua quieres que te explique? Déjamela en los comentarios. |
+| `envia` | Envíaselo a alguien | Señala a una persona concreta a la que le serviría saberlo. | Envíaselo a esa persona que se pasa horas en la ducha. |
+| `sigue` | Sígueme con promesa | Pide seguir y promete un tema concreto, no un 'más contenido'. | Sígueme y mañana te cuento por qué el cielo es azul. |
+| `bucle` | Vuelta al gancho | La última frase retoma una palabra o la imagen del gancho, para cerrar el círculo y que el video se repita bien. | Así que cuando veas ese atardecer, recuerda que el azul sigue ahí, solo que lejos. |
+| `reto_casa` | Pruébalo hoy | Una acción pequeña que el espectador puede hacer hoy para comprobarlo. | Pruébalo esta noche en la ducha y cuéntame qué notas. |
+
+## Estructura `mito` (la original, medida en las referencias)
 
 | Beat | Rol | Tiempo aprox. | Qué hace |
 |---|---|---|---|
@@ -38,6 +88,9 @@ local (Kokoro), así que el texto se lee **tal cual**: escribe como se habla.
 ```markdown
 # Título
 lang: es
+hook: <tipo de gancho>
+structure: <estructura>
+closing: <tipo de cierre>
 
 ## Guion
 [hook] …
@@ -113,3 +166,5 @@ lang: es
 - (sin número) nervios dañados, el dedo no se arruga: https://en.wikipedia.org/wiki/Water-immersion_wrinkling
 - doce por ciento más rápido (Kareklas et al., 2013, Biology Letters): https://doi.org/10.1098/rsbl.2012.0999
 ```
+
+Otros cuatro ejemplos completos, uno por estructura, con su gancho y cierre: `templates/examples/agua-rara-lista/` (`lista`, gancho `dato`, cierre `envia`), `agua-contra-hielo/` (`versus`, `error`, `sigue`), `dedos-historia/` (`historia`, `escena`, `reto_casa`) y `atardecer-cadena/` (`cadena`, `reto`, `bucle`). Léelos antes de escribir en una estructura que no sea `mito`.

@@ -24,6 +24,17 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
 4. **Varía el protagonista**: el validador falla si un mismo objeto sale en más de 3 beats seguidos o en más del 65 %
    de los beats. Alterna objetos y entornos según cambie la idea (el cuerpo → la célula → el virus).
 
+## Según la estructura del guion (cabecera `structure:`)
+
+- `mito`: como siempre: tensión con `Pill`/`NoSymbol`, mecanismo con objeto y dato.
+- `lista` (`[item]`): **un objeto distinto por ítem** y un overlay distinto en cada uno (`StatCallout`, `Thermometer`,
+  `Speedometer`…); el último ítem, el más fuerte, con el plano más abierto.
+- `versus` (`[versus]`): `VersusCard` o `BarCompare` en el primero; después, el objeto de A y el de B alternados, con la misma
+  cámara en los dos para que se vean comparables.
+- `historia` (`[story]`): `Timeline`, `TitlePlaque` o `ThoughtBubble` para lo que se creía o se descubrió; el objeto entra en `[mechanism]`.
+- `cadena` (`[chain]`): `FlowArrow` o `IconFlow` y una cámara que siga el recorrido (`follow_anchor`, `dolly_side`); cada beat
+  arranca donde acabó el anterior (mismo entorno si la cadena no cambia de lugar).
+
 ## Reglas
 
 1. **Un beat por línea del guion**, en el mismo orden: `id` = `b01`, `b02`…; `role` = la etiqueta de la línea;
@@ -47,7 +58,7 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
      seguidos con el mismo objeto no repiten preset de cámara.**
    - `dof` (desenfoque de fondo, px a 1080): primer plano 12–16, plano medio 8–12, plano abierto 2–6. Si no lo pones,
      se usa el del entorno.
-5. **Cada beat `mechanism` = un objeto protagonista + al menos un overlay de dato** (`StatCallout`, `BarCompare`,
+5. **Cada beat `mechanism`, `item`, `versus` o `chain` = un objeto protagonista + al menos un overlay de dato** (`StatCallout`, `BarCompare`,
    `Gauge`, `Waveform`, `IntervalMarks`, `IconFlow`, `UICard`…). El número grande del paso va en un `StatCallout` o
    un `BarCompare`.
 6. **Overlays**: `type` y campos según `catalog.json`. `at` = una palabra del `text` del beat (cuando se dice) o

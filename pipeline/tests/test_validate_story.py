@@ -15,6 +15,12 @@ def story(heroes: list[str]) -> dict:
     return {"meta": {"lang": "es"}, "beats": beats}
 
 
+def with_role(role: str, n: int = 5) -> dict:
+    st = story(["telefono", "chip", "perro", "persona", "reloj"][:n])
+    st["beats"][1]["role"] = role
+    return st
+
+
 def has(errs, frag):
     return any(frag in e for e in errs)
 
@@ -31,4 +37,11 @@ for name, heroes, expect in [
     ok = has(errs, expect) if expect else not (has(errs, "seguidos") or has(errs, "protagonista de"))
     print("OK " if ok else "MAL", name)
     fails += not ok
+for role in ("item", "versus", "chain", "mechanism"):
+    ok = has(validate(with_role(role)), f"beat {role} sin overlay")
+    print("OK " if ok else "MAL", f"rol {role} sin overlay falla")
+    fails += not ok
+ok = not has(validate(with_role("story")), "sin overlay")
+print("OK " if ok else "MAL", "rol story no pide overlay")
+fails += not ok
 sys.exit(1 if fails else 0)

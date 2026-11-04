@@ -1,0 +1,223 @@
+{
+  "_nota": "Catálogo de fórmulas de guion (F12). El validador (pipeline/validate_script.py) lee 'structures' de aquí; hooks y closings se comprueban con las reglas de ese archivo. La evidencia y sus límites están en docs/FORMULAS.md.",
+  "hooks": {
+    "pregunta": {
+      "nombre": "Pregunta cotidiana",
+      "patron": "Pregunta en 2.ª persona sobre algo que el espectador ha vivido o visto.",
+      "mejor_para": "Fenómenos cotidianos que todos han notado y nadie sabe explicar (hielo, dedos arrugados, cielo azul).",
+      "ejemplo_es": "¿Te has preguntado por qué flota el hielo, si es agua sólida?",
+      "ejemplo_en": "Have you ever wondered why ice floats when it's solid water?",
+      "por_que": "Abre una brecha de información con una pregunta que el espectador ya se hizo."
+    },
+    "mito": {
+      "nombre": "Mito o creencia",
+      "patron": "Nombra lo que el espectador cree o le dijeron, para desmentirlo en la tensión.",
+      "mejor_para": "Temas con un error muy extendido y un desmentido claro (cielo azul y el mar, nos pasamos el frío por mojarnos).",
+      "ejemplo_es": "¿Te dijeron que el cielo es azul porque refleja el mar?",
+      "ejemplo_en": "Were you told the sky is blue because it reflects the ocean?",
+      "por_que": "Contradice una creencia propia del espectador: lo obliga a decidir si se la sostiene."
+    },
+    "dato": {
+      "nombre": "Dato imposible",
+      "patron": "Un dato concreto y verificable con su cifra, sobre algo del espectador, que suena increíble.",
+      "mejor_para": "Temas con una cifra llamativa y bien fuente (9 % de expansión, 12 % más rápido).",
+      "ejemplo_es": "Al congelarse, el agua de tu botella crece un nueve por ciento.",
+      "ejemplo_en": "Your water bottle grows nine percent when it freezes.",
+      "por_que": "Lo concreto vence a lo vago: una cifra verificable hace creíble la promesa del video."
+    },
+    "y_si": {
+      "nombre": "¿Y si…?",
+      "patron": "Una hipótesis de qué pasaría si algo cotidiano fuera distinto.",
+      "mejor_para": "Temas de física, espacio o biología donde imaginar el contrafactual explica la regla (si el hielo se hundiera…).",
+      "ejemplo_es": "¿Qué pasaría si el hielo se hundiera en tu vaso?",
+      "ejemplo_en": "What if ice sank in your glass?",
+      "por_que": "La hipótesis pide una respuesta que solo da el resto del video."
+    },
+    "escena": {
+      "nombre": "Escena en curso",
+      "patron": "Un momento en presente, en 2.ª persona, ya empezado (sin introducción ni saludo).",
+      "mejor_para": "Experiencias del cuerpo o del día a día (dolor de garganta, dedos arrugados, sueño).",
+      "ejemplo_es": "Estás en la ducha y tus dedos parecen pasas.",
+      "ejemplo_en": "You're in the shower and your fingers turn into prunes.",
+      "por_que": "Empieza por la acción, como una escena a mitad, y el espectador se reconoce en ella."
+    },
+    "reto": {
+      "nombre": "Apuesta o reto",
+      "patron": "Un reto directo al espectador: a que no sabes…",
+      "mejor_para": "Temas con una respuesta que casi nadie conoce y que se puede decir en una frase.",
+      "ejemplo_es": "Apuesto a que no sabes por qué el atardecer es rojo.",
+      "ejemplo_en": "Bet you can't explain why the sunset is red.",
+      "por_que": "Hablar directo a la persona y plantear un desafío fuerza una respuesta mental."
+    },
+    "error": {
+      "nombre": "Error común",
+      "patron": "Dice que el espectador lleva tiempo haciendo o creyendo algo mal.",
+      "mejor_para": "Hábitos, creencias de salud o cocina con una corrección clara.",
+      "ejemplo_es": "Llevas años creyendo que el cielo es azul por el mar.",
+      "ejemplo_en": "You've been wrong about why the sky is blue.",
+      "por_que": "Toca un dolor (equivocarse) y promete la corrección."
+    }
+  },
+  "structures": {
+    "mito": {
+      "nombre": "Mito y mecanismo",
+      "resumen": "Desmiente una idea y explica cómo funciona de verdad (la fórmula original).",
+      "mejor_para": "Un fenómeno con una creencia errónea extendida y un mecanismo de 2–4 pasos.",
+      "orden": [
+        "hook",
+        "tension",
+        "mechanism",
+        "layer2",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "tension",
+        "twist"
+      ],
+      "min": {
+        "mechanism": 1
+      },
+      "max": {
+        "mechanism": 4
+      },
+      "ejemplo": "templates/examples/hielo-flota/02_SCRIPT.md"
+    },
+    "lista": {
+      "nombre": "Lista de 3 o 4 cosas",
+      "resumen": "Tres o cuatro hechos cortos del mismo tema, uno por línea, con el más fuerte al final.",
+      "mejor_para": "Un tema con varios datos sorprendentes e independientes (rarezas del agua, del cuerpo, del espacio).",
+      "orden": [
+        "hook",
+        "tension",
+        "item",
+        "layer2",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "item": 3
+      },
+      "max": {
+        "item": 4
+      },
+      "ejemplo": "templates/examples/agua-rara-lista/02_SCRIPT.md"
+    },
+    "versus": {
+      "nombre": "A contra B",
+      "resumen": "Compara dos cosas punto por punto y cierra con el veredicto.",
+      "mejor_para": "Dos cosas que se confunden o se parecen (virus y bacteria, hielo y agua líquida, Sol y estrella).",
+      "orden": [
+        "hook",
+        "tension",
+        "versus",
+        "layer2",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "versus": 2
+      },
+      "max": {
+        "versus": 4
+      },
+      "ejemplo": "templates/examples/agua-contra-hielo/02_SCRIPT.md"
+    },
+    "historia": {
+      "nombre": "Historia",
+      "resumen": "Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica.",
+      "mejor_para": "Temas con un experimento, una persona o un hecho histórico real que dé el hilo (dedos arrugados, un descubrimiento).",
+      "orden": [
+        "hook",
+        "story",
+        "mechanism",
+        "layer2",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "story": 2,
+        "mechanism": 1
+      },
+      "max": {
+        "story": 3,
+        "mechanism": 3
+      },
+      "ejemplo": "templates/examples/dedos-historia/02_SCRIPT.md"
+    },
+    "cadena": {
+      "nombre": "Causa en cadena",
+      "resumen": "Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador.",
+      "mejor_para": "Procesos con pasos encadenados (cómo llega la luz azul, cómo se contagia un virus, cómo llueve).",
+      "orden": [
+        "hook",
+        "tension",
+        "chain",
+        "layer2",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "chain": 3
+      },
+      "max": {
+        "chain": 5
+      },
+      "ejemplo": "templates/examples/atardecer-cadena/02_SCRIPT.md"
+    }
+  },
+  "closings": {
+    "pregunta": {
+      "nombre": "Pregunta a los comentarios",
+      "patron": "Pregunta qué otro tema quiere ver el espectador y pide que lo comente.",
+      "mejor_para": "Cuando se busca conversación y temas nuevos.",
+      "ejemplo_es": "¿Qué otra rareza del agua quieres que te explique? Déjamela en los comentarios.",
+      "ejemplo_en": "What other water oddity should I explain? Drop it in the comments."
+    },
+    "envia": {
+      "nombre": "Envíaselo a alguien",
+      "patron": "Señala a una persona concreta a la que le serviría saberlo.",
+      "mejor_para": "Datos útiles o graciosos que se comparten solos.",
+      "ejemplo_es": "Envíaselo a esa persona que se pasa horas en la ducha.",
+      "ejemplo_en": "Send this to the person who spends hours in the shower."
+    },
+    "sigue": {
+      "nombre": "Sígueme con promesa",
+      "patron": "Pide seguir y promete un tema concreto, no un 'más contenido'.",
+      "mejor_para": "Series o cuando el siguiente tema se desprende de este.",
+      "ejemplo_es": "Sígueme y mañana te cuento por qué el cielo es azul.",
+      "ejemplo_en": "Follow me and tomorrow I'll explain why the sky is blue."
+    },
+    "bucle": {
+      "nombre": "Vuelta al gancho",
+      "patron": "La última frase retoma una palabra o la imagen del gancho, para cerrar el círculo y que el video se repita bien.",
+      "mejor_para": "Videos con un gancho potente que merece volver a oírse.",
+      "ejemplo_es": "Así que cuando veas ese atardecer, recuerda que el azul sigue ahí, solo que lejos.",
+      "ejemplo_en": "So when you see that sunset, remember the blue is still there, just far away."
+    },
+    "reto_casa": {
+      "nombre": "Pruébalo hoy",
+      "patron": "Una acción pequeña que el espectador puede hacer hoy para comprobarlo.",
+      "mejor_para": "Fenómenos que se pueden ver o sentir en casa sin material.",
+      "ejemplo_es": "Pruébalo esta noche en la ducha y cuéntame qué notas.",
+      "ejemplo_en": "Try it tonight in the shower and tell me what you notice."
+    }
+  },
+  "elegir": {
+    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
+    "estructura": "mito si hay creencia + mecanismo; lista si hay 3-4 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
+    "cierre": "envia o pregunta para datos que se comparten; sigue si hay un siguiente tema natural; bucle si el gancho es muy fuerte; reto_casa si se puede comprobar en casa."
+  }
+}

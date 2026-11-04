@@ -6,20 +6,24 @@ Formato del guion:
 
     # Título
     lang: es                      (es | en)
+    hook: pregunta                (opcional: tipo de gancho; ver templates/formulas.json)
+    structure: mito               (opcional, por defecto "mito": mito | lista | versus | historia | cadena)
+    closing: pregunta             (opcional: pregunta | envia | sigue | bucle | reto_casa)
 
     ## Guion
     [hook] ¿Te has preguntado por qué flota el hielo?
     [tension] ...
-    [mechanism] ...               (una o varias líneas por rol, en orden)
+    [mechanism] ...               (una o varias líneas por rol, en el orden de la estructura)
     [layer2] ...                  (opcional)
     [twist] ...
-    [cta] ...
+    [cta] ...                     (los roles de cada estructura están en templates/formulas.json)
 
     ## Fuentes
     - nueve por ciento: https://...      (el número tal como aparece en el guion, en cifras o en palabras)
 
-Comprueba: 140–185 palabras; gancho ≤12 palabras y en 2.ª persona; hay beats de tensión y de giro; la última línea
-es una llamada a la acción; cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras;
+Comprueba: 140–185 palabras; gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
+tipo); los roles, su orden y cuántas líneas lleva cada uno según la estructura; la última línea es el cierre (y, si se
+declara `closing:`, que tenga la forma de ese cierre); cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras;
 en español, no hay dos palabras seguidas unidas por el mismo sonido ll/y ("botella llena").
 Sale con código 0 si pasa y 1 si falla, con un motivo por línea.
 """
@@ -34,9 +38,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import run_main  # noqa: E402
+from common import ROOT, run_main  # noqa: E402
 
-ROLES = ("hook", "tension", "mechanism", "layer2", "twist", "cta")
+FORMULAS = json.loads((ROOT / "templates" / "formulas.json").read_text(encoding="utf-8"))
+STRUCTURES = FORMULAS["structures"]
+ROLES = tuple(dict.fromkeys(r for st in STRUCTURES.values() for r in st["orden"]))   # unión de todas las estructuras
+HOOKS, CLOSINGS = tuple(FORMULAS["hooks"]), tuple(FORMULAS["closings"])
 # Kokoro (es) alarga la palabra y mete una pausa cuando una termina en sílaba ll/y + vocal y la siguiente empieza por
 # ll/y + vocal: "botella llena" suena "botella, llena" (2 nov, tras F8). "y" sola (conjunción), "muy" u "hoy" no cuentan.
 LL_END = re.compile(r"(ll|y)[aeiouáéíóú]$", re.I)
@@ -55,7 +62,7 @@ def tokens(s: str) -> list[str]:
 
 # ---------------------------------------------------------------- 2.ª persona
 SECOND_ES = {"tu", "tus", "te", "ti", "contigo", "usted", "ustedes", "os", "vosotros", "vosotras", "vuestro", "vuestra"}
-SECOND_ES_VERBS = {"sabias", "sabes", "has", "eres", "estas", "puedes", "crees", "imaginas", "quieres", "tienes", "haces",
+SECOND_ES_VERBS = {"llevas", "sabias", "sabes", "has", "eres", "estas", "puedes", "crees", "imaginas", "quieres", "tienes", "haces",
                    "ves", "duermes", "usas", "piensas", "notas", "vives", "comes", "bebes", "miras", "preguntaste", "dormiste"}
 SECOND_EN = {"you", "your", "you're", "yours", "yourself", "you've", "you'll", "you'd", "ya"}
 
@@ -161,6 +168,9 @@ def source_values(line: str, lang: str) -> tuple[str, set[float]]:
 @dataclass
 class Script:
     lang: str = ""
+    hook: str = ""
+    structure: str = ""
+    closing: str = ""
     lines: list[tuple[str, str]] = field(default_factory=list)  # (rol, texto)
     sources: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -172,9 +182,10 @@ def parse(md: str) -> Script:
         line = raw.strip()
         if not line:
             continue
-        m = re.fullmatch(r"lang:\s*(\w+)", line, re.I)
+        m = re.fullmatch(r"(lang|hook|structure|closing|gancho|estructura|cierre):\s*(\w+)", line, re.I)
         if m and section is None:
-            s.lang = m.group(1).lower()
+            key = {"gancho": "hook", "estructura": "structure", "cierre": "closing"}.get(m.group(1).lower(), m.group(1).lower())
+            setattr(s, key, m.group(2).lower())
             continue
         if line.startswith("## "):
             name = fold(line[3:]).strip()
@@ -195,6 +206,56 @@ def parse(md: str) -> Script:
     if not s.lines:
         s.errors.append("falta la sección '## Guion' con líneas [rol] texto")
     return s
+
+
+# ---------------------------------------------------------------- tipos de gancho y de cierre (F12)
+# Cada tipo declarado (`hook: mito`) debe tener la forma que lo define. Son marcas mínimas, no un detector de calidad.
+HOOK_MARKS = {
+    "mito": (r"mito|mintier|mentira|falso|te dijeron|te han dicho|te contaron|crees|creias|creen|creyendo|te enseñaron|te enseñaron",
+             r"myth|lied|false|told you|you told|were told|you think|you believe|you've been told|taught you|do you really"),
+    "y_si": (r"que pasaria|que ocurriria|y si |imagina|que sucederia", r"what if|what would happen|imagine|what happens if"),
+    "reto": (r"apuesto|te reto|a que no|reto|desafio|adivina|seguro que no", r"bet you|bet i|challenge|i dare|dare you|guess|i bet"),
+    "error": (r"llevas|toda la vida|equivoc|erroneamente|mal |error", r"wrong|mistake|been doing|your whole life|you've been"),
+}
+CLOSING_MARKS = {
+    "envia": (r"envia|enviasel|compart|etiqueta|mandas|mandaselo", r"send|share|tag|forward"),
+    "sigue": (r"sigue|siguem|suscrib|siguenos", r"follow|subscribe"),
+    "reto_casa": (r"prueba|probalo|intentalo|inténtalo|esta noche|hoy |la proxima vez|observa|fijate|mira como", r"try|tonight|next time|today|look for|notice|check"),
+}
+STOP = {"es": {"cuando", "cuanto", "porque", "entonces", "sobre", "tambien", "ahora", "aunque", "donde", "porque", "tienes", "tiene"},
+        "en": {"when", "about", "because", "their", "there", "would", "could", "which", "these", "those", "other"}}
+
+
+def hook_error(kind: str, hook: str, lang: str) -> str | None:
+    """None si el gancho tiene la forma del tipo declarado; si no, qué le falta"""
+    t = fold(hook) + " "
+    if kind == "pregunta":
+        return None if "?" in hook else "un gancho 'pregunta' debe ser una pregunta (llevar '?')"
+    if kind == "dato":
+        return None if numbers(hook, lang) else "un gancho 'dato' debe llevar una cifra concreta (con su fuente)"
+    if kind == "escena":
+        return "un gancho 'escena' es una afirmación en presente, no una pregunta" if "?" in hook else None
+    pat = HOOK_MARKS.get(kind)
+    if pat and not re.search(pat[1 if lang == "en" else 0], t):
+        return f"el gancho no tiene la forma de '{kind}' ({FORMULAS['hooks'][kind]['patron']})"
+    return None
+
+
+def shared_words(a: str, b: str, lang: str) -> set[str]:
+    sig = lambda x: {w for w in tokens(x) if len(w) >= 5 and w not in STOP[lang]}  # noqa: E731
+    return sig(a) & sig(b)
+
+
+def closing_error(kind: str, cta: str, hook: str, lang: str) -> str | None:
+    t = fold(cta) + " "
+    if kind == "pregunta":
+        return None if "?" in cta else "un cierre 'pregunta' debe ser una pregunta (llevar '?')"
+    if kind == "bucle":
+        return None if shared_words(hook, cta, lang) else "un cierre 'bucle' debe retomar una palabra del gancho (de 5 letras o más)"
+    pat = CLOSING_MARKS.get(kind)
+    if pat and not re.search(pat[1 if lang == "en" else 0], t):
+        return f"el cierre no tiene la forma de '{kind}' ({FORMULAS['closings'][kind]['patron']})"
+    return None
 
 
 def ll_clashes(text: str) -> list[str]:
@@ -219,6 +280,13 @@ def validate(md: str) -> tuple[list[str], dict]:
     if not WORDS_MIN <= nwords <= WORDS_MAX:
         errs.append(f"longitud: {nwords} palabras (debe estar entre {WORDS_MIN} y {WORDS_MAX})")
     roles = [r for r, _ in s.lines]
+    structure = s.structure or "mito"
+    if structure not in STRUCTURES:
+        return [f"estructura desconocida '{structure}' (válidas: {', '.join(STRUCTURES)})"], {}
+    spec = STRUCTURES[structure]
+    for kind, what, kinds in ((s.hook, "gancho", HOOKS), (s.closing, "cierre", CLOSINGS)):
+        if kind and kind not in kinds:
+            errs.append(f"tipo de {what} desconocido '{kind}' (válidos: {', '.join(kinds)})")
     if roles[0] != "hook":
         errs.append("la primera línea debe ser el gancho [hook]")
     hook = " ".join(t for r, t in s.lines if r == "hook")
@@ -226,14 +294,30 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(f"gancho de {len(hook.split())} palabras (máximo {HOOK_MAX}): {hook!r}")
     if not second_person(hook, lang):
         errs.append(f"el gancho no está en 2.ª persona: {hook!r}")
-    for need, name in (("tension", "tensión"), ("twist", "giro")):
+    if s.hook in HOOKS and (e := hook_error(s.hook, hook, lang)):
+        errs.append(e)
+    names = {"tension": "tensión", "twist": "giro"}
+    for need in spec["requeridos"]:
         if need not in roles:
-            errs.append(f"falta el beat de {name} [{need}]")
-    if roles[-1] != "cta" or not is_cta(s.lines[-1][1], lang):
-        errs.append(f"la última línea no es una llamada a la acción [cta]: {s.lines[-1][1]!r}")
-    order = [ROLES.index(r) for r in roles]
+            errs.append(f"falta el beat de {names.get(need, need)} [{need}]")
+    bad = [r for r in dict.fromkeys(roles) if r not in spec["orden"]]
+    if bad:
+        errs.append(f"la estructura '{structure}' no usa los roles [{'], ['.join(bad)}] (usa: {', '.join(spec['orden'])})")
+    for r, n in spec["min"].items():
+        if roles.count(r) < n:
+            errs.append(f"la estructura '{structure}' pide al menos {n} líneas [{r}] (hay {roles.count(r)})")
+    for r, n in spec["max"].items():
+        if roles.count(r) > n:
+            errs.append(f"la estructura '{structure}' admite como mucho {n} líneas [{r}] (hay {roles.count(r)})")
+    last = s.lines[-1][1]
+    free = s.closing in ("bucle", "reto_casa")   # estos cierres no tienen por qué pedir un comentario
+    if roles[-1] != "cta" or not (free or is_cta(last, lang)):
+        errs.append(f"la última línea no es una llamada a la acción [cta]: {last!r}")
+    elif s.closing in CLOSINGS and (e := closing_error(s.closing, last, hook, lang)):
+        errs.append(e)
+    order = [spec["orden"].index(r) for r in roles if r in spec["orden"]]
     if any(b < a for a, b in zip(order, order[1:])):
-        errs.append("los beats no siguen el orden hook → tension → mechanism → layer2 → twist → cta")
+        errs.append("los beats no siguen el orden " + " → ".join(spec["orden"]))
     srcs = [source_values(x, lang) for x in s.sources]
     for x in s.sources:
         if "http" not in x:
@@ -254,7 +338,7 @@ def validate(md: str) -> tuple[list[str], dict]:
             for pair in ll_clashes(t):
                 errs.append(f"'{pair}': dos sonidos ll/y seguidos; la voz hace una pausa como si hubiera una coma. "
                             f"Reescribe para separarlos ([{r}] {t[:50]}…)")
-    stats = {"lang": lang, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources)}
+    stats = {"lang": lang, "structure": structure, "hook": s.hook, "closing": s.closing, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources)}
     return errs, stats
 
 

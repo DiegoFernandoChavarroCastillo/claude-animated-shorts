@@ -124,7 +124,7 @@ En Claude Code, desde cualquier carpeta:
 
 > Use the explainer skill: a short about why the sky is blue, in English.
 
-Claude investiga el tema, escribe el guion, lo valida, hace el plan visual, lanza el pipeline, revisa el resultado con
+Claude investiga el tema, te propone tres ganchos, tres estructuras y tres cierres (y recomienda uno de cada), escribe el guion con lo que elijas, lo valida, hace el plan visual, lanza el pipeline, revisa el resultado con
 un agente verificador y te entrega `out/<id>/09_final.mp4` con el informe de QA y las fuentes. Si quieres aprobar el
 guion antes del render, añade "para tras el guion" (o `--review`).
 

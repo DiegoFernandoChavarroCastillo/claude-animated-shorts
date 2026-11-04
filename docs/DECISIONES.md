@@ -475,3 +475,22 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   `ThoughtBubble`, `FoodChain`; 51 en total). Cada medidor cuenta una idea distinta (nivel, proporción, tiempo, velocidad,
   tendencia), para no repetir `Gauge` en todos los videos. El catálogo avisa de que los medidores numéricos piden `sources`.
 
+## F12 · Ganchos, estructuras y cierres variables
+
+- **D70 (3 nov) · Por qué.** Todos los guiones salían de una sola fórmula (hook → tension → mechanism → layer2 → twist →
+  cta, con el gancho de pregunta en 2.ª persona), y los tres ejemplos del prompt empujaban al mismo estilo. Se añaden
+  **7 tipos de gancho, 5 estructuras y 5 cierres** (`templates/formulas.json`).
+- **D71 · Los elige el usuario, Claude recomienda.** Antes de cada video (paso 1b de `SKILL.md`), Claude propone tres
+  candidatos de cada cosa ya redactados para el tema, marca el mejor con su motivo y pregunta con una sola llamada a
+  `AskUserQuestion`. Si el usuario ya lo dijo, o contesta «tú decide», se usa lo recomendado. `tools/recent_formulas.py`
+  evita repetir el tipo del video anterior.
+- **D72 · «Comprobados», con honestidad.** Los ganchos son patrones establecidos y se apoyan en la teoría de la brecha de
+  información (Loewenstein, 1994), pero no hay una medición propia de qué rinde más y las cifras de retención de los
+  blogs no coinciden entre sí; no se usan. Un estudio de 2024 avisa de que las brechas vagas fallan, así que la regla del
+  prompt es «concreto y con pago». Detalle y fuentes en `docs/FORMULAS.md`.
+- **D73 · Cómo valida.** El guion declara `hook:`, `structure:` y `closing:` (opcionales: sin ellos es `mito` y vale
+  como antes, así que los ejemplos y videos anteriores siguen pasando). El validador comprueba los roles, su orden y
+  cuántas líneas lleva cada uno por estructura, y que el gancho y el cierre tengan la forma del tipo declarado. Son marcas
+  mínimas: detectan un gancho `pregunta` sin «?», no uno aburrido. Los roles nuevos (`item`, `versus`, `story`, `chain`) se
+  añadieron a `schema.ts`, y `validate_story.py` pide overlay también en `item`, `versus` y `chain`.
+

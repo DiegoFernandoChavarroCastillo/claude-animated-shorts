@@ -7,7 +7,57 @@ is local TTS (Kokoro) and reads the text **as written**: write the way people sp
 
 - The topic and `01_research.md` with the facts. Every fact already has **at least 2 sources**; use only those facts.
 
-## Formula (measured on the reference shorts)
+## Hook, structure and closing (F12)
+
+Before writing, the user picks **one hook type, one structure and one closing** (`SKILL.md`, step 2). The three are
+declared in the script header (`hook:`, `structure:`, `closing:`) and the validator checks that the script has the shape
+of each one. Catalog with examples and why each works: `templates/formulas.json`; evidence and its limits:
+`docs/FORMULAS.md`. If the user did not choose, use `hook: mito`, `structure: mito` and the closing that fits best.
+
+**Golden rule of the hook: concrete, and it pays off.** A vague hook ("this will surprise you") doesn't count: name the
+thing, the fact or the moment. And the video must **answer what the hook promises** before the twist, no tricks.
+
+### Hook types (≤12 words and in the 2nd person, always)
+
+| `hook:` | Name | Shape | Example |
+|---|---|---|---|
+| `pregunta` | Pregunta cotidiana | Pregunta en 2.ª persona sobre algo que el espectador ha vivido o visto. | Have you ever wondered why ice floats when it's solid water? |
+| `mito` | Mito o creencia | Nombra lo que el espectador cree o le dijeron, para desmentirlo en la tensión. | Were you told the sky is blue because it reflects the ocean? |
+| `dato` | Dato imposible | Un dato concreto y verificable con su cifra, sobre algo del espectador, que suena increíble. | Your water bottle grows nine percent when it freezes. |
+| `y_si` | ¿Y si…? | Una hipótesis de qué pasaría si algo cotidiano fuera distinto. | What if ice sank in your glass? |
+| `escena` | Escena en curso | Un momento en presente, en 2.ª persona, ya empezado (sin introducción ni saludo). | You're in the shower and your fingers turn into prunes. |
+| `reto` | Apuesta o reto | Un reto directo al espectador: a que no sabes… | Bet you can't explain why the sunset is red. |
+| `error` | Error común | Dice que el espectador lleva tiempo haciendo o creyendo algo mal. | You've been wrong about why the sky is blue. |
+
+### Structures (`structure:`; default `mito`)
+
+| `structure:` | Roles in order | What it is |
+|---|---|---|
+| `mito` | [hook] → [tension] → [mechanism] → [layer2] → [twist] → [cta] | Desmiente una idea y explica cómo funciona de verdad (la fórmula original). Mínimos: mechanism ≥ 1 |
+| `lista` | [hook] → [tension] → [item] → [layer2] → [twist] → [cta] | Tres o cuatro hechos cortos del mismo tema, uno por línea, con el más fuerte al final. Mínimos: item ≥ 3 |
+| `versus` | [hook] → [tension] → [versus] → [layer2] → [twist] → [cta] | Compara dos cosas punto por punto y cierra con el veredicto. Mínimos: versus ≥ 2 |
+| `historia` | [hook] → [story] → [mechanism] → [layer2] → [twist] → [cta] | Cuenta qué se descubrió o qué pasó, y luego la ciencia que lo explica. Mínimos: story ≥ 2, mechanism ≥ 1 |
+| `cadena` | [hook] → [tension] → [chain] → [layer2] → [twist] → [cta] | Una cosa provoca la siguiente, que provoca la siguiente, hasta el resultado que ve el espectador. Mínimos: chain ≥ 3 |
+
+Role notes:
+- `[item]` (list): one thing per line, from least to most surprising. Open each with "First", "Second"… (not "one",
+  "two", "three": those are numbers and need a source). Each with something you can see.
+- `[versus]`: each line compares one point of A and B in the same words for both sides. The twist gives the verdict.
+- `[story]`: real, sourced facts: what was believed and what was found. `[mechanism]` then explains the science.
+- `[chain]`: each line starts where the previous one ended ("That light…", "So…").
+- `[twist]` and `[cta]` exist in every structure.
+
+### Closings (`closing:`; always on the `[cta]` line)
+
+| `closing:` | Name | Shape | Example |
+|---|---|---|---|
+| `pregunta` | Pregunta a los comentarios | Pregunta qué otro tema quiere ver el espectador y pide que lo comente. | What other water oddity should I explain? Drop it in the comments. |
+| `envia` | Envíaselo a alguien | Señala a una persona concreta a la que le serviría saberlo. | Send this to the person who spends hours in the shower. |
+| `sigue` | Sígueme con promesa | Pide seguir y promete un tema concreto, no un 'más contenido'. | Follow me and tomorrow I'll explain why the sky is blue. |
+| `bucle` | Vuelta al gancho | La última frase retoma una palabra o la imagen del gancho, para cerrar el círculo y que el video se repita bien. | So when you see that sunset, remember the blue is still there, just far away. |
+| `reto_casa` | Pruébalo hoy | Una acción pequeña que el espectador puede hacer hoy para comprobarlo. | Try it tonight in the shower and tell me what you notice. |
+
+## Structure `mito` (the original, measured on the reference shorts)
 
 | Beat | Role | Approx. time | What it does |
 |---|---|---|---|
@@ -34,6 +84,9 @@ is local TTS (Kokoro) and reads the text **as written**: write the way people sp
 ```markdown
 # Title
 lang: en
+hook: <hook type>
+structure: <structure>
+closing: <closing type>
 
 ## Script
 [hook] …
@@ -109,3 +162,5 @@ lang: en
 - (no number) damaged nerves, no wrinkling: https://en.wikipedia.org/wiki/Water-immersion_wrinkling
 - twelve percent faster (Kareklas et al., 2013, Biology Letters): https://doi.org/10.1098/rsbl.2012.0999
 ```
+
+Four more full examples, one per structure, with their hook and closing, are in Spanish in `templates/examples/agua-rara-lista/` (`lista`, hook `dato`, closing `envia`), `agua-contra-hielo/` (`versus`, `error`, `sigue`), `dedos-historia/` (`historia`, `escena`, `reto_casa`) and `atardecer-cadena/` (`cadena`, `reto`, `bucle`). Read them before writing in a structure other than `mito`; the shapes carry over to English.
