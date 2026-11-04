@@ -12,6 +12,8 @@ import { atomo, elemento, matraz, reaccion_burbujas, cristal_sal, ph_tira } from
 import { volcan_corte, capas_tierra, nube_rayo, ola_marea, iceberg, placas_tectonicas } from "./primitive/earth";
 import { cerebro, ojo_ilusion, sueno_cama, memoria_cajones, emocion_cara, reloj_biologico } from "./primitive/mind";
 import { planta_fotosintesis, semilla_germina, abeja, ave_vuelo, pez, arbol_anillos } from "./primitive/life";
+import { microondas, olla_hierve, puente, piramide, palanca, numeros_flotantes, forma_fibonacci, bateria, wifi_router, pantalla_led } from "./primitive/home";
+import { esfera_flotante, caja_etiquetada, diagrama_flujo } from "./primitive/generic";
 import { perro, persona } from "./cards";
 import { GLTF_HEROES } from "./gltf";
 
@@ -27,6 +29,8 @@ export const HEROES: Record<string, HeroDef> = {
   volcan_corte, capas_tierra, nube_rayo, ola_marea, iceberg, placas_tectonicas,
   cerebro, ojo_ilusion, sueno_cama, memoria_cajones, emocion_cara, reloj_biologico,
   planta_fotosintesis, semilla_germina, abeja, ave_vuelo, pez, arbol_anillos,
+  microondas, olla_hierve, puente, piramide, palanca, numeros_flotantes, forma_fibonacci, bateria, wifi_router, pantalla_led,
+  esfera_flotante, caja_etiquetada, diagrama_flujo,
   perro, persona,
   ...GLTF_HEROES,
 };
