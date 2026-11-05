@@ -172,3 +172,65 @@ export const sensor_pulso: HeroDef = {
     });
   },
 };
+
+// bluetooth-wifi · la banda de 2,4 GHz como una fila de 79 canales finos: el bluetooth es una barra que salta de canal en canal
+// (con estela) y el wifi, un bloque ancho (~20 canales) que se queda fijo. Con `esquivar`, el salto evita los canales del wifi.
+export const espectro_canales: HeroDef = {
+  kind: "primitive",
+  when: "Banda de radio dividida en canales: bluetooth que salta de canal (salto de frecuencia), wifi que ocupa un canal ancho y fijo, interferencia entre redes que comparten banda, espectro, frecuencias, canales saturados.",
+  poses: ["bluetooth", "wifi", "ambos"],
+  actions: {
+    esquivar: "El salto del bluetooth deja de caer en los canales ocupados por el wifi (se queda así): esquiva, evita, cambia de carril, se adapta, deja de usar los canales ocupados.",
+  },
+  center: [0, 1.1, 0], radius: 1.55,
+  anchors: { hero: [0, 1.0, 0], top: [0, 2.0, 0], base: [0, 0.05, 0], bluetooth: [-1.4, 1.0, 0], wifi: [0, 0.9, 0], banda: [0, 0.8, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(espectro_canales, pose, "espectro_canales");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const N = 79, pitch = 0.052, x0 = -(N - 1) * pitch / 2, X = (c: number) => x0 + c * pitch, Y = 1.0;
+    const WIFI_A = 30, WIFI_B = 49;           // 20 canales ocupados
+    const hash = (x: number) => { const s = Math.sin(x * 12.9898) * 43758.5453; return s - Math.floor(s); };
+    // base translúcida y canales finos
+    g.add(place(box(b, N * pitch + 0.2, 0.04, 0.5, ghostMat(b, "#8fa3ff", 0.35)), [0, 0.28, 0]));
+    const barMat = glowMat(b, "#9db4ff", 0.55);
+    const bars = Array.from({ length: N }, (_, c) => { const m = box(b, pitch * 0.6, 1.1, 0.16, barMat); m.position.set(X(c), 0.85, 0); g.add(m); return m; });
+    // wifi: un bloque ancho que cubre sus canales
+    const wide = (WIFI_B - WIFI_A + 1) * pitch;
+    const wifi = new THREE.Mesh(b.track(new THREE.BoxGeometry(wide, 1.5, 0.34)), beam(b, "#ffb24a", 1.2, { transparent: true, opacity: 0.85 }));
+    wifi.position.set((X(WIFI_A) + X(WIFI_B)) / 2, 1.05, 0); g.add(wifi);
+    const wglow = halo(b, "rgba(255,170,60,0.9)", 2.8, 0.45); wglow.position.set(wifi.position.x, 1.05, 0.2); g.add(wglow);
+    // bluetooth: barra alta que salta y cinco estelas
+    const hop = new THREE.Mesh(b.track(new THREE.BoxGeometry(pitch * 1.2, 2.3, 0.22)), beam(b, "#59e6ff", 2.0, { transparent: true, opacity: 1 }));
+    const trail = Array.from({ length: 5 }, () => new THREE.Mesh(b.track(new THREE.BoxGeometry(pitch * 1.0, 1.9, 0.18)), beam(b, "#59e6ff", 1.5, { transparent: true, opacity: 0 })));
+    const clash = halo(b, "rgba(255,70,70,0.95)", 1.0, 0); clash.position.z = 0.3;
+    g.add(hop, ...trail, clash);
+    g.rotation.y = -0.35; root.add(g); shadows(g);
+    let avoid = 0;
+    const chan = (s: number) => {                 // canal del salto número s (pseudoaleatorio fijo)
+      let c = Math.floor(hash(s * 1.7 + 3) * N);
+      if (avoid > 0.5 && c >= WIFI_A - 1 && c <= WIFI_B + 1) c = Math.floor(hash(s * 3.1 + 9) * (WIFI_A - 2));   // se va a la parte baja de la banda
+      return c;
+    };
+    const update = (f: number) => {
+      const showBt = p !== "wifi", showWifi = p !== "bluetooth", s = Math.floor(f / 3);
+      wifi.visible = wglow.visible = showWifi;
+      (wifi.material as THREE.MeshBasicMaterial).opacity = 0.8 + 0.1 * Math.sin(f * 0.15);
+      bars.forEach((m, c) => {
+        const inWifi = showWifi && c >= WIFI_A && c <= WIFI_B;
+        m.scale.y = inWifi ? 0.4 : 1 + 0.12 * Math.sin(f * 0.1 + c * 0.7);
+      });
+      hop.visible = showBt; trail.forEach((m) => (m.visible = showBt));
+      const c0 = chan(s);
+      hop.position.set(X(c0), 1.2, 0);
+      trail.forEach((m, i) => { m.position.set(X(chan(s - 1 - i)), 1.0, 0); (m.material as THREE.MeshBasicMaterial).opacity = 0.5 * (1 - i / 5); });
+      const hit = showBt && showWifi && avoid < 0.5 && c0 >= WIFI_A && c0 <= WIFI_B;
+      (clash.material as THREE.MeshBasicMaterial).opacity = hit ? 0.9 : 0;
+      clash.position.x = X(c0); clash.position.y = 1.2;
+      g.rotation.y = -0.35 + 0.1 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, update),
+      act: (name, u) => { if (name === "esquivar") avoid = u > 0.02 ? 1 : 0; },
+    };
+  },
+};

@@ -559,4 +559,9 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
 - **D86 · OCR de subtítulos.** Ya no cuenta las últimas palabras de ≤3 letras (falsos negativos): `reloj-pulso` pasa de 88,6 % a 100 %.
 - **D87 · Etapa `publish`.** `pipeline/publish_pack.py` deja `11_publish.md` (título, descripción, hashtags y comentario fijado por
   plataforma, fuentes) y `11_cover.png` (fotograma 1 s después de la primera palabra). Es un borrador determinista que Claude afina.
+- **D88 (4 nov) · Prueba de F16 con `bluetooth-wifi`.** Primer video con las reglas nuevas (hook mito, versus, cierre bucle con `tailS` 0,2): 71,0 s,
+  QA OK (estático 19 fotogramas, silencio 27,9 %, OCR 100 %, −14,0 LUFS, −1,1 dBTP). El validador de ritmo obligó a añadir 3 acciones u overlays
+  (huecos de 4,0, 3,6 y 3,5 s). Con los overlays por encima del 70 % se taparon el objeto, así que el objeto protagonista sube del 55 % al 47 % del
+  alto (`heroScreenYK`) y los slots quedan en `center` 0,52, `lower` 0,61, `bottom` 0,67 (zona hasta 0,72). Prefab nuevo: `espectro_canales`
+  (79 canales, barra que salta, bloque ancho del wifi, acción `esquivar`). Cambia el encuadre de todos los videos nuevos; los viejos no se rehicieron.
 

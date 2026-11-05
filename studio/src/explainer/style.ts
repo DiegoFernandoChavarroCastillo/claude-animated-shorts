@@ -66,7 +66,7 @@ export const KEYWORD = {
 
 // ---------------- overlays (§3.8–3.9) ----------------
 export const OVERLAY = {
-  zone: { topK: 0.30, bottomK: 0.70 }, // los overlays viven entre el 30 % y el 70 % del alto (F16: debajo van la descripción y los botones de TikTok, Reels y Shorts)
+  zone: { topK: 0.30, bottomK: 0.72 }, // los overlays viven entre el 30 % y el 70 % del alto (F16: debajo van la descripción y los botones de TikTok, Reels y Shorts)
   scale: 1.35,                         // escala general de los overlays colocados (el verificador de F3 los vio pequeños)
   enterFrames: 10,                     // entradas de 8–12 frames
   stagger: 3,                          // 3–4 frames entre elementos
@@ -90,7 +90,7 @@ export const CAMERA = {
   rollMaxDeg: 3,
   kickFrames: 7,
   fov: 38,
-  heroScreenYK: 0.55,                            // centro del objeto protagonista, fracción del alto
+  heroScreenYK: 0.47,                            // centro del objeto protagonista, fracción del alto
 };
 
 /** Desenfoque de fondo (cInf, px a 1080) por tipo de plano (§3.8) */

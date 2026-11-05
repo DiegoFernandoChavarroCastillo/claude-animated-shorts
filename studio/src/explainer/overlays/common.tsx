@@ -16,7 +16,7 @@ export const BAND_BOTTOM = CAPTION.band.bottomK * H;
 
 /** posiciones verticales dentro de la zona de overlays (centro del overlay, fracción del alto) */
 // F16: antes lower 0,70 y bottom 0,79 caían en la zona de la interfaz de las apps (últimos ~35 % del alto)
-export const SLOTS = { top: 0.37, upper: 0.43, center: 0.50, lower: 0.57, bottom: 0.64 } as const;
+export const SLOTS = { top: 0.37, upper: 0.43, center: 0.52, lower: 0.61, bottom: 0.67 } as const;
 export type Slot = keyof typeof SLOTS;
 
 export const useAnim = (dur: number) => {
