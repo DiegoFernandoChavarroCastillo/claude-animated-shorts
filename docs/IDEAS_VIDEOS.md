@@ -1,6 +1,6 @@
 # Ideas de videos para `explainer-short`
 
-Lista de temas que la skill puede hacer **con lo que ya tiene** (126 objetos protagonistas, 17 entornos, 16 cámaras, 51
+Lista de temas que la skill puede hacer **con lo que ya tiene** (129 objetos protagonistas, 17 entornos, 16 cámaras, 51
 overlays y 5 estructuras de guion). No es una lista cerrada: es el punto de partida.
 
 **Cómo leerla**
@@ -160,7 +160,7 @@ overlays y 5 estructuras de guion). No es una lista cerrada: es el punto de part
 | 112 | ¿Por qué se hunde un barco de acero y otro flota? | probeta_densidad, vaso_agua_hielo | mito |
 | 113 | ¿Por qué el eco repite tu voz? | onda, oido | cadena |
 | 114 | ¿Cómo funciona un microondas? | microondas, onda, vaso_agua_hielo | cadena |
-| 115 | ¿Por qué no se meten metales al microondas? | microondas, circuito | mito |
+| 115 | ¿Por qué no se meten metales al microondas? (ya hecho: `microondas-metal`) | microondas, circuito | mito |
 | 116 | ¿Cómo funciona una nevera? | nevera, barra_calor | cadena |
 | 117 | ¿Por qué se calientan los celulares al cargarlos? (ya hecho) | telefono, chip, bateria | mito |
 | 118 | ¿Cómo funciona un engranaje y por qué hay engranajes en todas partes? | engranajes | lista |
@@ -273,7 +273,7 @@ overlays y 5 estructuras de guion). No es una lista cerrada: es el punto de part
 | 198 | ¿Cómo funciona una antena de celular? | antena, telefono, onda | cadena |
 | 199 | ¿Cómo funciona una pantalla y qué son los píxeles? | pantalla_led, ojo, prisma_luz | cadena |
 | 200 | ¿Qué es un chip y qué hace por dentro? | chip, circuito | lista |
-| 201 | ¿Cómo sabe el reloj inteligente tu pulso? | reloj, corazon, chip | cadena |
+| 201 | ¿Cómo sabe el reloj inteligente tu pulso? (ya hecho: `reloj-pulso`) | reloj, corazon, chip | cadena |
 | 202 | ¿Cómo funciona una contraseña y por qué es mejor larga? | candado_cifrado, caja_etiquetada | mito |
 | 203 | ¿Cómo cifra un mensaje tu app? | candado_cifrado, telefono | cadena |
 | 204 | ¿Por qué se gasta la batería más rápido en frío? | bateria, barra_calor | mito |

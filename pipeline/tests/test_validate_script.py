@@ -7,6 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
+import validate_script  # noqa: E402
 from validate_script import validate  # noqa: E402
 
 ROOT = HERE.parents[1]
@@ -51,6 +52,15 @@ def variants() -> dict[str, tuple[str, str]]:
 
 def main() -> int:
     fails = 0
+    # F14: el rango de palabras es de 60–120 s (175–300). Los ejemplos (55–62 s) y los guiones rotos tienen otro largo:
+    # las pruebas de forma lo ajustan y una prueba aparte comprueba el rango real.
+    real = (validate_script.WORDS_MIN, validate_script.WORDS_MAX)
+    short = read("templates/examples/hielo-flota/02_SCRIPT.md")
+    errs, st = validate(short)
+    ok = any("longitud" in e for e in errs)
+    fails += not ok
+    print(f"{'OK ' if ok else 'MAL'} falla  guion de {st.get('words')} palabras (< {real[0]}): {[e for e in errs if 'longitud' in e]}")
+    validate_script.WORDS_MIN, validate_script.WORDS_MAX = 100, 400
     for p in GOOD:
         errs, st = validate(p.read_text(encoding="utf-8"))
         ok = not errs

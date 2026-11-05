@@ -27,7 +27,9 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 | F9 | Nuevo `SKILL.md` (`explainer-short`) y documentación | ✅ aprobada (prueba en sesión nueva: `celular-calienta`) | `eb21221` |
 | F11 | Ampliación del catálogo: 72 objetos, 17 entornos, 10 cámaras, 13 overlays (D65–D68) | ✅ implementada; falta que Diego revise los videos de prueba | rama `ampliar-catalogo` |
 | F12 | Ganchos, estructuras y cierres variables y elegidos por el usuario (D70–D73) | ✅ implementada (validador, prompts, ejemplos, pruebas); falta probarla con un video nuevo | rama `ampliar-catalogo` |
-| F13 | Acciones sincronizadas con la voz: 10 genéricas, 6 marcadores 3D y 5 propias de objetos (D74–D76) | ✅ implementada y probada en frames de `sin-gravedad`; falta un video completo con ellas | rama `ampliar-catalogo` |
+| F13 | Acciones sincronizadas con la voz: 41 efectos (26 genéricos, 13 marcadores 3D, 2 de cámara) y acciones propias de objetos (D74–D77) | ✅ usada en `microondas-metal` y `reloj-pulso` | rama `ampliar-catalogo` |
+| F14 | Prefabs por video en `custom.ts` (3 hechos) y duración obligatoria de 60 a 120 s (D78–D79) | ✅ `8688cdf`; los 2 videos de prueba son de 62 y 64 s; `reloj-pulso` queda fuera del nuevo mínimo de palabras | rama `ampliar-catalogo` |
+| F15 | 14 efectos de sonido generales y director de acentos (D80–D81) | ✅ `1e6a516`; Diego los escuchó y le gustan | rama `ampliar-catalogo` |
 | F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 
 ## Cómo se hace un video hoy
