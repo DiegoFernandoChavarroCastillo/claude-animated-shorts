@@ -544,3 +544,19 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   y −1,1 dBTP, QA OK. **Falta el oído:** los sonidos son síntesis y no se pudieron escuchar en esta sesión; `tools/sfx_preview.py`
   genera `todos.wav` para que Diego los escuche y ajuste `REL_DB`.
 
+## F16 · Gancho, ritmo y bucle (primera tanda de `docs/PLAN_MEJORAS.md`)
+
+- **D82 (4 nov) · Validaciones nuevas en `validate_story.py` (con `words.json`).** El gancho se dice en ≤3,2 s; el primer beat lleva una
+  acción antes de 1 s y no usa la cámara `drift`; no pasan más de 3,5 s sin un cambio en pantalla (inicio de beat, acción u overlay);
+  con cierre `bucle`, `meta.tailS` ≤ 0,3. Medido en los 3 videos hechos: hueco máximo 4,8 / 6,0 / 6,7 s, así que los tres incumplirían
+  la regla de ritmo si se validaran hoy (no se rehicieron).
+- **D83 · Cola de audio.** `meta.tailS` (por defecto 1,0 s) sustituye a la cola fija: `timeline.ts` y `sfx_plan.py` la leen. Con `bucle`
+  vale 0,2 s para que el final empalme con el inicio (1924 → 1900 fotogramas en `reloj-pulso` al probarlo).
+- **D84 · Cierre por defecto `bucle`.** `envia`, `pregunta` y `sigue` quedan solo a petición (despedidas predecibles).
+- **D85 · Zona segura de las apps.** Los overlays viven entre el 30 y el 70 % del alto (antes hasta el 85 %) y los slots se compactan
+  (`lower` 0,57, `bottom` 0,64); debajo van la descripción y los botones. Los números salen de guías de terceros que no coinciden entre
+  sí: confirmar con la vista previa en cada app.
+- **D86 · OCR de subtítulos.** Ya no cuenta las últimas palabras de ≤3 letras (falsos negativos): `reloj-pulso` pasa de 88,6 % a 100 %.
+- **D87 · Etapa `publish`.** `pipeline/publish_pack.py` deja `11_publish.md` (título, descripción, hashtags y comentario fijado por
+  plataforma, fuentes) y `11_cover.png` (fotograma 1 s después de la primera palabra). Es un borrador determinista que Claude afina.
+

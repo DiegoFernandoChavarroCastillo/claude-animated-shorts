@@ -70,6 +70,10 @@ Role notes:
 
 ## Rules
 
+0. **~3 s hook (F16):** the hook is spoken in 3 s or less (8–9 words; 12 is the validator's cap) and goes straight to the conflict, no
+   greeting or set-up. **Loop closing by default:** the last line reads as a continuation of the hook (reuse its word or image, leave
+   it open), with no goodbye or "thanks for watching".
+
 1. **175–300 words** in total (aim for ~220–250 ≈ 85–95 s). Real voice pace: ~2.6 words/s including pauses, so 175 words ≈ 67 s
    and 300 ≈ 115 s. **The final video must run over 60 s and under 120 s**: QA enforces it. For more time, add steps to the
    mechanism/chain/list (more lines, each with something visible), not long sentences or filler.

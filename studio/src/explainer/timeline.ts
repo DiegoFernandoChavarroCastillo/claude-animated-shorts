@@ -19,7 +19,7 @@ export type Timeline = { fps: number; total: number; beats: BeatT[]; keywords: K
 export const ACTION_DUR_DEFAULT = 30;
 
 const LEAD_F = 2;      // el cambio visual llega 0–3 frames antes de la palabra (como en el original)
-const TAIL_S = 1.0;    // cola tras la última palabra
+const TAIL_S = 1.0;    // cola por defecto tras la última palabra (story.meta.tailS la cambia)
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\p{L}\p{N}]/gu, "");
 
 /** semiancho (frames) de la ventana en que se ven los dos beats a la vez */
@@ -47,7 +47,7 @@ export const buildTimeline = (story: Story, words: WordT[], fps = 30): Timeline 
     bt.a = i === 0 ? 0 : Math.max(0, f(words[bt.words[0]].start) - LEAD_F);
   });
   const lastWord = words[words.length - 1];
-  const total = f(lastWord.end + TAIL_S);
+  const total = f(lastWord.end + (story.meta.tailS ?? TAIL_S));
   beats.forEach((bt, i) => { bt.b = i + 1 < beats.length ? beats[i + 1].a : total; });
   for (let i = 0; i + 1 < beats.length; i++) {
     const A = beats[i].beat.scene, B = beats[i + 1].beat.scene;

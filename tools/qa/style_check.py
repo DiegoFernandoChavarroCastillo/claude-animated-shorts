@@ -142,6 +142,9 @@ def caption_blocks(words: list[dict]) -> list[list[int]]:
     return groups
 
 
+SHORT_WORD = 3   # F16: palabras de ≤3 letras no se comprueban con OCR (falsos negativos en reloj-pulso)
+
+
 def norm(s: str) -> str:
     s = unicodedata.normalize("NFD", s.lower())
     return "".join(c for c in s if c.isalnum() and not unicodedata.combining(c))
@@ -162,6 +165,8 @@ def caption_ocr(video: Path, words: list[dict], lang: str) -> dict:
         run("ffmpeg", "-v", "error", "-i", str(video), "-vf", f"select='{sel}'", "-fps_mode", "passthrough", f"{td}/%04d.png")
         for k, (b, f) in enumerate(zip(blocks, frames)):
             png = Path(td) / f"{k + 1:04d}.png"
+            if len(norm(words[b[-1]]["w"])) <= SHORT_WORD:   # F16: «de», «al», «y»… el OCR las pierde aunque se vean; no cuentan
+                continue
             if not png.exists():
                 res.append({"frame": f, "expect": words[b[-1]]["w"], "found": False, "band": False, "ocr": "(sin frame)"}); continue
             im = np.asarray(Image.open(png).convert("RGB")).astype(np.int16)

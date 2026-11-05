@@ -71,4 +71,40 @@ fails += not ok
 ok = not has(validate(with_actions({0: [{"type": "pulse", "at": "una"}], 1: [{"type": "pulse", "at": "una"}], 2: [{"type": "pulse", "at": "una"}]}), require_actions=True), "llevan acciones")
 print("OK " if ok else "MAL", "--require-actions pasa con la mitad")
 fails += not ok
+
+
+# F16: gancho, ritmo y bucle (con words.json)
+def timed(hook_end=2.5, beat_len=2.4, n=6, hook_act=True, cam="push_in", tail=None, ev_each=True):
+    st = story(["telefono", "chip", "perro", "persona", "reloj", "telefono"][:n])
+    words, t0 = [], 0.1
+    for i, b in enumerate(st["beats"]):
+        L = hook_end - 0.1 if i == 0 else beat_len
+        ws = ["una", "dos", "tres", "cuatro", "cinco"]
+        for k, w in enumerate(ws):
+            words.append({"w": w, "start": round(t0 + L * k / 5, 2), "end": round(t0 + L * (k + 1) / 5, 2), "beat": b["id"]})
+        t0 += L
+        b["scene"]["camera"]["preset"] = cam if i == 0 else "push_in"
+        b["actions"] = [{"type": "pulse", "at": "una"}] if (ev_each and (i or hook_act)) else []
+    if tail is not None:
+        st["meta"]["tailS"] = tail
+    return st, words
+
+
+def f16(name, frag, closing=None, **kw):
+    global fails
+    st, w = timed(**kw)
+    errs = validate(st, w, closing=closing)
+    ok = has(errs, frag) if frag else not any(k in " ".join(errs) for k in ("gancho dura", "primer beat", "sin ningún cambio", "bucle"))
+    print("OK " if ok else "MAL", f"F16: {name}", "" if ok else errs)
+    fails += not ok
+
+
+f16("gancho de 2,5 s con acción pasa", None)
+f16("gancho de 4 s falla", "el gancho dura", hook_end=4.0)
+f16("primer beat sin acción falla", "no tiene una acción antes de 1 s", hook_act=False)
+f16("primer beat con drift falla", "demasiado suave", cam="drift")
+f16("5 s sin cambios falla", "sin ningún cambio en pantalla", beat_len=5.5, ev_each=False)
+f16("cierre bucle con cola de 1 s falla", "meta.tailS", closing="bucle")
+f16("cierre bucle con cola de 0,2 s pasa", None, closing="bucle", tail=0.2)
+f16("otro cierre con cola de 1 s pasa", None, closing="reto_casa")
 sys.exit(1 if fails else 0)

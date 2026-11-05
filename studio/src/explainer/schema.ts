@@ -54,6 +54,8 @@ export const MetaSchema = z.object({
   voice: z.object({ engine: z.string(), voice: z.string(), speed: z.number().default(1) }),
   music: z.boolean().default(false),
   captionEmphasis: z.enum(["box", "accent"]).default("box"),
+  /** cola tras la última palabra (s). 1.0 por defecto; 0.2 con cierre `bucle` para que el final empalme con el inicio */
+  tailS: z.number().min(0.1).max(2).default(1.0),
 });
 
 export const StorySchema = z.object({ meta: MetaSchema, beats: z.array(BeatSchema).min(1) });

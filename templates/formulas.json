@@ -218,6 +218,6 @@
   "elegir": {
     "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
     "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
-    "cierre": "envia o pregunta para datos que se comparten; sigue si hay un siguiente tema natural; bucle si el gancho es muy fuerte; reto_casa si se puede comprobar en casa."
+    "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar."
   }
 }

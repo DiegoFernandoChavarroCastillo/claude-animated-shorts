@@ -49,7 +49,7 @@ def beat_frames(story: dict, words: list[dict]):
             raise PipelineError(f"el beat {bid} no tiene palabras en words.json")
         a = 0 if i == 0 else max(0, round(words[ws[0]]["start"] * FPS) - LEAD_F)
         out.append({"id": bid, "a": a, "words": ws})
-    total = round((words[-1]["end"] + TAIL_MS / 1000) * FPS)
+    total = round((words[-1]["end"] + story["meta"].get("tailS", TAIL_MS / 1000)) * FPS)
     for i, b in enumerate(out):
         b["b"] = out[i + 1]["a"] if i + 1 < len(out) else total
     return out, total

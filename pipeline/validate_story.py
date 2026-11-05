@@ -4,7 +4,7 @@
 
 Falla si: un env / luz / hero (kind, asset, pose) / overlay / ancla / preset de cámara / transición / sfx no existe en
 templates/catalog.json; un "at" no resuelve a una palabra del beat; un beat mechanism, item, versus o chain no tiene overlay; hay más de 3
-"cut" por minuto; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; una acción que no existe, con ancla inválida, con "at" que no es una palabra o más de 3 por beat (con --require-actions, menos de la mitad de los beats con acciones); un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
+"cut" por minuto; (F16, con --words) el gancho se dice en más de 3 s, el primer beat no tiene acción antes de 1 s o usa cámara drift, pasan más de 3,5 s sin un cambio en pantalla, o el cierre es `bucle` con meta.tailS > 0,3; un mismo objeto protagonista en más de 3 beats seguidos o en más del 65 % de los beats; una acción que no existe, con ancla inválida, con "at" que no es una palabra o más de 3 por beat (con --require-actions, menos de la mitad de los beats con acciones); un beat con overlay numérico no tiene "sources"; la keyword no está en el texto. Con --script,
 además, el texto de los beats debe ser el del guion aprobado, línea a línea.
 """
 from __future__ import annotations
@@ -24,6 +24,13 @@ MIN_ACTION_SHARE = 0.5   # fracción mínima de beats con al menos una acción c
 MAX_HERO_RUN = 3        # beats seguidos con el mismo objeto protagonista (garganta-gripe usó 8 de 8 y salió plano)
 MAX_HERO_SHARE = 0.65   # fracción máxima de beats con el mismo objeto (celular-calienta: 5 de 8 = 0,62 pasa)
 WPS = 2.8  # para estimar la duración si no hay words.json
+# F16 · gancho, ritmo y bucle (con words.json)
+HOOK_MAX_S = 3.2         # el primer beat (gancho) se dice en unos 3 s (margen de 0,2 s)
+HOOK_ACTION_S = 1.0      # y lleva una acción que empieza antes de 1,0 s
+HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer beat
+MAX_EVENT_GAP_S = 3.5    # tiempo máximo sin corte, acción u overlay
+LOOP_TAIL_MAX_S = 0.3    # con cierre `bucle`, la cola tras la última palabra (meta.tailS)
+FPS = 30
 
 
 def resolves(at, text: str) -> bool:
@@ -38,7 +45,41 @@ def resolves(at, text: str) -> bool:
     return norm(str(at)) in {norm(w) for w in ws}
 
 
-def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None, require_actions: bool = False) -> list[str]:
+def at_seconds(beat: dict, ws: list, at, a_s: float) -> float:
+    """segundo en que cae un `at` del beat: None = inicio del beat, número = frames desde el inicio, palabra o #n = su inicio"""
+    if at is None:
+        return a_s
+    if isinstance(at, (int, float)):
+        return a_s + at / FPS
+    m = re.fullmatch(r"#(\d+)", str(at))
+    if m:
+        return ws[int(m.group(1))]["start"] if int(m.group(1)) < len(ws) else a_s
+    return next((w["start"] for w in ws if norm(w["w"]) == norm(str(at))), a_s)
+
+
+def event_times(story: dict, words: list) -> list[float]:
+    """momentos en que cambia algo en pantalla: inicio de cada beat, overlays y acciones (en segundos)"""
+    ev, starts = [0.0], []
+    for b in story["beats"]:
+        ws = [w for w in words if w["beat"] == b["id"]]
+        a_s = 0.0 if not starts else max(0.0, ws[0]["start"] - 2 / FPS)
+        starts.append(a_s)
+        ev.append(a_s)
+        ev += [at_seconds(b, ws, o.get("at"), a_s) for o in b.get("overlays", [])]
+        ev += [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("actions", [])]
+    return sorted(ev)
+
+
+def event_gap(story: dict, words: list) -> tuple[float, float]:
+    """(hueco más largo sin eventos en s, segundo en que empieza); cuenta también hasta el final del video"""
+    end = words[-1]["end"] + story["meta"].get("tailS", 1.0)
+    ev = event_times(story, words) + [end]
+    gap, at = max(((b - a, a) for a, b in zip(ev, ev[1:])), key=lambda g: g[0])
+    return gap, at
+
+
+def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None, require_actions: bool = False,
+             closing: str | None = None) -> list[str]:
     cat = load_json(ROOT / "templates" / "catalog.json")
     errs: list[str] = []
     beats = story.get("beats", [])
@@ -136,6 +177,27 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
         missing = [i for i in ids if not any(w["beat"] == i for w in words)]
         if missing:
             errs.append(f"words.json no tiene palabras de los beats {', '.join(missing)}")
+        elif beats:
+            # F16 · gancho: se dice en ≤3 s y el primer segundo ya tiene movimiento (acción) en una cámara que no sea suave
+            w1 = [w for w in words if w["beat"] == beats[0]["id"]]
+            if w1[-1]["end"] > HOOK_MAX_S:
+                errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {HOOK_MAX_S:.1f} s): acórtalo (unas 8–9 palabras)")
+            acts = [at_seconds(beats[0], w1, x.get("at"), 0.0) for x in beats[0].get("actions", [])]
+            if not acts or min(acts) > HOOK_ACTION_S:
+                errs.append(f"el primer beat no tiene una acción antes de {HOOK_ACTION_S:.0f} s: abre con movimiento (ej. punch, pulse, "
+                            f"lift con at en la 1.ª o 2.ª palabra)")
+            cam = beats[0].get("scene", {}).get("camera", {}).get("preset")
+            if cam in HOOK_STATIC_CAMERAS:
+                errs.append(f"el primer beat usa la cámara '{cam}', demasiado suave para el gancho: usa push_in, spiral_in u orbit_slow")
+            # F16 · ritmo: algo cambia en pantalla al menos cada 3,5 s
+            gap, at = event_gap(story, words)
+            if gap > MAX_EVENT_GAP_S:
+                errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (máximo {MAX_EVENT_GAP_S} s): "
+                            f"añade una acción o un overlay en ese tramo")
+    # F16 · bucle: con cierre `bucle` el video acaba casi sobre la última palabra
+    if closing == "bucle" and story["meta"].get("tailS", 1.0) > LOOP_TAIL_MAX_S:
+        errs.append(f"el cierre es `bucle` y meta.tailS vale {story['meta'].get('tailS', 1.0)} (por defecto 1.0): pon meta.tailS = 0.2 "
+                    f"para que el final empalme con el inicio")
     if script_lines is not None:
         texts = [b.get("text", "") for b in beats]
         if texts != script_lines:
@@ -146,6 +208,11 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
             if len(texts) != len(script_lines):
                 errs.append(f"{len(texts)} beats para {len(script_lines)} líneas de guion")
     return errs
+
+
+def script_closing(md: str) -> str | None:
+    m = re.search(r"^closing:\s*(\w+)", md, re.M)
+    return m.group(1) if m else None
 
 
 def script_lines(md: str) -> list[str]:
@@ -160,7 +227,8 @@ def main():
     ap.add_argument("--require-actions", action="store_true", help="exige acciones en al menos la mitad de los beats")
     a = ap.parse_args()
     errs = validate(load_json(a.story), load_json(a.words) if a.words else None,
-                    script_lines(a.script.read_text(encoding="utf-8")) if a.script else None, a.require_actions)
+                    script_lines(a.script.read_text(encoding="utf-8")) if a.script else None, a.require_actions,
+                    script_closing(a.script.read_text(encoding="utf-8")) if a.script else None)
     print(f"{'PASA' if not errs else 'FALLA'}: {a.story}")
     for e in errs:
         print(f"  - {e}")

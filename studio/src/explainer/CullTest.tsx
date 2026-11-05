@@ -26,7 +26,7 @@ const testStory = (env: string, light: Story["beats"][number]["scene"]["light"])
     for (let w = 0; w < 4; w++) words.push({ w: "a", start: k * 5 + w * 0.5 + 0.2, end: k * 5 + w * 0.5 + 0.6, beat: id });
     k++;
   }
-  const story: Story = { meta: { id: "cull", lang: "es", title: "cull", fps: 30, width: 1080, height: 1920, voice: { engine: "-", voice: "-", speed: 1 }, music: false, captionEmphasis: "box" }, beats };
+  const story: Story = { meta: { id: "cull", lang: "es", title: "cull", fps: 30, width: 1080, height: 1920, voice: { engine: "-", voice: "-", speed: 1 }, music: false, captionEmphasis: "box", tailS: 1 }, beats };
   return { story, words };
 };
 

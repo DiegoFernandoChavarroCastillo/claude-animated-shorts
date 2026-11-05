@@ -33,7 +33,7 @@ STUDIO = ROOT / "studio"
 TMP = os.environ.get("REMOTION_TMP") or ("C:/remotion-tmp" if os.name == "nt" else str(Path.home() / "remotion-tmp"))
 BUNDLE = f"{TMP}/bundle"
 VOICE_DEFAULT = {"es": ("chatterbox", "diego"), "en": ("chatterbox", "default")}   # D64 (antes Kokoro, D46)
-STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa"]
+STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa", "publish"]
 
 
 class Run:
@@ -216,9 +216,14 @@ class Run:
             return "QA " + ("OK" if ok else "con avisos")
         self.stage("qa", out, [self.p("09_final.mp4"), self.p("07_video.mp4"), self.p("04_words.json")], run)
 
+    def publish(self):
+        out = self.p("11_publish.md")
+        self.stage("publish", out, [self.p("09_final.mp4"), self.p("02_SCRIPT.md"), self.p("05_story.json")],
+                   lambda: self.sh([PY, "pipeline/publish_pack.py", "--id", self.id], tag="publish").splitlines()[-1])
+
     def run(self, stages: list[str]):
         fns = {"validate-script": self.validate_script, "tts": self.tts, "align": self.align, "validate-story": self.validate_story,
-               "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa}
+               "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa, "publish": self.publish}
         for s in stages:
             fns[s]()
             if s == "validate-script" and self.a.review:

@@ -81,6 +81,11 @@ predecibles que dices que hacen deslizar, y **todos los videos terminan con 1,0 
 | O5 | Los ejemplos (`templates/examples/`) son de 55–62 s y 140–185 palabras: hacer al menos uno de ~80 s para que los prompts no copien el largo viejo | medio |
 | O6 | `reloj-pulso` tiene 167 palabras: hoy el validador lo rechazaría. Alargarlo (~60–80 palabras) y repetir voz y render | medio |
 
+## Estado (4 nov)
+
+**Primera tanda hecha (F16):** L1, L2, H1, H2, P1, P3, P8, O2. Medido con P1 en los videos ya hechos: el hueco más largo sin cambios
+fue de 4,8 s en `reloj-pulso`, 6,0 s en `microondas-metal` y 6,7 s en `hielo-flota`. El resto sigue pendiente.
+
 ## Orden recomendado
 
 1. **Una tanda de ~1 sesión (todo bajo):** L1, L2, H1, H2, P1 (medir primero), P3, P8, O2. Es lo que más cambia el resultado con menos riesgo.

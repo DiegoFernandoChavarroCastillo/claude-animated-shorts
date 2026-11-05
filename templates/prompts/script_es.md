@@ -70,6 +70,10 @@ Notas por rol:
 
 ## Reglas
 
+0. **Gancho de ~3 s (F16):** el gancho se dice en 3 s o menos (8–9 palabras; 12 es el tope del validador), entra en el conflicto sin
+   saludo ni contexto previo. **Cierre en bucle por defecto:** la última frase se lee como continuación del gancho (retoma su palabra o
+   su imagen y deja el final abierto), sin despedida ni «gracias por ver».
+
 1. **175–300 palabras** en total (apunta a ~220–250 ≈ 85–95 s). Ritmo real de la voz: ~2,6 palabras/s contando las pausas, así que
    175 palabras ≈ 67 s y 300 ≈ 115 s. **El video final debe durar más de 60 s y menos de 120 s**: el QA lo exige. Con más tiempo,
    añade pasos al mecanismo/cadena/lista (más líneas, cada una con algo que se vea), no frases largas ni relleno.

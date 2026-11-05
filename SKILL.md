@@ -30,6 +30,7 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 | 5 | Todo lo demás: `PY pipeline/make_short.py all --id <id> --scale 0.5` | pipeline | `03`–`10` |
 | 6 | Revisión visual (look-match) con un agente verificador **distinto** | Claude + agente | notas y arreglos |
 | 7 | Render final: `PY pipeline/make_short.py all --id <id> --force render,mix,mux,qa` (escala 1) | pipeline | `09_final.mp4` |
+| 8 | Paquete de publicación (se genera solo al final de `all`): revisarlo y afinarlo | pipeline + Claude | `11_publish.md`, `11_cover.png` |
 
 ### 1. Investigación (`01_research.md`)
 
@@ -47,6 +48,8 @@ Cuando ya hay hechos con fuente y **antes de escribir el guion**, Claude propone
    - **Gancho:** tres tipos distintos, cada uno ya redactado para este tema (≤12 palabras, 2.ª persona, concreto).
    - **Estructura:** tres, cada una con su esquema en una línea ("gancho → tres datos → giro → cierre").
    - **Cierre:** tres, con la frase ya redactada.
+   **Cierre (F16): recomienda `bucle` salvo que el tema pida otra cosa.** `envia`, `pregunta` y `sigue` son despedidas predecibles que
+   invitan a deslizar: ofrécelas solo si el usuario las pide. Con `bucle`, el story lleva `meta.tailS: 0.2` (el validador lo exige).
 3. Pregunta con `AskUserQuestion`, **las tres preguntas en una sola llamada**: "¿Qué gancho quieres?", "¿Qué estructura?",
    "¿Qué cierre?". La primera opción es tu recomendación, con "(Recomendado)" en la etiqueta y, en la descripción, una frase
    de por qué encaja con **este** tema. Etiquetas tipo `A · pregunta: "¿Te has preguntado…?"`.
@@ -92,6 +95,9 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   en entornos oscuros evita `metalness` alto); (3) un prefab plano o frontal pide cámara con movimiento real (`orbit_slow`,
   `spiral_in`, `push_in` rápido), o la racha estática del QA falla; (4) no más de 2 por video, el resto va a `05_gaps.md`.
   Medido en 2 videos: ~10–15 min por prefab, sin coste de render.
+- **Gancho y ritmo (F16):** el primer beat se dice en ≤3 s y lleva una **acción antes de 1 s** (cámara que no sea `drift`); en todo el video
+  **algo cambia en pantalla (corte, acción u overlay) al menos cada 3,5 s**; los overlays van por encima del 70 % del alto (debajo están
+  la descripción y los botones de las apps). El validador lo comprueba con `words.json`.
 - **Dale vida (F13):** ponle **acciones** a la mitad de los beats como mínimo: lo que el objeto hace cuando se dice la palabra (una
   línea roja que rodea la Tierra al decir "ecuador", la persona que sube al decir "despedido", chispas al decir "revienta").
   Mira "Acciones" en `templates/prompts/story_es_en.md` (qué verbo pide qué acción) y las propias de cada objeto con
@@ -101,7 +107,7 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 ### 5. Pipeline determinista
 
 `PY pipeline/make_short.py all --id <id> --scale 0.5` (prueba rápida a 540x960). Etapas: validate-script → tts →
-align → validate-story → stills → render → mix → mux → qa. Cada etapa se salta si su artefacto ya está al día;
+align → validate-story → stills → render → mix → mux → qa → publish. Cada etapa se salta si su artefacto ya está al día;
 `--force tts,render` rehace etapas concretas. Registro en `out/<id>/log.md`. Si una etapa falla, el mensaje dice por
 qué. Arregla la causa (normalmente `05_story.json`) y relanza el mismo comando.
 
@@ -180,6 +186,8 @@ Entrega:
   (~6 GB). Necesita internet.
 - **Voz:** en español, `"voice": "diego"` (`voices_local/diego.wav`). Si no existe, el pipeline avisa y usa la voz
   del modelo, que suena con acento extranjero: díselo al usuario en la entrega.
+- **Publicación (F16):** la etapa `publish` deja `11_publish.md` (título, descripción, hashtags y comentario fijado por plataforma, fuentes) y
+  `11_cover.png`. Es un borrador deterministico: léelo y afínalo antes de entregarlo.
 - **Voz lenta:** Chatterbox tarda ~13 min por video en CPU. Para pruebas rápidas del plan visual, usa
   `"engine": "kokoro"` en el story y vuelve a Chatterbox para el render final (`--force tts`).
 - **Duración (60–120 s):** el QA marca ❌ si el video dura ≤60 s o ≥120 s. Si sale corto, añade líneas al guion (no relleno) y

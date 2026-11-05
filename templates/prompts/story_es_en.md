@@ -220,6 +220,8 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
    objeto (pantalla, ventanilla, chip), `crossfade` entre ideas, `cut` solo al cambiar de lugar y **como mucho 3 por
    minuto**.
 9. **Acciones** (sección de arriba): al menos la mitad de los beats, ancladas a la palabra que las dispara.
+10a. **Gancho y ritmo (F16, lo comprueba el validador):** el primer beat lleva una acción que empiece antes de 1 s (con `at` en la 1.ª o 2.ª palabra) y una cámara que no sea `drift`; en todo el video no pasan más de 3,5 s sin un cambio en pantalla (inicio de beat, acción u overlay): en los beats largos pon una acción o un overlay a mitad. Los overlays viven por encima del 70 % del alto (slots `top`…`bottom`): debajo están la descripción y los botones de las apps.
+10b. **Cierre `bucle`:** pon `"tailS": 0.2` en `meta` (el video acaba casi sobre la última palabra) y haz que el último beat vuelva al entorno y al objeto del primero.
 10. `sfx` a mano solo para lo que no tiene acción propia, **máximo 3 por video** y solo si refuerza el verbo que dice la voz:
     `rumble` (volcán, terremoto, cohete, derrumbe), `crack` (hielo, hueso, rotura), `clock_tick` (reloj, tiempo, péndulo),
     `heartbeat` (pulso sin objeto corazón), `drip`, `bubbles`, `sizzle`, `zap`, `ding`, `buzz_no`. Con `at` = la palabra exacta.
