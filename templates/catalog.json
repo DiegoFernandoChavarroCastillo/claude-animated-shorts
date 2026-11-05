@@ -293,6 +293,20 @@
     "pop": "Entrada de un overlay.",
     "tick": "Contadores (StatCallout, BarCompare).",
     "riser": "0,8 s antes del beat twist.",
-    "impact": "Golpe suave en un StatCallout importante."
+    "impact": "Golpe suave en un StatCallout importante.",
+    "zap": "Chasquido eléctrico: chispa, rayo, cortocircuito, descarga, contacto eléctrico, circuito (acción burst y chispa).",
+    "shimmer": "Brillo de campanillas: destello, halo, magia, aurora, descubrimiento, algo especial (acciones sparkle, halo, beam).",
+    "heartbeat": "Latido lub-dub: corazón, pulso, miedo, emoción, ejercicio (acción acelerar, mark ♥).",
+    "swish_up": "Barrido de aire que sube: algo se eleva, crece o se infla (acciones lift y grow).",
+    "swish_down": "Barrido de aire que baja: cae, se encoge, se hunde o desaparece (acciones drop, shrink, sink, vanish).",
+    "blip": "Nota corta de interfaz: marca, flecha, etiqueta o dato que se señala (acciones mark, arrow, ring, blink).",
+    "sizzle": "Siseo de calor: vapor, fuego, fritura, algo que se quema o hierve (acciones steam, llamarada, inflamar).",
+    "bubbles": "Burbujeo: hervir, reacciones químicas, espuma, fermentación (steam con kind bubbles).",
+    "drip": "Gota de agua: lluvia, ondas en el agua, condensación, sudor, llanto (acciones ripple y rain).",
+    "rumble": "Retumbo grave de 1,2 s: volcán, terremoto, cohete, tormenta, derrumbe. Solo se pide a mano con sfx.",
+    "ding": "Campanilla de acierto: respuesta correcta, ✓, 'ahí está', dato confirmado (mark con ✓).",
+    "buzz_no": "Zumbido suave de error: falso, mito desmentido, ✗, no funciona (mark con ✗).",
+    "crack": "Chasquido seco: hielo, hueso, rotura, estallido, algo que se parte. Solo se pide a mano con sfx.",
+    "clock_tick": "Tic-tac de reloj: tiempo, reloj, péndulo, plazo, cuenta atrás. Solo se pide a mano con sfx."
   }
 }

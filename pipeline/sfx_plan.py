@@ -15,16 +15,30 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sfx_synth import ACCENTS  # noqa: E402
 from common import FPS, TAIL_MS, PipelineError, load_json, norm, run_main, write_json  # noqa: E402
 
 LEAD_F = 2                  # timeline.ts: el beat empieza 2 frames antes de su primera palabra
 STAT_COUNT_F = 24           # StatCallout cuenta en 24 frames (prog(0, 24))
 BAR_FILL_F = (6, 30)        # BarCompare llena la barra i entre 6 + 4i y 30 + 4i
-ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "whoosh_soft", "shockwave": "impact", "burst": "impact", "topple": "impact",
-              "shake": "impact", "hop": "pop", "pulse": "pop", "ring": "pop", "arrow": "pop", "halo": "pop",
-              "appear": "pop", "vanish": "whoosh_soft", "drop": "impact", "flip": "whoosh_soft", "circle": "whoosh_soft", "zigzag": "whoosh_soft",
-              "sink": "whoosh_soft", "blink": "pop", "squash": "pop", "sparkle": "pop", "beam": "pop", "mark": "pop", "ripple": "pop",
-              "punch": "impact", "camshake": "impact"}   # F13: acciones con sonido; el resto, mudas
+ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "swish_up", "shockwave": "impact", "burst": "zap", "topple": "impact",
+              "shake": "impact", "hop": "pop", "pulse": "pop", "ring": "blip", "arrow": "blip", "halo": "shimmer",
+              "appear": "pop", "vanish": "swish_down", "drop": "swish_down", "flip": "whoosh_soft", "circle": "whoosh_soft", "zigzag": "whoosh_soft",
+              "sink": "swish_down", "blink": "blip", "squash": "pop", "sparkle": "shimmer", "beam": "shimmer", "mark": "blip", "ripple": "drip",
+              "punch": "impact", "camshake": "impact",   # F13: acciones con sonido; el resto, mudas
+              "grow": "swish_up", "shrink": "swish_down", "steam": "sizzle", "rain": "drip",           # F15: acentos
+              "chispa": "zap", "llamarada": "sizzle", "acelerar": "heartbeat", "inflamar": "sizzle", "ecuador": "blip", "eje": "blip"}
+MARK_SFX = {"✓": "ding", "✗": "buzz_no", "♥": "heartbeat"}   # el símbolo de `mark` elige el sonido
+STEAM_BUBBLES = "bubbles"                                      # steam con kind "bubbles"
+
+# F15 · Director de acentos: los sonidos nuevos (y los de acciones) suenan solo si no recargan el video.
+# Los de estructura (whoosh de transición, pop de overlay, ticks, riser, impact del dato) no se tocan.
+ACCENT_MIN_GAP_S = 1.2        # entre dos acentos
+ACCENT_NEAR_S = 0.45          # un acento no suena pegado a otro sonido ya aceptado (menos los ticks)
+ACCENT_PER_S = 1 / 3.0        # como mucho un acento cada 3 s de video
+ACCENT_REPEAT_S = 4.0         # el mismo acento no se repite antes de 4 s
+ACCENT_PRIORITY = ("ding", "buzz_no", "heartbeat", "zap", "rumble", "crack", "sizzle", "bubbles", "shimmer", "drip", "clock_tick",
+                   "swish_up", "swish_down", "blip")
 
 
 def beat_frames(story: dict, words: list[dict]):
@@ -53,6 +67,23 @@ def resolve_at(bt: dict, words: list[dict], at) -> int:
     return round(words[idx]["start"] * FPS)
 
 
+def direct_accents(ev: list[dict], dur: float) -> list[dict]:
+    """quita los acentos que recargan el video (reglas ACCENT_*); prioridad: los pedidos a mano, luego ACCENT_PRIORITY"""
+    acc = [e for e in ev if e["type"] in ACCENTS]
+    keep = [e for e in ev if e["type"] not in ACCENTS]
+    rank = lambda e: (0 if "pedido" in e["why"] else 1, ACCENT_PRIORITY.index(e["type"]), e["t"])  # noqa: E731
+    taken, cap = [], max(1, int(dur * ACCENT_PER_S))
+    for e in sorted(acc, key=rank):
+        near = [o for o in keep + taken if o["type"] != "tick" and abs(o["t"] - e["t"]) < ACCENT_NEAR_S]
+        gap = [o for o in taken if abs(o["t"] - e["t"]) < ACCENT_MIN_GAP_S]
+        rep_ = [o for o in taken if o["type"] == e["type"] and abs(o["t"] - e["t"]) < ACCENT_REPEAT_S]
+        if len(taken) >= cap or near or gap or rep_:
+            e["why"] += " (omitido: sin sitio)"
+            continue
+        taken.append(e)
+    return sorted(keep + taken, key=lambda e: e["t"])
+
+
 def plan(story: dict, words: list[dict]) -> dict:
     bts, total = beat_frames(story, words)
     ev = []
@@ -75,13 +106,19 @@ def plan(story: dict, words: list[dict]) -> dict:
                         add("tick", f0 + BAR_FILL_F[0] + 4 * i_bar + k * 5, f"{b['id']}: barra {i_bar + 1}")
         for a in b.get("actions", []):
             if a.get("type") in ACTION_SFX:
-                add(ACTION_SFX[a["type"]], resolve_at(bt, words, a.get("at")), f"{b['id']}: acción {a['type']}")
+                typ = ACTION_SFX[a["type"]]
+                if a["type"] == "mark":
+                    typ = MARK_SFX.get(a.get("text"), typ)
+                elif a["type"] == "steam" and a.get("kind") == "bubbles":
+                    typ = STEAM_BUBBLES
+                add(typ, resolve_at(bt, words, a.get("at")), f"{b['id']}: acción {a['type']}")
         for s in b.get("sfx", []):
             add(s["type"], resolve_at(bt, words, s.get("at")), f"{b['id']}: pedido en story.json")
     ev.sort(key=lambda e: e["t"])
     ev = [e for k, e in enumerate(ev) if "acción" not in e["why"] or not any(o["type"] == e["type"] and 0 <= e["t"] - o["t"] < 0.12 for o in ev[:k])]   # una acción no duplica un sonido que ya suena
     for e in ev:
         e["t"] = max(0.0, e["t"])
+    ev = direct_accents(ev, total / FPS)
     return {"duration_s": round(total / FPS, 3), "frames": total, "events": ev}
 
 

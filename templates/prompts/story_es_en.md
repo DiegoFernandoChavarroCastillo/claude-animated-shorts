@@ -101,8 +101,11 @@ objeto** (`heroes.<id>.actions`, p. ej. `ecuador` o `eje` en `planeta`, `inflama
 4. **Varía:** no repitas la misma acción en beats seguidos ni pongas `lift`, `fly` y `speed` juntas siempre. Combina una que
    mueva el objeto con un marcador que lo explique (p. ej. `fly` + `speed`; `ring` + `halo`).
 5. **Los overlays anclados siguen al objeto** cuando una acción lo mueve (suben con él).
-6. **Suenan:** `fly`, `speed` y `lift` meten un whoosh; `shockwave`, `burst`, `shake` y `topple`, un impacto suave; `ring`,
-   `arrow`, `halo`, `pulse` y `hop`, un pop. No añadas `sfx` a mano para lo mismo.
+6. **Suenan** (F15, `sfx_plan.py`): `fly`, `speed`, `flip`, `circle` y `zigzag`, un whoosh; `lift` y `grow`, un swish que sube;
+   `drop`, `sink`, `shrink` y `vanish`, uno que baja; `shockwave`, `shake`, `topple`, `punch` y `camshake`, un impacto suave;
+   `burst` y `chispa`, un zap eléctrico; `sparkle`, `halo` y `beam`, un shimmer; `ring`, `arrow`, `blink` y `mark`, un blip
+   (`mark ✓` = ding, `✗` = buzz_no, `♥` = latido); `steam` = siseo (burbujeo con `kind: bubbles`); `rain` y `ripple`, una gota;
+   `acelerar` = latido; `hop`, `pulse`, `appear` y `squash`, un pop. No añadas `sfx` a mano para lo mismo.
 7. **Ojo con la cámara:** una acción que saca al objeto del cuadro (`fly` con `dist` grande) deja el plano vacío después. Úsala
    al final de la frase o combínala con un overlay que se quede. Un `ring` en un plano bajo se ve de canto: inclínalo (`tilt` 40–70).
 
@@ -217,7 +220,14 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
    objeto (pantalla, ventanilla, chip), `crossfade` entre ideas, `cut` solo al cambiar de lugar y **como mucho 3 por
    minuto**.
 9. **Acciones** (sección de arriba): al menos la mitad de los beats, ancladas a la palabra que las dispara.
-10. `sfx` solo si hace falta algo extra: los whoosh, pops, ticks, riser e impact se añaden solos (`sfx_plan.py`), también para las acciones.
+10. `sfx` a mano solo para lo que no tiene acción propia, **máximo 3 por video** y solo si refuerza el verbo que dice la voz:
+    `rumble` (volcán, terremoto, cohete, derrumbe), `crack` (hielo, hueso, rotura), `clock_tick` (reloj, tiempo, péndulo),
+    `heartbeat` (pulso sin objeto corazón), `drip`, `bubbles`, `sizzle`, `zap`, `ding`, `buzz_no`. Con `at` = la palabra exacta.
+    Los whoosh, pops, ticks, riser e impact se añaden solos, y también los de las acciones.
+    **El director de acentos** (`sfx_plan.py`) quita lo que recarga: un acento por cada 3 s como máximo, 1,2 s entre acentos, ninguno
+    pegado (0,45 s) a otro sonido, y el mismo no se repite antes de 4 s. Los pedidos a mano tienen prioridad. En el plan queda
+    marcado «omitido» en `08_sfx_plan.json`. Los acentos salen entre 3 y 7 dB más bajos que los de estructura y la mezcla sigue
+    a −14 LUFS: no subas la mezcla ni pidas sonidos de relleno.
 
 Al terminar, la validación es automática: `calculateMetadata` cruza el story.json con el catálogo y falla con el
 motivo exacto (id inexistente, pose que no existe, `at` que no es una palabra del beat…).

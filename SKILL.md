@@ -136,6 +136,10 @@ Entrega:
 - **Idioma configurable** (`es`/`en`), el mismo en voz, subtítulos y overlays.
 - **Fuentes obligatorias:** cada número del video tiene una fuente en `02_SCRIPT.md` (`## Fuentes`).
 - **Sin música** por defecto (`music: false`): voz + SFX, mezcla a −14 LUFS y true peak ≤ −1 dBTP.
+- **Sonido con medida (F15):** 19 SFX (5 de estructura y 14 acentos generales: zap, shimmer, heartbeat, swish_up/down, blip,
+  sizzle, bubbles, drip, rumble, ding, buzz_no, crack, clock_tick). Las acciones eligen su sonido solas; el director de acentos
+  limita a uno por cada 3 s, sin solaparse con otro sonido, para no tapar la voz. `sfx` a mano: máximo 3 por video. Escucha
+  los sonidos con `PY tools/sfx_preview.py <dir>`.
 - **Nada de contenido ajeno:** las referencias de `references_local/` son solo estudio de estilo. No copies sus
   guiones, escenas ni marcas, y no las subas nunca. Nada de logos ni interfaces reales.
 - **QA:** `10_qa.md` debe salir OK. Los rangos (luz, color, cortes, racha estática, frames únicos, loudness,

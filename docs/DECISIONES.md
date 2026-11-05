@@ -532,3 +532,15 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   estructura sube (`mechanism` 7, `item` 9, `versus` 7, `story` 4, `chain` 8) y `qa_basic.py` marca ❌ si el video final no está
   entre 60,1 y 119,9 s. Los ejemplos de `templates/examples/` siguen valiendo como forma, no como duración.
 
+## F15 · Más efectos de sonido
+
+- **D80 (4 nov) · 14 acentos generales.** Se pasa de 5 a 19 SFX sintetizados (`sfx_synth.py`): `zap`, `shimmer`, `heartbeat`,
+  `swish_up`, `swish_down`, `blip`, `sizzle`, `bubbles`, `drip`, `rumble`, `ding`, `buzz_no`, `crack` y `clock_tick`. Son generales
+  (sirven para los 260 temas de `IDEAS_VIDEOS.md`: electricidad, cuerpo, calor, agua, tierra, tiempo…). Cada acción elige su
+  sonido (`ACTION_SFX`, y `mark` según el símbolo), y los que no tienen acción se piden con `sfx` (máx. 3 por video).
+- **D81 · Director de acentos.** Para no sobrecargar: los acentos salen 3–7 dB más bajos que los de estructura, ≤1 por cada 3 s,
+  ≥1,2 s entre sí, ninguno a menos de 0,45 s de otro sonido, sin repetir el mismo en 4 s; los de `sfx` a mano tienen prioridad.
+  Lo omitido queda anotado en `08_sfx_plan.json`. Prueba en `reloj-pulso`: 23 eventos en 64 s, SFX 11,9 dB bajo la voz, −14,0 LUFS
+  y −1,1 dBTP, QA OK. **Falta el oído:** los sonidos son síntesis y no se pudieron escuchar en esta sesión; `tools/sfx_preview.py`
+  genera `todos.wav` para que Diego los escuche y ajuste `REL_DB`.
+
