@@ -53,6 +53,10 @@ def report(d: Path) -> tuple[bool, str]:
     style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4")
     row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, DESIGN_STATIC_MAX))
     ok &= style_ok
+    from qa_rules import rows as rule_rows
+    for name, val, target, good in rule_rows(d):   # F18: reglas de plan y mezcla (gancho, ritmo, bucle, sonido)
+        ok &= good
+        rows.append(f"| {name} | {val} | {target} | {'✅' if good else '❌'} |")
     md = ["# QA", "", f"Resultado: **{'OK' if ok else 'con avisos'}**.", "", "## Básico", "",
           "| medida | valor | objetivo | |", "|---|---|---|---|", *rows, "", "## Estilo y subtítulos", "", *style_md]
     return ok, "\n".join(md)

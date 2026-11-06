@@ -11,13 +11,15 @@ Motores: kokoro (por defecto), piper (respaldo rápido en CPU), chatterbox (opci
 """
 from __future__ import annotations
 
+import hashlib
 import importlib
+import os
 from pathlib import Path
 
 import numpy as np
 from scipy import signal
 
-from common import SR, LEAD_MS, PipelineError, write_json
+from common import ROOT, SR, LEAD_MS, PipelineError, write_json
 from tts.prosody import is_yes_no_question, question_rise
 
 ENGINES = {"kokoro": "tts.kokoro_tts", "piper": "tts.piper_tts", "chatterbox": "tts.chatterbox_tts"}
@@ -50,14 +52,31 @@ def to48k(x: np.ndarray, sr: int) -> np.ndarray:
     return signal.resample_poly(x, SR // g, sr // g)
 
 
+def cache_path(engine_name: str, lang: str, voice: str, speed: float, text: str) -> Path:
+    """caché por frase (F18): la misma frase con el mismo motor, voz y velocidad no se vuelve a sintetizar; así cambiar una
+    línea del guion o las pausas no obliga a repetir toda la voz (Chatterbox tarda ~7–15 min)"""
+    ref = ROOT / "voices_local" / f"{voice}.wav"
+    stamp = f"{ref.stat().st_size}:{int(ref.stat().st_mtime)}" if ref.exists() else "-"
+    key = hashlib.sha1(f"{engine_name}|{lang}|{voice}|{stamp}|{speed:.3f}|{text}".encode("utf-8")).hexdigest()[:20]
+    return Path(os.environ.get("TTS_CACHE", ROOT / "out" / ".tts_cache")) / f"{key}.npz"
+
+
 def synth(text_segments: list[str], lang: str, voice: str, speed: float, pauses_ms: list[int], out_wav: Path,
           engine_name: str = "kokoro", seg_meta: list[dict] | None = None) -> Path:
     from dsp import write_wav
     eng = engine(engine_name)
-    gen = eng.Engine(lang, voice)
+    gen = None                                    # el motor se carga solo si alguna frase no está en la caché
     parts, meta, t = [np.zeros(int(SR * LEAD_MS / 1000))], [], LEAD_MS / 1000
     for i, (txt, pause) in enumerate(zip(text_segments, pauses_ms)):
-        x, sr = gen.say(txt, speed)
+        cp = cache_path(engine_name, lang, voice, speed, txt)
+        if cp.exists():
+            z = np.load(cp)
+            x, sr = z["x"], int(z["sr"])
+        else:
+            gen = gen or eng.Engine(lang, voice)
+            x, sr = gen.say(txt, speed)
+            cp.parent.mkdir(parents=True, exist_ok=True)
+            np.savez_compressed(cp, x=np.asarray(x, dtype=np.float32), sr=sr)
         x = trim(np.asarray(x, dtype=np.float64), sr)
         if is_yes_no_question(txt, lang):
             x = question_rise(x, sr)

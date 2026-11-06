@@ -117,7 +117,7 @@ const mix = (a: Params, b: Params, k: number): Params =>
     lat: a.lat + (b.lat - a.lat) * k, lift: a.lift + (b.lift - a.lift) * k, fov: a.fov + (b.fov - a.fov) * k,
     roll: a.roll + (b.roll - a.roll) * k, focus: [0, 1, 2].map((i) => a.focus[i] + (b.focus[i] - a.focus[i]) * k) as V3 });
 
-const SHOT_MIX_FRAMES = 9;   // F17: el barrido entre sub-planos dura 9 frames (rápido, pero no es un corte duro)
+const SHOT_MIX_FRAMES = 12;  // F17: el barrido entre sub-planos dura 12 frames (rápido, pero no es un corte duro)
 
 /** cámara del beat con sus sub-planos: cada tramo usa su preset desde su inicio; al empezar uno, la cámara barre desde donde estaba */
 const shotParams = (bt: BeatT, f: number): Params => {

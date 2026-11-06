@@ -108,7 +108,7 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   línea roja que rodea la Tierra al decir "ecuador", la persona que sube al decir "despedido", chispas al decir "revienta").
   Mira "Acciones" en `templates/prompts/story_es_en.md` (qué verbo pide qué acción) y las propias de cada objeto con
   `PY tools/catalog_search.py <tema>`. El pipeline falla si hay menos de la mitad de los beats con acciones.
-- Ejemplo completo: `templates/examples/hielo-flota/` (y `hielo-flota-en/`).
+- Ejemplo completo y **vigente** (71 s, con todas las reglas de F16–F18: gancho, ritmo, sub-planos, bucle): `templates/examples/bluetooth-wifi/`. `hielo-flota/` (y `-en`) es el original de 54 s: úsalo solo para ver el formato.
 
 ### 5. Pipeline determinista
 
@@ -164,7 +164,7 @@ Entrega:
 | Prompts (guion es/en, story, verificador) | `templates/prompts/` |
 | Ganchos, estructuras y cierres (catálogo y criterio de elección) | `templates/formulas.json`, `docs/FORMULAS.md`, `tools/recent_formulas.py` |
 | Catálogo cerrado para el story | `templates/catalog.json` (cruzado con el código en `studio/src/explainer/catalog.ts`) |
-| Ejemplos | `templates/examples/` (`hielo-flota` completo; solo guion: `cielo-azul`, `dedos-arrugados` y uno por estructura: `agua-rara-lista`, `agua-contra-hielo`, `dedos-historia`, `atardecer-cadena`) |
+| Ejemplos | `templates/examples/` (`bluetooth-wifi` completo y vigente, `hielo-flota` el original; solo guion: `cielo-azul`, `dedos-arrugados` y uno por estructura: `agua-rara-lista`, `agua-contra-hielo`, `dedos-historia`, `atardecer-cadena`) |
 | Look del video (paleta, subtítulos, cámara, luces) | `studio/src/explainer/style.ts` y `world/grade.ts` |
 | Acciones sincronizadas con la voz | `studio/src/explainer/actions/index.ts` (genéricas y marcadores), `HeroDef.actions` + `HeroInstance.act` (propias de cada objeto) |
 | Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`, y sus segundas tandas `*2.ts`), `overlays/` (`Guides`, `Panels`, `Meters`, `Diagrams`) |

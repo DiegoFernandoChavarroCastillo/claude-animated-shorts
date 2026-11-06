@@ -63,6 +63,11 @@ def main() -> int:
     ok = any("longitud" in e for e in errs)
     fails += not ok
     print(f"{'OK ' if ok else 'MAL'} falla  guion de {st.get('words')} palabras (< {real[0]}): {[e for e in errs if 'longitud' in e]}")
+    cur = read("templates/examples/bluetooth-wifi/02_SCRIPT.md")
+    errs, st = validate(cur)
+    ok = not errs
+    fails += not ok
+    print(f"{'OK ' if ok else 'MAL'} pasa   ejemplo vigente bluetooth-wifi con el rango real ({st.get('words')} palabras, 175–300)" + ("" if ok else f"  {errs}"))
     validate_script.WORDS_MIN, validate_script.WORDS_MAX = 100, 400
     for p in GOOD:
         errs, st = validate(p.read_text(encoding="utf-8"))

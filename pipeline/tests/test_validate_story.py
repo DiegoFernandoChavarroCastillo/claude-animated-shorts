@@ -135,4 +135,32 @@ f17("sub-plano con at que no es palabra falla", "no es una palabra", [S("zzz", "
 f17("4 sub-planos falla", "máximo 3", [S("una", "orbit_slow"), S("dos", "drift"), S("tres", "crane_up"), S("cuatro", "pull_out")])
 f17("bucle con último beat en otro entorno falla", "debe volver al entorno", closing="bucle", last_env="cocina")
 f17("bucle con último beat en el mismo entorno pasa", None, closing="bucle")
+
+
+# F18: insertos (B-roll de datos)
+def with_insert(beat=2, **spec):
+    st, w = timed(tail=0.2)
+    st["beats"][0]["role"] = "hook"
+    st["beats"][beat]["overlays"] = [{"type": "Insert", "at": "tres", "text": "1600 SALTOS", "icon": "bolt", **spec}]
+    return st, w
+
+
+def f18(name, frag, st_w, n=1):
+    global fails
+    st, w = st_w
+    errs = validate(st, w)
+    ok = has(errs, frag) if frag else not any("Insert" in e for e in errs)
+    print("OK " if ok else "MAL", f"F18: {name}", "" if ok else errs)
+    fails += not ok
+
+
+f18("un Insert válido pasa", None, with_insert())
+f18("Insert en el gancho falla", "no va en el gancho", with_insert(beat=0))
+f18("Insert con hold largo falla", "hold", with_insert(hold=120))
+f18("Insert con texto largo falla", "texto del Insert", with_insert(text="UN TEXTO DEMASIADO LARGO PARA UN INSERTO"))
+f18("Insert con icono inexistente falla", "icono", with_insert(icon="no_existe"))
+st, w = timed(tail=0.2)
+for b in st["beats"][1:5]:
+    b["overlays"] = [{"type": "Insert", "at": "tres", "text": "DATO", "icon": "bolt"}]
+f18("4 Insert en el video falla", "máximo 3", (st, w))
 sys.exit(1 if fails else 0)

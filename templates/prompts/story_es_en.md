@@ -240,6 +240,9 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
 Al terminar, la validación es automática: `calculateMetadata` cruza el story.json con el catálogo y falla con el
 motivo exacto (id inexistente, pose que no existe, `at` que no es una palabra del beat…).
 
+Ejemplo vigente de un video de 71 s con gancho, ritmo, sub-planos y cierre en bucle: `templates/examples/bluetooth-wifi/05_story.json` (con su
+`02_SCRIPT.md` y `04_words.json`). El que sigue es el formato original de 54 s.
+
 ## Ejemplo completo (`templates/examples/hielo-flota/05_story.json`)
 ```json
 {

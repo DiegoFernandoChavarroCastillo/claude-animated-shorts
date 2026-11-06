@@ -48,7 +48,8 @@ def main():
     segs = segments(story)
     nwords = sum(len(words_of(b["text"])) for b in story["beats"])
     report = []
-    pauses = [s.pause_after_ms for s in segs]
+    scale = float(meta["voice"].get("pauseScale", 1.0))   # F18: acorta o alarga las pausas sin repetir la voz (caché por frase)
+    pauses = [int(s.pause_after_ms * scale) for s in segs]
     for attempt in range(2):
         synth([s.text for s in segs], meta["lang"], voice, speed, pauses, out, eng,
               [{"beat": s.beat, "role": s.role} for s in segs])

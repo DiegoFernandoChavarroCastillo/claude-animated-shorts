@@ -1,0 +1,1136 @@
+[
+ {
+  "w": "Te",
+  "start": 0.1,
+  "end": 0.36,
+  "beat": "b01"
+ },
+ {
+  "w": "dijeron",
+  "start": 0.36,
+  "end": 0.7,
+  "beat": "b01"
+ },
+ {
+  "w": "que",
+  "start": 0.7,
+  "end": 0.88,
+  "beat": "b01"
+ },
+ {
+  "w": "el",
+  "start": 0.88,
+  "end": 1.08,
+  "beat": "b01"
+ },
+ {
+  "w": "bluetooth",
+  "start": 1.08,
+  "end": 1.44,
+  "beat": "b01"
+ },
+ {
+  "w": "es",
+  "start": 1.44,
+  "end": 1.98,
+  "beat": "b01"
+ },
+ {
+  "w": "un",
+  "start": 1.98,
+  "end": 2.18,
+  "beat": "b01"
+ },
+ {
+  "w": "wifi",
+  "start": 2.18,
+  "end": 2.5,
+  "beat": "b01"
+ },
+ {
+  "w": "pequeño.",
+  "start": 2.5,
+  "end": 3.044,
+  "beat": "b01"
+ },
+ {
+  "w": "Usan",
+  "start": 3.7,
+  "end": 3.9,
+  "beat": "b02"
+ },
+ {
+  "w": "la",
+  "start": 3.9,
+  "end": 4.02,
+  "beat": "b02"
+ },
+ {
+  "w": "misma",
+  "start": 4.02,
+  "end": 4.28,
+  "beat": "b02"
+ },
+ {
+  "w": "banda",
+  "start": 4.28,
+  "end": 4.54,
+  "beat": "b02"
+ },
+ {
+  "w": "de",
+  "start": 4.54,
+  "end": 4.68,
+  "beat": "b02"
+ },
+ {
+  "w": "radio,",
+  "start": 4.68,
+  "end": 4.96,
+  "beat": "b02"
+ },
+ {
+  "w": "pero",
+  "start": 5.06,
+  "end": 5.3,
+  "beat": "b02"
+ },
+ {
+  "w": "trabajan",
+  "start": 5.3,
+  "end": 5.76,
+  "beat": "b02"
+ },
+ {
+  "w": "de",
+  "start": 5.76,
+  "end": 5.88,
+  "beat": "b02"
+ },
+ {
+  "w": "formas",
+  "start": 5.88,
+  "end": 6.16,
+  "beat": "b02"
+ },
+ {
+  "w": "opuestas.",
+  "start": 6.16,
+  "end": 6.966,
+  "beat": "b02"
+ },
+ {
+  "w": "Vamos",
+  "start": 7.32,
+  "end": 7.56,
+  "beat": "b02"
+ },
+ {
+  "w": "con",
+  "start": 7.56,
+  "end": 7.76,
+  "beat": "b02"
+ },
+ {
+  "w": "la",
+  "start": 7.76,
+  "end": 8.0,
+  "beat": "b02"
+ },
+ {
+  "w": "comparación,",
+  "start": 8.0,
+  "end": 8.58,
+  "beat": "b02"
+ },
+ {
+  "w": "punto",
+  "start": 8.86,
+  "end": 8.98,
+  "beat": "b02"
+ },
+ {
+  "w": "por",
+  "start": 8.98,
+  "end": 9.18,
+  "beat": "b02"
+ },
+ {
+  "w": "punto.",
+  "start": 9.18,
+  "end": 9.54,
+  "beat": "b02"
+ },
+ {
+  "w": "Primero,",
+  "start": 10.26,
+  "end": 10.78,
+  "beat": "b03"
+ },
+ {
+  "w": "cómo",
+  "start": 11.04,
+  "end": 11.2,
+  "beat": "b03"
+ },
+ {
+  "w": "se",
+  "start": 11.2,
+  "end": 11.38,
+  "beat": "b03"
+ },
+ {
+  "w": "mueven.",
+  "start": 11.38,
+  "end": 11.72,
+  "beat": "b03"
+ },
+ {
+  "w": "El",
+  "start": 12.14,
+  "end": 12.36,
+  "beat": "b03"
+ },
+ {
+  "w": "bluetooth",
+  "start": 12.36,
+  "end": 12.88,
+  "beat": "b03"
+ },
+ {
+  "w": "salta",
+  "start": 12.88,
+  "end": 13.34,
+  "beat": "b03"
+ },
+ {
+  "w": "entre",
+  "start": 13.34,
+  "end": 13.6,
+  "beat": "b03"
+ },
+ {
+  "w": "setenta",
+  "start": 13.6,
+  "end": 13.934,
+  "beat": "b03"
+ },
+ {
+  "w": "y",
+  "start": 13.934,
+  "end": 13.982,
+  "beat": "b03"
+ },
+ {
+  "w": "nueve",
+  "start": 13.982,
+  "end": 14.22,
+  "beat": "b03"
+ },
+ {
+  "w": "canales,",
+  "start": 14.22,
+  "end": 14.96,
+  "beat": "b03"
+ },
+ {
+  "w": "hasta",
+  "start": 15.22,
+  "end": 15.42,
+  "beat": "b03"
+ },
+ {
+  "w": "mil",
+  "start": 15.42,
+  "end": 15.519,
+  "beat": "b03"
+ },
+ {
+  "w": "seiscientas",
+  "start": 15.519,
+  "end": 15.88,
+  "beat": "b03"
+ },
+ {
+  "w": "veces",
+  "start": 15.88,
+  "end": 16.46,
+  "beat": "b03"
+ },
+ {
+  "w": "por",
+  "start": 16.46,
+  "end": 16.64,
+  "beat": "b03"
+ },
+ {
+  "w": "segundo.",
+  "start": 16.64,
+  "end": 17.06,
+  "beat": "b03"
+ },
+ {
+  "w": "El",
+  "start": 17.56,
+  "end": 17.74,
+  "beat": "b04"
+ },
+ {
+  "w": "wifi,",
+  "start": 17.74,
+  "end": 18.48,
+  "beat": "b04"
+ },
+ {
+  "w": "en",
+  "start": 18.48,
+  "end": 18.7,
+  "beat": "b04"
+ },
+ {
+  "w": "cambio,",
+  "start": 18.7,
+  "end": 18.96,
+  "beat": "b04"
+ },
+ {
+  "w": "se",
+  "start": 19.32,
+  "end": 19.48,
+  "beat": "b04"
+ },
+ {
+  "w": "queda",
+  "start": 19.48,
+  "end": 19.64,
+  "beat": "b04"
+ },
+ {
+  "w": "en",
+  "start": 19.64,
+  "end": 19.78,
+  "beat": "b04"
+ },
+ {
+  "w": "un",
+  "start": 19.78,
+  "end": 19.92,
+  "beat": "b04"
+ },
+ {
+  "w": "carril",
+  "start": 19.92,
+  "end": 20.14,
+  "beat": "b04"
+ },
+ {
+  "w": "fijo.",
+  "start": 20.14,
+  "end": 20.5,
+  "beat": "b04"
+ },
+ {
+  "w": "Su",
+  "start": 20.88,
+  "end": 21.0,
+  "beat": "b04"
+ },
+ {
+  "w": "canal",
+  "start": 21.0,
+  "end": 21.26,
+  "beat": "b04"
+ },
+ {
+  "w": "es",
+  "start": 21.26,
+  "end": 21.46,
+  "beat": "b04"
+ },
+ {
+  "w": "unas",
+  "start": 21.46,
+  "end": 21.636,
+  "beat": "b04"
+ },
+ {
+  "w": "veinte",
+  "start": 21.636,
+  "end": 21.9,
+  "beat": "b04"
+ },
+ {
+  "w": "veces",
+  "start": 21.9,
+  "end": 22.2,
+  "beat": "b04"
+ },
+ {
+  "w": "más",
+  "start": 22.2,
+  "end": 22.46,
+  "beat": "b04"
+ },
+ {
+  "w": "ancho",
+  "start": 22.46,
+  "end": 22.84,
+  "beat": "b04"
+ },
+ {
+  "w": "que",
+  "start": 22.84,
+  "end": 23.12,
+  "beat": "b04"
+ },
+ {
+  "w": "cada",
+  "start": 23.12,
+  "end": 23.36,
+  "beat": "b04"
+ },
+ {
+  "w": "uno",
+  "start": 23.36,
+  "end": 23.5,
+  "beat": "b04"
+ },
+ {
+  "w": "del",
+  "start": 23.5,
+  "end": 23.62,
+  "beat": "b04"
+ },
+ {
+  "w": "bluetooth.",
+  "start": 23.62,
+  "end": 24.1,
+  "beat": "b04"
+ },
+ {
+  "w": "Segundo,",
+  "start": 24.84,
+  "end": 25.36,
+  "beat": "b05"
+ },
+ {
+  "w": "cuánto",
+  "start": 25.46,
+  "end": 25.78,
+  "beat": "b05"
+ },
+ {
+  "w": "cargan.",
+  "start": 25.78,
+  "end": 26.08,
+  "beat": "b05"
+ },
+ {
+  "w": "El",
+  "start": 26.448,
+  "end": 26.639,
+  "beat": "b05"
+ },
+ {
+  "w": "wifi",
+  "start": 26.639,
+  "end": 27.02,
+  "beat": "b05"
+ },
+ {
+  "w": "más",
+  "start": 27.02,
+  "end": 27.22,
+  "beat": "b05"
+ },
+ {
+  "w": "nuevo",
+  "start": 27.22,
+  "end": 27.5,
+  "beat": "b05"
+ },
+ {
+  "w": "alcanza",
+  "start": 27.5,
+  "end": 27.98,
+  "beat": "b05"
+ },
+ {
+  "w": "nueve",
+  "start": 27.98,
+  "end": 28.342,
+  "beat": "b05"
+ },
+ {
+  "w": "coma",
+  "start": 28.342,
+  "end": 28.632,
+  "beat": "b05"
+ },
+ {
+  "w": "seis",
+  "start": 28.632,
+  "end": 28.922,
+  "beat": "b05"
+ },
+ {
+  "w": "gigabits",
+  "start": 28.922,
+  "end": 29.501,
+  "beat": "b05"
+ },
+ {
+  "w": "por",
+  "start": 29.501,
+  "end": 29.719,
+  "beat": "b05"
+ },
+ {
+  "w": "segundo.",
+  "start": 29.719,
+  "end": 30.226,
+  "beat": "b05"
+ },
+ {
+  "w": "El",
+  "start": 30.6,
+  "end": 30.76,
+  "beat": "b05"
+ },
+ {
+  "w": "bluetooth,",
+  "start": 30.76,
+  "end": 31.22,
+  "beat": "b05"
+ },
+ {
+  "w": "apenas",
+  "start": 31.6,
+  "end": 31.94,
+  "beat": "b05"
+ },
+ {
+  "w": "dos",
+  "start": 31.94,
+  "end": 32.205,
+  "beat": "b05"
+ },
+ {
+  "w": "megabits.",
+  "start": 32.205,
+  "end": 32.91,
+  "beat": "b05"
+ },
+ {
+  "w": "Tercero,",
+  "start": 33.56,
+  "end": 34.12,
+  "beat": "b06"
+ },
+ {
+  "w": "cuánta",
+  "start": 34.14,
+  "end": 34.48,
+  "beat": "b06"
+ },
+ {
+  "w": "energía",
+  "start": 34.48,
+  "end": 34.8,
+  "beat": "b06"
+ },
+ {
+  "w": "gastan.",
+  "start": 34.8,
+  "end": 35.209,
+  "beat": "b06"
+ },
+ {
+  "w": "El",
+  "start": 35.5,
+  "end": 35.7,
+  "beat": "b06"
+ },
+ {
+  "w": "bluetooth",
+  "start": 35.7,
+  "end": 36.2,
+  "beat": "b06"
+ },
+ {
+  "w": "envía",
+  "start": 36.2,
+  "end": 36.68,
+  "beat": "b06"
+ },
+ {
+  "w": "poco",
+  "start": 36.68,
+  "end": 37.02,
+  "beat": "b06"
+ },
+ {
+  "w": "y",
+  "start": 37.02,
+  "end": 37.24,
+  "beat": "b06"
+ },
+ {
+  "w": "de",
+  "start": 37.24,
+  "end": 37.42,
+  "beat": "b06"
+ },
+ {
+  "w": "cerca,",
+  "start": 37.42,
+  "end": 37.76,
+  "beat": "b06"
+ },
+ {
+  "w": "así",
+  "start": 38.06,
+  "end": 38.22,
+  "beat": "b06"
+ },
+ {
+  "w": "que",
+  "start": 38.22,
+  "end": 38.46,
+  "beat": "b06"
+ },
+ {
+  "w": "consume",
+  "start": 38.46,
+  "end": 38.72,
+  "beat": "b06"
+ },
+ {
+  "w": "mucho",
+  "start": 38.72,
+  "end": 39.12,
+  "beat": "b06"
+ },
+ {
+  "w": "menos",
+  "start": 39.12,
+  "end": 39.36,
+  "beat": "b06"
+ },
+ {
+  "w": "que",
+  "start": 39.36,
+  "end": 39.5,
+  "beat": "b06"
+ },
+ {
+  "w": "el",
+  "start": 39.5,
+  "end": 39.64,
+  "beat": "b06"
+ },
+ {
+  "w": "wifi.",
+  "start": 39.64,
+  "end": 39.974,
+  "beat": "b06"
+ },
+ {
+  "w": "Y",
+  "start": 40.52,
+  "end": 40.6,
+  "beat": "b07"
+ },
+ {
+  "w": "por",
+  "start": 40.6,
+  "end": 40.82,
+  "beat": "b07"
+ },
+ {
+  "w": "eso",
+  "start": 40.82,
+  "end": 40.98,
+  "beat": "b07"
+ },
+ {
+  "w": "tus",
+  "start": 40.98,
+  "end": 41.16,
+  "beat": "b07"
+ },
+ {
+  "w": "auriculares",
+  "start": 41.16,
+  "end": 41.7,
+  "beat": "b07"
+ },
+ {
+  "w": "piden",
+  "start": 41.7,
+  "end": 42.0,
+  "beat": "b07"
+ },
+ {
+  "w": "bluetooth,",
+  "start": 42.0,
+  "end": 42.5,
+  "beat": "b07"
+ },
+ {
+  "w": "mientras",
+  "start": 43.0,
+  "end": 43.28,
+  "beat": "b07"
+ },
+ {
+  "w": "que",
+  "start": 43.28,
+  "end": 43.5,
+  "beat": "b07"
+ },
+ {
+  "w": "tu",
+  "start": 43.5,
+  "end": 43.64,
+  "beat": "b07"
+ },
+ {
+  "w": "televisión",
+  "start": 43.64,
+  "end": 44.28,
+  "beat": "b07"
+ },
+ {
+  "w": "y",
+  "start": 44.28,
+  "end": 44.46,
+  "beat": "b07"
+ },
+ {
+  "w": "tu",
+  "start": 44.46,
+  "end": 44.74,
+  "beat": "b07"
+ },
+ {
+  "w": "videollamada",
+  "start": 44.74,
+  "end": 45.26,
+  "beat": "b07"
+ },
+ {
+  "w": "piden",
+  "start": 45.26,
+  "end": 45.52,
+  "beat": "b07"
+ },
+ {
+  "w": "wifi.",
+  "start": 45.52,
+  "end": 45.973,
+  "beat": "b07"
+ },
+ {
+  "w": "Y",
+  "start": 46.52,
+  "end": 46.66,
+  "beat": "b08"
+ },
+ {
+  "w": "aquí",
+  "start": 46.66,
+  "end": 46.84,
+  "beat": "b08"
+ },
+ {
+  "w": "se",
+  "start": 46.84,
+  "end": 47.08,
+  "beat": "b08"
+ },
+ {
+  "w": "pone",
+  "start": 47.08,
+  "end": 47.2,
+  "beat": "b08"
+ },
+ {
+  "w": "interesante.",
+  "start": 47.2,
+  "end": 47.9,
+  "beat": "b08"
+ },
+ {
+  "w": "Comparten",
+  "start": 48.34,
+  "end": 48.76,
+  "beat": "b08"
+ },
+ {
+  "w": "la",
+  "start": 48.76,
+  "end": 48.96,
+  "beat": "b08"
+ },
+ {
+  "w": "banda,",
+  "start": 48.96,
+  "end": 49.26,
+  "beat": "b08"
+ },
+ {
+  "w": "así",
+  "start": 49.52,
+  "end": 49.62,
+  "beat": "b08"
+ },
+ {
+  "w": "que",
+  "start": 49.62,
+  "end": 49.72,
+  "beat": "b08"
+ },
+ {
+  "w": "se",
+  "start": 49.72,
+  "end": 49.96,
+  "beat": "b08"
+ },
+ {
+  "w": "estorban.",
+  "start": 49.96,
+  "end": 50.313,
+  "beat": "b08"
+ },
+ {
+  "w": "Entonces",
+  "start": 50.82,
+  "end": 51.28,
+  "beat": "b08"
+ },
+ {
+  "w": "el",
+  "start": 51.5,
+  "end": 51.54,
+  "beat": "b08"
+ },
+ {
+  "w": "bluetooth",
+  "start": 51.52,
+  "end": 52.04,
+  "beat": "b08"
+ },
+ {
+  "w": "deja",
+  "start": 52.04,
+  "end": 52.7,
+  "beat": "b08"
+ },
+ {
+  "w": "de",
+  "start": 52.7,
+  "end": 52.88,
+  "beat": "b08"
+ },
+ {
+  "w": "saltar",
+  "start": 52.88,
+  "end": 53.2,
+  "beat": "b08"
+ },
+ {
+  "w": "a",
+  "start": 53.2,
+  "end": 53.3,
+  "beat": "b08"
+ },
+ {
+  "w": "los",
+  "start": 53.3,
+  "end": 53.48,
+  "beat": "b08"
+ },
+ {
+  "w": "canales",
+  "start": 53.48,
+  "end": 53.82,
+  "beat": "b08"
+ },
+ {
+  "w": "ocupados",
+  "start": 53.82,
+  "end": 54.36,
+  "beat": "b08"
+ },
+ {
+  "w": "por",
+  "start": 54.36,
+  "end": 54.54,
+  "beat": "b08"
+ },
+ {
+  "w": "el",
+  "start": 54.54,
+  "end": 54.7,
+  "beat": "b08"
+ },
+ {
+  "w": "wifi,",
+  "start": 54.7,
+  "end": 55.4,
+  "beat": "b08"
+ },
+ {
+  "w": "como",
+  "start": 55.4,
+  "end": 55.78,
+  "beat": "b08"
+ },
+ {
+  "w": "quien",
+  "start": 55.78,
+  "end": 56.04,
+  "beat": "b08"
+ },
+ {
+  "w": "cambia",
+  "start": 56.04,
+  "end": 56.34,
+  "beat": "b08"
+ },
+ {
+  "w": "de",
+  "start": 56.34,
+  "end": 56.52,
+  "beat": "b08"
+ },
+ {
+  "w": "carril",
+  "start": 56.52,
+  "end": 56.78,
+  "beat": "b08"
+ },
+ {
+  "w": "en",
+  "start": 56.78,
+  "end": 56.92,
+  "beat": "b08"
+ },
+ {
+  "w": "la",
+  "start": 56.92,
+  "end": 57.1,
+  "beat": "b08"
+ },
+ {
+  "w": "autopista.",
+  "start": 57.1,
+  "end": 57.589,
+  "beat": "b08"
+ },
+ {
+  "w": "No",
+  "start": 58.48,
+  "end": 58.62,
+  "beat": "b09"
+ },
+ {
+  "w": "compiten:",
+  "start": 58.62,
+  "end": 59.28,
+  "beat": "b09"
+ },
+ {
+  "w": "el",
+  "start": 59.76,
+  "end": 59.92,
+  "beat": "b09"
+ },
+ {
+  "w": "wifi",
+  "start": 59.92,
+  "end": 60.24,
+  "beat": "b09"
+ },
+ {
+  "w": "es",
+  "start": 60.24,
+  "end": 60.4,
+  "beat": "b09"
+ },
+ {
+  "w": "una",
+  "start": 60.4,
+  "end": 60.6,
+  "beat": "b09"
+ },
+ {
+  "w": "autopista",
+  "start": 60.6,
+  "end": 61.04,
+  "beat": "b09"
+ },
+ {
+  "w": "para",
+  "start": 61.04,
+  "end": 61.28,
+  "beat": "b09"
+ },
+ {
+  "w": "mucha",
+  "start": 61.28,
+  "end": 61.5,
+  "beat": "b09"
+ },
+ {
+  "w": "carga,",
+  "start": 61.5,
+  "end": 61.82,
+  "beat": "b09"
+ },
+ {
+  "w": "y",
+  "start": 62.38,
+  "end": 62.46,
+  "beat": "b09"
+ },
+ {
+  "w": "el",
+  "start": 62.46,
+  "end": 62.54,
+  "beat": "b09"
+ },
+ {
+  "w": "bluetooth,",
+  "start": 62.54,
+  "end": 62.94,
+  "beat": "b09"
+ },
+ {
+  "w": "un",
+  "start": 63.36,
+  "end": 63.48,
+  "beat": "b09"
+ },
+ {
+  "w": "mensajero",
+  "start": 63.48,
+  "end": 63.88,
+  "beat": "b09"
+ },
+ {
+  "w": "ágil",
+  "start": 63.88,
+  "end": 64.18,
+  "beat": "b09"
+ },
+ {
+  "w": "que",
+  "start": 64.18,
+  "end": 64.42,
+  "beat": "b09"
+ },
+ {
+  "w": "esquiva",
+  "start": 64.42,
+  "end": 64.64,
+  "beat": "b09"
+ },
+ {
+  "w": "el",
+  "start": 64.64,
+  "end": 64.82,
+  "beat": "b09"
+ },
+ {
+  "w": "tráfico.",
+  "start": 64.82,
+  "end": 65.232,
+  "beat": "b09"
+ },
+ {
+  "w": "Así",
+  "start": 65.84,
+  "end": 66.0,
+  "beat": "b10"
+ },
+ {
+  "w": "que,",
+  "start": 66.0,
+  "end": 66.62,
+  "beat": "b10"
+ },
+ {
+  "w": "cada",
+  "start": 66.94,
+  "end": 66.98,
+  "beat": "b10"
+ },
+ {
+  "w": "vez",
+  "start": 66.98,
+  "end": 67.16,
+  "beat": "b10"
+ },
+ {
+  "w": "que",
+  "start": 67.16,
+  "end": 67.4,
+  "beat": "b10"
+ },
+ {
+  "w": "conectes",
+  "start": 67.4,
+  "end": 67.74,
+  "beat": "b10"
+ },
+ {
+  "w": "tu",
+  "start": 67.74,
+  "end": 67.9,
+  "beat": "b10"
+ },
+ {
+  "w": "bluetooth,",
+  "start": 67.9,
+  "end": 68.4,
+  "beat": "b10"
+ },
+ {
+  "w": "recuerda",
+  "start": 69.46,
+  "end": 69.64,
+  "beat": "b10"
+ },
+ {
+  "w": "lo",
+  "start": 69.64,
+  "end": 69.76,
+  "beat": "b10"
+ },
+ {
+  "w": "que",
+  "start": 69.76,
+  "end": 69.96,
+  "beat": "b10"
+ },
+ {
+  "w": "casi",
+  "start": 69.96,
+  "end": 70.2,
+  "beat": "b10"
+ },
+ {
+  "w": "todos",
+  "start": 70.2,
+  "end": 70.42,
+  "beat": "b10"
+ },
+ {
+  "w": "creen:",
+  "start": 70.42,
+  "end": 70.8,
+  "beat": "b10"
+ }
+]

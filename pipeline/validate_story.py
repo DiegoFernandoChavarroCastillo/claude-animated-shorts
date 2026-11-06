@@ -31,6 +31,10 @@ HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer be
 MAX_EVENT_GAP_S = 3.5    # tiempo máximo sin corte, acción u overlay
 LOOP_TAIL_MAX_S = 0.3    # con cierre `bucle`, la cola tras la última palabra (meta.tailS)
 FPS = 30
+FAREWELL_ES = r"gracias|adi[oó]s|hasta (luego|pronto|la pr[oó]xima)|nos vemos|suscr[ií]b|s[ií]gueme|comenta|dale (like|me gusta)|d[eé]jame|deja tu|hasta aqu[ií]"
+MAX_INSERTS = 3          # insertos (cortes de datos de ~1 s) por video (F18)
+MAX_INSERT_HOLD = 60     # frames que dura un inserto como máximo (2 s)
+MAX_INSERT_TEXT = 18     # letras del texto de un inserto
 MAX_SHOTS = 3            # sub-planos por beat (F17)
 MIN_SHOT_GAP_S = 1.5     # separación mínima entre dos cambios de plano dentro de un beat
 
@@ -129,6 +133,15 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: {o['type']} con at '{o.get('at')}' que no es una palabra del beat")
             if "anchor" in o and (not d["anchored"] or (h and o["anchor"] not in h["anchors"])):
                 errs.append(f"{bid}: {o['type']} con anchor '{o['anchor']}' no válido")
+            if o.get("type") == "Insert":
+                if b.get("role") == "hook":
+                    errs.append(f"{bid}: un Insert no va en el gancho (tapa el primer segundo)")
+                if not isinstance(o.get("hold", 36), int) or o.get("hold", 36) > MAX_INSERT_HOLD or o.get("hold", 36) < 15:
+                    errs.append(f"{bid}: Insert con hold {o.get('hold')} (entre 15 y {MAX_INSERT_HOLD} frames)")
+                if len(str(o.get("text", ""))) > MAX_INSERT_TEXT or not o.get("text"):
+                    errs.append(f"{bid}: el texto del Insert debe tener entre 1 y {MAX_INSERT_TEXT} letras")
+                if o.get("icon", "star") not in cat["icons"]:
+                    errs.append(f"{bid}: Insert con icono '{o.get('icon')}' que no existe")
             if o.get("type") == "FlowArrow" and (not o.get("to") or (h and o["to"] not in h["anchors"])):
                 errs.append(f"{bid}: FlowArrow necesita 'to', un ancla de {hero.get('asset')}")
         if numeric and not b.get("sources"):
@@ -165,6 +178,9 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
             if not resolves(x.get("at"), text):
                 errs.append(f"{bid}: sfx con at '{x.get('at')}' que no es una palabra del beat")
+    n_ins = sum(1 for b in beats for o in b.get("overlays", []) if o.get("type") == "Insert")
+    if n_ins > MAX_INSERTS:
+        errs.append(f"{n_ins} Insert en el video (máximo {MAX_INSERTS}): son cortes, no decoración")
     # variedad visual: un mismo protagonista no puede ocupar casi todo el video
     assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in beats]
     run = best = 1

@@ -193,7 +193,9 @@ class Run:
 
         def run():
             self.sh([PY, "pipeline/sfx_plan.py", "--story", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")), "--out", str(plan)], tag="sfx")
-            return self.sh([PY, "pipeline/mix.py", "--voice", str(self.p("03_voice.wav")), "--plan", str(plan), "--out", str(out)], tag="mix").splitlines()[-1]
+            meta = load_json(self.p("05_story.json"))["meta"]
+            music = ["--music", meta.get("musicMood", "tech")] if meta.get("music") else []
+            return self.sh([PY, "pipeline/mix.py", "--voice", str(self.p("03_voice.wav")), "--plan", str(plan), "--out", str(out), *music], tag="mix").splitlines()[-1]
         self.stage("mix", out, [self.p("03_voice.wav"), self.p("05_story.json"), self.p("04_words.json")], run)
 
     def mux(self):
@@ -216,6 +218,18 @@ class Run:
             return "QA " + ("OK" if ok else "con avisos")
         self.stage("qa", out, [self.p("09_final.mp4"), self.p("07_video.mp4"), self.p("04_words.json")], run)
 
+    def qa_gate(self):
+        """un video solo se da por terminado si pasa todo el QA (F18); --allow-qa-warnings lo deja seguir con avisos"""
+        md = self.p("10_qa.md").read_text(encoding="utf-8")
+        bad = [ln.strip() for ln in md.splitlines() if ln.startswith("|") and "❌" in ln]
+        if not bad and "con avisos" not in md.split("\n", 3)[2]:
+            return
+        msg = "el QA no pasa (10_qa.md):\n" + "\n".join(bad[:12])
+        if self.a.allow_qa_warnings:
+            print("AVISO: " + msg)
+            return
+        raise PipelineError(msg + "\nCorrige el plan o la mezcla y repite, o usa --allow-qa-warnings y dilo en la entrega.")
+
     def publish(self):
         out = self.p("11_publish.md")
         self.stage("publish", out, [self.p("09_final.mp4"), self.p("02_SCRIPT.md"), self.p("05_story.json")],
@@ -226,6 +240,8 @@ class Run:
                "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa, "publish": self.publish}
         for s in stages:
             fns[s]()
+            if s == "qa":
+                self.qa_gate()
             if s == "validate-script" and self.a.review:
                 print("\n--review: guion validado. Revísalo y relanza sin --review para seguir.")
                 return
@@ -255,6 +271,7 @@ def main():
     ap.add_argument("--id", required=True)
     ap.add_argument("--from", dest="from_dir", default=None, help="init: carpeta con 02_SCRIPT.md y 05_story.json")
     ap.add_argument("--force", default=None, help="etapas a rehacer separadas por comas, o 'all'")
+    ap.add_argument("--allow-qa-warnings", action="store_true", help="no parar si el QA final tiene avisos (hay que decirlo en la entrega)")
     ap.add_argument("--review", action="store_true", help="parar tras validar el guion")
     ap.add_argument("--scale", type=float, default=1.0, help="escala del render final (1 = 1080x1920)")
     ap.add_argument("--stills-scale", type=float, default=0.5)

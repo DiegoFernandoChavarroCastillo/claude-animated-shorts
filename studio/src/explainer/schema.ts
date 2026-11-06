@@ -55,8 +55,10 @@ export const MetaSchema = z.object({
   fps: z.literal(30).default(30),
   width: z.number().int().default(1080),
   height: z.number().int().default(1920),
-  voice: z.object({ engine: z.string(), voice: z.string(), speed: z.number().default(1) }),
+  voice: z.object({ engine: z.string(), voice: z.string(), speed: z.number().default(1), pauseScale: z.number().min(0.5).max(1.5).optional() }),
   music: z.boolean().default(false),
+  /** cama sonora sintetizada muy baja bajo la voz (solo con music: true); por defecto tech */
+  musicMood: z.enum(["tech", "calm", "warm"]).optional(),
   captionEmphasis: z.enum(["box", "accent"]).default("box"),
   /** cola tras la última palabra (s). 1.0 por defecto; 0.2 con cierre `bucle` para que el final empalme con el inicio */
   tailS: z.number().min(0.1).max(2).default(1.0),

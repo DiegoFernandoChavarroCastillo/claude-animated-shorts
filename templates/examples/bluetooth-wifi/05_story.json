@@ -1,0 +1,596 @@
+{
+  "meta": {
+    "id": "bluetooth-wifi",
+    "lang": "es",
+    "title": "Bluetooth frente al wifi",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "voice": {
+      "engine": "chatterbox",
+      "voice": "diego",
+      "speed": 1.0
+    },
+    "music": false,
+    "captionEmphasis": "box",
+    "tailS": 0.2
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "role": "hook",
+      "text": "Te dijeron que el bluetooth es un wifi pequeño.",
+      "keyword": "bluetooth",
+      "scene": {
+        "env": "interior_neutro",
+        "light": "dorado",
+        "hero": {
+          "kind": "primitive",
+          "asset": "wifi_router",
+          "pose": "senal"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.5
+        },
+        "dof": 12
+      },
+      "overlays": [
+        {
+          "type": "BigWord",
+          "at": "dijeron",
+          "word": "MITO",
+          "slot": "center"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "punch",
+          "at": "Te",
+          "amount": 0.14
+        },
+        {
+          "type": "shrink",
+          "at": "pequeño.",
+          "to": 0.7
+        }
+      ]
+    },
+    {
+      "id": "b02",
+      "role": "tension",
+      "text": "Usan la misma banda de radio, pero trabajan de formas opuestas. Vamos con la comparación, punto por punto.",
+      "keyword": "banda",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "espectro_canales",
+          "pose": "ambos"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": 40
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "banda",
+          "text": "MISMA BANDA: 2,4 GHZ",
+          "color": "ui.cyan",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "halo",
+          "at": "misma",
+          "anchor": "banda",
+          "color": "ui.cyan"
+        },
+        {
+          "type": "pulse",
+          "at": "opuestas.",
+          "scale": 1.12
+        },
+        {
+          "type": "sparkle",
+          "at": "comparación,",
+          "color": "ui.cyan"
+        }
+      ],
+      "sources": [
+        "https://telecomtrainer.com/frequency-of-wifi-and-bluetooth",
+        "https://www.savemyexams.co.uk/igcse/ict/cie/23/revision-notes/2-networks/2-1-networks/wi-fi-and-bluetooth/"
+      ],
+      "shots": [
+        {
+          "at": "Vamos",
+          "camera": {
+            "preset": "push_in",
+            "rate": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "b03",
+      "role": "versus",
+      "text": "Primero, cómo se mueven. El bluetooth salta entre setenta y nueve canales, hasta mil seiscientas veces por segundo.",
+      "keyword": "salta",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "espectro_canales",
+          "pose": "bluetooth"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.6
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "StatCallout",
+          "at": "mil",
+          "value": 1600,
+          "label": "SALTOS POR SEGUNDO",
+          "slot": "upper"
+        },
+        {
+          "type": "Pill",
+          "at": "setenta",
+          "text": "79 CANALES",
+          "color": "ui.cyan",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "pulse",
+          "at": "salta",
+          "scale": 1.1
+        },
+        {
+          "type": "sparkle",
+          "at": "seiscientas",
+          "color": "ui.cyan"
+        }
+      ],
+      "sources": [
+        "https://www.telecomtrainer.com/frequency-of-bluetooth-and-wifi/",
+        "https://dejazzer.com/coen4720_old/lecture_notes/lec08_bluetooth.pdf",
+        "https://rfessentials.com/resources/rf-glossary/frequency-hopping/"
+      ],
+      "shots": [
+        {
+          "at": "hasta",
+          "camera": {
+            "preset": "orbit_slow",
+            "deg": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "b04",
+      "role": "versus",
+      "text": "El wifi, en cambio, se queda en un carril fijo. Su canal es unas veinte veces más ancho que cada uno del bluetooth.",
+      "keyword": "ancho",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "espectro_canales",
+          "pose": "wifi"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": -38
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "BarCompare",
+          "at": "veinte",
+          "items": [
+            {
+              "label": "BLUETOOTH",
+              "value": 1,
+              "color": "ui.cyan"
+            },
+            {
+              "label": "WIFI",
+              "value": 20,
+              "color": "warm.gold"
+            }
+          ],
+          "unit": " MHz",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "halo",
+          "at": "fijo.",
+          "anchor": "wifi",
+          "color": "warm.gold"
+        },
+        {
+          "type": "pulse",
+          "at": "ancho",
+          "scale": 1.1
+        }
+      ],
+      "sources": [
+        "https://notes.networklessons.com/wireless-wi-fi-24ghz-frequency-band-and-channels",
+        "https://www.purple.ai/guides/how-to-fix-wifi-channel-overlap"
+      ]
+    },
+    {
+      "id": "b05",
+      "role": "versus",
+      "text": "Segundo, cuánto cargan. El wifi más nuevo alcanza nueve coma seis gigabits por segundo. El bluetooth, apenas dos megabits.",
+      "keyword": "gigabits",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "wifi_router",
+          "pose": "senal"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.45
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "VersusCard",
+          "at": "nueve",
+          "a": {
+            "title": "WIFI",
+            "sub": "9,6 Gb/s",
+            "icon": "wave",
+            "color": "warm.gold"
+          },
+          "b": {
+            "title": "BLUETOOTH",
+            "sub": "2 Mb/s",
+            "icon": "signal",
+            "color": "ui.cyan"
+          },
+          "slot": "lower"
+        }
+      ],
+      "transition": "cut",
+      "actions": [
+        {
+          "type": "speed",
+          "at": "alcanza",
+          "dir": "right",
+          "color": "warm.gold"
+        },
+        {
+          "type": "hop",
+          "at": "apenas",
+          "height": 0.25,
+          "count": 1
+        },
+        {
+          "type": "pulse",
+          "at": "bluetooth,",
+          "scale": 1.1
+        }
+      ],
+      "sources": [
+        "https://www.delock.com/infothek/Wifi_Bluetooth/wifi-bluetooth_e.html",
+        "https://seller.alibaba.com/blogs/2026/southeast-asia/consumer-electronics/bluetooth-5-vs-wifi-6-connectivity-guide-alibaba-b2b"
+      ],
+      "shots": [
+        {
+          "at": "bluetooth,",
+          "camera": {
+            "preset": "orbit_slow",
+            "deg": -35
+          }
+        }
+      ]
+    },
+    {
+      "id": "b06",
+      "role": "versus",
+      "text": "Tercero, cuánta energía gastan. El bluetooth envía poco y de cerca, así que consume mucho menos que el wifi.",
+      "keyword": "energía",
+      "scene": {
+        "env": "interior_neutro",
+        "light": "dorado",
+        "hero": {
+          "kind": "primitive",
+          "asset": "telefono",
+          "pose": "senal"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": 32
+        },
+        "dof": 11
+      },
+      "overlays": [
+        {
+          "type": "Callout3D",
+          "at": "bluetooth",
+          "anchor": "screen",
+          "text": "BLUETOOTH",
+          "side": "right"
+        },
+        {
+          "type": "Pill",
+          "at": "menos",
+          "text": "MENOS ENERGÍA",
+          "color": "ui.green",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "halo",
+          "at": "poco",
+          "anchor": "screen",
+          "color": "ui.green"
+        },
+        {
+          "type": "pulse",
+          "at": "cerca,",
+          "scale": 1.1
+        }
+      ],
+      "sources": [
+        "https://seller.alibaba.com/blogs/2026/southeast-asia/consumer-electronics/bluetooth-5-vs-wifi-6-connectivity-guide-alibaba-b2b",
+        "https://blog.usro.net/2024/10/bluetooth-vs-wi-fi/"
+      ],
+      "shots": [
+        {
+          "at": "así",
+          "camera": {
+            "preset": "crane_up"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b07",
+      "role": "versus",
+      "text": "Y por eso tus auriculares piden bluetooth, mientras que tu televisión y tu videollamada piden wifi.",
+      "keyword": "auriculares",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "wifi_router",
+          "pose": "senal"
+        },
+        "camera": {
+          "preset": "dolly_side"
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "VersusCard",
+          "at": "auriculares",
+          "a": {
+            "title": "BLUETOOTH",
+            "sub": "auriculares",
+            "icon": "sound",
+            "color": "ui.cyan"
+          },
+          "b": {
+            "title": "WIFI",
+            "sub": "tele y videollamada",
+            "icon": "globe",
+            "color": "warm.gold"
+          },
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "ripple",
+          "at": "televisión",
+          "anchor": "base",
+          "color": "warm.gold"
+        }
+      ]
+    },
+    {
+      "id": "b08",
+      "role": "layer2",
+      "text": "Y aquí se pone interesante. Comparten la banda, así que se estorban. Entonces el bluetooth deja de saltar a los canales ocupados por el wifi, como quien cambia de carril en la autopista.",
+      "keyword": "estorban",
+      "scene": {
+        "env": "tech_oscuro",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "espectro_canales",
+          "pose": "ambos"
+        },
+        "camera": {
+          "preset": "orbit_slow",
+          "deg": 45
+        },
+        "dof": 9
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "Comparten",
+          "text": "COMPARTEN BANDA",
+          "color": "ui.cyan",
+          "slot": "lower"
+        },
+        {
+          "type": "Callout3D",
+          "at": "ocupados",
+          "anchor": "wifi",
+          "text": "OCUPADO",
+          "side": "left"
+        }
+      ],
+      "transition": "crossfade",
+      "actions": [
+        {
+          "type": "mark",
+          "at": "estorban.",
+          "text": "!",
+          "anchor": "top"
+        },
+        {
+          "type": "esquivar",
+          "at": "deja"
+        },
+        {
+          "type": "sparkle",
+          "at": "carril",
+          "color": "ui.cyan"
+        }
+      ],
+      "sources": [
+        "https://scdn.rohde-schwarz.com/ur/pws/dl_downloads/dl_application/application_notes/1c108/1C108_0e_Bluetooth_BR_EDR_AFH.pdf",
+        "https://ch.mathworks.com/help/bluetooth/ug/end-to-end-bluetooth-br-edr-phy-simulation-with-wlan-interference-and-adaptive-frequency-hopping.html"
+      ],
+      "shots": [
+        {
+          "at": "Entonces",
+          "camera": {
+            "preset": "push_in",
+            "rate": 0.5
+          }
+        },
+        {
+          "at": "como",
+          "camera": {
+            "preset": "crane_up"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b09",
+      "role": "twist",
+      "text": "No compiten: el wifi es una autopista para mucha carga, y el bluetooth, un mensajero ágil que esquiva el tráfico.",
+      "keyword": "autopista",
+      "scene": {
+        "env": "vista_aerea",
+        "light": "tech",
+        "hero": {
+          "kind": "primitive",
+          "asset": "antena",
+          "pose": "torre"
+        },
+        "camera": {
+          "preset": "crane_up"
+        },
+        "dof": 8
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "autopista",
+          "text": "WIFI: AUTOPISTA",
+          "color": "warm.gold",
+          "slot": "upper"
+        },
+        {
+          "type": "Pill",
+          "at": "mensajero,",
+          "text": "BLUETOOTH: MENSAJERO",
+          "color": "ui.cyan",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "speed",
+          "at": "autopista",
+          "dir": "right",
+          "color": "warm.gold"
+        },
+        {
+          "type": "hop",
+          "at": "ágil",
+          "height": 0.3,
+          "count": 2
+        },
+        {
+          "type": "ripple",
+          "at": "esquiva",
+          "anchor": "base",
+          "color": "ui.cyan"
+        }
+      ]
+    },
+    {
+      "id": "b10",
+      "role": "cta",
+      "text": "Así que, cada vez que conectes tu bluetooth, recuerda lo que casi todos creen:",
+      "keyword": "creen",
+      "scene": {
+        "env": "interior_neutro",
+        "light": "dorado",
+        "hero": {
+          "kind": "primitive",
+          "asset": "wifi_router",
+          "pose": "senal"
+        },
+        "camera": {
+          "preset": "push_in",
+          "rate": 0.5
+        },
+        "dof": 12
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "recuerda",
+          "text": "¿UN WIFI PEQUEÑO?",
+          "color": "ui.cyan",
+          "slot": "lower"
+        }
+      ],
+      "transition": "glide",
+      "actions": [
+        {
+          "type": "mark",
+          "at": "creen:",
+          "text": "?",
+          "anchor": "top"
+        },
+        {
+          "type": "pulse",
+          "at": "conectes",
+          "scale": 1.1
+        }
+      ]
+    }
+  ]
+}

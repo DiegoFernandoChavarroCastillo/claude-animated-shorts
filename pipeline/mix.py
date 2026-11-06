@@ -28,6 +28,7 @@ from voice_fx import treat  # noqa: E402
 TARGET_LUFS = -14.0
 CEIL_DBTP = -1.2
 SFX_BELOW_VOICE_DB = 10.0
+BED_BELOW_VOICE_DB = 24.0   # F18: la cama (opcional) va 24 dB por debajo de la voz y se agacha 6 dB más mientras habla
 
 
 def limiter(x, ceil_db=CEIL_DBTP, look=0.003, rel=0.08):
@@ -75,6 +76,7 @@ def main():
     ap.add_argument("--voice", required=True, type=Path)
     ap.add_argument("--plan", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--music", choices=["tech", "calm", "warm"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
     a = ap.parse_args()
     if not a.voice.exists():
         raise PipelineError(f"falta la voz: {a.voice}")
@@ -110,6 +112,14 @@ def main():
         if j > i:
             sfx[:, i:j] += x[: j - i]
     s_lufs = lufs(sfx)
+    bed_lufs = None
+    if a.music:
+        from bed_synth import bed, duck_curve
+        b = bed(plan["duration_s"], a.music)
+        b = b * duck_curve(voice[0]) * dbg(v_lufs - BED_BELOW_VOICE_DB - lufs(np.vstack([b, b])))
+        sfx = sfx + np.vstack([b, b])[:, :n]
+        bed_lufs = lufs(np.vstack([b, b]))
+        s_lufs = lufs(sfx)
     mix0 = voice + sfx
     G = TARGET_LUFS - lufs(mix0)
     for _ in range(6):
@@ -123,6 +133,7 @@ def main():
     rep = {"voice_lufs_pre": round(v_lufs, 2), "sfx_lufs_pre": round(s_lufs, 2), "master_gain_db": round(G, 2),
            "max_gain_reduction_db": round(float(-20 * np.log10(g3.min())), 2),
            "own": {"I_lufs": round(lufs(y), 2), "true_peak_dbtp": round(true_peak(y), 2)},
+           "bed_lufs_pre": None if bed_lufs is None else round(bed_lufs, 2), "bed_below_voice_db": None if bed_lufs is None else round(v_lufs - bed_lufs, 1),
            "ffmpeg_ebur128": ebur128(a.out), "duration_s": plan["duration_s"], "events": len(plan["events"])}
     write_json(Path(str(a.out) + ".report.json"), rep)
     f = rep["ffmpeg_ebur128"]
