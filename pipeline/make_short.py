@@ -36,6 +36,22 @@ VOICE_DEFAULT = {"es": ("chatterbox", "diego"), "en": ("chatterbox", "default")}
 STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa", "publish"]
 
 
+def action_frames(story: dict, words: list[dict], bts: list[dict], after_s: float = 0.9) -> list[int]:
+    """Un frame por beat, `after_s` s después de la última acción del beat, para ver el estado activado."""
+    import re
+    norm = lambda t: re.sub(r"[^\wáéíóúüñ]", "", t.lower())
+    out = []
+    for beat, bt in zip(story["beats"], bts):
+        acts = [a for a in beat.get("actions", []) if a.get("at")]
+        if not acts:
+            continue
+        ws = [w for w in words if w["beat"] == beat["id"]]
+        hits = [w for a in acts for w in ws if norm(w["w"]) == norm(str(a["at"]))]
+        if hits:
+            out.append(min(int((max(h["start"] for h in hits) + after_s) * 30), bt["b"] - 2))
+    return out
+
+
 class Run:
     def __init__(self, oid: str, a):
         self.id, self.a = oid, a
@@ -174,12 +190,14 @@ class Run:
         def run():
             from sfx_plan import beat_frames
             bts, _ = beat_frames(load_json(self.p("05_story.json")), load_json(self.p("04_words.json")))
-            frames = ",".join(str((b["a"] + b["b"]) // 2) for b in bts)
+            fl = [(b["a"] + b["b"]) // 2 for b in bts]
+            fl += action_frames(load_json(self.p("05_story.json")), load_json(self.p("04_words.json")), bts)   # F19: cómo se ve cada acción ya activada
+            frames = ",".join(str(f) for f in sorted(set(fl)))
             shutil.rmtree(out, ignore_errors=True)
             self.sh(["node", "scripts/job.mjs", "stills", BUNDLE, str(self.props()), str(out), frames, "--scale", str(self.a.stills_scale)],
                     cwd=STUDIO, tag="stills")
             stamp.write_text(frames, encoding="utf-8")
-            return f"{len(bts)} stills (frames {frames})"
+            return f"{len(frames.split(','))} stills (frames {frames})"
         self.stage("stills", stamp, [self.p("05_story.json"), self.p("04_words.json")], run)
 
     def render(self):

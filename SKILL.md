@@ -83,20 +83,30 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 - Solo se pueden usar los ids de `templates/catalog.json` (entornos, luces, objetos y poses, cámaras, transiciones,
   overlays, iconos, SFX); cada entrada dice cuándo usarla ("when"). El catálogo es grande: primero lista los conceptos
   visuales del guion y búscalos con `PY tools/catalog_search.py <palabras>` (ver `templates/prompts/story_es_en.md`).
-- **Huecos:** si un concepto central no tiene objeto, usa uno genérico o el más cercano, no `persona` repetida, y apúntalo
-  en `out/<id>/05_gaps.md`. El validador falla con el mismo objeto en más de 3 beats seguidos o en más del 65 %.
+- **Huecos (F19):** si un concepto central no tiene objeto, **créalo** (ver «Objeto que falta»). Prohibido sustituirlo por uno de otra cosa
+  (un teléfono por un portátil, un circuito por «el show»): el espectador ve lo que oye. Solo lo secundario puede ir a `05_gaps.md`. El validador
+  falla con el mismo objeto en más de 3 beats seguidos o en más del 65 %.
 - Un beat por línea del guion, con el `text` **idéntico** (los subtítulos y la voz salen de ahí).
 - Cambia de entorno solo al cambiar de lugar o de idea. Cada `mechanism` lleva su objeto protagonista y al menos un
   overlay de dato.
 - Varía los encuadres: dos beats seguidos con el mismo objeto no deben repetir preset de cámara.
-- **Objeto que falta (F14):** si un concepto central no tiene objeto en el catálogo (puntuación 0 en `catalog_search.py`) y
-  se puede hacer sencillo, **créalo en este video**: hasta **2 prefabs por video** en `studio/src/explainer/heroes/primitive/custom.ts`
-  (~50–70 líneas cada uno, con acciones propias si el guion lo pide), regístralos en `heroes/index.ts` y en el catálogo con
-  `PY tools/add_heroes.py <tags.json>`. Reglas: (1) **busca antes de crear** en el catálogo y en `custom.ts`; (2) **prueba visual
-  obligatoria** con `PY tools/gallery.py` (mira el still; en la práctica siempre hubo que corregir encuadre, material o tamaño;
-  en entornos oscuros evita `metalness` alto); (3) un prefab plano o frontal pide cámara con movimiento real (`orbit_slow`,
-  `spiral_in`, `push_in` rápido), o la racha estática del QA falla; (4) no más de 2 por video, el resto va a `05_gaps.md`.
-  Medido en 2 videos: ~10–15 min por prefab, sin coste de render.
+- **Objeto que falta (F14, F19):** si un concepto central no tiene objeto en el catálogo (puntuación 0 en `catalog_search.py`), **créalo en este
+  video**: hasta **5 prefabs por video** en `studio/src/explainer/heroes/primitive/custom.ts` (~100–150 líneas cada uno), registrados en `heroes/index.ts`
+  y en el catálogo con `PY tools/add_heroes.py <tags.json>`. Reglas: (1) **busca antes de crear** en el catálogo y en `custom.ts`; (2) **nivel de
+  detalle:** silueta reconocible, al menos 5 partes distintas, 2–3 materiales y escala coherente (una manilla lleva banda con trama, cierre, módulo con
+  LED, placa, chip y pila; una consola, faders, perillas, botones y pantalla; un estadio, gradas escalonadas, muro, escenario y público); piensa en
+  cómo es de verdad, con fotos mentales de la cosa real, no en un icono; (3) **si el efecto depende de una acción, pinta el estado dentro de `act`:**
+  `Scene.tsx` llama a `update(f)` ANTES que a `act` y en un still suelto el estado llegaría a 0; guarda el último `f` y vuelve a pintar al final de `act`
+  (ver `manilla_led`); (4) **prueba como se va a ver:** `make_short.py stills` ya saca un frame extra por beat justo después de la última acción: mira que la
+  acción se vea (luces encendidas, ola, haz) y que no quede nada bajo el suelo; (5) objeto pequeño en pantalla → baja `radius` (acerca la cámara); entornos
+  con casas o edificios restan: con objetos pequeños usa `tech_oscuro`; (6) un prefab plano pide cámara con movimiento real (`orbit_slow`, `spiral_in`,
+  `push_in` rápido), o la racha estática falla. Medido: ~25 min por prefab con detalle; sin coste de render.
+- **Fidelidad y limpieza visual (F19):** (1) cada beat lleva `"shows"`: una frase de lo que se ve; si la voz dice una cosa y `shows` otra, cambia
+  el objeto, no la frase; (2) un overlay nunca tapa al protagonista: `NoSymbol`, `BigWord` y `Insert` grandes solo donde no quiten lo que se explica; para
+  rótulos usa `Pill` en `lower` o `bottom`; dos rótulos en el mismo hueco se pisan; (3) los `Callout3D` van hacia el lado con espacio: uno cortado por el
+  borde se ve mal (mira el still); (4) **revisión visual obligatoria:** hoja con todos los stills (mitad de beat y tras la acción) y un agente verificador
+  distinto con `templates/prompts/verificador.md`; sus 5 notas (coincide lo dicho con lo visto, reconocible, overlays, acciones visibles, tamaño y
+  encuadre) deben ser ≥7 antes del render final.
 - **Sub-planos, bucle y datos (F17):** en beats largos (>~5 s) usa `shots` (la cámara barre a otro preset a mitad de beat, sin corte duro, máx. 3
   por beat); con cierre `bucle` el último beat vuelve al entorno y objeto del primero, y la última frase no se despide (patrones de bucle
   en `templates/prompts/script_es.md`); guarda algo que solo se entienda al repetir el video. `publish` también deja `meta.json` y

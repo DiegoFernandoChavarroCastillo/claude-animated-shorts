@@ -595,3 +595,18 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   (racha estática 48 > 45 en el giro y silencio 32,2 % > 32): cámara `spiral_in` en el giro y `pauseScale` 0,8. Pasa con poco margen (estática 42/45, silencio 31,9/32).
   **Sin hacer:** recortar pausas de la voz a posteriori y el ahorro de síntesis en GPU (no hay), y no se rehicieron `microondas-metal` ni `hielo-flota`.
 
+
+## F19 · Fidelidad visual (6 nov)
+- **D97 · Lo que se ve es lo que se dice.** `manilla-luces` salió con buen guion y audio pero con visuales flojos: un icono `NoSymbol` tapando el objeto, una manilla que no
+  parecía de concierto, un teléfono donde la voz decía «portátil o mesa de luces», luces del estadio bajo el suelo y un circuito sin relación con el giro. Causa: la regla
+  «usa el objeto más cercano» y el tope de 2 prefabs de ~60 líneas. Ahora: un concepto central sin objeto obliga a crear el prefab (hasta 5 por video, ~100–150
+  líneas, con 5+ partes y materiales reales); la sustitución solo vale para lo secundario.
+- **D98 · Cada beat declara `shows`.** Con `meta.schema: "f19"` el validador exige una frase `shows` (≥3 palabras) en cada beat y rechaza `NoSymbol`/`BigWord` en slots
+  `center`, `upper` o `top` (tapan al protagonista). Los ejemplos antiguos no llevan `schema` y siguen pasando.
+- **D99 · Estado de las acciones.** `Scene.tsx` llama a `update(f)` antes que a `act`; en un still suelto (y en el primer fotograma tras un salto) el estado de una acción propia
+  llegaba a 0 y el objeto salía apagado. Los prefabs nuevos guardan el último `f` y vuelven a pintar al final de `act`. Los antiguos (`manilla_rfid`, `servidor_rack`…) tienen el mismo
+  patrón y quedan pendientes de revisar.
+- **D100 · Stills tras la acción y verificador obligatorio.** La etapa `stills` saca ahora un frame extra por beat 0,9 s después de la última acción (`action_frames` en `make_short.py`),
+  para ver las luces encendidas y no solo el reposo. Antes del render final se pasa un agente verificador con una hoja de todos los stills y la rúbrica de fidelidad de
+  `templates/prompts/verificador.md` (5 notas, paso con ≥7). Ahorro de tokens: una sola hoja de imagen y respuesta de ~220 palabras; el agente ve poco detalle, así que sus quejas se contrastan con los stills.
+- **Ejemplo:** 4 prefabs nuevos en `custom.ts` (`manilla_led`, `emisor_ir`, `consola_luces`, `estadio_zonas` con acciones `encender`, `emitir`, `mandar`, `ola`, `sincronizar`).

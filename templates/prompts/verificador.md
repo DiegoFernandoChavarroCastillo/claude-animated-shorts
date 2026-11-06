@@ -42,3 +42,22 @@ Tu trabajo es compararlo con las referencias y decir con franqueza dónde se ale
 4. Lo que **no** hay que tocar porque ya está bien (máximo 3 puntos).
 
 No inventes medidas que no estén en `10_qa.md`. Si algo no se puede juzgar con las hojas, dilo.
+
+---
+
+## Verificación de fidelidad (F19): obligatoria antes del render final
+
+Lanza un agente distinto con **una sola hoja**: todos los stills de `out/<id>/06_stills/` (dos por beat: mitad del beat y justo después de la última
+acción; `make_short.py stills` los saca), el texto de cada beat y su campo `shows`. Pídele máximo ~220 palabras y estas cinco notas (1–10) con el
+beat de cada fallo:
+
+| Nota | Pregunta |
+|---|---|
+| A · Coincide | ¿Lo que se ve es lo que dice la voz en cada beat? (objetos de otra cosa, metáforas sin objeto propio) |
+| B · Reconocible | ¿Se identifica cada objeto de un vistazo? ¿Qué detalle le falta? |
+| C · Overlays | ¿Alguno tapa al protagonista, se corta en el borde o se pisa con otro? |
+| D · Acciones | ¿Se ven en el segundo frame (luces encendidas, ola, haz, movimiento)? |
+| E · Encuadre | ¿Tamaño del objeto, centrado, entorno que distrae (ciudad de casas), zonas vacías? |
+
+Criterio de paso: todas ≥ 7. Si no, arregla lo que diga y repite (máx. 3 rondas). El agente solo ve una imagen pequeña: contrasta sus quejas con
+los stills antes de actuar (puede inventar o no ver un LED encendido).

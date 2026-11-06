@@ -85,6 +85,9 @@ def event_gap(story: dict, words: list) -> tuple[float, float]:
     return gap, at
 
 
+BIG_OVERLAYS = {"NoSymbol", "BigWord"}   # iconos y palabras enormes (F19)
+
+
 def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None, require_actions: bool = False,
              closing: str | None = None) -> list[str]:
     cat = load_json(ROOT / "templates" / "catalog.json")
@@ -122,6 +125,12 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
         ovs = b.get("overlays", [])
         if b.get("role") in OVERLAY_ROLES and not ovs:
             errs.append(f"{bid}: beat {b['role']} sin overlay de dato")
+        if story.get("meta", {}).get("schema") == "f19":       # F19: lo que se ve es lo que se dice; nada tapa al protagonista
+            if len(str(b.get("shows", "")).split()) < 3:
+                errs.append(f"{bid}: falta 'shows' (≥3 palabras): di qué se ve en pantalla y comprueba que coincide con lo que dice la voz")
+            for o in ovs:
+                if o.get("type") in BIG_OVERLAYS and o.get("slot", "center") in ("center", "upper", "top"):
+                    errs.append(f"{bid}: {o['type']} en slot '{o.get('slot', 'center')}' tapa al protagonista: usa slot lower o bottom")
         numeric = False
         for o in ovs:
             d = cat["overlays"].get(o.get("type"))

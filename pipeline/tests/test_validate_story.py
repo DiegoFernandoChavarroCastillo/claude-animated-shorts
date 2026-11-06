@@ -165,4 +165,32 @@ st, w = timed(tail=0.2)
 for b in st["beats"][1:5]:
     b["overlays"] = [{"type": "Insert", "at": "tres", "text": "DATO", "icon": "bolt"}]
 f18("4 Insert en el video falla", "máximo 3", (st, w))
+
+
+# F19: fidelidad visual (meta.schema == "f19")
+def f19(shows="una mesa con faders y un portátil", ov=None):
+    st = story(["telefono", "chip", "perro"])
+    st["meta"]["schema"] = "f19"
+    for b in st["beats"]:
+        b["shows"] = shows
+    if ov:
+        st["beats"][1]["overlays"] = [ov]
+    return st
+
+
+for name, st, frag in [
+    ("sin shows", f19(shows=""), "falta 'shows'"),
+    ("NoSymbol en el centro", f19(ov={"type": "NoSymbol", "at": "una"}), "tapa al protagonista"),
+    ("BigWord arriba", f19(ov={"type": "BigWord", "at": "una", "word": "X", "slot": "top"}), "tapa al protagonista"),
+]:
+    ok = has(validate(st), frag)
+    print("OK " if ok else "MAL", f"F19: {name} falla")
+    fails += not ok
+ok = not has(validate(f19(ov={"type": "NoSymbol", "at": "una", "slot": "lower"})), "tapa al protagonista") and not has(validate(f19()), "falta 'shows'")
+print("OK " if ok else "MAL", "F19: shows y overlay en lower pasan")
+fails += not ok
+ok = not has(validate(story(["telefono", "chip"])), "shows")   # sin schema f19 no se exige (ejemplos antiguos)
+print("OK " if ok else "MAL", "F19: sin schema no se exige")
+fails += not ok
+
 sys.exit(1 if fails else 0)

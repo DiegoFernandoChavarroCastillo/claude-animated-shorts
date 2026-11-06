@@ -18,9 +18,9 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
    célula, un planeta, una reacción…).
 2. Para cada uno, busca con `python tools/catalog_search.py <palabras>` (ej. `garganta virus`, `agujero negro`). Devuelve
    objetos, entornos y overlays con su puntuación, poses y anclas. Una puntuación ≥ 3 es un buen candidato.
-3. Si un concepto central **no tiene objeto** (puntuación 0), no lo fuerces con `persona`: usa uno genérico
-   (`esfera_flotante`, `caja_etiquetada`, `diagrama_flujo`) o el más cercano, y apunta el hueco en
-   `out/<id>/05_gaps.md` (concepto, qué se usó en su lugar, qué objeto haría falta). Díselo al usuario en la entrega.
+3. Si un concepto central **no tiene objeto** (puntuación 0), **créalo** (sección siguiente). No lo sustituyas por uno de otra cosa (F19: un
+   teléfono por un portátil, un circuito por «el show»); eso hace que lo que se ve no sea lo que se dice. Solo un concepto secundario puede usar uno genérico
+   (`esfera_flotante`, `caja_etiquetada`, `diagrama_flujo`); apúntalo en `out/<id>/05_gaps.md` y díselo al usuario en la entrega.
 4. **Varía el protagonista**: el validador falla si un mismo objeto sale en más de 3 beats seguidos o en más del 65 %
    de los beats. Alterna objetos y entornos según cambie la idea (el cuerpo → la célula → el virus).
 
@@ -29,10 +29,11 @@ El catálogo es grande (más de 70 objetos y 17 entornos): **no lo recorras a oj
 Si un concepto **central** del guion sale con puntuación 0 y se puede hacer con formas simples (una rejilla, una lámina con
 cargas, un corte de muñeca con LED), no lo sustituyas por un objeto que no encaja: **créalo**. Reglas:
 
-1. **Máximo 2 prefabs por video.** Busca primero en el catálogo y en `studio/src/explainer/heroes/primitive/custom.ts`.
-2. Escríbelo en `custom.ts` (un `HeroDef` con `kind`, `when`, `poses`, `radius`, `center`, `anchors`, `build`; ~50–70 líneas; usa
+1. **Máximo 5 prefabs por video** (F19; los conceptos centrales siempre tienen objeto propio). Busca primero en el catálogo y en `studio/src/explainer/heroes/primitive/custom.ts`.
+2. Escríbelo en `custom.ts` (un `HeroDef` con `kind`, `when`, `poses`, `radius`, `center`, `anchors`, `build`; ~100–150 líneas, con detalle: 5+ partes, 2–3 materiales, escala real; usa
    los ayudantes de `kit.ts`; nada de `Math.random`). Si el guion pide un efecto en una palabra, dale **acciones propias**
-   (`actions` + `act`), p. ej. `chispa`, `amontonar`.
+   (`actions` + `act`), p. ej. `chispa`, `amontonar`. **El estado de la acción se pinta también dentro de `act`** (`update` corre antes que `act`; en un still
+   suelto el estado llegaría a 0): guarda el último `f` y llama de nuevo a tu función de dibujo al final de `act`.
 3. Regístralo en `heroes/index.ts` y en el catálogo: `python tools/add_heroes.py tags.json` (tags en español, un `when` claro).
 4. **Prueba visual obligatoria** antes del story: `python tools/gallery.py <dir> hero:pose:env:light:camera` y mira el still.
    Cosas que fallaron siempre a la primera: objeto casi negro (en entornos oscuros usa `glowMat`, `metalness` bajo), objeto
@@ -178,6 +179,14 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
 - `historia` (`[story]`): `Timeline`, `TitlePlaque` o `ThoughtBubble` para lo que se creía o se descubrió; el objeto entra en `[mechanism]`.
 - `cadena` (`[chain]`): `FlowArrow` o `IconFlow` y una cámara que siga el recorrido (`follow_anchor`, `dolly_side`); cada beat
   arranca donde acabó el anterior (mismo entorno si la cadena no cambia de lugar).
+
+## Fidelidad y limpieza visual (F19)
+
+- Cada beat lleva `"shows"`: una frase de lo que se ve («un portátil y una mesa con faders»). Si no coincide con lo que dice la voz, cambia el objeto.
+- Un overlay no tapa al protagonista: `NoSymbol`, `BigWord` o un `Insert` grande no van encima de lo que se está explicando; rótulos de texto con `Pill`
+  en `lower` o `bottom` (dos en el mismo hueco se pisan). `Callout3D` hacia el lado con espacio (uno cortado por el borde se ve mal).
+- Objetos pequeños en pantalla: baja el `radius` o usa `tech_oscuro` (ciudades y casas distraen y empequeñecen).
+- Antes del render final: `make_short.py stills` (mitad de beat + frame tras la última acción), mira la hoja y pasa el verificador.
 
 ## Reglas
 

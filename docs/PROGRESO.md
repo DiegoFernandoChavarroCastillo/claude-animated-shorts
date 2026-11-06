@@ -30,6 +30,7 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 | F13 | Acciones sincronizadas con la voz: 41 efectos (26 genéricos, 13 marcadores 3D, 2 de cámara) y acciones propias de objetos (D74–D77) | ✅ usada en `microondas-metal` y `reloj-pulso` | rama `ampliar-catalogo` |
 | F14 | Prefabs por video en `custom.ts` (3 hechos) y duración obligatoria de 60 a 120 s (D78–D79) | ✅ `8688cdf`; los 2 videos de prueba son de 62 y 64 s; `reloj-pulso` queda fuera del nuevo mínimo de palabras | rama `ampliar-catalogo` |
 | F18 | Plan completo: puerta de calidad (QA con reglas del plan), caché de voz y `pauseScale`, `Insert`, cama sonora, informe de huecos, ejemplo vigente y 12 pruebas (D92–D96) | ✅ implementada; `reloj-pulso` rehecho y pasa el QA | rama `ampliar-catalogo` |
+| F19 | Fidelidad visual: prefabs con detalle (hasta 5 por video), `shows` y overlays que no tapan (`meta.schema: f19`), stills tras cada acción, verificador obligatorio; 4 objetos nuevos (D97–D100) | ✅ implementada; `manilla-luces` rehecho y pasa el QA | rama `ampliar-catalogo` |
 | F17 | Segunda tanda: ganchos nuevos y rúbrica, patrones de bucle, sub-planos de cámara, golpe de escala en la palabra clave, `meta.json` y `ingest_stats` (D89–D91) | ✅ implementada y probada en `bluetooth-wifi` | rama `ampliar-catalogo` |
 | F16 | Gancho ≤3 s con acción en el primer segundo, hueco máximo de 3,5 s, cierre `bucle` por defecto con cola de 0,2 s, zona segura de las apps, etapa `publish` (D82–D87) | ✅ implementada y con pruebas; falta usarla en un video nuevo | rama `ampliar-catalogo` |
 | F15 | 14 efectos de sonido generales y director de acentos (D80–D81) | ✅ `1e6a516`; Diego los escuchó y le gustan | rama `ampliar-catalogo` |
@@ -186,3 +187,6 @@ plano de la molécula (b05); cambiar la cámara a `drift` no la movió. No se vo
 11. **Voz (D64, 3 nov):** Chatterbox con la voz de Diego es el motor por defecto. En `hielo-flota`, la racha estática
    sube a 70 frames (regla de diseño ≤45) y el silencio llega al 32 % (máximo del rango): la voz es más pausada y los
    beats más largos. Para F10: vigilarlo y, si hace falta, bajar las pausas a ×1,3.
+12. **Fidelidad visual (F19, 6 nov):** `manilla_rfid` y `servidor_rack` (de `manilla-concierto`, un video sobre la manilla equivocada) y otros prefabs antiguos pintan el estado de sus
+   acciones solo en `update`; en un still suelto salen apagados (D99). Revisarlos como `manilla_led`. Tampoco se volvió a pasar el verificador tras los últimos arreglos de `manilla-luces`
+   (notas de la 1.ª ronda: 6/5/5/5/4) ni se comprobó a ojo la ola de luz del estadio en el render final.
