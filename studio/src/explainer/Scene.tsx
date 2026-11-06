@@ -78,7 +78,9 @@ export const Scene: React.FC<{ tl: Timeline; i: number }> = ({ tl, i }) => {
   const P = genericPose(tl, i, f);
   world.heroWrap.position.set(...P.pos); world.heroWrap.rotation.set(...P.rot); world.heroWrap.scale.set(P.scale * P.stretch[0], P.scale * P.stretch[1], P.scale * P.stretch[2]);
   world.rig.update(f, cam);
-  for (const a of heroActions(tl, i)) world.hero.act?.(a.spec.type, f < a.start ? 0 : Math.min(1, (f - a.start) / a.dur), a.spec as Record<string, unknown>, Math.max(0, f - a.start));
+  const acts = heroActions(tl, i);
+  for (const a of acts) world.hero.act?.(a.spec.type, f < a.start ? 0 : Math.min(1, (f - a.start) / a.dur), a.spec as Record<string, unknown>, Math.max(0, f - a.start));
+  if (acts.length) world.hero.update(f, cam);   // repinta con el estado de las acciones de este mismo frame (en un still suelto llegaba a 0)
   // foco de lente fina: distancia sobre el eje de vista hasta el centro del objeto protagonista
   const fwd = new THREE.Vector3(); cam.getWorldDirection(fwd);
   fx.lens.focus = Math.max(0.3, new THREE.Vector3(...heroDef(sc.hero.asset).center).sub(cam.position).dot(fwd));

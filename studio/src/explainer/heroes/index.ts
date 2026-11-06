@@ -23,7 +23,7 @@ import { sistema_solar, cometa_asteroide, satelite, telescopio, eclipse_solar, a
 import { ciclo_agua, arcoiris, huracan, estratos_fosil, aurora, duna_desierto } from "./primitive/earth2";
 import { hongo_micelio, mariposa, medusa, murcielago, huevo_embrion, flor_polinizacion } from "./primitive/life2";
 import { nevera, candado_cifrado, engranajes, catapulta, pitagoras, moneda_azar } from "./primitive/home2";
-import { rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces } from "./primitive/custom";
+import { rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces, memoria_usb, celda_flash, celdas_matriz } from "./primitive/custom";
 import { perro, persona } from "./cards";
 import { GLTF_HEROES } from "./gltf";
 
@@ -50,7 +50,7 @@ export const HEROES: Record<string, HeroDef> = {
   ciclo_agua, arcoiris, huracan, estratos_fosil, aurora, duna_desierto,
   hongo_micelio, mariposa, medusa, murcielago, huevo_embrion, flor_polinizacion,
   nevera, candado_cifrado, engranajes, catapulta, pitagoras, moneda_azar,
-  rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces,
+  rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces, memoria_usb, celda_flash, celdas_matriz,
   perro, persona,
   ...GLTF_HEROES,
 };

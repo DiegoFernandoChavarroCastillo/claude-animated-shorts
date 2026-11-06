@@ -599,3 +599,232 @@ export const estadio_zonas: HeroDef = {
     };
   },
 };
+
+const hash1 = (x: number) => { const s = Math.sin(x * 12.9898) * 43758.5453; return s - Math.floor(s); };
+const edgeLines = (b: Bin, m: THREE.Mesh, c: string) => { const l = new THREE.LineSegments(b.track(new THREE.EdgesGeometry(m.geometry)), b.track(new THREE.LineBasicMaterial({ color: c }))); m.add(l); return l; };
+
+// memoria-usb · pen drive de verdad: carcasa con estrías y LED, conector USB-A hueco con lengüeta y contactos, anilla; abierto muestra la placa
+// con el chip NAND, el controlador, el cristal, condensadores, pistas y los datos que viajan del conector al chip.
+export const memoria_usb: HeroDef = {
+  kind: "primitive",
+  when: "Memoria USB o pen drive: la memoria flash, guardar archivos y fotos en un USB, lo que hay dentro de un pendrive (chip, controlador, placa), conector USB, almacenamiento sin partes móviles, copiar datos.",
+  poses: ["cerrada", "abierta"],
+  actions: {
+    transferir: "Los datos viajan por las pistas del conector al chip y el LED parpadea (se queda así): guarda, copia, conecta, transfiere, escribe, pasa los archivos.",
+  },
+  center: [0.1, 0.6, 0], radius: 0.88,
+  anchors: { hero: [0, 0.85, 0], top: [0, 1.6, 0], base: [0, 0.05, 0], conector: [1.2, 0.85, 0.1], chip: [-0.55, 0.9, 0.1], controlador: [-0.1, 0.9, 0], led: [-1.1, 0.95, 0.2], placa: [-0.4, 0.8, 0.1] },
+  build: (_L, pose) => {
+    const p = poseOf(memoria_usb, pose, "memoria_usb"), open = p === "abierta";
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const plastic = mat(b, "#3d3db8", { roughness: 0.55, metalness: 0 }), steel = mat(b, "#cfd5ea", { roughness: 0.22, metalness: 0.9 });
+    const black = mat(b, "#0e1120", { roughness: 0.45, metalness: 0.2 }), gold = glowMat(b, "#f2c14e", 0.45, { roughness: 0.3, metalness: 0.8 });
+    const board = mat(b, "#1b8a5a", { roughness: 0.55 });
+    // carcasa (translúcida si está abierto, con la bandeja de abajo opaca)
+    g.add(place(rbox(b, 1.9, 0.28, 0.62, 0.07, open ? ghostMat(b, "#8d7dff", 0.16, { roughness: 0.8, metalness: 0 }) : plastic), [-0.5, 0, 0]));
+    if (open) g.add(place(rbox(b, 1.9, 0.05, 0.62, 0.02, plastic), [-0.5, -0.115, 0]));
+    // conector USB-A: cuatro paredes de acero, lengüeta negra con cuatro contactos y dos hendiduras
+    const plug = new THREE.Group(); plug.position.set(0.875, 0, 0);
+    const L = 0.95, H = 0.19, W = 0.5, t = 0.025;
+    plug.add(place(box(b, L, t, W, steel), [0, H / 2 - t / 2, 0]), place(box(b, L, t, W, steel), [0, -H / 2 + t / 2, 0]),
+      place(box(b, L, H, t, steel), [0, 0, W / 2 - t / 2]), place(box(b, L, H, t, steel), [0, 0, -W / 2 + t / 2]),
+      place(box(b, L - 0.08, 0.035, W - 0.14, black), [-0.04, -0.03, 0]));
+    [-0.15, -0.05, 0.05, 0.15].forEach((z) => plug.add(place(box(b, 0.3, 0.012, 0.045, gold), [0.2, -0.0065, z])));
+    [-0.1, 0.1].forEach((z) => plug.add(place(box(b, 0.06, 0.004, 0.04, black), [-0.05, H / 2 + 0.001, z])));
+    g.add(plug);
+    g.add(place(new THREE.Mesh(b.track(new THREE.TorusGeometry(0.09, 0.022, 10, 28)), steel), [-1.52, 0, 0]));
+    g.children[g.children.length - 1].rotation.x = Math.PI / 2;
+    // LED
+    const ledMat = glowMat(b, "#38ff9a", 0.6), led = box(b, open ? 0.06 : 0.1, open ? 0.03 : 0.012, 0.05, ledMat);
+    led.position.set(-1.15, open ? -0.05 : 0.146, 0.2); g.add(led);
+    const ledGlow = halo(b, "rgba(80,255,170,0.9)", 0.5, 0); ledGlow.rotation.x = -Math.PI / 2; ledGlow.position.set(-1.15, open ? -0.02 : 0.16, 0.2); g.add(ledGlow);
+    // cerrada: estrías de agarre
+    if (!open) for (let i = 0; i < 6; i++) g.add(place(box(b, 0.025, 0.012, 0.5, mat(b, "#1d1c5c", { roughness: 0.7 })), [-0.9 + i * 0.12, 0.144, 0]));
+    // abierta: placa, chips, cristal, condensadores, resistencias, pistas y pulsos de datos
+    const pulses: { m: THREE.Mesh; z: number; k: number }[] = [];
+    let nandGlow: THREE.Mesh | null = null;
+    if (open) {
+      g.add(place(box(b, 1.55, 0.03, 0.5, board), [-0.55, -0.075, 0]));
+      const nand = place(box(b, 0.62, 0.06, 0.34, black), [-0.7, -0.03, 0]); g.add(nand);
+      g.add(place(box(b, 0.5, 0.004, 0.2, mat(b, "#2a2f4f", { roughness: 0.3 })), [-0.7, 0.001, 0]), place(cyl(b, 0.016, 0.016, 0.006, steel, 12), [-0.95, 0.002, -0.13]));
+      const ctrl = place(box(b, 0.26, 0.05, 0.26, black), [-0.16, -0.035, -0.05]); g.add(ctrl, place(cyl(b, 0.014, 0.014, 0.006, steel, 12), [-0.26, -0.008, -0.15]));
+      g.add(place(rbox(b, 0.14, 0.05, 0.07, 0.015, steel), [-0.16, -0.04, 0.2]), place(rbox(b, 0.04, 0.03, 0.04, 0.008, mat(b, "#c9a46a")), [0.12, -0.045, 0.16]));
+      [[0.12, 0.2], [0.2, 0.2], [0.2, -0.2], [0.12, -0.2]].forEach(([x, z]) => g.add(place(rbox(b, 0.05, 0.03, 0.03, 0.006, mat(b, "#c9a46a")), [x, -0.045, z])));
+      [[-0.42, 0.2], [-0.42, -0.2], [-0.95, 0.2]].forEach(([x, z]) => g.add(place(box(b, 0.04, 0.015, 0.025, black), [x, -0.052, z])));
+      for (let i = 0; i < 10; i++) [-1, 1].forEach((s) => g.add(place(box(b, 0.028, 0.012, 0.07, steel), [-0.98 + i * 0.068, -0.05, s * 0.2])));
+      for (let i = 0; i < 5; i++) [-1, 1].forEach((s) => g.add(place(box(b, 0.028, 0.012, 0.05, steel), [-0.25 + i * 0.065, -0.055, -0.05 + s * 0.155])));
+      [-0.15, -0.05, 0.05, 0.15].forEach((z, i) => {
+        g.add(place(box(b, 0.12, 0.008, 0.045, gold), [0.34, -0.058, z]));
+        g.add(rod(b, [0.3, -0.056, z], [-0.04, -0.056, -0.05 + (z + 0.05) * 0.8], 0.007, gold), rod(b, [-0.29, -0.056, -0.05 + (z + 0.05) * 0.8], [-0.4, -0.056, z * 0.9], 0.007, gold));
+        for (let k = 0; k < 3; k++) {
+          const m = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.03, 10, 8)), beam(b, "#8be9ff", 1.9, { transparent: true, opacity: 0 }));
+          g.add(m); pulses.push({ m, z, k: (k + i * 0.25) / 3 });
+        }
+      });
+      nandGlow = halo(b, "rgba(120,220,255,0.9)", 1.0, 0); nandGlow.rotation.x = -Math.PI / 2; nandGlow.position.set(-0.7, 0.04, 0); g.add(nandGlow);
+    }
+    g.position.y = 0.85; g.rotation.set(0.25, -0.5, 0.28); root.add(g); shadows(g);
+    let tx = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f;
+      ledMat.emissiveIntensity = 1.2 + tx * (1.4 + 1.4 * Math.sin(f * 0.55)); (ledGlow.material as THREE.MeshBasicMaterial).opacity = 0.25 + tx * (0.3 + 0.3 * Math.sin(f * 0.55));
+      pulses.forEach(({ m, z, k }) => {
+        const u = (f * 0.014 + k) % 1; m.position.set(0.95 - 1.7 * u, -0.05, z * (1 - 0.3 * u));
+        (m.material as THREE.MeshBasicMaterial).opacity = tx * Math.min(1, u * 8, (1 - u) * 5);
+      });
+      if (nandGlow) (nandGlow.material as THREE.MeshBasicMaterial).opacity = tx * (0.3 + 0.2 * Math.sin(f * 0.4));
+      g.position.y = 0.85 + 0.03 * Math.sin(f * 0.04); g.rotation.y = -0.5 + 0.1 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, upd),
+      act: (name, u) => { if (name === "transferir") tx = ease(u * 3); upd(lf); },
+    };
+  },
+};
+
+// memoria-usb · corte de una celda de memoria flash: silicio con fuente y drenaje, óxido túnel fino, compuerta flotante, óxido, compuerta de
+// control y doce electrones. `escribir`: voltaje en la compuerta y los electrones suben por el óxido hasta quedar dentro; `borrar`: bajan;
+// `leer`: corriente por el canal (con la compuerta cargada pasa poca); `fuga`: se escapan despacio; `desgaste`: grietas en el óxido túnel.
+export const celda_flash: HeroDef = {
+  kind: "primitive",
+  when: "Una celda de memoria flash en corte: compuerta flotante, electrones atrapados, aislante, escribir y borrar con voltaje (efecto túnel), leer si conduce o no, desgaste del aislante, fuga de carga con el tiempo, cómo guarda un bit un chip sin energía.",
+  poses: ["vacia", "cargada"],
+  actions: {
+    escribir: "Voltaje alto en la compuerta de control y los electrones suben por el aislante hasta la compuerta flotante, donde se quedan: guardar un dato, escribir, aplicar voltaje, efecto túnel, atraviesan, atrapados.",
+    borrar: "Voltaje contrario y los electrones salen de la compuerta flotante de golpe: borrar, vaciar, salen, voltaje contrario.",
+    leer: "Corriente de puntos por el canal de fuente a drenaje: pasa mucha con la compuerta vacía y casi nada con electrones atrapados: leer, medir si conduce, deja pasar corriente.",
+    fuga: "Los electrones se escapan despacio de la compuerta, uno a uno: se fugan, se escapan con el tiempo, pierde la carga, olvida.",
+    desgaste: "Aparecen grietas en el aislante fino y se tiñe de ámbar: daña el aislante, desgaste, se gasta, límite de borrados.",
+  },
+  center: [0, 0.75, 0], radius: 1.25,
+  anchors: { hero: [0, 1.2, 0], top: [0, 2.2, 0], base: [0, 0.05, 0], fuente: [-1.1, 1.9, 0], drenaje: [1.1, 1.9, 0], compuerta: [0, 1.4, 0.3], flotante: [0, 1.0, 0.3], aislante: [0, 0.85, 0.3], canal: [0, 0.7, 0.3], electrones: [0, 0.95, 0.3] },
+  build: (_L, pose) => {
+    const p = poseOf(celda_flash, pose, "celda_flash");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group(), D = 0.62;
+    const si = mat(b, "#4f5c9c", { roughness: 0.6 }), steel = mat(b, "#aeb6dc", { roughness: 0.3, metalness: 0.8 });
+    g.add(place(box(b, 3.2, 0.5, D, si), [0, 0.25, 0]));
+    g.add(place(box(b, 0.8, 0.22, D * 1.002, glowMat(b, "#2fb6a6", 0.35)), [-1.1, 0.39, 0]), place(box(b, 0.8, 0.22, D * 1.002, glowMat(b, "#2fb6a6", 0.35)), [1.1, 0.39, 0]));
+    g.add(place(box(b, 1.64, 0.9, D * 1.06, ghostMat(b, "#7fe8ff", 0.09)), [0, 0.95, 0]));
+    const oxMat = ghostMat(b, "#7fe8ff", 0.4), ox = place(box(b, 1.5, 0.09, D, oxMat), [0, 0.545, 0]); g.add(ox);
+    const fg = place(box(b, 1.4, 0.24, D * 0.92, ghostMat(b, "#ffb347", 0.42, { emissive: new THREE.Color("#ffb347").multiplyScalar(0.25) })), [0, 0.705, 0]); g.add(fg); edgeLines(b, fg, "#ffd48a");
+    g.add(place(box(b, 1.5, 0.07, D, ghostMat(b, "#7fe8ff", 0.4)), [0, 0.865, 0]));
+    const cgMat = glowMat(b, "#8f7bff", 0.35, { roughness: 0.4, metalness: 0.3 }), cg = place(box(b, 1.4, 0.32, D * 0.92, cgMat), [0, 1.06, 0]); g.add(cg);
+    [-1.1, 1.1, 0].forEach((x) => {
+      const y0 = x === 0 ? 1.22 : 0.5, y1 = x === 0 ? 1.85 : 1.6;
+      g.add(rod(b, [x, y0, 0], [x, y1, 0], 0.045, steel), place(ball(b, 0.09, glowMat(b, x === 0 ? "#8f7bff" : "#2fb6a6", 0.8), 14), [x, y1, 0]));
+    });
+    // electrones: bolita azul con barra «−» al frente; abajo en el canal, arriba dentro de la compuerta flotante
+    const N = 12, eM = glowMat(b, "#5aa0ff", 1.5), bar = glowMat(b, "#ffffff", 1);
+    const el = Array.from({ length: N }, (_, i) => {
+      const o = new THREE.Group(); o.add(ball(b, 0.085, eM, 12)); const m = box(b, 0.09, 0.02, 0.02, bar); m.position.z = 0.082; o.add(m); const hl = halo(b, "rgba(120,180,255,0.95)", 0.42, 0.75); hl.position.z = 0.05; o.add(hl); g.add(o);
+      return { o, c: [-0.62 + i * 0.113, 0.505, (hash1(i + 1) - 0.5) * 0.4] as P3, f: [-0.55 + (i % 6) * 0.22, i < 6 ? 0.64 : 0.77, (hash1(i + 9) - 0.5) * 0.34] as P3, lag: hash1(i + 20), th: hash1(i + 40) };
+    });
+    // corriente de lectura
+    const cur = Array.from({ length: 10 }, () => new THREE.Mesh(b.track(new THREE.SphereGeometry(0.055, 10, 8)), beam(b, "#ffe27a", 2.4, { transparent: true, opacity: 0 })));
+    cur.forEach((m) => g.add(m));
+    const volt = halo(b, "rgba(255,170,70,0.95)", 2.0, 0); volt.position.set(0, 1.15, D * 0.55); g.add(volt);
+    // grietas del óxido túnel
+    const cracks = Array.from({ length: 14 }, (_, i) => {
+      const m = new THREE.Mesh(b.track(new THREE.BoxGeometry(0.14, 0.02, 0.02)), beam(b, "#ffd27a", 3.0, { transparent: true, opacity: 0 }));
+      m.position.set(-0.68 + i * 0.105, 0.545 + (hash1(i + 3) - 0.5) * 0.04, D / 2 + 0.01); m.rotation.z = (hash1(i + 5) - 0.5) * 1.8; g.add(m); return m;
+    });
+    g.position.y = 0.3; g.rotation.y = -0.38; root.add(g); shadows(g);
+    let q = p === "cargada" ? 1 : 0, lk = 0, wr = 0, er = 0, rd = 0, wn = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f;
+      const leakOn = lk > 0;
+      let charge = 0;
+      el.forEach(({ o, c, f: fp, lag, th }, i) => {
+        const e = ease(clamp01(q * 1.6 - lag * 0.6)), gone = leakOn ? clamp01((lk - th * 0.85) * 6) : 0, k = e * (1 - gone); charge += k / N;
+        const j = (leakOn ? 0.03 : 0.012) * (1 + 3 * Math.sin(Math.PI * e)) * (e > 0 && e < 1 ? 1.8 : 1);
+        o.position.set(c[0] + (fp[0] - c[0]) * k + Math.sin(f * 0.23 + i) * j, c[1] + (fp[1] - c[1]) * k + Math.cos(f * 0.19 + i * 2) * j, c[2] + (fp[2] - c[2]) * k);
+        o.scale.setScalar(1 + (leakOn && gone > 0 && gone < 1 ? 0.25 * Math.sin(f * 0.6 + i) : 0));
+      });
+      const v = Math.max(wr > 0 && wr < 1 ? Math.sin(Math.PI * wr) : 0, er > 0 && er < 1 ? Math.sin(Math.PI * er) : 0);
+      const vm = volt.material as THREE.MeshBasicMaterial; vm.opacity = 0.85 * v; vm.color.set(er > 0 && er < 1 ? "#6aa8ff" : "#ffffff");
+      cgMat.emissiveIntensity = 0.35 + 1.6 * v;
+      cur.forEach((m, j) => {
+        const t = (f * 0.022 + j / cur.length) % 1, show = j / cur.length < 1 - 0.88 * charge ? 1 : 0;
+        m.position.set(-1.1 + 2.2 * t, 0.5 + (hash1(j + 60) - 0.5) * 0.05, (hash1(j + 70) - 0.5) * 0.4);
+        (m.material as THREE.MeshBasicMaterial).opacity = rd * show * Math.min(1, t * 8, (1 - t) * 8) * (0.5 + 0.5 * (1 - charge));
+      });
+      cracks.forEach((m, i) => { (m.material as THREE.MeshBasicMaterial).opacity = clamp01(wn * 1.4 - i * 0.07) * (0.7 + 0.3 * Math.sin(f * 0.4 + i)); });
+      oxMat.color.set(wn > 0 ? new THREE.Color("#7fe8ff").lerp(new THREE.Color("#ffb04a"), wn) : "#7fe8ff");
+      g.rotation.y = -0.38 + 0.1 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, upd),
+      act: (name, u) => {
+        if (name === "escribir") { wr = clamp01(u); q = ease(u); }
+        if (name === "borrar") { er = clamp01(u); q = 1 - ease(u); }
+        if (name === "leer") rd = clamp01(u * 4);
+        if (name === "fuga") lk = clamp01(u);
+        if (name === "desgaste") wn = ease(u);
+        upd(lf);
+      },
+    };
+  },
+};
+
+// memoria-usb · chip NAND (encapsulado negro con patillas) y, sin la tapa, la oblea con una matriz de celdas. `escribir` carga celdas (cian),
+// `repartir` (pose «uso»): al principio unas pocas celdas se gastan mucho (rojo) y una barrida las deja todas con el mismo desgaste.
+export const celdas_matriz: HeroDef = {
+  kind: "primitive",
+  when: "Chip de memoria flash NAND con su matriz de celdas: un chip lleno de celdas, millones de bits, el encapsulado y las patillas, la oblea de silicio, repartir las escrituras para que ninguna celda se gaste antes (nivelación del desgaste), controlador que reparte.",
+  poses: ["paquete", "celdas", "uso"],
+  actions: {
+    escribir: "Se cargan celdas por todo el chip, una tras otra (se queda así): guardar archivos, escribir datos, llenar la memoria, celdas con carga.",
+    repartir: "Una barrida deja todas las celdas con el mismo desgaste, en vez de unas pocas rojas (se queda así; pose «uso»): reparte las escrituras, nivela, que ninguna se gaste antes.",
+  },
+  center: [0, 0.7, 0], radius: 1.3,
+  anchors: { hero: [0, 0.9, 0], top: [0, 1.7, 0], base: [0, 0.05, 0], paquete: [0, 0.95, 0], celdas: [0, 1.0, 0], patillas: [1.35, 0.85, 0.9], marca: [-1.1, 0.95, -0.7] },
+  build: (_L, pose) => {
+    const p = poseOf(celdas_matriz, pose, "celdas_matriz"), show = p !== "paquete";
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const epoxy = mat(b, "#13162b", { roughness: 0.5, metalness: 0.15 }), steel = mat(b, "#cfd5ea", { roughness: 0.25, metalness: 0.9 });
+    g.add(place(rbox(b, 2.7, 0.2, 1.9, 0.05, epoxy), [0, 0, 0]));
+    for (let i = 0; i < 12; i++) [-1, 1].forEach((s) => g.add(place(box(b, 0.07, 0.02, 0.2, steel), [-1.1 + i * 0.2, -0.05, s * 1.0]), place(box(b, 0.07, 0.07, 0.025, steel), [-1.1 + i * 0.2, -0.015, s * 0.9])));
+    g.add(place(cyl(b, 0.05, 0.05, 0.012, mat(b, "#3a4166", { roughness: 0.4 }), 16), [-1.1, 0.104, -0.7]));
+    const cols = 14, rows = 8, cw = 2.0 / cols, rh = 1.3 / rows, N = cols * rows;
+    let im: THREE.InstancedMesh | null = null; const dm = new THREE.Matrix4(), c = new THREE.Color();
+    if (show) {
+      g.add(place(box(b, 2.2, 0.04, 1.5, mat(b, "#252d58", { roughness: 0.35, metalness: 0.4 })), [0, 0.12, 0]));
+      [-1, 1].forEach((s) => g.add(place(box(b, 2.3, 0.03, 0.04, steel), [0, 0.125, s * 0.78]), place(box(b, 0.04, 0.03, 1.6, steel), [s * 1.12, 0.125, 0])));
+      im = new THREE.InstancedMesh(b.track(new THREE.BoxGeometry(cw * 0.72, 0.035, rh * 0.72)), b.track(new THREE.MeshBasicMaterial({ color: 0xffffff })), N);
+      for (let i = 0; i < N; i++) { dm.makeTranslation(-1.0 + cw * (0.5 + (i % cols)), 0.16, -0.65 + rh * (0.5 + Math.floor(i / cols))); im.setMatrixAt(i, dm); }
+      g.add(im);
+      b.track({ dispose: () => im!.dispose() });
+    } else {
+      g.add(place(rbox(b, 2.3, 0.04, 1.5, 0.03, mat(b, "#1b1f3a", { roughness: 0.4, metalness: 0.2 })), [0, 0.11, 0]));
+      [0.3, 0.1, -0.1].forEach((z, i) => g.add(place(box(b, 1.2 - i * 0.3, 0.008, 0.06, mat(b, "#7a82b0", { roughness: 0.5 })), [-0.5 + i * 0.15, 0.135, z])));
+    }
+    g.position.y = 0.9; g.rotation.set(1.0, -0.3, 0); root.add(g); shadows(g);
+    let wr = 0, sw = 0, lf = 0; const heatOn = p === "uso" ? 1 : 0;
+    const wear0 = (i: number) => { const x = i % cols, z = Math.floor(i / cols); return clamp01(Math.exp(-((x - 3.5) ** 2 + (z - 3) ** 2) / 9) * 1.2 + hash1(i + 3) * 0.1); };
+    const upd = (f: number) => {
+      lf = f;
+      if (im) {
+        for (let i = 0; i < N; i++) {
+          const x = i % cols, h = hash1(i * 1.7 + 0.5), thr = 0.3 + 0.45 * wr, fresh = clamp01(1 - Math.abs(h - thr) * 14);
+          const on = h < thr ? 1 : 0;
+          c.setRGB(0.1, 0.14, 0.32).lerp(new THREE.Color(0.2, 1.1, 1.5), on).addScalar(0.9 * fresh * (wr > 0 && wr < 1 ? 1 : 0));
+          const front = sw * (cols + 4) - 2, t = ease((front - x) / 4), hot = heatOn * (wear0(i) + (0.28 - wear0(i)) * t);
+          c.lerp(new THREE.Color(1.8, 0.45 + 0.4 * (1 - hot), 0.12), clamp01(hot * 1.1));
+          c.lerp(new THREE.Color(0.35, 1.3, 0.7), heatOn * t * 0.9);
+          if (sw > 0 && sw < 1) c.addScalar(1.0 * clamp01(1 - Math.abs(x - front) * 0.6));
+          im.setColorAt(i, c);
+        }
+        if (im.instanceColor) im.instanceColor.needsUpdate = true;
+      }
+      g.rotation.y = -0.3 + 0.1 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, upd),
+      act: (name, u) => {
+        if (name === "escribir") wr = ease(u);
+        if (name === "repartir") sw = clamp01(u);
+        upd(lf);
+      },
+    };
+  },
+};
