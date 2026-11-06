@@ -577,3 +577,21 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   0,10–0,12 y 0,21–0,53 de videos que no lo eran: no separa, así que no se añadió al QA. `publish` deja `meta.json` (gancho, estructura, cierre, hueco
   máximo, objetos…) y `tools/ingest_stats.py` cruza un CSV de estadísticas con eso; con menos de 10 videos por grupo avisa de que son anécdotas.
 
+## F18 · Completar el plan y la calidad como puerta
+- **D92 (5 nov) · El QA es una puerta.** `10_qa.md` incluye ahora las reglas del plan (`pipeline/qa_rules.py`: gancho ≤3,2 s con acción antes de 1 s, cámara
+  del gancho, hueco ≤3,5 s, sub-planos, cola y bucle, densidad de sonido, cama) además de lo técnico. `make_short.py` termina con error si hay filas ❌ y no publica;
+  `--allow-qa-warnings` lo salta (hay que decirlo en la entrega). Regla de proceso: **cada función nueva lleva su prueba** en `pipeline/tests/` y
+  `python tools/run_tests.py` (12 pruebas y `tsc`) debe dar TODO BIEN antes de comitear. Pruebas nuevas: `test_qa_rules`, `test_sfx`, `test_tts_cache`, `test_bed`,
+  `test_timeline` (ejecuta el TypeScript real: cola, sub-planos, zona segura, Insert, overlays), `test_catalog_sync`, `test_examples`, `test_tools`.
+- **D93 · Voz.** La síntesis se guarda **por frase** en `out/.tts_cache` (clave: motor, voz, muestra de referencia, velocidad y texto), y `meta.voice.pauseScale`
+  (0,5–1,5) cambia las pausas sin repetir nada: en `reloj-pulso` pasar de 1,0 a 0,8 tardó unos 80 s (solo la alineación) en vez de ~8 min. No hay GPU en este PC
+  (torch 2.6 solo CPU), así que la síntesis no se acelera; lo que se ahorra son las repeticiones.
+- **D94 · `Insert` y cama sonora.** `Insert` (B-roll de datos): corte de 15–60 fotogramas con el fondo oscurecido al 78 %, icono y texto de ≤18 letras; máx. 3, nunca
+  en el gancho, con `sources` si lleva un número. Cama opcional (`meta.music`, `musicMood`): acordes sintetizados sin melodía, 24 dB bajo la voz y agachados 6 dB mientras
+  hay voz; el QA exige ≥18 dB. Por defecto sigue sin música. Muestras en `out/sfx_muestras/cama_*.wav`.
+- **D95 · Herramientas y ejemplo.** `tools/gaps_report.py` (huecos de catálogo por frecuencia), `templates/examples/bluetooth-wifi/` como ejemplo vigente (71 s; `test_examples`
+  comprueba que pasa todas las reglas) y 4 objetos antiguos con etiquetas insuficientes ampliadas (`test_catalog_sync`). Sub-planos: el barrido pasa a 12 fotogramas.
+- **D96 · Resultado: `reloj-pulso` rehecho.** Guion de 203 palabras (+ melanina), 11 beats, 6 sub-planos y 1 Insert; 73,6 s. La puerta falló dos veces antes de pasar
+  (racha estática 48 > 45 en el giro y silencio 32,2 % > 32): cámara `spiral_in` en el giro y `pauseScale` 0,8. Pasa con poco margen (estática 42/45, silencio 31,9/32).
+  **Sin hacer:** recortar pausas de la voz a posteriori y el ahorro de síntesis en GPU (no hay), y no se rehicieron `microondas-metal` ni `hielo-flota`.
+

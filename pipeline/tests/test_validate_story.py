@@ -154,8 +154,10 @@ def f18(name, frag, st_w, n=1):
     fails += not ok
 
 
-f18("un Insert válido pasa", None, with_insert())
+f18("un Insert válido pasa", None, with_insert(text="DATO CLAVE"))
 f18("Insert en el gancho falla", "no va en el gancho", with_insert(beat=0))
+f18("Insert con número y sin sources falla", "lleva un número", with_insert())
+f18("Insert con número y con sources pasa", None, (lambda sw: (sw[0]["beats"][2].update(sources=["https://a", "https://b"]) or sw)[:2])(with_insert()))
 f18("Insert con hold largo falla", "hold", with_insert(hold=120))
 f18("Insert con texto largo falla", "texto del Insert", with_insert(text="UN TEXTO DEMASIADO LARGO PARA UN INSERTO"))
 f18("Insert con icono inexistente falla", "icono", with_insert(icon="no_existe"))

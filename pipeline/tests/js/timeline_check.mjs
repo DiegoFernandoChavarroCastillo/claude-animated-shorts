@@ -1,7 +1,7 @@
 // Comprobaciones de la línea de tiempo y la cámara (F18): se ejecuta desde studio/ con node. Imprime un JSON con las medidas.
 import { build } from "esbuild"; import path from "node:path"; import os from "node:os"; import fs from "node:fs";
 const out = path.join(fs.mkdtempSync(path.join(process.cwd(), ".tmp-tl-")), "t.mjs");
-await build({ stdin: { contents: 'export { buildTimeline } from "./src/explainer/timeline"; export { camAt } from "./src/explainer/camera"; export { StorySchema } from "./src/explainer/schema"; export { OVERLAYS } from "./src/explainer/overlays/registry"; export { SLOTS } from "./src/explainer/overlays/common"; export { OVERLAY, CAMERA } from "./src/explainer/style";',
+await build({ stdin: { contents: 'export { buildTimeline } from "./src/explainer/timeline"; export { camAt } from "./src/explainer/camera"; export { StorySchema } from "./src/explainer/schema"; export { OVERLAYS } from "./src/explainer/overlays/registry"; export { SLOTS } from "./src/explainer/overlays/common"; export { OVERLAY, CAMERA } from "./src/explainer/style"; export { insertSize } from "./src/explainer/overlays/Insert";',
   resolveDir: process.cwd(), loader: "ts" }, bundle: true, platform: "node", format: "esm", outfile: out, logLevel: "error", loader: { ".glb": "dataurl" }, jsx: "automatic", external: ["remotion", "react"] });
 const M = await import(out);
 fs.rmSync(path.dirname(out), { recursive: true, force: true });
@@ -27,4 +27,6 @@ for (let i = 0; i < tl.beats.length; i++) for (const s of tl.beats[i].shots) {
 }
 steps.sort((a, b) => a - b);
 res.medianStep = steps[Math.floor(steps.length / 2)]; res.maxStep = maxStep; res.maxShotStep = maxShotStep;
+res.insertWidths = Array.from({ length: 18 }, (_, k) => M.insertSize("A".repeat(k + 1)) * Math.max(k + 1, 4) * 0.78);
+res.insertMin = M.insertSize("A".repeat(18));
 console.log(JSON.stringify(res));

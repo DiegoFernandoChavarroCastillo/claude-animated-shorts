@@ -140,6 +140,8 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                     errs.append(f"{bid}: Insert con hold {o.get('hold')} (entre 15 y {MAX_INSERT_HOLD} frames)")
                 if len(str(o.get("text", ""))) > MAX_INSERT_TEXT or not o.get("text"):
                     errs.append(f"{bid}: el texto del Insert debe tener entre 1 y {MAX_INSERT_TEXT} letras")
+                if re.search(r"\d", str(o.get("text", ""))) and not b.get("sources"):
+                    errs.append(f"{bid}: el Insert lleva un número y el beat no tiene 'sources'")
                 if o.get("icon", "star") not in cat["icons"]:
                     errs.append(f"{bid}: Insert con icono '{o.get('icon')}' que no existe")
             if o.get("type") == "FlowArrow" and (not o.get("to") or (h and o["to"] not in h["anchors"])):

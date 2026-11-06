@@ -224,6 +224,11 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
     A partir de esa palabra la cámara barre (9 frames, sin corte duro) a otro preset: úsalos para cambiar de escala o de ángulo
     cada 3–4 s sin cambiar de objeto. Máximo 3 por beat, separados al menos 1,5 s, y cada uno con un preset distinto del anterior.
     Cuentan como evento de ritmo. En objetos planos o frontales, alterna `orbit_slow` con `push_in`.
+10e. **Insertos (F18):** un `Insert` es un corte de ~1 s con el fondo oscurecido, un icono y una cifra o frase de ≤18 letras
+    (`{"type": "Insert", "at": "palabra", "text": "1600 SALTOS", "icon": "bolt", "hold": 36}`). Úsalo para enfatizar el dato más fuerte o romper un
+    beat largo; máximo 3 por video, nunca en el gancho, `hold` entre 15 y 60 frames. Cuenta como evento de ritmo. Si lleva un número, el beat necesita `sources`.
+10f. **Cama sonora (opcional):** `"music": true` y `"musicMood": "tech|calm|warm"` en `meta` añaden un colchón de acordes muy bajo (24 dB bajo la voz);
+    por defecto no hay música. Si dudas, déjalo apagado.
 10d. **Algo para ver dos veces (F17):** deja un detalle (una etiqueta, un número pequeño) que sale un segundo en un beat intermedio y solo se
     entiende al repetir el video; es lo que hace que el espectador vuelva.
 10a. **Gancho y ritmo (F16, lo comprueba el validador):** el primer beat lleva una acción que empiece antes de 1 s (con `at` en la 1.ª o 2.ª palabra) y una cámara que no sea `drift`; en todo el video no pasan más de 3,5 s sin un cambio en pantalla (inicio de beat, acción u overlay): en los beats largos pon una acción o un overlay a mitad. Los overlays viven por encima del 70 % del alto (slots `top`…`bottom`): debajo están la descripción y los botones de las apps.

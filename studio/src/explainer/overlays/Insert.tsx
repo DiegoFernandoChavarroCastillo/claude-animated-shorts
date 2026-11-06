@@ -10,16 +10,18 @@ import { Icon } from "./icons";
 export type InsertProps = BaseProps & { text: string; sub?: string; icon?: string; hold?: number };
 
 export const INSERT_HOLD_DEFAULT = 36;
+/** tamaño de letra: el texto no pasa de ~760 px de ancho (como BigWord); con 18 letras baja a 54 px */
+export const insertSize = (text: string) => Math.min(150, Math.floor(760 / (Math.max(text.length, 4) * 0.78)));
 
 export const Insert: React.FC<InsertProps> = ({ dur, text, sub, icon = "star", hold = INSERT_HOLD_DEFAULT, color: c, slot = "center" }) => {
   const total = Math.min(dur, hold), { f, enter } = useAnim(total);
   if (f >= total) return null;
   const k = enter(0), col = tok(c, PALETTE.warm.gold);
   const out = interpolate(f, [total - 6, total], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const size = Math.min(150, Math.floor(820 / (Math.max(text.length, 4) * 0.62)));
+  const size = insertSize(text);
   return (
     <>
-      <AbsoluteFill style={{ background: "rgba(5,8,20,0.5)", opacity: out * k }} />
+      <AbsoluteFill style={{ background: "rgba(5,8,20,0.78)", opacity: out * k }} />
       <Place slot={slot} style={{ textAlign: "center", opacity: out * k, transform: `scale(${0.8 + 0.2 * k})` }}>
         <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 150, height: 150, borderRadius: 999, border: `4px solid ${col}`, boxShadow: `0 0 36px ${col}`, background: PALETTE.ui.card }}>
           <Icon name={icon} size={84} color={col} stroke={2.6} />

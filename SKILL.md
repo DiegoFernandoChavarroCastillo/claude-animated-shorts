@@ -101,6 +101,13 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   por beat); con cierre `bucle` el último beat vuelve al entorno y objeto del primero, y la última frase no se despide (patrones de bucle
   en `templates/prompts/script_es.md`); guarda algo que solo se entienda al repetir el video. `publish` también deja `meta.json` y
   `PY tools/ingest_stats.py stats.csv` cruza tus estadísticas con el gancho, estructura y cierre de cada video.
+- **Calidad como puerta (F18):** `make_short.py` **para con error si el QA final tiene avisos** (`10_qa.md`, filas ❌): un video no está terminado
+  hasta que todo está en ✅ (`--allow-qa-warnings` solo si el usuario lo acepta, y se dice en la entrega). El QA ya comprueba, además de lo
+  técnico, las reglas del plan: gancho ≤3,2 s con acción antes de 1 s, hueco ≤3,5 s sin cambios en pantalla, cola y bucle, sub-planos, densidad
+  de sonido y cama sonora. **Toda función nueva lleva su prueba** en `pipeline/tests/` y se corre con `PY tools/run_tests.py` (tiene que dar TODO BIEN antes de comitear).
+- **Insertos y cama (F18):** `Insert` es un corte de ~1 s con icono y cifra o frase grande (B-roll de datos, máx. 3 por video, no en el gancho; ver el prompt del
+  story). `meta.music: true` añade una cama sonora sintetizada 24 dB bajo la voz (`musicMood`: tech, calm, warm; por defecto sin música). `meta.voice.pauseScale`
+  (0,5–1,5) acorta o alarga las pausas; la voz se guarda **por frase** en `out/.tts_cache`, así que cambiar una línea o las pausas no repite toda la síntesis.
 - **Gancho y ritmo (F16):** el primer beat se dice en ≤3 s y lleva una **acción antes de 1 s** (cámara que no sea `drift`); en todo el video
   **algo cambia en pantalla (corte, acción u overlay) al menos cada 3,5 s**; los overlays van por encima del 70 % del alto (debajo están
   la descripción y los botones de las apps). El validador lo comprueba con `words.json`.
@@ -169,6 +176,7 @@ Entrega:
 | Acciones sincronizadas con la voz | `studio/src/explainer/actions/index.ts` (genéricas y marcadores), `HeroDef.actions` + `HeroInstance.act` (propias de cada objeto) |
 | Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`, y sus segundas tandas `*2.ts`), `overlays/` (`Guides`, `Panels`, `Meters`, `Diagrams`) |
 | Buscar en el catálogo, probar objetos | `tools/catalog_search.py`, `tools/gallery.py` (galería con stills), `tools/add_heroes.py`; prefabs de cada video en `heroes/primitive/custom.ts` |
+| Pruebas y huecos | `tools/run_tests.py` (todas las pruebas y `tsc`), `tools/gaps_report.py` (huecos de catálogo por frecuencia) |
 | Estadísticas | `tools/ingest_stats.py` (CSV de YouTube Studio/TikTok → `out/stats.json` y resumen por gancho, estructura y cierre), `out/<id>/meta.json` |
 | Sonidos | `pipeline/sfx_synth.py` (19), `pipeline/sfx_plan.py` (qué suena y director de acentos), `tools/sfx_preview.py` (escucharlos) |
 | Pruebas | `.venv/bin/python pipeline/tests/test_validate_script.py` (y `test_validate_story.py`, `test_prosody.py`) |

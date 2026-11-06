@@ -34,4 +34,5 @@ check("zona segura: los slots de overlays están por encima del 72 % del alto", 
 check("los slots están ordenados de arriba abajo", list(slots.values()) == sorted(slots.values()))
 check("el slot más alto queda bajo la banda de subtítulos (30 %)", min(slots.values()) > 0.30)
 check("overlays: el catálogo y el código tienen los mismos", set(cat["overlays"]) == set(m["overlays"]), set(cat["overlays"]) ^ set(m["overlays"]))
+check("Insert: el texto cabe en ≤ 760 px con cualquier largo (1–18 letras) y nunca baja de 40 px", max(m["insertWidths"]) <= 760 and m["insertMin"] >= 40, (max(m["insertWidths"]), m["insertMin"]))
 sys.exit(1 if fails else 0)
