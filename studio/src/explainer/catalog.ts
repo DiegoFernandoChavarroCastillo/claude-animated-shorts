@@ -61,6 +61,7 @@ export const storyErrors = (story: Story): string[] => {
       if (h.kind !== s.hero.kind) errs.push(`${b.id}: hero.kind "${s.hero.kind}" no corresponde a ${s.hero.asset} (${h.kind})`);
       if (s.hero.pose && !h.poses.includes(s.hero.pose)) errs.push(`${b.id}: pose "${s.hero.pose}" no existe para ${s.hero.asset}`);
     }
+    for (const sh of b.shots) if (!(sh.camera.preset in c.camera)) errs.push(`${b.id}: shot con cámara "${sh.camera.preset}" que no existe`);
     const cam = s.camera;
     if (cam.preset === "follow_anchor" && (!cam.anchor || (h && !h.anchors.includes(cam.anchor)))) errs.push(`${b.id}: follow_anchor necesita camera.anchor, un ancla de ${s.hero.asset}`);
     for (const o of b.overlays) {

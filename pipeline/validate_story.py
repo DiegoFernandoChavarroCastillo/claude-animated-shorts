@@ -31,6 +31,8 @@ HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer be
 MAX_EVENT_GAP_S = 3.5    # tiempo máximo sin corte, acción u overlay
 LOOP_TAIL_MAX_S = 0.3    # con cierre `bucle`, la cola tras la última palabra (meta.tailS)
 FPS = 30
+MAX_SHOTS = 3            # sub-planos por beat (F17)
+MIN_SHOT_GAP_S = 1.5     # separación mínima entre dos cambios de plano dentro de un beat
 
 
 def resolves(at, text: str) -> bool:
@@ -67,6 +69,7 @@ def event_times(story: dict, words: list) -> list[float]:
         ev.append(a_s)
         ev += [at_seconds(b, ws, o.get("at"), a_s) for o in b.get("overlays", [])]
         ev += [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("actions", [])]
+        ev += [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("shots", [])]
     return sorted(ev)
 
 
@@ -144,6 +147,19 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: acción {t} con at '{a.get('at')}' que no es una palabra del beat")
             if a.get("dur") is not None and not isinstance(a["dur"], int):
                 errs.append(f"{bid}: acción {t} con dur que no es un entero de frames")
+        shots = b.get("shots", [])
+        if len(shots) > MAX_SHOTS:
+            errs.append(f"{bid}: {len(shots)} sub-planos (máximo {MAX_SHOTS})")
+        prev = b.get("scene", {}).get("camera", {})
+        for x in shots:
+            cp = x.get("camera", {})
+            if cp.get("preset") not in cat["camera"]:
+                errs.append(f"{bid}: shot con cámara '{cp.get('preset')}' que no existe")
+            if not resolves(x.get("at"), text):
+                errs.append(f"{bid}: shot con at '{x.get('at')}' que no es una palabra del beat")
+            if cp.get("preset") == prev.get("preset") and cp.get("deg") == prev.get("deg") and cp.get("dir") == prev.get("dir"):
+                errs.append(f"{bid}: un sub-plano repite la cámara anterior ({cp.get('preset')}): cambia de preset para que se note")
+            prev = cp
         for x in b.get("sfx", []):
             if x.get("type") not in cat["sfx"]:
                 errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
@@ -194,6 +210,11 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
             if gap > MAX_EVENT_GAP_S:
                 errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (máximo {MAX_EVENT_GAP_S} s): "
                             f"añade una acción o un overlay en ese tramo")
+    # F17 · bucle visual: el último beat vuelve al entorno y al objeto del primero
+    if closing == "bucle" and len(beats) > 1:
+        s0, s1 = beats[0].get("scene", {}), beats[-1].get("scene", {})
+        if s0.get("env") != s1.get("env") or s0.get("hero", {}).get("asset") != s1.get("hero", {}).get("asset"):
+            errs.append(f"el cierre es `bucle`: el último beat debe volver al entorno ({s0.get('env')}) y al objeto ({s0.get('hero', {}).get('asset')}) del primero")
     # F16 · bucle: con cierre `bucle` el video acaba casi sobre la última palabra
     if closing == "bucle" and story["meta"].get("tailS", 1.0) > LOOP_TAIL_MAX_S:
         errs.append(f"el cierre es `bucle` y meta.tailS vale {story['meta'].get('tailS', 1.0)} (por defecto 1.0): pon meta.tailS = 0.2 "

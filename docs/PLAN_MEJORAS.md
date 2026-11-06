@@ -86,6 +86,9 @@ predecibles que dices que hacen deslizar, y **todos los videos terminan con 1,0 
 **Primera tanda hecha (F16):** L1, L2, H1, H2, P1, P3, P8, O2. Medido con P1 en los videos ya hechos: el hueco más largo sin cambios
 fue de 4,8 s en `reloj-pulso`, 6,0 s en `microondas-metal` y 6,7 s en `hielo-flota`. El resto sigue pendiente.
 
+**Segunda tanda hecha (F17):** L3 (patrones y validador de despedidas), L4 solo la parte de validador (el último beat vuelve al entorno y
+objeto del primero; el QA «último fotograma ≈ primero» **no se hizo**: la métrica no separaba bien, ver D91), L5, H3, H4, P2, P6, O1.
+
 ## Orden recomendado
 
 1. **Una tanda de ~1 sesión (todo bajo):** L1, L2, H1, H2, P1 (medir primero), P3, P8, O2. Es lo que más cambia el resultado con menos riesgo.

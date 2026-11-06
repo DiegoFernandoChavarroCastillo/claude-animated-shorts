@@ -8,7 +8,7 @@ video, Claude propone 3 de cada tipo, recomienda uno y el usuario elige (`SKILL.
 
 | | Opciones |
 |---|---|
-| Gancho (7) | `pregunta`, `mito`, `dato`, `y_si`, `escena`, `reto`, `error` |
+| Gancho (10) | `pregunta`, `mito`, `dato`, `y_si`, `escena`, `reto`, `error`, `negativo`, `coste`, `contradiccion` (los tres últimos, de F17: más disruptivos, con conflicto en el primer segundo) |
 | Estructura (5) | `mito` (la original), `lista`, `versus`, `historia`, `cadena` |
 | Cierre (5) | `pregunta`, `envia`, `sigue`, `bucle`, `reto_casa` |
 

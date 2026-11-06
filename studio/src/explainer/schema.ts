@@ -17,17 +17,19 @@ export const OverlaySpecSchema = z.looseObject({ type: z.string(), at: AtSchema.
 export const ActionSpecSchema = z.looseObject({ type: z.string(), at: AtSchema.optional(), dur: z.number().int().min(1).max(300).optional() });
 export const SfxSpecSchema = z.object({ type: z.string(), at: AtSchema });
 
+export const CameraSchema = z.object({
+  preset: z.enum(CAMERA_PRESETS),
+  rate: z.number().min(0).max(0.6).optional(),   // %/frame (push_in)
+  deg: z.number().min(-90).max(90).optional(),   // grados totales (orbit_slow, orbit_fast, spiral_in, arc_over, dutch_tilt)
+  dir: z.enum(["left", "right"]).optional(),     // drift, dolly_side, whip_pan
+  anchor: z.string().optional(),                 // follow_anchor: ancla del héroe
+});
+
 export const SceneSchema = z.object({
   env: z.string(),
   light: z.enum(LIGHT_NAMES),
   hero: z.object({ kind: z.enum(HERO_KINDS), asset: z.string(), pose: z.string().optional() }),
-  camera: z.object({
-    preset: z.enum(CAMERA_PRESETS),
-    rate: z.number().min(0).max(0.6).optional(),   // %/frame (push_in)
-    deg: z.number().min(-90).max(90).optional(),   // grados totales (orbit_slow, orbit_fast, spiral_in, arc_over, dutch_tilt)
-    dir: z.enum(["left", "right"]).optional(),     // drift, dolly_side, whip_pan
-    anchor: z.string().optional(),                 // follow_anchor: ancla del héroe
-  }),
+  camera: CameraSchema,
   dof: z.number().min(0).max(24).optional(),       // cInf en px a 1080
 });
 
@@ -39,6 +41,8 @@ export const BeatSchema = z.object({
   scene: SceneSchema,
   overlays: z.array(OverlaySpecSchema).default([]),
   actions: z.array(ActionSpecSchema).default([]),
+  /** sub-planos (F17): a mitad de beat la cámara pasa, con un barrido rápido, a otro preset desde la palabra `at` */
+  shots: z.array(z.object({ at: AtSchema, camera: CameraSchema })).default([]),
   sfx: z.array(SfxSpecSchema).default([]),
   transition: z.enum(TRANSITIONS).default("glide"),  // transición HACIA el beat siguiente
   sources: z.array(z.string()).optional(),

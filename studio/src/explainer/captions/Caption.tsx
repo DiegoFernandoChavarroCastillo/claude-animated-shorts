@@ -40,6 +40,8 @@ const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keywo
                   </div>
                 ) : null}
                 <span style={{
+                  // F17: la palabra clave entra con un pequeño golpe de escala (1,16 → 1 en 8 frames)
+                  transform: kw && isActive ? `scale(${1 + 0.16 * Math.max(0, 1 - (f - wordFrame(words[i], fps)) / 8) ** 2})` : undefined,
                   fontFamily: CAPTION_FAMILY, fontSize: fs, lineHeight: 1, whiteSpace: "nowrap", color: col,
                   fontWeight: isActive ? CAPTION.activeWeight : CAPTION.spokenWeight, textShadow: CAPTION.shadow,
                 }}>{words[i].w}</span>

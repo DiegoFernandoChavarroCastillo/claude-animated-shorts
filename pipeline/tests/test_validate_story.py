@@ -107,4 +107,32 @@ f16("5 s sin cambios falla", "sin ningún cambio en pantalla", beat_len=5.5, ev_
 f16("cierre bucle con cola de 1 s falla", "meta.tailS", closing="bucle")
 f16("cierre bucle con cola de 0,2 s pasa", None, closing="bucle", tail=0.2)
 f16("otro cierre con cola de 1 s pasa", None, closing="reto_casa")
+
+
+# F17: sub-planos y bucle visual
+def shots_story(shots, last_env=None):
+    st, w = timed(tail=0.2)
+    st["beats"][1]["shots"] = shots
+    if last_env:
+        st["beats"][-1]["scene"]["env"] = last_env
+    return st, w
+
+
+def f17(name, frag, shots=(), closing=None, last_env=None):
+    global fails
+    st, w = shots_story(list(shots), last_env)
+    errs = validate(st, w, closing=closing)
+    ok = has(errs, frag) if frag else not any(k in " ".join(errs) for k in ("sub-plano", "shot", "bucle"))
+    print("OK " if ok else "MAL", f"F17: {name}", "" if ok else errs)
+    fails += not ok
+
+
+S = lambda at, p: {"at": at, "camera": {"preset": p}}  # noqa: E731
+f17("un sub-plano válido pasa", None, [S("tres", "orbit_slow")])
+f17("sub-plano con otra cámara que no existe falla", "no existe", [S("tres", "volar")])
+f17("sub-plano que repite la cámara falla", "repite la cámara", [S("tres", "push_in")])
+f17("sub-plano con at que no es palabra falla", "no es una palabra", [S("zzz", "orbit_slow")])
+f17("4 sub-planos falla", "máximo 3", [S("una", "orbit_slow"), S("dos", "drift"), S("tres", "crane_up"), S("cuatro", "pull_out")])
+f17("bucle con último beat en otro entorno falla", "debe volver al entorno", closing="bucle", last_env="cocina")
+f17("bucle con último beat en el mismo entorno pasa", None, closing="bucle")
 sys.exit(1 if fails else 0)

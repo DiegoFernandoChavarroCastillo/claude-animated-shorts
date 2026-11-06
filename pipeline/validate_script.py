@@ -218,7 +218,12 @@ HOOK_MARKS = {
     "y_si": (r"que pasaria|que ocurriria|y si |imagina|que sucederia", r"what if|what would happen|imagine|what happens if"),
     "reto": (r"apuesto|te reto|a que no|reto|desafio|adivina|seguro que no", r"bet you|bet i|challenge|i dare|dare you|guess|i bet"),
     "error": (r"llevas|toda la vida|equivoc|erroneamente|mal |error", r"wrong|mistake|been doing|your whole life|you've been"),
+    "negativo": (r"no vuelvas|deja de|nunca |no hagas|jamas|no pongas|no sigas|evita ", r"stop |don't |never |do not|quit |avoid "),
+    "coste": (r"te cuesta|te cuestan|pierdes|te quita|te roba|pagas|gastas|te sale|desperdicias", r"costs you|cost you|costing you|losing|robs|draining|wasting|paying"),
+    "contradiccion": (r"al reves|lo contrario|no es lo que|no es como|no funciona como|todo lo que sabes|no es asi", r"backwards|the opposite|not what|isn't how|everything you know|upside"),
 }
+FAREWELL = (r"gracias|adios|hasta (luego|pronto|la proxima)|nos vemos|suscrib|sigueme|comenta|dale (like|me gusta)|dejame|deja tu|hasta aqui",
+            r"thanks|thank you|goodbye|bye|see you|subscribe|follow me|comment|like this|that's all")
 CLOSING_MARKS = {
     "envia": (r"envia|enviasel|compart|etiqueta|mandas|mandaselo", r"send|share|tag|forward"),
     "sigue": (r"sigue|siguem|suscrib|siguenos", r"follow|subscribe"),
@@ -253,6 +258,8 @@ def closing_error(kind: str, cta: str, hook: str, lang: str) -> str | None:
     if kind == "pregunta":
         return None if "?" in cta else "un cierre 'pregunta' debe ser una pregunta (llevar '?')"
     if kind == "bucle":
+        if re.search(FAREWELL[1 if lang == "en" else 0], t):
+            return "un cierre 'bucle' no puede despedirse (gracias, adiós, suscríbete…): la última frase debe leerse como continuación del gancho"
         return None if shared_words(hook, cta, lang) else "un cierre 'bucle' debe retomar una palabra del gancho (de 5 letras o más)"
     pat = CLOSING_MARKS.get(kind)
     if pat and not re.search(pat[1 if lang == "en" else 0], t):

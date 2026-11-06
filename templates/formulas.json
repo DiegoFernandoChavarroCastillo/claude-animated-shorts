@@ -56,6 +56,30 @@
       "ejemplo_es": "Llevas años creyendo que el cielo es azul por el mar.",
       "ejemplo_en": "You've been wrong about why the sky is blue.",
       "por_que": "Toca un dolor (equivocarse) y promete la corrección."
+    },
+    "negativo": {
+      "nombre": "Prohibición",
+      "patron": "Una orden en negativo al espectador: «no vuelvas a…», «deja de…», «nunca…».",
+      "mejor_para": "Hábitos y hacks con un error concreto que evitar (cargar el móvil, mezclar productos, guardar comida).",
+      "ejemplo_es": "No vuelvas a cargar tu celular así hasta ver esto.",
+      "ejemplo_en": "Stop charging your phone like this until you see this.",
+      "por_que": "Una prohibición crea conflicto en el primer segundo y promete una razón concreta."
+    },
+    "coste": {
+      "nombre": "Coste oculto",
+      "patron": "Algo que le cuesta o le quita al espectador sin que lo note (energía, dinero, tiempo, salud).",
+      "mejor_para": "Temas con un gasto invisible: batería, luz, agua, sueño, atención.",
+      "ejemplo_es": "Esto te cuesta batería cada día y no lo notas.",
+      "ejemplo_en": "This is costing you battery every day and you don't notice.",
+      "por_que": "Habla de una pérdida propia, que pesa más que un dato neutro."
+    },
+    "contradiccion": {
+      "nombre": "Al revés de lo que sabes",
+      "patron": "Dice que lo que el espectador sabe de algo está al revés o es lo contrario.",
+      "mejor_para": "Temas donde la intuición se equivoca (calor y frío, peso y flotación, velocidad).",
+      "ejemplo_es": "Lo que te enseñaron del frío está al revés.",
+      "ejemplo_en": "What you were taught about cold is backwards.",
+      "por_que": "Choca con una certeza del espectador y deja claro que el video la desmonta."
     }
   },
   "structures": {
@@ -216,7 +240,7 @@
     }
   },
   "elegir": {
-    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
+    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
     "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
     "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar."
   }

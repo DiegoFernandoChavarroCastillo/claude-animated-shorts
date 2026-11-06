@@ -40,12 +40,14 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 ### 1b. Elegir gancho, estructura y cierre (pregunta siempre antes de cada video)
 
 Cuando ya hay hechos con fuente y **antes de escribir el guion**, Claude propone y el usuario elige. El catálogo está en
-`templates/formulas.json` (7 tipos de gancho, 5 estructuras, 5 cierres); el criterio de elección, en su apartado `elegir`.
+`templates/formulas.json` (10 tipos de gancho, 5 estructuras, 5 cierres); el criterio de elección, en su apartado `elegir`.
 
 1. Mira qué usaron los últimos videos: `PY tools/recent_formulas.py 5`. No repitas el mismo tipo de gancho ni la misma
    estructura que el video anterior, salvo que el tema lo pida de verdad.
 2. Según los hechos de `01_research.md`, elige **tres candidatos de cada cosa** y decide cuál es el mejor:
-   - **Gancho:** tres tipos distintos, cada uno ya redactado para este tema (≤12 palabras, 2.ª persona, concreto).
+   - **Gancho:** tres tipos distintos, cada uno ya redactado para este tema (≤12 palabras, 2.ª persona, concreto). **Puntúa** antes
+     de proponer (0–2 cada criterio): concreto (nombra la cosa), conflicto (choca con algo que cree o hace), 2.ª persona, promesa que el
+     video cumple, se dice en ≤3 s (8–9 palabras). Propón los tres de mayor suma y recomienda el primero.
    - **Estructura:** tres, cada una con su esquema en una línea ("gancho → tres datos → giro → cierre").
    - **Cierre:** tres, con la frase ya redactada.
    **Cierre (F16): recomienda `bucle` salvo que el tema pida otra cosa.** `envia`, `pregunta` y `sigue` son despedidas predecibles que
@@ -95,6 +97,10 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   en entornos oscuros evita `metalness` alto); (3) un prefab plano o frontal pide cámara con movimiento real (`orbit_slow`,
   `spiral_in`, `push_in` rápido), o la racha estática del QA falla; (4) no más de 2 por video, el resto va a `05_gaps.md`.
   Medido en 2 videos: ~10–15 min por prefab, sin coste de render.
+- **Sub-planos, bucle y datos (F17):** en beats largos (>~5 s) usa `shots` (la cámara barre a otro preset a mitad de beat, sin corte duro, máx. 3
+  por beat); con cierre `bucle` el último beat vuelve al entorno y objeto del primero, y la última frase no se despide (patrones de bucle
+  en `templates/prompts/script_es.md`); guarda algo que solo se entienda al repetir el video. `publish` también deja `meta.json` y
+  `PY tools/ingest_stats.py stats.csv` cruza tus estadísticas con el gancho, estructura y cierre de cada video.
 - **Gancho y ritmo (F16):** el primer beat se dice en ≤3 s y lleva una **acción antes de 1 s** (cámara que no sea `drift`); en todo el video
   **algo cambia en pantalla (corte, acción u overlay) al menos cada 3,5 s**; los overlays van por encima del 70 % del alto (debajo están
   la descripción y los botones de las apps). El validador lo comprueba con `words.json`.
@@ -163,6 +169,7 @@ Entrega:
 | Acciones sincronizadas con la voz | `studio/src/explainer/actions/index.ts` (genéricas y marcadores), `HeroDef.actions` + `HeroInstance.act` (propias de cada objeto) |
 | Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`, y sus segundas tandas `*2.ts`), `overlays/` (`Guides`, `Panels`, `Meters`, `Diagrams`) |
 | Buscar en el catálogo, probar objetos | `tools/catalog_search.py`, `tools/gallery.py` (galería con stills), `tools/add_heroes.py`; prefabs de cada video en `heroes/primitive/custom.ts` |
+| Estadísticas | `tools/ingest_stats.py` (CSV de YouTube Studio/TikTok → `out/stats.json` y resumen por gancho, estructura y cierre), `out/<id>/meta.json` |
 | Sonidos | `pipeline/sfx_synth.py` (19), `pipeline/sfx_plan.py` (qué suena y director de acentos), `tools/sfx_preview.py` (escucharlos) |
 | Pruebas | `.venv/bin/python pipeline/tests/test_validate_script.py` (y `test_validate_story.py`, `test_prosody.py`) |
 | Orquestador y etapas | `pipeline/` (`make_short.py`, `voice.py`, `tts/`, `align.py`, `mix.py`, `voice_fx.py`…) |

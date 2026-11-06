@@ -27,9 +27,21 @@ thing, the fact or the moment. And the video must **answer what the hook promise
 | `y_si` | ¿Y si…? | Una hipótesis de qué pasaría si algo cotidiano fuera distinto. | What if ice sank in your glass? |
 | `escena` | Escena en curso | Un momento en presente, en 2.ª persona, ya empezado (sin introducción ni saludo). | You're in the shower and your fingers turn into prunes. |
 | `reto` | Apuesta o reto | Un reto directo al espectador: a que no sabes… | Bet you can't explain why the sunset is red. |
+| `negativo` | Prohibition | A negative order: "stop…", "never…", "don't…". | Stop charging your phone like this until you see this. |
+| `coste` | Hidden cost | Something it costs or takes from them without noticing. | This is costing you battery every day and you don't notice. |
+| `contradiccion` | Backwards | Says what they know about something is backwards. | What you were taught about cold is backwards. |
 | `error` | Error común | Dice que el espectador lleva tiempo haciendo o creyendo algo mal. | You've been wrong about why the sky is blue. |
 
-### Structures (`structure:`; default `mito`)
+### Loop closing: three ways to make the last line join the hook (F17)
+
+The last line **never says goodbye** and reads as a continuation of the first (the video repeats by itself). Pick one:
+1. **Echo:** reuse the hook's word or image.
+2. **Open line:** end on a colon or an unfinished clause that the hook completes.
+3. **Returned question:** answer, then send the viewer back to the start.
+
+It must share at least one word of 5+ letters with the hook (the validator requires it) and cannot say "thanks", "bye",
+"subscribe" or "comment". **Something to see twice:** keep one detail (a number, a label) that shows for a second and only
+makes sense on the second viewing. (`structure:`; default `mito`)
 
 | `structure:` | Roles in order | What it is |
 |---|---|---|

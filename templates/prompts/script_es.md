@@ -28,6 +28,20 @@ dato o el momento. Y el video tiene que **contestar lo que el gancho promete** a
 | `escena` | Escena en curso | Un momento en presente, en 2.ª persona, ya empezado (sin introducción ni saludo). | Estás en la ducha y tus dedos parecen pasas. |
 | `reto` | Apuesta o reto | Un reto directo al espectador: a que no sabes… | Apuesto a que no sabes por qué el atardecer es rojo. |
 | `error` | Error común | Dice que el espectador lleva tiempo haciendo o creyendo algo mal. | Llevas años creyendo que el cielo es azul por el mar. |
+| `negativo` | Prohibición | Una orden en negativo: «no vuelvas a…», «deja de…», «nunca…». | No vuelvas a cargar tu celular así hasta ver esto. |
+| `coste` | Coste oculto | Algo que le cuesta o le quita sin que lo note (batería, dinero, sueño). | Esto te cuesta batería cada día y no lo notas. |
+| `contradiccion` | Al revés de lo que sabes | Dice que lo que sabe de algo está al revés. | Lo que te enseñaron del frío está al revés. |
+
+### Cierre en bucle: tres maneras de que la última frase empalme con el gancho (F17)
+
+La última frase **no se despide** y se lee como continuación de la primera (el video se repite solo). Elige una:
+1. **Eco:** retoma la palabra o la imagen del gancho. Gancho «¿Por qué flota el hielo?» → cierre «…y por eso, la próxima vez que mires tu vaso, fíjate en el hielo que».
+2. **Frase abierta:** termina en dos puntos o sin cerrar, y el gancho la completa. Cierre «Y por eso, cada vez que conectes tu bluetooth, recuerda lo que casi todos creen:» → gancho «Te dijeron que el bluetooth es un wifi pequeño.»
+3. **Pregunta devuelta:** contesta y devuelve al principio. Cierre «Así que ya lo sabes, pero ¿lo habrías adivinado?» → gancho «Apuesto a que no sabías esto.»
+
+Tiene que compartir al menos una palabra de 5 letras o más con el gancho (el validador lo exige) y no puede decir «gracias», «adiós»,
+«suscríbete» ni «comenta». **Algo para ver dos veces:** guarda un detalle (un número, una etiqueta) que aparece un segundo y
+solo se entiende al repetir el video.
 
 ### Estructuras (`structure:`; por defecto `mito`)
 

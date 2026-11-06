@@ -565,3 +565,15 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   alto (`heroScreenYK`) y los slots quedan en `center` 0,52, `lower` 0,61, `bottom` 0,67 (zona hasta 0,72). Prefab nuevo: `espectro_canales`
   (79 canales, barra que salta, bloque ancho del wifi, acción `esquivar`). Cambia el encuadre de todos los videos nuevos; los viejos no se rehicieron.
 
+## F17 · Segunda tanda: bucle, ganchos, sub-planos y datos
+- **D89 (5 nov) · Ganchos nuevos y puntuación.** Tres tipos más (`negativo`, `coste`, `contradiccion`; 10 en total) con su forma en el validador, y una
+  rúbrica de 5 criterios (0–2) para elegir los tres que se proponen. Cierre `bucle`: tres patrones en el prompt (eco, frase abierta, pregunta
+  devuelta) y el validador rechaza despedidas («gracias», «adiós», «suscríbete», «comenta»…). Detalle para ver dos veces: solo guía en el prompt.
+- **D90 · Sub-planos (`shots`).** Un beat puede cambiar de preset de cámara a mitad (`at` = palabra): la cámara barre en 9 frames desde donde estaba, sin
+  corte duro, así que el QA de cortes sigue en 0. Máximo 3 por beat, preset distinto del anterior, cuentan como evento de ritmo. Probado en
+  `bluetooth-wifi` (6 sub-planos en 5 beats): racha estática 19 → 9 fotogramas. Los subtítulos de la palabra clave entran con un golpe de escala.
+- **D91 · Bucle visual y datos.** El validador exige que, con `bucle`, el último beat vuelva al entorno y objeto del primero. Se midió la diferencia entre
+  el primer y el último fotograma (sin la banda de subtítulos): `bluetooth-wifi` (diseñado como bucle) 0,071 de diferencia y 0,38 de correlación frente a
+  0,10–0,12 y 0,21–0,53 de videos que no lo eran: no separa, así que no se añadió al QA. `publish` deja `meta.json` (gancho, estructura, cierre, hueco
+  máximo, objetos…) y `tools/ingest_stats.py` cruza un CSV de estadísticas con eso; con menos de 10 videos por grupo avisa de que son anécdotas.
+

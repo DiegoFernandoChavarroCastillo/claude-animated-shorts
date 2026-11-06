@@ -1,4 +1,4 @@
-"""Etapa 10: paquete de publicación -> 11_publish.md y 11_cover.png (F16).
+"""Etapa 10: paquete de publicación -> 11_publish.md, 11_cover.png y meta.json (F16, F17).
 
     python pipeline/publish_pack.py --id <id>
 
@@ -93,6 +93,23 @@ Borrador generado por `pipeline/publish_pack.py`: revísalo y afínalo antes de 
 """
 
 
+def meta(d: Path) -> dict:
+    """datos del video para cruzarlos con las estadísticas de las plataformas (tools/ingest_stats.py)"""
+    import datetime
+    from validate_story import event_gap, script_closing
+    md = (d / "02_SCRIPT.md").read_text(encoding="utf-8")
+    story, words = load_json(d / "05_story.json"), load_json(d / "04_words.json")
+    head = lambda k: (re.search(rf"^{k}:\s*(\w+)", md, re.M) or [None, None])[1]  # noqa: E731
+    gap, _ = event_gap(story, words)
+    return {"id": d.name, "title": story["meta"]["title"], "lang": story["meta"]["lang"], "date": datetime.date.today().isoformat(),
+            "hook": head("hook"), "structure": head("structure") or "mito", "closing": script_closing(md),
+            "duration_s": round(words[-1]["end"] + story["meta"].get("tailS", 1.0), 1), "words": len(words),
+            "hook_spoken_s": round(max(w["end"] for w in words if w["beat"] == story["beats"][0]["id"]), 1),
+            "beats": len(story["beats"]), "max_event_gap_s": round(gap, 1),
+            "heroes": sorted({b["scene"]["hero"]["asset"] for b in story["beats"]}),
+            "shots": sum(len(b.get("shots", [])) for b in story["beats"])}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--id", required=True)
@@ -102,6 +119,7 @@ def main():
         if not (d / f).exists():
             raise PipelineError(f"falta {d / f}")
     (d / "11_publish.md").write_text(build(d), encoding="utf-8")
+    (d / "meta.json").write_text(json.dumps(meta(d), ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[publish] {d / '11_publish.md'} y 11_cover.png")
 
 

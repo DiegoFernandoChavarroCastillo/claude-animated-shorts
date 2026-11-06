@@ -11,6 +11,7 @@ export type BeatT = {
   a: number; b: number;        // frames [a, b)
   words: number[];             // índices globales de sus palabras
   tIn: Trans | null; tOut: Trans | null;
+  shots: { start: number; camera: Beat["scene"]["camera"] }[];   // sub-planos resueltos a frames (F17)
 };
 export type OverlayT = { beat: number; frame: number; end: number; spec: OverlaySpec; key: string };
 /** acción resuelta: empieza en `start` (palabra `at`), sube durante `dur` frames y se mantiene hasta el final del beat */
@@ -41,7 +42,7 @@ export const buildTimeline = (story: Story, words: WordT[], fps = 30): Timeline 
   const beats: BeatT[] = story.beats.map((beat, i) => {
     const ws = words.flatMap((w, k) => (w.beat === beat.id ? [k] : []));
     if (!ws.length) throw new Error(`el beat ${beat.id} no tiene palabras en words.json`);
-    return { i, beat, a: 0, b: 0, words: ws, tIn: null, tOut: null };
+    return { i, beat, a: 0, b: 0, words: ws, tIn: null, tOut: null, shots: [] };
   });
   beats.forEach((bt, i) => {
     bt.a = i === 0 ? 0 : Math.max(0, f(words[bt.words[0]].start) - LEAD_F);
@@ -49,6 +50,7 @@ export const buildTimeline = (story: Story, words: WordT[], fps = 30): Timeline 
   const lastWord = words[words.length - 1];
   const total = f(lastWord.end + (story.meta.tailS ?? TAIL_S));
   beats.forEach((bt, i) => { bt.b = i + 1 < beats.length ? beats[i + 1].a : total; });
+  for (const bt of beats) bt.shots = bt.beat.shots.map((s) => ({ start: resolveAt(bt, words, s.at, fps), camera: s.camera })).sort((x, y) => x.start - y.start);
   for (let i = 0; i + 1 < beats.length; i++) {
     const A = beats[i].beat.scene, B = beats[i + 1].beat.scene;
     const sameSet = A.env === B.env && A.light === B.light && A.hero.asset === B.hero.asset;

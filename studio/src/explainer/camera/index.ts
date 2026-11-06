@@ -117,9 +117,27 @@ const mix = (a: Params, b: Params, k: number): Params =>
     lat: a.lat + (b.lat - a.lat) * k, lift: a.lift + (b.lift - a.lift) * k, fov: a.fov + (b.fov - a.fov) * k,
     roll: a.roll + (b.roll - a.roll) * k, focus: [0, 1, 2].map((i) => a.focus[i] + (b.focus[i] - a.focus[i]) * k) as V3 });
 
+const SHOT_MIX_FRAMES = 9;   // F17: el barrido entre sub-planos dura 9 frames (rápido, pero no es un corte duro)
+
+/** cámara del beat con sus sub-planos: cada tramo usa su preset desde su inicio; al empezar uno, la cámara barre desde donde estaba */
+const shotParams = (bt: BeatT, f: number): Params => {
+  const base = baseParams(bt);
+  const segs = [{ start: bt.a, camera: bt.beat.scene.camera }, ...bt.shots.filter((s) => s.start > bt.a && s.start < bt.b)];
+  const at = (k: number, g: number): Params => {
+    const end = k + 1 < segs.length ? segs[k + 1].start : bt.b;
+    const sub: BeatT = { ...bt, a: segs[k].start, b: end, beat: { ...bt.beat, scene: { ...bt.beat.scene, camera: segs[k].camera } } };
+    return preset(sub, g - segs[k].start, base);
+  };
+  let k = 0;
+  segs.forEach((s, j) => { if (f >= s.start) k = j; });
+  const p = at(k, f);
+  if (k === 0 || f - segs[k].start >= SHOT_MIX_FRAMES) return p;
+  return mix(at(k - 1, segs[k].start), p, glide((f - segs[k].start) / SHOT_MIX_FRAMES));
+};
+
 const paramsAt = (tl: Timeline, i: number, f: number, depth = 0): Params => {
   const bt = tl.beats[i], t = f - bt.a;
-  let p = preset(bt, t, baseParams(bt));
+  let p = bt.shots.length ? shotParams(bt, f) : preset(bt, t, baseParams(bt));
   const tin = bt.tIn;
   if (tin && depth < 8) {
     if (tin.type === "glide" && tin.sameSet) {
