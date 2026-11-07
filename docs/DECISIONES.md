@@ -640,3 +640,23 @@ Plan completo y registro de avance: `docs/PLAN_STORY_2D.md`. Piloto: `mito-caver
 - **D110 · Iterar con Kokoro, entregar con la voz que se pida.** El piloto usó Kokoro (`em_alex`) por decisión de Diego (Chatterbox con su voz tarda ~20 min). El tono no se probó con `diego`.
   La caché de etapas solo mira story y palabras: tras cambiar el código de un asset hay que forzar `--force stills,render,mix,mux,qa`.
 - **Ejemplo y skill:** `templates/examples/mito-caverna/` (investigación, guion, story y palabras) y `story-short/SKILL.md` (enlazada en `~/.claude/skills/story-short`).
+
+### Perfil `viral` y etapa `review` (7 nov)
+
+- **D111 · Un perfil de ritmo opt-in con una sola fuente de verdad.** `pacing: viral` (cabecera del guion) y `meta.pacing: "viral"` (story) activan las reglas de `templates/pacing_viral.json`:
+  guion de 60–80 s (225–290 palabras), gancho ≤11 palabras sin introducción suave, frases ≤12 palabras, cierre en bucle abierto que enlaza con el gancho, voz +13 % con pausas ≤150 ms,
+  `impact` en el segundo 0, `whoosh` por cambio de escena y `riser` antes de `rupture`/`twist`, cambio en pantalla cada ≤3 s sin cámara `hold`, y subtítulos de 1–3 palabras en el 70 % del alto con la clave en
+  amarillo. Sin la cabecera rigen las reglas clásicas, así que los videos hechos no cambian. **Hoy es "por defecto" solo por las instrucciones de `story-short/SKILL.md`, no por el código.**
+- **D112 · 60–80 s y no «máximo 55 s».** El system prompt pedido hablaba de 55 s, pero YouTube solo monetiza Shorts de más de 60 s y el QA lo exige; el perfil usa 60–80 s. Con Chatterbox a +13 % salen ~3,7 pal/s, de ahí las 225 palabras mínimas.
+  El hook de dos oraciones (~20 palabras) del ejemplo pedido no cabe en 3 s hablados: el gancho es la primera frase y la segunda pasa a la primera línea `[scene]`.
+- **D113 · Los subtítulos virales están en la franja baja-central y condicionan el story.** Centro al 70 % del alto, 7,4 % del ancho (~80 px a 1080; «48–54 pt» era ambiguo), por encima de la interfaz de Shorts. La franja 0,62–0,78 es de los subtítulos: capas con
+  los pies en y ≤0,62 y overlays solo en `top`/`upper`/`center` (lo valida `validate_story2d.py`). `Captions` acepta una configuración (`cap`) y el chunker la usa; el 3D no cambia (regresión OK).
+  El OCR del QA acepta también texto amarillo y usa la banda 0,62–0,78.
+- **D114 · El ritmo del perfil no se reajusta.** `voice.py` ya no corrige velocidad ni pausas hacia 2,8 pal/s cuando hay perfil viral: solo avisa si salen de 3,3–4,3 pal/s. El QA usa rangos propios (silencio 2–14 %, 3,3–4,3 pal/s, duración 60–80 s)
+  y comprueba el `impact` del segundo 0 y un barrido por cambio de escena. Kokoro, más lento, sale a ~3 pal/s: es solo para iterar.
+- **D115 · Etapa `review`: un crítico independiente califica el story y lo devuelve.** Entre `validate-story` y `stills`, solo motor 2D. `pipeline/review_story.py` lanza `claude -p` sin herramientas ni sesión con
+  `templates/prompts/critico_story.md` sobre una petición con guion, tiempos reales, `shows` y métricas. Seis dimensiones (gancho 3, retención 3, narrativa 2, ritmo verbal, coherencia visual y cierre en bucle 1 cada una);
+  el total y el veredicto los calcula Python con `templates/review.json` (total ≥7,5, gancho ≥7, ninguna <5), no el agente. La calificación lleva la huella de guion+story y caduca si cambian; tras 3 devoluciones se para y se consulta al usuario.
+  `--reviewer manual` espera un `06_review.json` de otro agente; `--no-story-review` la omite y queda en el log. El crítico no puede pedir menos de 60 s: debe sustituir lo que sobra por contenido nuevo.
+- **D116 · El ejemplo viral es del formato, no del contenido.** `templates/examples/solipsismo-viral/` fue devuelto por el crítico con 5,91 y 6,0 (retención y gancho). No se pulió más: sirve para ver estructura, marcas de tiempo y SFX. La nota del crítico varía entre llamadas, así que es una guía.
+

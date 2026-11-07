@@ -204,6 +204,8 @@ Segundo tipo de video, para historias, alegorías y reflexiones, con el mismo pi
 | F4–F5 | Estructura `alegoria`, guion y fuentes del mito, 4 sonidos, cama `tense` | ✅ | `c63c3f8` |
 | F6 | El pipeline elige validador, QA y publicación por `meta.engine` | ✅ | `61f4511` |
 | F7 | Piloto `mito-caverna` (91 s, QA OK), skill `story-short`, ejemplo versionado | ✅ aprobado por Diego | `e921369`, `ea7aacb` |
+| F8 | Assets `dialogo`, `epocas`, `huevo`, `reflejo`, `vacio_luz`, música propia en la mezcla; videos `el-huevo` y `solipsismo` | ✅ QA OK (`solipsismo`: 75 s, voz `diego`) | commit «assets y música propia» |
+| F9 | Perfil `viral` (D111–D114) y etapa `review` del crítico (D115): `pacing_viral.json`, `review.json`, `critico_story.md`, `review_story.py`, pruebas `test_pacing_viral.py` y `test_review_story.py` | ✅ pruebas y regresión 3D en verde; **sin render completo** | commit «perfil viral y etapa review» |
 
 **Cómo se hace un video 2D hoy:** `/story-short` (o "usa el skill story-short: el mito de…"). Claude investiga el texto original, propone gancho y cierre, escribe `02_SCRIPT.md`
 (`structure: alegoria`) y lo valida, arma `05_story.json` con `meta.engine: "2d"` y assets de `templates/catalog2d.json`, y lanza `make_short.py all` (primero a escala 0,5, `stills` antes
@@ -220,4 +222,6 @@ de renderizar; final con `--force render,mix,mux,qa,publish`). Render de 91 s a 
 4. Rangos de QA 2D calibrados con un solo video: afinarlos con el siguiente.
 5. Formatos de guion `reglas`, `relato`, `reflexion`, `y_si` y `dilema` (la estructura `alegoria` es la única implementada) y los assets que pidan.
 6. `IconFlow` con 4 pasos se sale del cuadro (afecta también al 3D): arreglar el overlay o limitarlo a 3.
-7. Mezclar `story-2d` a `main` (pruebas y no regresión en verde; decisión de Diego).
+7. Perfil viral: probar el +13 % con la voz `diego` (Chatterbox, estiramiento de audio; ~64 s estimados para el ejemplo), renderizar un video completo con QA del perfil y decidir si pasa a ser el predeterminado en el código (hoy lo es solo por `SKILL.md`).
+8. Calibrar el crítico (`review`): su nota varía entre llamadas y `solipsismo-viral` no pasa el umbral; ajustar `templates/review.json` o su prompt con un par de videos más.
+9. Mezclar `story-2d` a `main` (pruebas y no regresión en verde; decisión de Diego).

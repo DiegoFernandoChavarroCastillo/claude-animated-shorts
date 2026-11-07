@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sfx_synth import ACCENTS  # noqa: E402
-from common import FPS, TAIL_MS, PipelineError, load_json, norm, run_main, write_json  # noqa: E402
+from common import FPS, ROOT, TAIL_MS, PipelineError, load_json, norm, run_main, write_json  # noqa: E402
 
 LEAD_F = 2                  # timeline.ts: el beat empieza 2 frames antes de su primera palabra
 STAT_COUNT_F = 24           # StatCallout cuenta en 24 frames (prog(0, 24))
@@ -91,7 +91,14 @@ def plan(story: dict, words: list[dict]) -> dict:
     bts, total = beat_frames(story, words)
     ev = []
     add = lambda typ, f, why: ev.append({"type": typ, "t": round(f / FPS, 3), "why": why})  # noqa: E731
+    cfg = load_json(ROOT / "templates" / "pacing_viral.json")["sfx"] if story["meta"].get("pacing") == "viral" else None
+    if cfg:   # perfil viral: golpe grave con el gancho y un barrido en cada cambio de escena
+        add("impact", cfg["hookImpactAtS"] * FPS, "gancho: golpe en el segundo 0")
     for i, (b, bt) in enumerate(zip(story["beats"], bts)):
+        if cfg and cfg["sceneWhoosh"] and i > 0:
+            add("whoosh_soft", bt["a"] - 6, f"{b['id']}: cambio de escena")
+        if cfg and b["role"] in cfg["riserRoles"] and b["role"] != "twist":   # el riser del twist ya lo añade la regla general
+            add("riser", bt["a"] - round(0.8 * FPS), f"{b['id']}: antes de la revelación")
         if i + 1 < len(bts) and b.get("transition", "glide") in ("glide", "zoom_through", "swipe"):
             add("whoosh_soft", bts[i + 1]["a"] - 8, f"{b['id']}: transición {b.get('transition', 'glide')}")
         if b["role"] == "twist":

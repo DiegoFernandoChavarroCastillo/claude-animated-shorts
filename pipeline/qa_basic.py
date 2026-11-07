@@ -34,6 +34,10 @@ def ebur(p: Path) -> tuple[float | None, float | None]:
     return (float(I.group(1)) if I else None, float(P.group(1)) if P else None)
 
 
+def story_pacing(d: Path) -> str | None:
+    return load_json(d / "05_story.json")["meta"].get("pacing")
+
+
 def report(d: Path) -> tuple[bool, str]:
     rows, ok = [], True
 
@@ -44,14 +48,15 @@ def report(d: Path) -> tuple[bool, str]:
         rows.append(f"| {name} | {val}{unit} | {'' if rng is None else f'{rng[0]}–{rng[1]}'} | {'✅' if good else '❌'} |")
 
     v, a, f = probe_dur(d / "07_video.mp4"), probe_dur(d / "08_mix.wav"), probe_dur(d / "09_final.mp4")
-    row("duración video (s): más de 60 y menos de 120 (monetización)", round(v, 2), (60.1, 119.9))
+    dur_rng = (60.1, 80.0) if story_pacing(d) == "viral" else (60.1, 119.9)
+    row("duración video (s): más de 60 (monetización) y " + ("hasta 80 (perfil viral)" if dur_rng[1] == 80.0 else "menos de 120"), round(v, 2), dur_rng)
     row("duración mezcla (s)", round(a, 2))
     row("diferencia video − audio (s)", round(abs(v - a), 3), (0, 0.1))
     _, P = ebur(d / "09_final.mp4")
     row("true peak final (dBTP)", P, (-99, -1.0))
     story = load_json(d / "05_story.json")
     lang = story["meta"]["lang"]
-    style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4", engine=story["meta"].get("engine", "3d"))
+    style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4", engine=story["meta"].get("engine", "3d"), pacing=story["meta"].get("pacing"))
     row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, DESIGN_STATIC_MAX))
     ok &= style_ok
     from qa_rules import rows as rule_rows

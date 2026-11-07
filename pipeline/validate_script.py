@@ -51,6 +51,7 @@ LL_START = re.compile(r"^(ll|y[aeiouáéíóú])", re.I)
 # Duración obligatoria del video: más de 60 s y menos de 120 s (monetización en YouTube, TikTok, Instagram y Facebook).
 # La voz real da ~2,6 palabras/s con pausas: 175 palabras ≈ 67 s y 300 ≈ 115 s.
 WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 175, 300, 12, 22
+VIRAL = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))["script"]   # perfil `pacing: viral`
 
 
 def fold(s: str) -> str:
@@ -173,6 +174,7 @@ class Script:
     hook: str = ""
     structure: str = ""
     closing: str = ""
+    pacing: str = ""
     lines: list[tuple[str, str]] = field(default_factory=list)  # (rol, texto)
     sources: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -184,9 +186,9 @@ def parse(md: str) -> Script:
         line = raw.strip()
         if not line:
             continue
-        m = re.fullmatch(r"(lang|hook|structure|closing|gancho|estructura|cierre):\s*(\w+)", line, re.I)
+        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|gancho|estructura|cierre|ritmo):\s*(\w+)", line, re.I)
         if m and section is None:
-            key = {"gancho": "hook", "estructura": "structure", "cierre": "closing"}.get(m.group(1).lower(), m.group(1).lower())
+            key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing"}.get(m.group(1).lower(), m.group(1).lower())
             setattr(s, key, m.group(2).lower())
             continue
         if line.startswith("## "):
@@ -278,6 +280,24 @@ def sentences(text: str) -> list[str]:
     return [p for p in re.split(r"(?<=[.?!…:;])\s+", text) if p.strip()]
 
 
+def viral_errors(s: Script, hook: str, last: str) -> list[str]:
+    """perfil `pacing: viral`: gancho chocante sin introducción suave y cierre que se engancha con la primera palabra del gancho.
+    Marcas mínimas comprobables; que el gancho sea de verdad chocante lo juzga quien escribe (y el usuario al elegirlo)."""
+    errs = []
+    h = fold(hook)
+    if hook.lstrip().startswith("¿") or any(h.startswith(o) or f" {o}" in f" {h[:40]}" for o in VIRAL["softOpeners"]):
+        errs.append(f"gancho con introducción suave: {hook!r}. Abre con una afirmación chocante, una paradoja o algo contraintuitivo")
+    if s.closing != "bucle":
+        errs.append("el perfil viral exige `closing: bucle`")
+    tail = last.rstrip()
+    words_ = fold(re.sub(r"[^\w\s]", "", tail)).split()
+    ends_open = tail.endswith((":", "…", "—", "...")) or (not tail.endswith((".", "?", "!")) and bool(words_) and words_[-1] in VIRAL["loopConnectors"])
+    if not ends_open:
+        errs.append(f"el cierre no se engancha con el gancho: la última frase debe quedar abierta (acabar en «:», «…» o en un nexo sin punto, "
+                    f"p. ej. «…y la respuesta es:») para que «{hook.split()[0]}…» la continúe al repetirse el video: {last!r}")
+    return errs
+
+
 def validate(md: str) -> tuple[list[str], dict]:
     s = parse(md)
     errs = list(s.errors)
@@ -286,8 +306,13 @@ def validate(md: str) -> tuple[list[str], dict]:
     lang = s.lang
     text = " ".join(t for _, t in s.lines)
     nwords = len(text.split())
-    if not WORDS_MIN <= nwords <= WORDS_MAX:
-        errs.append(f"longitud: {nwords} palabras (debe estar entre {WORDS_MIN} y {WORDS_MAX})")
+    viral = s.pacing == "viral"
+    if s.pacing and not viral:
+        errs.append(f"ritmo desconocido '{s.pacing}' (válido: viral)")
+    w_min, w_max = VIRAL["words"] if viral else (WORDS_MIN, WORDS_MAX)
+    hook_max, sentence_max = (VIRAL["hookMax"], VIRAL["sentenceMax"]) if viral else (HOOK_MAX, SENTENCE_MAX)
+    if not w_min <= nwords <= w_max:
+        errs.append(f"longitud: {nwords} palabras (debe estar entre {w_min} y {w_max})")
     roles = [r for r, _ in s.lines]
     structure = s.structure or "mito"
     if structure not in STRUCTURES:
@@ -299,8 +324,8 @@ def validate(md: str) -> tuple[list[str], dict]:
     if roles[0] != "hook":
         errs.append("la primera línea debe ser el gancho [hook]")
     hook = " ".join(t for r, t in s.lines if r == "hook")
-    if len(hook.split()) > HOOK_MAX:
-        errs.append(f"gancho de {len(hook.split())} palabras (máximo {HOOK_MAX}): {hook!r}")
+    if len(hook.split()) > hook_max:
+        errs.append(f"gancho de {len(hook.split())} palabras (máximo {hook_max}): {hook!r}")
     if not second_person(hook, lang):
         errs.append(f"el gancho no está en 2.ª persona: {hook!r}")
     if s.hook in HOOKS and (e := hook_error(s.hook, hook, lang)):
@@ -324,6 +349,8 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(f"la última línea no es una llamada a la acción [cta]: {last!r}")
     elif s.closing in CLOSINGS and (e := closing_error(s.closing, last, hook, lang)):
         errs.append(e)
+    if viral:
+        errs += viral_errors(s, hook, last)
     order = [spec["orden"].index(r) for r in roles if r in spec["orden"]]
     if any(b < a for a, b in zip(order, order[1:])):
         errs.append("los beats no siguen el orden " + " → ".join(spec["orden"]))
@@ -340,8 +367,8 @@ def validate(md: str) -> tuple[list[str], dict]:
     for r, t in s.lines:
         for sent in sentences(t):
             n = len(sent.split())
-            if n > SENTENCE_MAX:
-                errs.append(f"frase de {n} palabras (máximo {SENTENCE_MAX}): {sent[:60]!r}…")
+            if n > sentence_max:
+                errs.append(f"frase de {n} palabras (máximo {sentence_max}): {sent[:60]!r}…")
     if lang == "es":
         for r, t in s.lines:
             for pair in ll_clashes(t):

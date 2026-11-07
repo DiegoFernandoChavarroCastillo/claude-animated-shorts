@@ -2,7 +2,7 @@
 // pausas largas y en el cambio de beat, y nunca más de 2 líneas dentro del 84 % del ancho. Las líneas se
 // calculan una vez por bloque con el peso activo (700), así nada se recoloca cuando cambia la palabra activa.
 import { measureText } from "@remotion/layout-utils";
-import { CAPTION, KEYWORD, px } from "../style";
+import { CAPTION as CAP, KEYWORD, px } from "../style";
 
 export type Word = { w: string; start: number; end: number; beat: string };
 export type Emphasis = "box" | "accent";
@@ -23,7 +23,8 @@ export type Block = {
 const SENTENCE_END = /[.?!…]["»”)]*$/;
 const SOFT_END = /[,;:]["»”)]*$/;
 
-export type ChunkOpts = { fontFamily: string; fontSize: number; maxWidth: number; fps: number; width: number; durationF?: number; boxed?: Set<number> };
+export type CaptionCfg = typeof CAP;
+export type ChunkOpts = { cap?: CaptionCfg; fontFamily: string; fontSize: number; maxWidth: number; fps: number; width: number; durationF?: number; boxed?: Set<number> };
 
 const lay = (widths: number[], space: number, maxWidth: number): Line[] => {
   const lines: Line[] = [];
@@ -38,6 +39,7 @@ const lay = (widths: number[], space: number, maxWidth: number): Line[] => {
 };
 
 export const chunkWords = (words: Word[], o: ChunkOpts): Block[] => {
+  const CAPTION = o.cap ?? CAP;   // el perfil viral del motor 2D cambia tamaño y nº de palabras por bloque
   const measure = (t: string) => measureText({ text: t, fontFamily: o.fontFamily, fontSize: o.fontSize, fontWeight: String(CAPTION.activeWeight), validateFontIsLoaded: true }).width;
   const space = measure("a a") - measure("aa");
   const pad = px(KEYWORD.padX + KEYWORD.handleR / 2, o.width);

@@ -41,10 +41,12 @@ export const buildTimeline2D = (story: Story2, words: WordT[], fps = 30): Timeli
   }
   const keywords: Keyword[] = [];
   for (const bt of beats) {
-    if (!bt.beat.keyword) continue;
-    const idx = bt.words.find((i) => norm(words[i].w) === norm(bt.beat.keyword!));
-    if (idx === undefined) throw new Error(`keyword "${bt.beat.keyword}" no está en el texto del beat ${bt.beat.id}`);
-    keywords.push({ index: idx, variant: story.meta.captionEmphasis });
+    // `keyword` (una) y `keywords` (varias, perfil viral): cada una resalta la primera aparición de esa palabra en el beat
+    for (const kw of [...(bt.beat.keyword ? [bt.beat.keyword] : []), ...(bt.beat.keywords ?? [])]) {
+      const idx = bt.words.find((i) => norm(words[i].w) === norm(kw));
+      if (idx === undefined) throw new Error(`keyword "${kw}" no está en el texto del beat ${bt.beat.id}`);
+      if (!keywords.some((k) => k.index === idx)) keywords.push({ index: idx, variant: story.meta.captionEmphasis });
+    }
   }
   const overlays: OverlayT2[] = beats.flatMap((bt) => bt.beat.overlays.map((spec, k) => ({ beat: bt.i, frame: resolveAt(bt, words, spec.at, fps), end: bt.b, spec, key: `${bt.beat.id}_${k}` })));
   const actions: ActionT2[] = beats.flatMap((bt) => bt.beat.actions.map((spec, k) => ({ beat: bt.i, start: resolveAt(bt, words, spec.at, fps), dur: spec.dur ?? ACTION_DUR, spec, key: `${bt.beat.id}_a${k}` })));

@@ -136,7 +136,11 @@ Para alegorías, mitos y relatos (no divulgación con objetos 3D) hay un segundo
 > Usa el skill story-short: el mito de la caverna, en español.
 
 Se instala igual que el otro, enlazando la subcarpeta: `ln -s "$PWD/story-short" ~/.claude/skills/story-short` (Linux/macOS). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (91 s,
-voz Kokoro). Un render de 91 s a escala 1 tarda ~4,5 min. Plan, decisiones y pendientes: `docs/PLAN_STORY_2D.md`, `docs/DECISIONES.md` (D101–D110) y `docs/PROGRESO.md`.
+voz Kokoro). Un render de 91 s a escala 1 tarda ~4,5 min. Plan, decisiones y pendientes: `docs/PLAN_STORY_2D.md`, `docs/DECISIONES.md` (D101–D116) y `docs/PROGRESO.md`.
+
+Dos añadidos para retener audiencia: el **perfil viral** (`pacing: viral`; 60–80 s, gancho chocante, bucle, voz +13 %, SFX por escena, subtítulos de 1–3 palabras; todo en `templates/pacing_viral.json`) y la
+etapa **`review`** (un crítico independiente califica el story de 0 a 10 y lo devuelve si no llega a `templates/review.json`; `make_short.py --id <id> review`, saltable con `--no-story-review`).
+Ejemplo del formato viral: `templates/examples/solipsismo-viral/`.
 
 ## Notas
 

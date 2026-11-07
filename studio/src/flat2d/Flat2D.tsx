@@ -3,6 +3,8 @@
 import React, { useMemo } from "react";
 import { AbsoluteFill, CalculateMetadataFunction, useCurrentFrame, useVideoConfig } from "remotion";
 import { Captions } from "../explainer/captions/Caption";
+import { CAPTION } from "../explainer/style";
+import pacingViral from "../../../templates/pacing_viral.json";
 import { OverlayLayer } from "../explainer/overlays/OverlayLayer";
 import type { Timeline } from "../explainer/timeline";
 import { Props2Schema, type Props2 } from "./schema";
@@ -59,6 +61,13 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
   );
 };
 
+/** perfil `meta.pacing: "viral"`: subtítulos grandes de 1–3 palabras en la franja baja-central, con la palabra clave en amarillo */
+const captionCfg = (viral: boolean): typeof CAPTION => {
+  if (!viral) return CAPTION;
+  const c = pacingViral.captions;
+  return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor } as typeof CAPTION;
+};
+
 export const Flat2D: React.FC<Props2> = (props) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -70,7 +79,7 @@ export const Flat2D: React.FC<Props2> = (props) => {
       {layers.map((l, k) => <SceneView key={k ? "over" : "base"} tl={tl} i={l.beat} f={f} alpha={l.alpha} swipe={l.swipe} />)}
       {/* los overlays no anclados del explainer solo necesitan la lista de overlays de la línea de tiempo */}
       <OverlayLayer tl={tl as unknown as Timeline} words={words} lang={story.meta.lang} />
-      <Captions words={words} keywords={tl.keywords} />
+      <Captions words={words} keywords={tl.keywords} cap={captionCfg(story.meta.pacing === "viral")} />
     </AbsoluteFill>
   );
 };

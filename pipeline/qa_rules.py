@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from common import engine_of, load_json
+from common import ROOT, engine_of, load_json
 from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, HOOK_STATIC_CAMERAS, LOOP_TAIL_MAX_S, MAX_EVENT_GAP_S, MAX_SHOTS,
                             at_seconds, event_gap, script_closing)
 
@@ -16,6 +16,9 @@ ACCENT_MAX_PER_S = 1 / 3.0     # un acento (sonido no estructural) por cada 3 s 
 ACCENT_MIN_GAP_S = 1.2
 BED_MIN_BELOW_DB = 18         # con cama sonora, la voz debe quedar al menos 18 dB por encima
 EVENTS_PER_MIN_MAX = 48        # todos los sonidos juntos (los ticks de un contador cuentan uno a uno)
+
+
+VIRAL = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: viral`
 
 
 def rows(d: Path) -> list[tuple[str, object, str, bool]]:
@@ -35,7 +38,14 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
     cam = beats[0]["scene"]["camera"]["preset"]
     row("cámara del gancho", cam, f"no {'/'.join(HOOK_STATIC_CAMERAS)}", cam not in HOOK_STATIC_CAMERAS)
     gap, at = event_gap(story, words)
-    row("hueco máximo sin cambios en pantalla (s)", round(gap, 1), f"≤ {MAX_EVENT_GAP_S}", gap <= MAX_EVENT_GAP_S)
+    gap_max = VIRAL["cadence"]["eventGapMaxS"] if story["meta"].get("pacing") == "viral" else MAX_EVENT_GAP_S
+    row("hueco máximo sin cambios en pantalla (s)", round(gap, 1), f"≤ {gap_max}", gap <= gap_max)
+    if story["meta"].get("pacing") == "viral":
+        ev = load_json(d / "08_sfx_plan.json")["events"]
+        hit = [e for e in ev if e["type"] == "impact" and e["t"] <= 0.2]
+        row("golpe grave (impact) con el gancho, en el segundo 0", bool(hit), "sí", bool(hit))
+        scenes = sum(1 for e in ev if e["type"] in ("whoosh_soft", "riser") and ("cambio de escena" in e["why"] or "revelación" in e["why"] or "giro" in e["why"]))
+        row("barridos (whoosh/riser) por cambio de escena", scenes, f"≥ {len(beats) - 1}", scenes >= len(beats) - 1)
     shots = max((len(b.get("shots", [])) for b in beats), default=0)
     row("sub-planos por beat (máx.)", shots, f"≤ {MAX_SHOTS}", shots <= MAX_SHOTS)
     tail = story["meta"].get("tailS", 1.0)

@@ -43,11 +43,25 @@ REF_SET = [("R1", "video5", True), ("R3", "video4", True), ("R4", "video2", True
 PASS_RATE = 0.8
 
 
-def metrics_for(engine: str = "3d") -> list:
+def apply_pacing(pacing: str | None) -> dict | None:
+    """perfil `viral` (templates/pacing_viral.json): subtítulos de 1–3 palabras en la franja baja-central; fija las constantes del OCR"""
+    global BAND, OCR_ROWS, MIN_WORDS, MAX_WORDS
+    if pacing != "viral":
+        return None
+    prof = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))
+    BAND = tuple(prof["qa"]["captionBand"])
+    OCR_ROWS = (BAND[0] - 0.06, BAND[1] + 0.06)
+    MIN_WORDS, MAX_WORDS = prof["captions"]["minWords"], prof["captions"]["maxWords"]
+    return prof
+
+
+def metrics_for(engine: str = "3d", prof: dict | None = None) -> list:
     """rangos de las métricas: los del 3D vienen de las referencias; los del 2D, de templates/qa2d_ranges.json (calibración propia, plan story-2d F6)"""
     if engine != "2d":
         return METRICS
     ov = json.loads((ROOT / "templates" / "qa2d_ranges.json").read_text(encoding="utf-8"))["ranges"]
+    if prof:   # perfil viral: casi sin pausas y locución más rápida
+        ov = {**ov, "pct_quiet": prof["qa"]["pct_quiet"], "words_per_s": prof["qa"]["words_per_s"]}
     return [(n, k, tuple(ov.get(k, rng))) for n, k, rng in METRICS]
 
 # reglas de corte de bloques de studio/src/explainer/captions/chunker.ts y CAPTION en style.ts (sin el corte por ancho)
@@ -184,7 +198,9 @@ def caption_ocr(video: Path, words: list[dict], lang: str) -> dict:
             y0 = int(h * OCR_ROWS[0])
             top = im[y0: int(h * OCR_ROWS[1])]
             mx, mn = top.max(-1), top.min(-1)
-            ink = (mn > 190) & (mx - mn < 40)
+            white = (mn > 190) & (mx - mn < 40)
+            yellow = (top[..., 0] > 200) & (top[..., 1] > 170) & (top[..., 2] < 150)   # palabra clave resaltada del perfil viral
+            ink = white | yellow
             img = Image.fromarray(np.where(ink, 0, 255).astype(np.uint8))
             k2 = max(1, round(1080 / wd))
             img = img.resize((wd * k2, top.shape[0] * k2), Image.LANCZOS)
@@ -229,10 +245,12 @@ def caption_ok(c: dict) -> bool:
     return c["found_pct"] >= 90 and c["band_pct"] >= 100
 
 
-def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d") -> tuple[bool, list[str], dict]:
+def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d",
+          pacing: str | None = None) -> tuple[bool, list[str], dict]:
     words = json.loads(words_path.read_text(encoding="utf-8")) if words_path else None
+    prof = apply_pacing(pacing)
     m = measure(video, words)
-    rows = grade(m, metrics_for(engine))
+    rows = grade(m, metrics_for(engine, prof))
     rated = [r for r in rows if r[4] is not None]
     passed = sum(r[4] for r in rated)
     md = [f"**Estilo**: {passed}/{len(rated)} métricas en rango ({passed / max(1, len(rated)):.0%}; objetivo ≥{PASS_RATE:.0%}).", "",

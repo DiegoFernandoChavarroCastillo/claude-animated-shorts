@@ -33,7 +33,7 @@ STUDIO = ROOT / "studio"
 TMP = os.environ.get("REMOTION_TMP") or ("C:/remotion-tmp" if os.name == "nt" else str(Path.home() / "remotion-tmp"))
 BUNDLE = f"{TMP}/bundle"
 VOICE_DEFAULT = {"es": ("chatterbox", "diego"), "en": ("chatterbox", "default")}   # D64 (antes Kokoro, D46)
-STAGES = ["validate-script", "tts", "align", "validate-story", "stills", "render", "mix", "mux", "qa", "publish"]
+STAGES = ["validate-script", "tts", "align", "validate-story", "review", "stills", "render", "mix", "mux", "qa", "publish"]
 
 
 def action_frames(story: dict, words: list[dict], bts: list[dict], after_s: float = 0.9) -> list[int]:
@@ -184,6 +184,27 @@ class Run:
             return "PASA"
         self.stage("validate-story", out, [self.p("05_story.json"), self.p("04_words.json"), self.p("02_SCRIPT.md")], run)
 
+    def review(self):
+        """un agente independiente califica el story (gancho, retención, narrativa…) y lo devuelve si no llega al umbral (templates/review.json)"""
+        story = load_json(self.p("05_story.json"))
+        t0 = time.time()
+        if engine_of(story) != "2d" or getattr(self.a, "no_story_review", False):
+            why = "solo el motor 2D" if engine_of(story) != "2d" else "--no-story-review"
+            self.log_rows.append(("review", f"omitida ({why})", 0.0, "—"))
+            print(f"[review] omitida ({why})")
+            return
+        print("[review] …")
+        sys.path.insert(0, str(ROOT / "pipeline"))
+        from review_story import evaluate
+        try:
+            cur = evaluate(self.d, self.a.reviewer)
+        except Exception as e:
+            self.log_rows.append(("review", "DEVUELTO" if "DEVUELTO" in str(e) else "FALLÓ", time.time() - t0, str(e).splitlines()[0][:160]))
+            raise
+        detail = f"total {cur['verdict']['total']}, gancho {cur['scores']['gancho']} (ronda {cur['round']})"
+        self.log_rows.append(("review", "aprobada", time.time() - t0, detail))
+        print(f"[review] aprobada: {detail}")
+
     def stills(self):
         out = self.p("06_stills")
         stamp = out / ".done"
@@ -214,6 +235,8 @@ class Run:
             self.sh([PY, "pipeline/sfx_plan.py", "--story", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")), "--out", str(plan)], tag="sfx")
             meta = load_json(self.p("05_story.json"))["meta"]
             music = ["--music", meta.get("musicMood", "tech")] if meta.get("music") else []
+            if meta.get("musicFile"):
+                music = ["--music-file", str(ROOT / meta["musicFile"]), "--music-gain", str(meta.get("musicGain", 0.7))]
             return self.sh([PY, "pipeline/mix.py", "--voice", str(self.p("03_voice.wav")), "--plan", str(plan), "--out", str(out), *music], tag="mix").splitlines()[-1]
         self.stage("mix", out, [self.p("03_voice.wav"), self.p("05_story.json"), self.p("04_words.json")], run)
 
@@ -256,7 +279,7 @@ class Run:
 
     def run(self, stages: list[str]):
         fns = {"validate-script": self.validate_script, "tts": self.tts, "align": self.align, "validate-story": self.validate_story,
-               "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa, "publish": self.publish}
+               "review": self.review, "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa, "publish": self.publish}
         for s in stages:
             fns[s]()
             if s == "qa":
@@ -296,6 +319,8 @@ def main():
     ap.add_argument("--stills-scale", type=float, default=0.5)
     ap.add_argument("--concurrency", type=int, default=1)
     ap.add_argument("--whisper", default="medium")
+    ap.add_argument("--reviewer", choices=["claude", "manual"], default="claude", help="etapa review: `claude` lanza `claude -p` sin contexto; `manual` espera un 06_review.json de otro agente")
+    ap.add_argument("--no-story-review", action="store_true", help="saltar la etapa review (queda anotado en el log)")
     a = ap.parse_args()
     if a.cmd == "init":
         if not a.from_dir:

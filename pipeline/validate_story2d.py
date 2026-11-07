@@ -23,6 +23,7 @@ MAX_LAYERS = 9           # capas por beat (más y la escena se vuelve ilegible)
 SCALE_RANGE = (0.05, 3.0)
 HOOK_STATIC_CAMERAS = ("hold",)
 STRUCTURE_DEFAULT = "alegoria"
+PACING = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: "viral"`
 
 
 def _num(v) -> bool:
@@ -47,6 +48,11 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
         errs.append('meta.engine debe ser "2d"')
     if meta.get("lang") not in ("es", "en"):
         errs.append("meta.lang debe ser es o en")
+    viral = meta.get("pacing") == "viral"
+    cap = PACING["captions"]
+    gap_max = PACING["cadence"]["eventGapMaxS"] if viral else MAX_EVENT_GAP_S
+    if viral and meta.get("captionEmphasis") not in (None, cap["emphasis"]):
+        errs.append(f"el perfil viral resalta las palabras clave con color (captionEmphasis '{cap['emphasis']}')")
     inserts = 0
     for b in beats:
         bid, s, text = b.get("id", "?"), b.get("scene", {}), b.get("text", "")
@@ -68,6 +74,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: layers[{k}].asset '{a}' no existe en catalog2d.json (tools/catalog_search2d.py <palabras>)")
                 continue
             names.setdefault(ly.get("id", a), ly)
+            if viral and cat["assets"][a].get("kind") != "fondo" and ly.get("at", [0.5, 1.0])[1] > cap["layerFeetMaxY"]:
+                errs.append(f"{bid}: layers[{k}] ({a}) tiene los pies en y={ly.get('at', [0.5, 1.0])[1]} y los subtítulos virales ocupan "
+                            f"{PACING['qa']['captionBand'][0]:.2f}–{PACING['qa']['captionBand'][1]:.2f}: sube la capa (y ≤ {cap['layerFeetMaxY']})")
             if "at" in ly and (not _vec(ly["at"], 2) or not all(-0.5 <= v <= 1.5 for v in ly["at"])):
                 errs.append(f"{bid}: layers[{k}].at debe ser [x, y] entre -0.5 y 1.5 (0–1 es el cuadro)")
             if "scale" in ly and not (_num(ly["scale"]) and SCALE_RANGE[0] <= ly["scale"] <= SCALE_RANGE[1]):
@@ -78,6 +87,8 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             if "z" in ly and not _num(ly["z"]):
                 errs.append(f"{bid}: layers[{k}].z debe ser un número")
         cam = s.get("camera", {})
+        if viral and PACING["cadence"]["noHoldCamera"] and cam.get("preset") == "hold":
+            errs.append(f"{bid}: cámara 'hold' en el perfil viral: usa push_in, pull_out o pan_slow (movimiento constante)")
         if cam.get("preset") not in cat["camera"]:
             errs.append(f"{bid}: preset de cámara '{cam.get('preset')}' no existe ({', '.join(cat['camera'])})")
         for key in ("from", "to"):
@@ -87,14 +98,19 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             errs.append(f"{bid}: pan_slow necesita camera.to")
         if b.get("transition", "crossfade") not in cat["transitions"]:
             errs.append(f"{bid}: transición '{b.get('transition')}' no existe ({', '.join(cat['transitions'])})")
-        if b.get("keyword") and b["keyword"] not in words_of(text) and b["keyword"] not in text.split():
-            errs.append(f"{bid}: keyword '{b['keyword']}' no está en el texto del beat")
+        for kw in ([b["keyword"]] if b.get("keyword") else []) + list(b.get("keywords", [])):
+            if kw.lower() not in [w.lower() for w in words_of(text)] and kw.lower() not in [w.lower() for w in text.split()]:
+                errs.append(f"{bid}: keyword '{kw}' no está en el texto del beat")
+        if viral and not (b.get("keyword") or b.get("keywords")):
+            errs.append(f"{bid}: el perfil viral resalta palabras clave en amarillo: añade `keyword` o `keywords` al beat")
         for o in b.get("overlays", []):
             t = o.get("type")
             if t not in overlays_ok:
                 errs.append(f"{bid}: overlay '{t}' no sirve en 2D (solo los no anclados: {', '.join(sorted(overlays_ok))})")
             if o.get("slot") and o["slot"] not in cat["overlay_slots"]:
                 errs.append(f"{bid}: slot '{o['slot']}' no existe")
+            if viral and o.get("slot", "lower") in cap["forbiddenSlots"]:
+                errs.append(f"{bid}: overlay en el slot '{o.get('slot', 'lower')}' (zona de subtítulos del perfil viral): usa top, upper o center")
             if not resolves(o.get("at"), text):
                 errs.append(f"{bid}: overlay at '{o.get('at')}' no es una palabra del beat")
             if t == "Insert":
@@ -184,8 +200,8 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"el primer beat no tiene una acción antes de {HOOK_ACTION_S:.0f} s: abre con movimiento (ej. pop, tremble o appear con at en la 1.ª o 2.ª palabra)")
             if beats[0].get("scene", {}).get("camera", {}).get("preset") in HOOK_STATIC_CAMERAS:
                 errs.append("el primer beat usa la cámara 'hold', demasiado quieta para el gancho: usa push_in o pull_out")
-            for gap, at, bid in event_gaps(story, words, MAX_EVENT_GAP_S):
-                errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (beat {bid}; máximo {MAX_EVENT_GAP_S} s): añade una acción o un overlay en ese tramo")
+            for gap, at, bid in event_gaps(story, words, gap_max):
+                errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (beat {bid}; máximo {gap_max} s): añade una acción o un overlay en ese tramo")
             for b in beats:
                 ws = [w for w in words if w["beat"] == b["id"]]
                 ts = sorted(at_seconds(b, ws, x.get("at"), 0.0) for x in b.get("shots", []))

@@ -3,21 +3,22 @@
 // La palabra clave lleva caja de selección ("box") o color de acento ("accent").
 import React, { useMemo } from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
-import { CAPTION, KEYWORD } from "../style";
+import { CAPTION as CAP, KEYWORD } from "../style";
 import { CAPTION_FAMILY, useFontsReady } from "../fonts";
-import { Block, Keyword, Word, chunkWords, wordFrame } from "./chunker";
+import { Block, CaptionCfg, Keyword, Word, chunkWords, wordFrame } from "./chunker";
 import { KeywordBox } from "./KeywordBox";
 
-export const useCaptionBlocks = (words: Word[], keywords: Keyword[] = []) => {
+export const useCaptionBlocks = (words: Word[], keywords: Keyword[] = [], cap: CaptionCfg = CAP) => {
   const { width, fps, durationInFrames } = useVideoConfig();
+  const CAPTION = cap;
   const ready = useFontsReady();
   return useMemo(() => (ready ? chunkWords(words, {
-    fontFamily: CAPTION_FAMILY, fontSize: CAPTION.fontSizeK * width, maxWidth: CAPTION.maxWidthK * width, fps, width, durationF: durationInFrames,
+    cap, fontFamily: CAPTION_FAMILY, fontSize: CAPTION.fontSizeK * width, maxWidth: CAPTION.maxWidthK * width, fps, width, durationF: durationInFrames,
     boxed: new Set(keywords.filter((k) => k.variant === "box").map((k) => k.index)),
-  }) : null), [ready, words, keywords, width, fps, durationInFrames]);
+  }) : null), [ready, words, keywords, width, fps, durationInFrames, CAPTION]);
 };
 
-const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keyword["variant"]> }> = ({ b, words, keywords }) => {
+const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keyword["variant"]>; cap: CaptionCfg }> = ({ b, words, keywords, cap: CAPTION }) => {
   const f = useCurrentFrame();
   const { width, height, fps } = useVideoConfig();
   const fs = CAPTION.fontSizeK * width * b.scale, lh = fs * CAPTION.lineHeight;
@@ -54,11 +55,11 @@ const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keywo
   );
 };
 
-export const Captions: React.FC<{ words: Word[]; keywords: Keyword[] }> = ({ words, keywords }) => {
+export const Captions: React.FC<{ words: Word[]; keywords: Keyword[]; cap?: CaptionCfg }> = ({ words, keywords, cap = CAP }) => {
   const f = useCurrentFrame();
-  const blocks = useCaptionBlocks(words, keywords);
+  const blocks = useCaptionBlocks(words, keywords, cap);
   const kw = useMemo(() => new Map(keywords.map((k) => [k.index, k.variant])), [keywords]);
   if (!blocks) return null;
   const b = blocks.find((x) => f >= x.startF && f < x.endF);
-  return <AbsoluteFill style={{ pointerEvents: "none" }}>{b ? <BlockView b={b} words={words} keywords={kw} /> : null}</AbsoluteFill>;
+  return <AbsoluteFill style={{ pointerEvents: "none" }}>{b ? <BlockView b={b} words={words} keywords={kw} cap={cap} /> : null}</AbsoluteFill>;
 };

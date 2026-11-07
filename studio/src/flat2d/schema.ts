@@ -13,7 +13,7 @@ export const LayerSchema = z.looseObject({
 });
 export const Camera2Schema = z.looseObject({ preset: z.string(), from: Cam.optional(), to: Cam.optional() });
 export const Beat2Schema = z.looseObject({
-  id: z.string(), role: z.string(), text: z.string().min(1), keyword: z.string().optional(), shows: z.string().optional(),
+  id: z.string(), role: z.string(), text: z.string().min(1), keyword: z.string().optional(), keywords: z.array(z.string()).optional(), shows: z.string().optional(),
   scene: z.looseObject({ palette: z.string(), light: z.string(), layers: z.array(LayerSchema).min(1), camera: Camera2Schema }),
   overlays: z.array(z.looseObject({ type: z.string(), at: At.optional() })).default([]),
   actions: z.array(z.looseObject({ type: z.string(), at: At.optional(), target: z.string().optional(), dur: z.number().int().min(1).max(600).optional() })).default([]),
@@ -22,7 +22,7 @@ export const Beat2Schema = z.looseObject({
 });
 export const Story2Schema = z.object({
   meta: z.looseObject({ id: z.string(), lang: z.enum(["es", "en"]), title: z.string(), engine: z.literal("2d"), tailS: z.number().min(0.1).max(2).default(1.0),
-    captionEmphasis: z.enum(["box", "accent"]).default("box") }),
+    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional() }),
   beats: z.array(Beat2Schema).min(1),
 });
 export const Props2Schema = z.object({ story: Story2Schema, words: z.array(WordSchema).min(1) });

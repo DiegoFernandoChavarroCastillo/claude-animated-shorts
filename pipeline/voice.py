@@ -14,9 +14,16 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import PipelineError, load_json, segments, words_of, run_main, write_json  # noqa: E402
+from common import ROOT, PipelineError, load_json, segments, words_of, run_main, write_json  # noqa: E402
 
 WPS_LO, WPS_HI, WPS_TARGET = 2.6, 3.0, 2.8
+
+
+def viral_voice(meta: dict) -> dict | None:
+    """perfil `pacing: viral` (templates/pacing_viral.json): locución más rápida y pausas entre frases de 150 ms como mucho; None si no aplica"""
+    if meta.get("pacing") != "viral":
+        return None
+    return load_json(ROOT / "templates" / "pacing_viral.json")["voice"]
 
 
 def wav_seconds(p: Path) -> float:
@@ -41,6 +48,11 @@ def main():
     eng = a.engine or meta["voice"]["engine"]
     voice = a.voice or meta["voice"]["voice"]
     speed = a.speed or float(meta["voice"].get("speed", 1.0))
+    vv = viral_voice(meta)
+    wps_lo, wps_hi, wps_target = WPS_LO, WPS_HI, WPS_TARGET
+    if vv:
+        speed = a.speed or max(speed, vv["speed"])   # +12–15 % sobre la narración normal; un story puede pedir más, nunca menos
+        wps_lo, wps_hi, wps_target = vv["wps"]
     out = a.out / a.name
     if out.exists() and not a.force:
         print(f"ya existe {out} (usa --force para regenerar)")
@@ -50,6 +62,8 @@ def main():
     report = []
     scale = float(meta["voice"].get("pauseScale", 1.0))   # F18: acorta o alarga las pausas sin repetir la voz (caché por frase)
     pauses = [int(s.pause_after_ms * scale) for s in segs]
+    if vv:
+        pauses = [min(p, vv["pauseMaxMs"]) for p in pauses]
     for attempt in range(2):
         synth([s.text for s in segs], meta["lang"], voice, speed, pauses, out, eng,
               [{"beat": s.beat, "role": s.role} for s in segs])
@@ -57,13 +71,16 @@ def main():
         wps = nwords / dur
         report.append({"speed": round(speed, 3), "pauses_ms": sum(pauses), "dur_s": round(dur, 2), "wps": round(wps, 3)})
         print(f"[voz] {eng}/{voice} speed {speed:.3f}, pausas {sum(pauses)} ms: {dur:.2f} s, {nwords} palabras, {wps:.2f} pal/s")
-        if WPS_LO <= wps <= WPS_HI or attempt == 1:
+        if wps_lo <= wps <= wps_hi or attempt == 1:
             break
-        if eng == "chatterbox":
-            k = max(0.5, min(2.0, 1 + (nwords / WPS_TARGET - dur) * 1000 / max(1, sum(pauses))))
+        if vv:   # perfil viral: la velocidad (+12–15 %) y las pausas (≤150 ms) son requisitos, no se reajustan; el QA avisa si el ritmo sale de rango
+            print(f"[voz] aviso: {wps:.2f} pal/s fuera de {wps_lo}–{wps_hi} (perfil viral); no se reajusta")
+            break
+        elif eng == "chatterbox":
+            k = max(0.5, min(2.0, 1 + (nwords / wps_target - dur) * 1000 / max(1, sum(pauses))))
             pauses = [int(p * k) for p in pauses]
         else:
-            speed = max(0.7, min(1.4, speed * WPS_TARGET / wps))
+            speed = max(0.7, min(1.4, speed * wps_target / wps))
     write_json(a.out / (a.name + ".report.json"), {"engine": eng, "voice": voice, "attempts": report, "words": nwords})
 
 
