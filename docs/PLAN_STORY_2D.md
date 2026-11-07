@@ -1,6 +1,6 @@
 # Plan piloto: skill `story-short` (shorts narrativos 2D plano)
 
-Estado general: **0 / 8 fases** · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
+Estado general: **1 / 8 fases** (F0 hecha) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
 
 > Cómo usar este archivo: marca `[x]` al terminar cada tarea, cambia el estado de la fase (⬜ pendiente · 🟡 en curso · ✅ hecha) y anota en la tabla de medidas lo que costó de verdad.
 
@@ -66,12 +66,13 @@ Reglas de calidad (heredadas de `visual-fidelity`): el asset se reconoce de un v
 
 ## 5. Fases
 
-### F0 · Preparación y red de seguridad — 🟡
+### F0 · Preparación y red de seguridad — ✅
 - [x] Trabajo anterior comiteado (`c87a8bf`).
 - [x] Rama `story-2d` creada.
-- [ ] Guardar la línea base: `tools/run_tests.py` en verde y stills de `templates/examples/bluetooth-wifi` (carpeta de referencia fuera de `out/`).
-- [ ] Script o comando que repite esa comprobación en <2 min.
-- **Listo cuando:** la comprobación de no regresión se corre con un solo comando.
+- [x] Línea base guardada: 20 miniaturas PNG de `templates/examples/bluetooth-wifi` en `tools/baseline/bluetooth-wifi/` (712 KB).
+- [x] Comando único: `.venv/bin/python tools/regression_check.py` (pruebas + validar el story + stills + comparar; ~50 s). `... baseline` regenera la línea base solo si un cambio visual es intencionado.
+- [x] Verificado: es determinista (diferencia 0,04 entre corridas) y detecta un cambio inyectado (112,7 contra un límite de 3).
+- **Listo cuando:** la comprobación de no regresión se corre con un solo comando. ✔
 
 ### F1 · Esquema y validador 2D — ⬜
 - [ ] `templates/catalog2d.json` (assets, paletas, luces, cámaras 2D, acciones 2D, overlays).
@@ -149,4 +150,5 @@ El motor y la biblioteca del piloto caben en **1–3 sesiones largas**. Es una e
 | Fecha | Fase | Qué se hizo | Notas |
 |---|---|---|---|
 | 2026-11-06 | — | Plan creado | Sin código todavía |
-| 2026-11-06 | F0 | Plan ampliado (narrativas, filosofía, ciencia ficción) y piloto cambiado a mito de la caverna; rama `story-2d` creada | Falta la línea base de no regresión |
+| 2026-11-06 | F0 | Plan ampliado (narrativas, filosofía, ciencia ficción) y piloto cambiado a mito de la caverna; rama `story-2d` creada | — |
+| 2026-11-06 | F0 | `tools/regression_check.py` y línea base; F0 cerrada | Correr antes de cada commit que toque archivos compartidos y al cerrar F6 |
