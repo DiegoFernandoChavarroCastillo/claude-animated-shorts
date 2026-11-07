@@ -14,6 +14,8 @@ export const CuevaCorte: AssetFC = ({ pal, seed, flick }) => {
         <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={pal.rock} /><stop offset="1" stopColor={pal.ink} /></linearGradient>
       </defs>
       <rect x={-2} y={0} width={104} height={178} fill={pal.bg} />
+      {/* grano de roca: motas repartidas por todo el fondo (da textura a las zonas lisas y oscuras) */}
+      {[...Array(260)].map((_, i) => <circle key={i} cx={-2 + hash(i + 200) * 104} cy={hash(i + 400) * 178} r={0.25 + hash(i + 600) * 0.7} fill={i % 3 ? pal.wallLit : pal.rock} opacity={0.14 + 0.2 * hash(i + 800)} />)}
       <ellipse cx={50} cy={30} rx={34} ry={20} fill={`url(#${id}x)`} />
       <path d={`M-2 -2 L102 -2 L102 ${ceil[12].split(" ")[1]} L${[...ceil].reverse().join(" L")} L-2 ${ceil[0].split(" ")[1]} Z`} fill={pal.ink} />
       {[...Array(9)].map((_, i) => { const x = 6 + i * 11 + hash(i + 40) * 4, h = 5 + hash(i + 50) * 13, y = 16 + 12 * hash(i + 3.4); return <path key={i} d={`M${x - 3} ${y} L${x} ${y + h} L${x + 3} ${y}Z`} fill={pal.ink} />; })}

@@ -3,6 +3,7 @@
 import React from "react";
 import { type AssetFC, hash, lerp } from "./common";
 import { KINDS, Kind, Sil } from "./silhouettes";
+import { Grain } from "./grain";
 
 export const PAGE = { w: 100, h: 72 };
 
@@ -25,6 +26,7 @@ export const ParedSombras: AssetFC = ({ t, p, params, pal, flick, seed }) => {
       </defs>
       <path d={edge} fill={`url(#${id}g)`} />
       {[...Array(9)].map((_, i) => <path key={i} d={`M${6 + hash(i + seed) * 88} ${4 + hash(i * 2.3) * 60} q${3 + hash(i) * 5} ${hash(i * 5) * 3} ${6 + hash(i * 7) * 6} ${-1 + hash(i * 9) * 3}`} stroke={pal.rock} strokeWidth={0.5} fill="none" opacity={0.55} />)}
+      <g clipPath={`url(#${id}c)`}><Grain n={140} w={W} h={H} seed={seed * 7 + 3} a={pal.wallLit} b={pal.rock} /></g>
       <g clipPath={`url(#${id}c)`}>
         <g filter={`url(#${id}b)`} opacity={0.82} fill={pal.ink}>
           {idle.map((o) => <g key={o.key} transform={`translate(0 ${H - 5}) scale(1 ${wob}) translate(0 ${-H + 5})`}><Sil kind={o.kind} fill={pal.ink} x={o.x} y={H - 5 - 20 * o.s} s={o.s} flip={o.flip} /></g>)}

@@ -1,0 +1,1212 @@
+{
+  "meta": {
+    "id": "mito-caverna",
+    "lang": "es",
+    "title": "El mito de la caverna",
+    "engine": "2d",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "voice": {
+      "engine": "kokoro",
+      "voice": "em_alex",
+      "speed": 1.0
+    },
+    "music": true,
+    "musicMood": "tense",
+    "captionEmphasis": "box",
+    "tailS": 0.2
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "role": "hook",
+      "text": "¿Y si lo que crees real fueran solo sombras?",
+      "keyword": "sombras?",
+      "shows": "la cueva completa: pared con sombras, prisioneros, muro con portadores y fuego",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "to": [
+            0.5,
+            0.5,
+            1.12
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "shadow_pass",
+          "at": "si",
+          "target": "pared_sombras",
+          "dur": 80,
+          "object": "persona",
+          "dir": "right"
+        },
+        {
+          "type": "flare",
+          "at": "sombras?",
+          "target": "fuego",
+          "dur": 30
+        }
+      ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b02",
+      "role": "scene",
+      "text": "Hace siglos, el filósofo Platón imaginó una cueva.",
+      "keyword": "cueva.",
+      "shows": "la cueva vista de más lejos",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "pull_out",
+          "from": [
+            0.5,
+            0.5,
+            1.12
+          ],
+          "to": [
+            0.5,
+            0.5,
+            0.82
+          ]
+        }
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "Platón",
+          "text": "PLATÓN · LA REPÚBLICA",
+          "slot": "lower"
+        }
+      ],
+      "actions": [
+        {
+          "type": "pop",
+          "at": "Platón",
+          "target": "pared_sombras"
+        }
+      ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b03",
+      "role": "scene",
+      "text": "Dentro viven unos prisioneros, encadenados desde niños, con las piernas y el cuello atados. Solo pueden mirar hacia delante, a la pared del fondo.",
+      "keyword": "encadenados",
+      "shows": "los prisioneros encadenados mirando la pared",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "pan_slow",
+          "from": [
+            0.5,
+            0.56,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.66,
+            1.12
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "tremble",
+          "at": "encadenados",
+          "target": "prisioneros",
+          "dur": 30
+        },
+        {
+          "type": "pop",
+          "at": "cuello",
+          "target": "prisioneros"
+        },
+        {
+          "type": "shadow_pass",
+          "at": "pared",
+          "target": "pared_sombras",
+          "dur": 70,
+          "object": "animal",
+          "dir": "left"
+        }
+      ],
+      "transition": "crossfade",
+      "shots": [
+        {
+          "at": "piernas",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.64,
+              1.1
+            ],
+            "to": [
+              0.5,
+              0.62,
+              1.2
+            ]
+          }
+        }
+      ],
+      "sfx": [
+        {
+          "type": "chains",
+          "at": "encadenados"
+        }
+      ]
+    },
+    {
+      "id": "b04",
+      "role": "scene",
+      "text": "Detrás de ellos arde un fuego. Entre el fuego y los prisioneros hay un muro bajo, y por detrás pasan hombres cargando estatuas y figuras de animales.",
+      "keyword": "fuego.",
+      "shows": "el fuego, el muro bajo y los hombres que cargan estatuas y animales",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "pan_slow",
+          "from": [
+            0.5,
+            0.62,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.82,
+            1.3
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "flare",
+          "at": "fuego.",
+          "target": "fuego",
+          "dur": 40
+        },
+        {
+          "type": "carry",
+          "at": "cargando",
+          "target": "muro_bajo",
+          "dur": 70,
+          "dir": "left"
+        }
+      ],
+      "transition": "crossfade",
+      "shots": [
+        {
+          "at": "muro",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.78,
+              1.15
+            ],
+            "to": [
+              0.5,
+              0.8,
+              1.4
+            ]
+          }
+        },
+        {
+          "at": "estatuas",
+          "camera": {
+            "preset": "pan_slow",
+            "from": [
+              0.4,
+              0.82,
+              1.3
+            ],
+            "to": [
+              0.6,
+              0.82,
+              1.4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "b05",
+      "role": "scene",
+      "text": "Los prisioneros solo ven las sombras de esos objetos en la pared. Creen que esas sombras son la realidad, y hasta les ponen nombres.",
+      "keyword": "sombras",
+      "shows": "las sombras de objetos moviéndose por la pared",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.56,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.4
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "shadow_pass",
+          "at": "sombras",
+          "target": "pared_sombras",
+          "dur": 80,
+          "object": "animal",
+          "dir": "right"
+        },
+        {
+          "type": "pop",
+          "at": "realidad,",
+          "target": "pared_sombras"
+        }
+      ],
+      "transition": "crossfade",
+      "shots": [
+        {
+          "at": "Creen",
+          "camera": {
+            "preset": "pan_slow",
+            "from": [
+              0.5,
+              0.47,
+              1.25
+            ],
+            "to": [
+              0.5,
+              0.62,
+              1.0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "b06",
+      "role": "rupture",
+      "text": "Un día, alguien se libera. Se levanta, se gira hacia el fuego y la luz le hace daño en los ojos.",
+      "keyword": "libera.",
+      "shows": "un prisionero se levanta y se tapa los ojos ante la luz del fuego",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.3,
+              0.69
+            ],
+            "scale": 0.5
+          },
+          {
+            "asset": "prisionero_libre",
+            "z": 3,
+            "at": [
+              0.64,
+              0.74
+            ],
+            "scale": 0.5
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.6,
+            1.0
+          ],
+          "to": [
+            0.55,
+            0.66,
+            1.4
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "stand_up",
+          "at": "levanta,",
+          "target": "prisionero_libre",
+          "dur": 45
+        },
+        {
+          "type": "flash",
+          "at": "luz",
+          "dur": 26
+        },
+        {
+          "type": "flare",
+          "at": "fuego",
+          "target": "fuego",
+          "dur": 30
+        }
+      ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b07",
+      "role": "rupture",
+      "text": "Confundido, cree que las sombras eran más reales que los objetos que ahora le enseñan.",
+      "keyword": "Confundido,",
+      "shows": "el prisionero, de pie, mira confundido las sombras de la pared",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.3,
+              0.69
+            ],
+            "scale": 0.5
+          },
+          {
+            "asset": "prisionero_libre",
+            "z": 3,
+            "at": [
+              0.64,
+              0.74
+            ],
+            "scale": 0.5,
+            "id": "libre",
+            "init": {
+              "stand_up": 1
+            }
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.55,
+            0.62,
+            1.2
+          ],
+          "to": [
+            0.5,
+            0.55,
+            1.35
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "tremble",
+          "at": "Confundido,",
+          "target": "libre",
+          "dur": 24
+        },
+        {
+          "type": "shadow_pass",
+          "at": "sombras",
+          "target": "pared_sombras",
+          "dur": 70,
+          "object": "jarra",
+          "dir": "left"
+        }
+      ],
+      "transition": "swipe"
+    },
+    {
+      "id": "b08",
+      "role": "ascent",
+      "text": "Entonces lo arrastran por una subida áspera y empinada, y no lo sueltan hasta sacarlo al sol.",
+      "keyword": "sol.",
+      "shows": "el prisionero sube por una rampa empinada hacia una luz",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "tunel_ascenso",
+            "z": 1,
+            "at": [
+              0.5,
+              1.0
+            ],
+            "scale": 0.9
+          },
+          {
+            "asset": "prisionero_libre",
+            "z": 2,
+            "at": [
+              0.5,
+              0.97
+            ],
+            "scale": 0.62,
+            "id": "libre",
+            "init": {
+              "stand_up": 1
+            }
+          }
+        ],
+        "camera": {
+          "preset": "pan_slow",
+          "from": [
+            0.5,
+            0.72,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.12
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "walk",
+          "at": "arrastran",
+          "target": "libre",
+          "dur": 110,
+          "dir": "up"
+        },
+        {
+          "type": "light_grow",
+          "at": "sacarlo",
+          "target": "tunel_ascenso",
+          "dur": 50
+        },
+        {
+          "type": "palette_shift",
+          "at": "sol.",
+          "to": "exterior",
+          "dur": 30
+        }
+      ],
+      "transition": "crossfade",
+      "shots": [
+        {
+          "at": "empinada,",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.55,
+              1.1
+            ],
+            "to": [
+              0.5,
+              0.45,
+              1.22
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "b09",
+      "role": "ascent",
+      "text": "Al principio, la luz lo ciega. Después aprende a mirar: primero las sombras, luego los reflejos en el agua, después las cosas mismas. Y al final, el sol.",
+      "keyword": "ciega.",
+      "shows": "el prisionero en el exterior, deslumbrado, con el sol saliendo",
+      "scene": {
+        "palette": "exterior",
+        "light": "sol",
+        "layers": [
+          {
+            "asset": "exterior_sol",
+            "z": 0
+          },
+          {
+            "asset": "prisionero_libre",
+            "z": 1,
+            "at": [
+              0.5,
+              0.97
+            ],
+            "scale": 0.6,
+            "id": "libre",
+            "init": {
+              "stand_up": 1
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.55,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.35
+          ]
+        }
+      },
+      "overlays": [
+        {
+          "type": "IconFlow",
+          "at": "primero",
+          "steps": [
+            {
+              "label": "SOMBRAS",
+              "icon": "moon"
+            },
+            {
+              "label": "REFLEJOS",
+              "icon": "drop"
+            },
+            {
+              "label": "COSAS",
+              "icon": "leaf"
+            }
+          ],
+          "slot": "lower"
+        }
+      ],
+      "actions": [
+        {
+          "type": "flash",
+          "at": "ciega.",
+          "dur": 22
+        },
+        {
+          "type": "sunrise",
+          "at": "mirar:",
+          "target": "exterior_sol",
+          "dur": 90
+        },
+        {
+          "type": "pop",
+          "at": "cosas",
+          "target": "libre"
+        }
+      ],
+      "transition": "cut",
+      "shots": [
+        {
+          "at": "luego",
+          "camera": {
+            "preset": "pull_out",
+            "from": [
+              0.5,
+              0.5,
+              1.2
+            ],
+            "to": [
+              0.5,
+              0.5,
+              1.02
+            ]
+          }
+        },
+        {
+          "at": "Después",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.55,
+              1.05
+            ],
+            "to": [
+              0.5,
+              0.5,
+              1.2
+            ]
+          }
+        },
+        {
+          "at": "final,",
+          "camera": {
+            "preset": "pull_out",
+            "from": [
+              0.5,
+              0.5,
+              1.25
+            ],
+            "to": [
+              0.5,
+              0.45,
+              1.05
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "b10",
+      "role": "return",
+      "text": "Cuando vuelve a bajar para contárselo, sus ojos están llenos de oscuridad. Los demás lo toman por ridículo, y matarían a quien intentara sacarlos de allí.",
+      "keyword": "ridículo,",
+      "shows": "de vuelta en la cueva, el prisionero frente a los demás, que se burlan",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "prisionero_libre",
+            "z": 3,
+            "at": [
+              0.2,
+              0.86
+            ],
+            "scale": 0.5,
+            "id": "libre",
+            "init": {
+              "stand_up": 1
+            }
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "pull_out",
+          "from": [
+            0.5,
+            0.7,
+            1.25
+          ],
+          "to": [
+            0.5,
+            0.55,
+            1.0
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "slide",
+          "at": "vuelve",
+          "target": "libre",
+          "dx": 0.1,
+          "dur": 40
+        },
+        {
+          "type": "tremble",
+          "at": "ridículo,",
+          "target": "prisioneros",
+          "dur": 30
+        },
+        {
+          "type": "shadow_pass",
+          "at": "matarían",
+          "target": "pared_sombras",
+          "dur": 70,
+          "object": "persona",
+          "dir": "left"
+        }
+      ],
+      "transition": "crossfade",
+      "shots": [
+        {
+          "at": "sus",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.6,
+              1.05
+            ],
+            "to": [
+              0.5,
+              0.62,
+              1.2
+            ]
+          }
+        },
+        {
+          "at": "demás",
+          "camera": {
+            "preset": "pan_slow",
+            "from": [
+              0.5,
+              0.62,
+              1.15
+            ],
+            "to": [
+              0.45,
+              0.58,
+              1.25
+            ]
+          }
+        },
+        {
+          "at": "intentara",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.6,
+              1.2
+            ],
+            "to": [
+              0.5,
+              0.58,
+              1.35
+            ]
+          }
+        }
+      ],
+      "sfx": [
+        {
+          "type": "chains",
+          "at": "matarían"
+        }
+      ]
+    },
+    {
+      "id": "b11",
+      "role": "twist",
+      "text": "Para Platón, esa cueva es el mundo que vemos, y salir es aprender a pensar. Lo más difícil no es descubrir la verdad: es que te crean.",
+      "keyword": "aprender",
+      "shows": "el túnel que sale de la cueva hacia una luz que crece y vuelve el mundo claro",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "tunel_ascenso",
+            "z": 1,
+            "at": [
+              0.5,
+              1.0
+            ],
+            "scale": 0.9
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.6,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.15
+          ]
+        }
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "aprender",
+          "text": "APRENDER A PENSAR",
+          "slot": "lower"
+        }
+      ],
+      "actions": [
+        {
+          "type": "light_grow",
+          "at": "salir",
+          "target": "tunel_ascenso",
+          "dur": 60
+        },
+        {
+          "type": "palette_shift",
+          "at": "pensar.",
+          "to": "exterior",
+          "dur": 40
+        },
+        {
+          "type": "flash",
+          "at": "verdad:",
+          "dur": 20
+        }
+      ],
+      "transition": "cut"
+    },
+    {
+      "id": "b12",
+      "role": "cta",
+      "text": "Así que, la próxima vez que algo te parezca evidente, mira bien tus sombras y pregúntate:",
+      "keyword": "sombras",
+      "shows": "la cueva completa del principio, con sombras en la pared",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.9
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "to": [
+            0.5,
+            0.5,
+            1.12
+          ]
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "shadow_pass",
+          "at": "evidente,",
+          "target": "pared_sombras",
+          "dur": 90,
+          "object": "animal",
+          "dir": "right"
+        },
+        {
+          "type": "flare",
+          "at": "mira",
+          "target": "fuego",
+          "dur": 30
+        }
+      ],
+      "transition": "crossfade"
+    }
+  ]
+}

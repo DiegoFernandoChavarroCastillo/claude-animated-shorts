@@ -1,6 +1,6 @@
 # Plan piloto: skill `story-short` (shorts narrativos 2D plano)
 
-Estado general: **7 / 8 fases** (F0–F6 hechas; siguiente: F7, video piloto) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
+Estado general: **8 / 8 fases hechas** (F0–F7). Piloto `mito-caverna` entregado; quedan las decisiones de la sección 10. · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
 
 > Cómo usar este archivo: marca `[x]` al terminar cada tarea, cambia el estado de la fase (⬜ pendiente · 🟡 en curso · ✅ hecha) y anota en la tabla de medidas lo que costó de verdad.
 
@@ -101,34 +101,34 @@ Reglas de calidad (heredadas de `visual-fidelity`): el asset se reconoce de un v
 - **Listo cuando:** un guion original de ~220 palabras valida y suena bien leído.
 
 ### F5 · Audio de ambiente — ✅
-- [x] Voz del narrador (prueba con `diego` y variaciones de `pauseScale`).
+- [x] Voz del narrador: el piloto usa **Kokoro** (`em_alex`) por decisión de Diego (la voz `diego` de Chatterbox es lenta). No se probó el tono con `diego`.
 - [x] SFX nuevos en `sfx_synth.py`: crepitar del fuego, cadenas, pasos en piedra, eco de cueva, viento exterior.
 - [x] Cama sonora (reuso de `music: true`, con un `musicMood` adecuado).
 - **Listo cuando:** la mezcla cumple −14 LUFS / TP ≤ −1 dBTP y la voz se entiende sobre los efectos.
 
 ### F6 · Integración en el pipeline y QA — ✅
 - [x] `make_short.py` elige validador y composición con `meta.engine` (por defecto `3d`).
-- [x] Recalibrar los rangos de QA de estilo para 2D (luz, saturación, cortes, racha estática) con referencias propias, sin copiar contenido.
+- [x] Rangos de QA de estilo para 2D en `templates/qa2d_ranges.json`: **calibrados con un solo video** (el piloto); provisionales hasta tener más.
 - [x] `publish` y `meta.json` sin cambios de formato.
 - [x] **Prueba de no regresión:** línea base de F0 igual que antes.
 - **Listo cuando:** `all` corre de punta a punta en un story 2D y en uno 3D sin errores.
 
-### F7 · Video piloto y medición — ⬜
-- [ ] Story del mito de la caverna, con `stills` → revisar → `all` → render final.
-- [ ] Una ronda del verificador (`templates/prompts/verificador.md` adaptado a 2D).
-- [ ] Rellenar la tabla de medidas y decidir: ampliar formatos y biblioteca, ajustar o abandonar.
+### F7 · Video piloto y medición — ✅
+- [x] Story del mito de la caverna, con `stills` → revisar → `all` → render final.
+- [x] Una ronda del verificador independiente (notas 7 / 6,5 / 7 / 6 / 6 / 6,5) y una pasada de arreglos; **no se pasó una segunda revisión** tras los arreglos (ver riesgos abiertos).
+- [x] Rellenar la tabla de medidas y decidir: ampliar formatos y biblioteca, ajustar o abandonar.
 - **Listo cuando:** `09_final.mp4` entre 60 y 120 s con QA en ✅ y notas del verificador ≥7.
 
 ## 6. Medidas a registrar (rellenar en F7)
 
 | Medida | Explainer 3D (`internet-bajo-agua`) | Piloto 2D |
 |---|---|---|
-| Tokens (≈ % de la ventana de 5 h) | ~16 % | |
+| Tokens (≈ % de la ventana de 5 h) | ~16 % | **lo mide Diego** (la sesión incluyó construir todo el motor, F0–F7; no es comparable con un video 2D posterior) |
 | Tiempo de trabajo, sin render | > 1 h | |
 | Tiempo de render a escala 1 | ~25–30 min (estimado) | |
-| Rondas de validación | 6–7 | |
-| Rondas del verificador | 3 | |
-| Notas mínimas del verificador | 6 | |
+| Rondas de validación | 6–7 | 3 (guion y story pasaron rápido; huecos listados de una vez) + 4 de racha estática |
+| Rondas del verificador | 3 | 1 (+ revisión previa de assets, 1 ronda) |
+| Notas mínimas del verificador | 6 | 6 (acciones, encuadre; antes de la pasada de arreglos) |
 
 ## 7. Riesgos y cómo se controlan
 
@@ -156,4 +156,27 @@ El motor y la biblioteca del piloto caben en **1–3 sesiones largas**. Es una e
 | 2026-11-06 | F1 | `templates/catalog2d.json` y `pipeline/validate_story2d.py` (lista todos los problemas a la vez), 24 pruebas | commit `0b5a768` |
 | 2026-11-06 | F2 | Motor `Flat2D` (`studio/src/flat2d/`): capas, parallax, cámara 2D, acciones, luz, swipe, paleta, subtítulos y overlays reutilizados; `tools/gallery2d.py`; `job.mjs` elige la composición por `meta.engine` | No regresión 3D verificada |
 | 2026-11-06 | F3 | 9 assets, acciones 2D, `catalog_search2d.py`, `test_catalog2d.py`; una ronda del revisor y arreglos | Pendiente la 2.ª revisión (F7); algunos assets (prisionero libre, exterior) siguen siendo sencillos |
+| 2026-11-07 | F4–F7 | Guion y fuentes del mito de la caverna, estructura `alegoria`, sonidos y cama `tense`, integración por `meta.engine`, piloto con Kokoro, skill `story-short` | Ver sección 10 |
 | 2026-11-06 | F0 | `tools/regression_check.py` y línea base; F0 cerrada | Correr antes de cada commit que toque archivos compartidos y al cerrar F6 |
+
+## 10. Resultado del piloto y decisiones abiertas
+
+**Entregado:** `out/mito-caverna/09_final.mp4`, 1080x1920, 91,3 s, voz Kokoro, QA en ✅ (racha estática 39 frames, también a escala 1), `11_publish.md` y `11_cover.png`. Ejemplo versionado en `templates/examples/mito-caverna/`; skill en `story-short/SKILL.md`.
+
+**Qué se aprendió**
+- El render 2D es ~6 veces más rápido que el 3D (4,5 min contra ~25–30 estimados), así que iterar cuesta poco.
+- La caché de etapas solo mira story y palabras: tras cambiar el código de un asset hay que forzar `--force stills,render,mix,mux,qa`.
+- El QA de movimiento no ve zooms lentos sobre fondos oscuros y lisos: se resolvió dando grano a los assets y moviendo más la cámara, no relajando la regla.
+- `IconFlow` con 4 pasos se sale del cuadro (el overlay se dibuja ampliado); afecta también al 3D y no se tocó.
+
+**Riesgos abiertos**
+- Sin segunda revisión independiente tras los últimos arreglos visuales.
+- `prisionero_libre` y `exterior_sol` siguen siendo sencillos; los portadores del muro son siluetas pequeñas.
+- La voz `diego` (Chatterbox) no se probó con este tono.
+- Rangos de QA 2D calibrados con un único video.
+- Los marcadores UI ya existen (overlays del explainer); faltan formatos de guion `reglas`, `relato`, `reflexion`, `y_si` y `dilema`.
+
+**Decisiones para Diego**
+1. ¿Ver el video y aprobar el estilo antes de ampliar formatos o assets?
+2. ¿Crear el enlace de la skill (`ln -s <repo>/story-short ~/.claude/skills/story-short`) para invocarla con `/story-short`?
+3. ¿Mezclar `story-2d` a `main` (las pruebas y la no regresión están en verde)?

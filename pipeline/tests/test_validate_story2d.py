@@ -99,5 +99,16 @@ s = base()
 for i in range(4):
     s["beats"][i]["sfx"] = [{"type": "chains", "at": s["beats"][i]["text"].split()[0]}]
 check("más de 3 sfx a mano fallan", has(validate(s), "más de 3 sfx"))
+s = base(); s["beats"][0]["scene"]["layers"].append({"asset": "prisionero_libre", "z": 3, "init": {"stand_up": 1}})
+check("init con acción propia pasa", not has(validate(s), "init"))
+s = base(); s["beats"][0]["scene"]["layers"].append({"asset": "prisionero_libre", "z": 3, "init": {"flare": 1}})
+check("init con acción ajena falla", has(validate(s), "layers[3].init 'flare'"))
+from common import ROOT, load_json  # noqa: E402
+from validate_story import script_closing, script_lines  # noqa: E402
+from validate_story2d import script_structure  # noqa: E402
+ex = ROOT / "templates" / "examples" / "mito-caverna"
+md = (ex / "02_SCRIPT.md").read_text(encoding="utf-8")
+e = validate(load_json(ex / "05_story.json"), load_json(ex / "04_words.json"), script_lines(md), script_closing(md), script_structure(md))
+check("el ejemplo mito-caverna (story + palabras + guion) pasa", not e, e)
 print("\nTODO BIEN" if not fails else f"\n{fails} MAL")
 sys.exit(1 if fails else 0)

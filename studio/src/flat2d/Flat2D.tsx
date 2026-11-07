@@ -34,6 +34,7 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
       {layers.map(({ ly, k }) => {
         const m = META[ly.asset], Asset = ASSETS[ly.asset];
         const key = ly.id ?? ly.asset, fx = layerFx(key, acts, f, W, H);
+        fx.p = { ...((ly as { init?: Record<string, number> }).init ?? {}), ...fx.p };   // estado inicial de las acciones propias (p. ej. ya de pie)
         const scale = ly.scale ?? (m.kind === "fondo" ? 1.25 : 1), par = ly.par ?? m.par;
         const w = scale * W, h = w * m.aspect, at = ly.at ?? m.anchor;
         const left = at[0] * W - m.anchor[0] * w + fx.dx, top = at[1] * H - m.anchor[1] * h + fx.dy;

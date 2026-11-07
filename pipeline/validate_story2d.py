@@ -72,6 +72,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: layers[{k}].at debe ser [x, y] entre -0.5 y 1.5 (0–1 es el cuadro)")
             if "scale" in ly and not (_num(ly["scale"]) and SCALE_RANGE[0] <= ly["scale"] <= SCALE_RANGE[1]):
                 errs.append(f"{bid}: layers[{k}].scale fuera de {SCALE_RANGE[0]}–{SCALE_RANGE[1]}")
+            for ik, iv in (ly.get("init") or {}).items():
+                if ik not in cat["assets"][a].get("actions", {}) or not (_num(iv) and 0 <= iv <= 1):
+                    errs.append(f"{bid}: layers[{k}].init '{ik}' debe ser una acción propia de {a} con valor 0–1")
             if "z" in ly and not _num(ly["z"]):
                 errs.append(f"{bid}: layers[{k}].z debe ser un número")
         cam = s.get("camera", {})
