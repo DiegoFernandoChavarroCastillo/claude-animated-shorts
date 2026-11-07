@@ -51,6 +51,7 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
         );
       })}
       <AbsoluteFill style={{ background: `radial-gradient(ellipse at ${glowAt}, ${pal.glow} 0%, transparent 62%)`, opacity: glow, mixBlendMode: "screen" }} />
+      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.22) 22%, transparent 36%)" }} />
       <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(0,0,0,0.45) 100%)" }} />
       {fxS.flash > 0 ? <AbsoluteFill style={{ background: "#fff", opacity: fxS.flash }} /> : null}
     </AbsoluteFill>

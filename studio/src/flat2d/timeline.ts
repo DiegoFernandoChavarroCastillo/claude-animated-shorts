@@ -34,7 +34,9 @@ export const buildTimeline2D = (story: Story2, words: WordT[], fps = 30): Timeli
   for (const bt of beats) bt.shots = bt.beat.shots.map((s) => ({ start: resolveAt(bt, words, s.at, fps), camera: s.camera })).sort((x, y) => x.start - y.start);
   for (let i = 0; i + 1 < beats.length; i++) {
     const type = beats[i].beat.transition;
-    const t: Trans = { type, at: beats[i + 1].a, half: HALF[type] ?? 6 };
+    const sig = (b: Beat2) => `${b.scene.palette}|${b.scene.light}|${b.scene.layers.map((l) => l.asset).sort().join(",")}`;
+    const same = sig(beats[i].beat) === sig(beats[i + 1].beat);   // misma escena: sin fundido (evita ver dos copias desfasadas)
+    const t: Trans = { type, at: beats[i + 1].a, half: type === "crossfade" && same ? 0 : HALF[type] ?? 6 };
     beats[i].tOut = t; beats[i + 1].tIn = t;
   }
   const keywords: Keyword[] = [];

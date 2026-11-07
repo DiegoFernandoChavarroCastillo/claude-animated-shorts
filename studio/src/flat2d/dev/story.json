@@ -1,17 +1,217 @@
 {
-  "meta": { "id": "dev2d", "lang": "es", "title": "dev 2d", "engine": "2d", "tailS": 0.5, "captionEmphasis": "box" },
+  "meta": {
+    "id": "dev2d",
+    "lang": "es",
+    "title": "dev 2d",
+    "engine": "2d",
+    "tailS": 0.5,
+    "captionEmphasis": "box"
+  },
   "beats": [
-    { "id": "b01", "role": "hook", "text": "Todo lo que ves son sombras.", "keyword": "sombras.", "shows": "una pared con sombras que pasan",
-      "scene": { "palette": "cueva", "light": "fuego", "layers": [ { "asset": "cueva_corte", "z": 0 }, { "asset": "pared_sombras", "z": 1, "at": [0.5, 0.55], "scale": 0.88 }, { "asset": "prisioneros", "z": 2, "at": [0.5, 0.86], "scale": 0.5 } ],
-                 "camera": { "preset": "push_in" } },
-      "overlays": [], "actions": [ { "type": "pop", "at": "Todo", "target": "prisioneros" }, { "type": "shadow_pass", "at": "ves", "target": "pared_sombras", "dur": 70, "object": "animal", "dir": "right" } ], "transition": "crossfade" },
-    { "id": "b02", "role": "scene", "text": "Viven encadenados, mirando solo la pared.", "keyword": "pared.", "shows": "los prisioneros ante la pared",
-      "scene": { "palette": "cueva", "light": "fuego", "layers": [ { "asset": "cueva_corte", "z": 0 }, { "asset": "pared_sombras", "z": 1, "at": [0.5, 0.55], "scale": 0.88 }, { "asset": "prisioneros", "z": 2, "at": [0.5, 0.86], "scale": 0.5 } ],
-                 "camera": { "preset": "pan_slow", "from": [0.5, 0.62, 1.05], "to": [0.5, 0.45, 1.2] } },
-      "overlays": [ { "type": "Pill", "at": "encadenados,", "text": "ENCADENADOS", "slot": "lower" } ], "actions": [ { "type": "tremble", "at": "encadenados,", "target": "prisioneros", "dur": 24 } ], "transition": "swipe" },
-    { "id": "b03", "role": "ascent", "text": "Uno de ellos sube hacia la luz.", "keyword": "luz.", "shows": "marcador de túnel y exterior",
-      "scene": { "palette": "exterior", "light": "sol", "layers": [ { "asset": "exterior_sol", "z": 0 }, { "asset": "tunel_ascenso", "z": 1, "at": [0.5, 1.0], "scale": 0.9 } ],
-                 "camera": { "preset": "pull_out" } },
-      "overlays": [], "actions": [ { "type": "flash", "at": "luz." }, { "type": "pop", "at": "Uno", "target": "tunel_ascenso" } ], "transition": "cut" }
+    {
+      "id": "b01",
+      "role": "hook",
+      "text": "Todo lo que ves son sombras.",
+      "keyword": "sombras.",
+      "shows": "una pared con sombras que pasan",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.875
+            ],
+            "scale": 0.85
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "push_in"
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "pop",
+          "at": "Todo",
+          "target": "prisioneros"
+        },
+        {
+          "type": "shadow_pass",
+          "at": "ves",
+          "target": "pared_sombras",
+          "dur": 70,
+          "object": "animal",
+          "dir": "right"
+        }
+      ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b02",
+      "role": "scene",
+      "text": "Viven encadenados, mirando solo la pared.",
+      "keyword": "pared.",
+      "shows": "los prisioneros ante la pared",
+      "scene": {
+        "palette": "cueva",
+        "light": "fuego",
+        "layers": [
+          {
+            "asset": "cueva_corte",
+            "z": 0
+          },
+          {
+            "asset": "pared_sombras",
+            "z": 1,
+            "at": [
+              0.5,
+              0.55
+            ],
+            "scale": 0.86
+          },
+          {
+            "asset": "prisioneros",
+            "z": 2,
+            "at": [
+              0.5,
+              0.69
+            ],
+            "scale": 0.72
+          },
+          {
+            "asset": "muro_bajo",
+            "z": 3,
+            "at": [
+              0.5,
+              0.875
+            ],
+            "scale": 0.85
+          },
+          {
+            "asset": "fuego",
+            "z": 4,
+            "at": [
+              0.5,
+              0.99
+            ],
+            "scale": 0.34
+          }
+        ],
+        "camera": {
+          "preset": "pan_slow",
+          "from": [
+            0.5,
+            0.62,
+            1.05
+          ],
+          "to": [
+            0.5,
+            0.45,
+            1.2
+          ]
+        }
+      },
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "encadenados,",
+          "text": "ENCADENADOS",
+          "slot": "lower"
+        }
+      ],
+      "actions": [
+        {
+          "type": "tremble",
+          "at": "encadenados,",
+          "target": "prisioneros",
+          "dur": 24
+        },
+        {
+          "type": "carry",
+          "at": "solo",
+          "target": "muro_bajo",
+          "dur": 50,
+          "dir": "left"
+        }
+      ],
+      "transition": "swipe"
+    },
+    {
+      "id": "b03",
+      "role": "ascent",
+      "text": "Uno de ellos sube hacia la luz.",
+      "keyword": "luz.",
+      "shows": "marcador de túnel y exterior",
+      "scene": {
+        "palette": "exterior",
+        "light": "sol",
+        "layers": [
+          {
+            "asset": "exterior_sol",
+            "z": 0
+          },
+          {
+            "asset": "tunel_ascenso",
+            "z": 1,
+            "at": [
+              0.5,
+              1.0
+            ],
+            "scale": 0.9
+          }
+        ],
+        "camera": {
+          "preset": "pull_out"
+        }
+      },
+      "overlays": [],
+      "actions": [
+        {
+          "type": "flash",
+          "at": "luz."
+        },
+        {
+          "type": "pop",
+          "at": "Uno",
+          "target": "tunel_ascenso"
+        }
+      ],
+      "transition": "cut"
+    }
   ]
 }

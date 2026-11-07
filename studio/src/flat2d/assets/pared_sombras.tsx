@@ -14,15 +14,16 @@ export const ParedSombras: AssetFC = ({ t, p, params, pal, flick, seed }) => {
     return { kind, x: lerp(-24, 122, u), s: 1.9 + 0.5 * hash(cyc + k), key: `${k}_${cyc}`, flip: k === 1 };
   });
   const u = p.shadow_pass ?? 0, spec = params.shadow_pass ?? {}, kind = (spec.object as Kind) ?? "animal", left = spec.dir === "left";
+  const edge = (() => { const P: string[] = []; for (let i = 0; i <= 14; i++) P.push(`${(i * W / 14).toFixed(1)} ${(1.2 + 2.6 * hash(seed + i * 1.3)).toFixed(1)}`); for (let j = 1; j <= 8; j++) P.push(`${(W - 1 - 2.2 * hash(seed + j * 2.1)).toFixed(1)} ${(j * H / 8).toFixed(1)}`); for (let i = 14; i >= 0; i--) P.push(`${(i * W / 14).toFixed(1)} ${(H - 0.6 - 1.8 * hash(seed + i * 4.1)).toFixed(1)}`); for (let j = 7; j >= 1; j--) P.push(`${(1 + 2.2 * hash(seed + j * 3.3)).toFixed(1)} ${(j * H / 8).toFixed(1)}`); return `M${P.join(" L")} Z`; })();
   const wob = 1 + 0.025 * Math.sin(t * 0.41) + 0.02 * (flick - 0.5);
   return (
     <g>
       <defs>
         <radialGradient id={`${id}g`} cx="50%" cy="108%" r="95%"><stop offset="0" stopColor={pal.wallLit} stopOpacity={0.75 + 0.25 * flick} /><stop offset="0.55" stopColor={pal.wall} /><stop offset="1" stopColor={pal.wall} /></radialGradient>
         <filter id={`${id}b`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="0.9" /></filter>
-        <clipPath id={`${id}c`}><rect x={0} y={0} width={W} height={H} rx={3} /></clipPath>
+        <clipPath id={`${id}c`}><path d={edge} /></clipPath>
       </defs>
-      <rect x={0} y={0} width={W} height={H} rx={3} fill={`url(#${id}g)`} />
+      <path d={edge} fill={`url(#${id}g)`} />
       {[...Array(9)].map((_, i) => <path key={i} d={`M${6 + hash(i + seed) * 88} ${4 + hash(i * 2.3) * 60} q${3 + hash(i) * 5} ${hash(i * 5) * 3} ${6 + hash(i * 7) * 6} ${-1 + hash(i * 9) * 3}`} stroke={pal.rock} strokeWidth={0.5} fill="none" opacity={0.55} />)}
       <g clipPath={`url(#${id}c)`}>
         <g filter={`url(#${id}b)`} opacity={0.82} fill={pal.ink}>
@@ -30,7 +31,7 @@ export const ParedSombras: AssetFC = ({ t, p, params, pal, flick, seed }) => {
           {u > 0 && u < 1 ? <g transform={`translate(0 ${H - 5}) scale(1 ${wob}) translate(0 ${-H + 5})`}><Sil kind={kind} fill={pal.ink} x={left ? lerp(122, -62, u) : lerp(-62, 122, u)} y={H - 5 - 20 * 3.1} s={3.1} flip={left} /></g> : null}
         </g>
       </g>
-      <rect x={0} y={0} width={W} height={H} rx={3} fill="none" stroke={pal.rock} strokeWidth={1.4} />
+      <path d={edge} fill="none" stroke={pal.rock} strokeWidth={1.8} strokeLinejoin="round" />
     </g>
   );
 };

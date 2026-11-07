@@ -39,6 +39,6 @@ const Shapes: Record<Kind, (c: string) => React.ReactNode> = {
 };
 
 /** silueta de tipo `kind` con su esquina arriba a la izquierda en (x, y), de lado 20·s; `flip` la mira a la izquierda */
-export const Sil: React.FC<{ kind: Kind; fill: string; x: number; y: number; s: number; flip?: boolean }> = ({ kind, fill, x, y, s, flip }) => (
-  <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s}) translate(${flip ? -20 : 0} 0)`}>{Shapes[kind](fill)}</g>
+export const Sil: React.FC<{ kind: Kind; fill: string; x: number; y: number; s: number; flip?: boolean; stroke?: string }> = ({ kind, fill, x, y, s, flip, stroke }) => (
+  <g stroke={stroke} strokeWidth={stroke ? 0.5 : undefined} strokeOpacity={0.85} transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s}) translate(${flip ? -20 : 0} 0)`}>{Shapes[kind](fill)}</g>
 );
