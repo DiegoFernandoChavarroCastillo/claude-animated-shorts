@@ -1,0 +1,116 @@
+[
+ {
+  "w": "Todo",
+  "start": 0.15,
+  "end": 0.388,
+  "beat": "b01"
+ },
+ {
+  "w": "lo",
+  "start": 0.418,
+  "end": 0.572,
+  "beat": "b01"
+ },
+ {
+  "w": "que",
+  "start": 0.602,
+  "end": 0.798,
+  "beat": "b01"
+ },
+ {
+  "w": "ves",
+  "start": 0.828,
+  "end": 1.024,
+  "beat": "b01"
+ },
+ {
+  "w": "son",
+  "start": 1.054,
+  "end": 1.25,
+  "beat": "b01"
+ },
+ {
+  "w": "sombras.",
+  "start": 1.28,
+  "end": 1.644,
+  "beat": "b01"
+ },
+ {
+  "w": "Viven",
+  "start": 2.144,
+  "end": 2.424,
+  "beat": "b02"
+ },
+ {
+  "w": "encadenados,",
+  "start": 2.454,
+  "end": 2.986,
+  "beat": "b02"
+ },
+ {
+  "w": "mirando",
+  "start": 3.206,
+  "end": 3.57,
+  "beat": "b02"
+ },
+ {
+  "w": "solo",
+  "start": 3.6,
+  "end": 3.838,
+  "beat": "b02"
+ },
+ {
+  "w": "la",
+  "start": 3.868,
+  "end": 4.022,
+  "beat": "b02"
+ },
+ {
+  "w": "pared.",
+  "start": 4.052,
+  "end": 4.332,
+  "beat": "b02"
+ },
+ {
+  "w": "Uno",
+  "start": 4.832,
+  "end": 5.028,
+  "beat": "b03"
+ },
+ {
+  "w": "de",
+  "start": 5.058,
+  "end": 5.212,
+  "beat": "b03"
+ },
+ {
+  "w": "ellos",
+  "start": 5.242,
+  "end": 5.522,
+  "beat": "b03"
+ },
+ {
+  "w": "sube",
+  "start": 5.552,
+  "end": 5.79,
+  "beat": "b03"
+ },
+ {
+  "w": "hacia",
+  "start": 5.82,
+  "end": 6.1,
+  "beat": "b03"
+ },
+ {
+  "w": "la",
+  "start": 6.13,
+  "end": 6.284,
+  "beat": "b03"
+ },
+ {
+  "w": "luz.",
+  "start": 6.314,
+  "end": 6.51,
+  "beat": "b03"
+ }
+]

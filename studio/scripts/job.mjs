@@ -52,6 +52,8 @@ const ensureBundle = async () => {
 };
 
 const load = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
+/** el motor 2D (story.meta.engine = "2d") usa su propia composición; el resto, Explainer */
+const compId = (props) => (props?.story?.meta?.engine === "2d" ? "Flat2D" : "Explainer");
 const onBrowserLog = (l) => { if (l.type === "error") console.log("[navegador]", l.text.slice(0, 300)); };
 
 if (cmd === "bundle") {
@@ -60,7 +62,7 @@ if (cmd === "bundle") {
   const [propsFile, outDir, frames] = rest;
   const serveUrl = await ensureBundle(), inputProps = load(propsFile);
   const { renderStill, selectComposition } = await import("@remotion/renderer");
-  const composition = await selectComposition({ serveUrl, id: "Explainer", chromiumOptions, inputProps });
+  const composition = await selectComposition({ serveUrl, id: compId(inputProps), chromiumOptions, inputProps });
   fs.mkdirSync(outDir, { recursive: true });
   for (const f of frames.split(",").map(Number)) {
     const t1 = Date.now();
@@ -72,7 +74,7 @@ if (cmd === "bundle") {
   const [propsFile, out] = rest;
   const serveUrl = await ensureBundle(), inputProps = load(propsFile);
   const { renderMedia, selectComposition } = await import("@remotion/renderer");
-  const composition = await selectComposition({ serveUrl, id: "Explainer", chromiumOptions, inputProps });
+  const composition = await selectComposition({ serveUrl, id: compId(inputProps), chromiumOptions, inputProps });
   const part = out.replace(/\.mp4$/, ".part.mp4");
   let last = -1;
   const t0 = Date.now();

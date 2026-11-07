@@ -1,6 +1,6 @@
 # Plan piloto: skill `story-short` (shorts narrativos 2D plano)
 
-Estado general: **1 / 8 fases** (F0 hecha) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
+Estado general: **3 / 8 fases** (F0, F1 y F2 hechas; F3 en curso) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
 
 > Cómo usar este archivo: marca `[x]` al terminar cada tarea, cambia el estado de la fase (⬜ pendiente · 🟡 en curso · ✅ hecha) y anota en la tabla de medidas lo que costó de verdad.
 
@@ -74,20 +74,20 @@ Reglas de calidad (heredadas de `visual-fidelity`): el asset se reconoce de un v
 - [x] Verificado: es determinista (diferencia 0,04 entre corridas) y detecta un cambio inyectado (112,7 contra un límite de 3).
 - **Listo cuando:** la comprobación de no regresión se corre con un solo comando. ✔
 
-### F1 · Esquema y validador 2D — ⬜
-- [ ] `templates/catalog2d.json` (assets, paletas, luces, cámaras 2D, acciones 2D, overlays).
-- [ ] `pipeline/validate_story2d.py`: ids existentes, un beat por línea del guion, ritmo (evento cada ≤2,5 s, ≤3 cortes/min), gancho ≤3 s, cierre, `shows` obligatorio. **Lista todos los problemas a la vez.**
-- [ ] Pruebas en `pipeline/tests/test_validate_story2d.py`.
+### F1 · Esquema y validador 2D — ✅
+- [x] `templates/catalog2d.json` (assets, paletas, luces, cámaras 2D, acciones 2D, overlays).
+- [x] `pipeline/validate_story2d.py`: ids existentes, un beat por línea del guion, ritmo (evento cada ≤2,5 s, ≤3 cortes/min), gancho ≤3 s, cierre, `shows` obligatorio. **Lista todos los problemas a la vez.**
+- [x] Pruebas en `pipeline/tests/test_validate_story2d.py`.
 - **Listo cuando:** un story de prueba válido pasa y cada regla rota falla con su motivo.
 
-### F2 · Motor `Flat2D` mínimo — ⬜
-- [ ] Composición Remotion `Flat2D` con capas por `z`, parallax y posición/escala normalizadas.
-- [ ] Cámara 2D: `pan_slow`, `push_in`, `pull_out`, `shake`; transiciones `swipe`, `crossfade`, `cut`.
-- [ ] Luz 2D local y viñeta/grano; efecto **sombra proyectada** con máscara.
-- [ ] Reutilizar los subtítulos palabra por palabra existentes.
+### F2 · Motor `Flat2D` mínimo — ✅
+- [x] Composición Remotion `Flat2D` con capas por `z`, parallax y posición/escala normalizadas.
+- [x] Cámara 2D: `pan_slow`, `push_in`, `pull_out`, `shake`; transiciones `swipe`, `crossfade`, `cut`.
+- [x] Luz 2D local y viñeta/grano; efecto **sombra proyectada** con máscara.
+- [x] Reutilizar los subtítulos palabra por palabra existentes.
 - **Listo cuando:** 3 beats con assets provisionales (formas) se ven y se mueven a 1080x1920, con una sombra que cruza una pared.
 
-### F3 · Biblioteca piloto y acciones 2D — ⬜
+### F3 · Biblioteca piloto y acciones 2D — 🟡
 - [ ] Los 10 assets de la sección 4, uno a uno, con still de prueba cada uno (`tools/gallery2d.py`).
 - [ ] Acciones: `appear`, `flicker`, `shadow_pass`, `stand_up`, `glare`, `pan_to_light`, `palette_shift`.
 - **Listo cuando:** la hoja de contacto de assets se ve coherente (misma paleta, mismo grosor) y pasa la revisión de otra instancia.
@@ -151,4 +151,6 @@ El motor y la biblioteca del piloto caben en **1–3 sesiones largas**. Es una e
 |---|---|---|---|
 | 2026-11-06 | — | Plan creado | Sin código todavía |
 | 2026-11-06 | F0 | Plan ampliado (narrativas, filosofía, ciencia ficción) y piloto cambiado a mito de la caverna; rama `story-2d` creada | — |
+| 2026-11-06 | F1 | `templates/catalog2d.json` y `pipeline/validate_story2d.py` (lista todos los problemas a la vez), 24 pruebas | commit `0b5a768` |
+| 2026-11-06 | F2 | Motor `Flat2D` (`studio/src/flat2d/`): capas, parallax, cámara 2D, acciones, luz, swipe, paleta, subtítulos y overlays reutilizados; `tools/gallery2d.py`; `job.mjs` elige la composición por `meta.engine` | No regresión 3D verificada |
 | 2026-11-06 | F0 | `tools/regression_check.py` y línea base; F0 cerrada | Correr antes de cada commit que toque archivos compartidos y al cerrar F6 |
