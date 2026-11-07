@@ -10,10 +10,16 @@ import { MuroBajo } from "./muro_bajo";
 import { Fuego } from "./fuego";
 import { TunelAscenso } from "./tunel_ascenso";
 import { ExteriorSol } from "./exterior_sol";
+import { VacioLuz } from "./vacio_luz";
+import { Dialogo } from "./dialogo";
+import { Epocas } from "./epocas";
+import { Reflejo } from "./reflejo";
+import { Huevo } from "./huevo";
 
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
+  vacio_luz: VacioLuz, dialogo: Dialogo, epocas: Epocas, reflejo: Reflejo, huevo: Huevo,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));

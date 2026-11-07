@@ -71,12 +71,19 @@ def ebur128(path: Path) -> dict:
     return {"I_lufs": float(I.group(1)) if I else None, "true_peak_dbtp": float(P.group(1)) if P else None}
 
 
+def duck_curve_music(voice):
+    from bed_synth import duck_curve
+    return duck_curve(voice)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--voice", required=True, type=Path)
     ap.add_argument("--plan", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--music", choices=["tech", "calm", "warm", "tense"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
+    ap.add_argument("--music-file", type=Path, default=None, help="música propia (mp3/wav): se recorta a la duración del video, con fundidos y agachada bajo la voz")
+    ap.add_argument("--music-gain", type=float, default=0.7, help="ganancia lineal sobre el nivel original del archivo en el master (0.7 = 70 %%)")
     a = ap.parse_args()
     if not a.voice.exists():
         raise PipelineError(f"falta la voz: {a.voice}")
@@ -116,9 +123,34 @@ def main():
     if a.music:
         from bed_synth import bed, duck_curve
         b = bed(plan["duration_s"], a.music)
+        b = np.pad(b[:n], (0, max(0, n - len(b))))   # la cama puede salir una muestra más larga o corta que la voz
         b = b * duck_curve(voice[0]) * dbg(v_lufs - BED_BELOW_VOICE_DB - lufs(np.vstack([b, b])))
         sfx = sfx + np.vstack([b, b])[:, :n]
         bed_lufs = lufs(np.vstack([b, b]))
+        s_lufs = lufs(sfx)
+    music_pre = None
+    if a.music_file:
+        if not a.music_file.exists():
+            raise PipelineError(f"falta la música: {a.music_file}")
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(a.music_file), "-t", f"{plan['duration_s'] + 1:.3f}", "-f", "f32le", "-ac", "2", "-ar", str(SR), "-"],
+                             capture_output=True, check=True).stdout
+        m = np.frombuffer(raw, dtype=np.float32).reshape(-1, 2).T.astype(np.float64)
+        if m.shape[1] < n:
+            raise PipelineError(f"la música ({m.shape[1] / SR:.1f} s) es más corta que el video ({plan['duration_s']} s)")
+        m = m[:, :n] * duck_curve_music(voice[0])
+        fade_in, fade_out = np.linspace(0, 1, min(n, ns(1.0))), np.linspace(1, 0, min(n, ns(2.5)))
+        m[:, : len(fade_in)] *= fade_in
+        m[:, n - len(fade_out):] *= fade_out
+        # el nivel pedido es el que tendría en el master (-14 LUFS): antes del master se divide por la ganancia final
+        music_pre = m * a.music_gain
+        G = TARGET_LUFS - lufs(voice + sfx)
+        for _ in range(12):
+            G_new = TARGET_LUFS - lufs(voice + sfx + music_pre * dbg(-G))
+            if abs(G_new - G) < 0.01:
+                break
+            G = G_new
+        sfx = sfx + music_pre * dbg(-G)
+        bed_lufs = lufs(music_pre * dbg(-G))
         s_lufs = lufs(sfx)
     mix0 = voice + sfx
     G = TARGET_LUFS - lufs(mix0)
