@@ -156,6 +156,7 @@ El motor y la biblioteca del piloto caben en **1–3 sesiones largas**. Es una e
 | 2026-11-06 | F1 | `templates/catalog2d.json` y `pipeline/validate_story2d.py` (lista todos los problemas a la vez), 24 pruebas | commit `0b5a768` |
 | 2026-11-06 | F2 | Motor `Flat2D` (`studio/src/flat2d/`): capas, parallax, cámara 2D, acciones, luz, swipe, paleta, subtítulos y overlays reutilizados; `tools/gallery2d.py`; `job.mjs` elige la composición por `meta.engine` | No regresión 3D verificada |
 | 2026-11-06 | F3 | 9 assets, acciones 2D, `catalog_search2d.py`, `test_catalog2d.py`; una ronda del revisor y arreglos | Pendiente la 2.ª revisión (F7); algunos assets (prisionero libre, exterior) siguen siendo sencillos |
+| 2026-11-07 | — | Piloto aprobado por Diego; enlace de la skill `story-short` creado | Sin mezclar a `main` todavía |
 | 2026-11-07 | F4–F7 | Guion y fuentes del mito de la caverna, estructura `alegoria`, sonidos y cama `tense`, integración por `meta.engine`, piloto con Kokoro, skill `story-short` | Ver sección 10 |
 | 2026-11-06 | F0 | `tools/regression_check.py` y línea base; F0 cerrada | Correr antes de cada commit que toque archivos compartidos y al cerrar F6 |
 
@@ -176,7 +177,7 @@ El motor y la biblioteca del piloto caben en **1–3 sesiones largas**. Es una e
 - Rangos de QA 2D calibrados con un único video.
 - Los marcadores UI ya existen (overlays del explainer); faltan formatos de guion `reglas`, `relato`, `reflexion`, `y_si` y `dilema`.
 
-**Decisiones para Diego**
-1. ¿Ver el video y aprobar el estilo antes de ampliar formatos o assets?
-2. ¿Crear el enlace de la skill (`ln -s <repo>/story-short ~/.claude/skills/story-short`) para invocarla con `/story-short`?
-3. ¿Mezclar `story-2d` a `main` (las pruebas y la no regresión están en verde)?
+**Decisiones de Diego (2026-11-07)**
+1. Video y estilo del piloto **aprobados por completo** (estilo, guion y resultado).
+2. Enlace de la skill creado: `~/.claude/skills/story-short` → `<repo>/story-short` (se invoca con `/story-short`).
+3. Mezclar `story-2d` a `main`: **pendiente** (pruebas y no regresión en verde).
