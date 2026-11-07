@@ -199,13 +199,61 @@ def clock_tick(seed=19):
     return _norm(fades(x, 0.0005, 0.06))
 
 
+# ── F5 (story-2d): sonidos de cueva y de exterior, generales para historias ──
+def fire_crackle(seed=20):
+    """crepitar de hoguera de 1,3 s: base grave suave y chasquidos de madera al azar (fuego, brasas, hoguera, leña)"""
+    t = tt(1.3)
+    r = rng(seed)
+    x = 0.25 * lp(colored(len(t), r, 1.0), 700) * np.sin(np.pi * np.clip(t / 1.3, 0, 1)) ** 0.5
+    for t0 in np.sort(r.random(14) * 1.15):
+        tl = np.clip(t - t0, 0, None)
+        x += (t >= t0) * (0.4 + 0.6 * r.random()) * bp(colored(len(t), r, 0.0), 1500, 5500) * np.exp(-tl / (0.004 + 0.006 * r.random()))
+    return _norm(fades(x, 0.03, 0.25))
+
+
+def chains(seed=21):
+    """cadenas que tintinean, 0,9 s: pequeños golpes metálicos de 2 a 5 kHz que se apagan rápido (cadenas, grilletes, prisioneros)"""
+    t = tt(0.9)
+    r = rng(seed)
+    x = np.zeros_like(t)
+    for t0 in np.sort(r.random(9) * 0.6):
+        f = 2200 + r.random() * 2800
+        tl = np.clip(t - t0, 0, None)
+        x += (t >= t0) * (0.35 + 0.65 * r.random()) * (np.sin(2 * np.pi * f * tl) + 0.5 * np.sin(2 * np.pi * f * 1.51 * tl)) * np.exp(-tl / (0.02 + 0.03 * r.random()))
+    x += 0.15 * bp(colored(len(t), r, 0.0), 1200, 4500) * np.sin(np.pi * np.clip(t / 0.8, 0, 1))
+    return _norm(fades(x, 0.002, 0.15))
+
+
+def footsteps(seed=22):
+    """tres pasos sobre piedra, 1,3 s: golpe grave sordo y roce corto, cada 0,4 s (caminar, avanzar, subir, desfilar)"""
+    t = tt(1.3)
+    r = rng(seed)
+    x = np.zeros_like(t)
+    for k, t0 in enumerate((0.05, 0.45, 0.85)):
+        tl = np.clip(t - t0, 0, None)
+        f = 110 - 14 * k
+        x += (t >= t0) * (np.sin(2 * np.pi * f * tl) * np.exp(-tl / 0.06) + 0.5 * bp(colored(len(t), r, 0.0), 500, 2200) * np.exp(-tl / 0.025))
+    return _norm(fades(x, 0.002, 0.2))
+
+
+def wind(seed=23):
+    """viento exterior de 1,3 s: ruido filtrado que sube y baja con un silbido suave (exterior, amanecer, aire libre)"""
+    t = tt(1.3)
+    r = rng(seed)
+    u = np.clip(t / 1.3, 0, 1)
+    x = bp(colored(len(t), r, 1.5), 250, 1500) * np.sin(np.pi * u) ** 1.3 * (0.75 + 0.25 * np.sin(2 * np.pi * 3 * t + 1))
+    x += 0.2 * bp(colored(len(t), r, 0.5), 900, 2400) * np.sin(np.pi * u) ** 2
+    return _norm(fades(x, 0.15, 0.4))
+
+
 SFX = {"whoosh_soft": whoosh_soft, "pop": pop, "tick": tick, "riser": riser, "impact": impact,
        "zap": zap, "shimmer": shimmer, "heartbeat": heartbeat, "swish_up": swish_up, "swish_down": swish_down, "blip": blip,
        "sizzle": sizzle, "bubbles": bubbles, "drip": drip, "rumble": rumble, "ding": ding, "buzz_no": buzz_no, "crack": crack,
-       "clock_tick": clock_tick}
+       "clock_tick": clock_tick, "fire_crackle": fire_crackle, "chains": chains, "footsteps": footsteps, "wind": wind}
 # nivel relativo de cada tipo respecto a "voz − 10 dB" (plan: SFX entre −8 y −12 dB bajo la voz)
 # F15: los acentos van más bajos que los de estructura (−3 a −6 dB) para acompañar la voz sin competir con ella
 REL_DB = {"whoosh_soft": 0.0, "pop": -1.0, "tick": -2.0, "riser": 0.0, "impact": 1.0,
           "zap": -4.0, "shimmer": -5.0, "heartbeat": -2.0, "swish_up": -4.0, "swish_down": -4.0, "blip": -5.0, "sizzle": -7.0,
-          "bubbles": -6.0, "drip": -5.0, "rumble": -3.0, "ding": -5.0, "buzz_no": -5.0, "crack": -4.0, "clock_tick": -5.0}
+          "bubbles": -6.0, "drip": -5.0, "rumble": -3.0, "ding": -5.0, "buzz_no": -5.0, "crack": -4.0, "clock_tick": -5.0,
+          "fire_crackle": -6.0, "chains": -5.0, "footsteps": -6.0, "wind": -7.0}
 ACCENTS = tuple(k for k in SFX if k not in ("whoosh_soft", "pop", "tick", "riser", "impact"))

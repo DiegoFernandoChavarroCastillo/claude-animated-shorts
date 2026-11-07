@@ -27,6 +27,9 @@ ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "swish_up", 
               "sink": "swish_down", "blink": "blip", "squash": "pop", "sparkle": "shimmer", "beam": "shimmer", "mark": "blip", "ripple": "drip",
               "punch": "impact", "camshake": "impact",   # F13: acciones con sonido; el resto, mudas
               "grow": "swish_up", "shrink": "swish_down", "steam": "sizzle", "rain": "drip",           # F15: acentos
+              # story-2d: acciones del motor 2D
+              "shadow_pass": "whoosh_soft", "stand_up": "swish_up", "walk": "footsteps", "carry": "footsteps", "flare": "fire_crackle",
+              "light_grow": "shimmer", "sunrise": "wind", "flash": "shimmer", "tremble": "rumble", "slide": "whoosh_soft", "palette_shift": "swish_up",
               "chispa": "zap", "llamarada": "sizzle", "acelerar": "heartbeat", "inflamar": "sizzle", "ecuador": "blip", "eje": "blip"}
 MARK_SFX = {"✓": "ding", "✗": "buzz_no", "♥": "heartbeat"}   # el símbolo de `mark` elige el sonido
 STEAM_BUBBLES = "bubbles"                                      # steam con kind "bubbles"
@@ -38,7 +41,7 @@ ACCENT_NEAR_S = 0.45          # un acento no suena pegado a otro sonido ya acept
 ACCENT_PER_S = 1 / 3.0        # como mucho un acento cada 3 s de video
 ACCENT_REPEAT_S = 4.0         # el mismo acento no se repite antes de 4 s
 ACCENT_PRIORITY = ("ding", "buzz_no", "heartbeat", "zap", "rumble", "crack", "sizzle", "bubbles", "shimmer", "drip", "clock_tick",
-                   "swish_up", "swish_down", "blip")
+                   "swish_up", "swish_down", "blip", "fire_crackle", "chains", "footsteps", "wind")
 
 
 def beat_frames(story: dict, words: list[dict]):
@@ -89,7 +92,7 @@ def plan(story: dict, words: list[dict]) -> dict:
     ev = []
     add = lambda typ, f, why: ev.append({"type": typ, "t": round(f / FPS, 3), "why": why})  # noqa: E731
     for i, (b, bt) in enumerate(zip(story["beats"], bts)):
-        if i + 1 < len(bts) and b.get("transition", "glide") in ("glide", "zoom_through"):
+        if i + 1 < len(bts) and b.get("transition", "glide") in ("glide", "zoom_through", "swipe"):
             add("whoosh_soft", bts[i + 1]["a"] - 8, f"{b['id']}: transición {b.get('transition', 'glide')}")
         if b["role"] == "twist":
             add("riser", bt["a"] - round(0.8 * FPS), f"{b['id']}: antes del giro")

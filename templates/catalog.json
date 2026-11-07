@@ -324,6 +324,10 @@
     "ding": "Campanilla de acierto: respuesta correcta, ✓, 'ahí está', dato confirmado (mark con ✓).",
     "buzz_no": "Zumbido suave de error: falso, mito desmentido, ✗, no funciona (mark con ✗).",
     "crack": "Chasquido seco: hielo, hueso, rotura, estallido, algo que se parte. Solo se pide a mano con sfx.",
-    "clock_tick": "Tic-tac de reloj: tiempo, reloj, péndulo, plazo, cuenta atrás. Solo se pide a mano con sfx."
+    "clock_tick": "Tic-tac de reloj: tiempo, reloj, péndulo, plazo, cuenta atrás. Solo se pide a mano con sfx.",
+    "fire_crackle": "Crepitar de hoguera: fuego, brasas, leña, cueva con fuego (acción flare del motor 2D).",
+    "chains": "Cadenas que tintinean: cadenas, grilletes, prisioneros, ataduras. Solo se pide a mano con sfx.",
+    "footsteps": "Tres pasos sobre piedra: caminar, avanzar, subir, desfilar (acciones walk y carry del motor 2D).",
+    "wind": "Viento exterior: aire libre, amanecer, salir de un lugar cerrado (acción sunrise del motor 2D)."
   }
 }

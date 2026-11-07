@@ -91,5 +91,13 @@ s = base(); s["meta"]["tailS"] = 1.0
 check("bucle con cola larga falla", has(validate(s, words(), closing="bucle"), "meta.tailS"))
 check("guion distinto falla", has(validate(base(), script=["otra cosa"] * 5), "no coincide con la línea"))
 check("guion igual pasa", not has(validate(base(), script=TEXTS), "guion"))
+s = base(); s["beats"][1]["sfx"] = [{"type": "chains", "at": "Viven"}]
+check("sfx a mano válido pasa", not has(validate(s), "sfx"))
+s = base(); s["beats"][1]["sfx"] = [{"type": "trueno", "at": "Viven"}]
+check("sfx inexistente falla", has(validate(s), "sfx 'trueno' no existe"))
+s = base()
+for i in range(4):
+    s["beats"][i]["sfx"] = [{"type": "chains", "at": s["beats"][i]["text"].split()[0]}]
+check("más de 3 sfx a mano fallan", has(validate(s), "más de 3 sfx"))
 print("\nTODO BIEN" if not fails else f"\n{fails} MAL")
 sys.exit(1 if fails else 0)

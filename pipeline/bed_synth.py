@@ -1,6 +1,6 @@
 """Cama sonora sintetizada (F18, opcional con `meta.music: true`): un colchón suave de acordes sin melodía ni batería, para que el silencio entre
 frases no suene vacío. Sin licencias: se genera aquí. Va muy por debajo de la voz y se agacha mientras hay voz (ver mix.py).
-Estados de ánimo: tech (acordes menores abiertos), calm (mayores lentos), warm (sextas cálidas)."""
+Estados de ánimo: tech (acordes menores abiertos), calm (mayores lentos), warm (sextas cálidas), tense (graves con tritono y segunda menor, para historias)."""
 from __future__ import annotations
 
 import numpy as np
@@ -11,6 +11,7 @@ from dsp import SR, bp, colored, lp, rng, smooth_noise
 MOODS = {
     "tech": [(110.0, [1, 1.5, 2, 2.378]), (98.0, [1, 1.5, 2, 2.378]), (82.4, [1, 1.5, 2, 2.378]), (110.0, [1, 1.5, 2, 2.5])],
     "calm": [(130.8, [1, 1.26, 1.5, 2]), (110.0, [1, 1.2, 1.5, 2]), (87.3, [1, 1.26, 1.5, 2]), (98.0, [1, 1.26, 1.5, 1.89])],
+    "tense": [(55.0, [1, 1.5, 2, 2.12]), (51.9, [1, 1.5, 2, 2.12]), (49.0, [1, 1.498, 2, 2.118]), (55.0, [1, 1.414, 2, 2.12])],
     "warm": [(98.0, [1, 1.25, 1.5, 1.68]), (87.3, [1, 1.25, 1.5, 1.68]), (110.0, [1, 1.2, 1.5, 1.78]), (98.0, [1, 1.25, 1.5, 1.68])],
 }
 CHORD_S = 9.0     # cada acorde dura 9 s y se funde con el siguiente

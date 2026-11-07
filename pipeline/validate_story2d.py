@@ -121,6 +121,11 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             elif t not in cat["assets"][names[tg]["asset"]].get("actions", {}):
                 errs.append(f"{bid}: acción '{t}' no existe para {names[tg]['asset']} (propias: {', '.join(cat['assets'][names[tg]['asset']].get('actions', {})) or 'ninguna'}; "
                             f"genéricas: {', '.join(cat['actions'])})")
+        for x in b.get("sfx", []):
+            if x.get("type") not in cat3["sfx"]:
+                errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
+            if not resolves(x.get("at"), text):
+                errs.append(f"{bid}: sfx con at '{x.get('at')}' que no es una palabra del beat")
         shots = b.get("shots", [])
         if len(shots) > MAX_SHOTS:
             errs.append(f"{bid}: {len(shots)} sub-planos (máximo {MAX_SHOTS})")
@@ -129,6 +134,8 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: sub-plano con cámara '{sh.get('camera', {}).get('preset')}' que no existe")
             if not resolves(sh.get("at"), text):
                 errs.append(f"{bid}: sub-plano at '{sh.get('at')}' no es una palabra del beat")
+    if sum(len(b.get("sfx", [])) for b in beats) > 3:
+        errs.append("más de 3 sfx a mano en el video (el director de acentos ya pone los de las acciones)")
     if inserts > MAX_INSERTS:
         errs.append(f"{inserts} Insert en el video (máximo {MAX_INSERTS})")
 

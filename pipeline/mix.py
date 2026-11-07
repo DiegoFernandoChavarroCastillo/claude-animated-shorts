@@ -76,7 +76,7 @@ def main():
     ap.add_argument("--voice", required=True, type=Path)
     ap.add_argument("--plan", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
-    ap.add_argument("--music", choices=["tech", "calm", "warm"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
+    ap.add_argument("--music", choices=["tech", "calm", "warm", "tense"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
     a = ap.parse_args()
     if not a.voice.exists():
         raise PipelineError(f"falta la voz: {a.voice}")

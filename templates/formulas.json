@@ -83,6 +83,16 @@
     }
   },
   "structures": {
+    "alegoria": {
+      "nombre": "Alegoría o mito como viaje",
+      "resumen": "Cuenta una alegoría o un mito como un viaje: situación de partida, ruptura, ascenso, regreso y giro que lo reinterpreta (mito de la caverna). Es la estructura del motor 2D de historias.",
+      "mejor_para": "Alegorías, mitos y relatos filosóficos con una situación, un cambio y una consecuencia.",
+      "orden": ["hook", "scene", "rupture", "ascent", "return", "twist", "cta"],
+      "requeridos": ["twist"],
+      "min": {"scene": 1, "ascent": 1},
+      "max": {"scene": 5, "rupture": 3, "ascent": 3, "return": 3},
+      "ejemplo": "templates/examples/mito-caverna/02_SCRIPT.md"
+    },
     "mito": {
       "nombre": "Mito y mecanismo",
       "resumen": "Desmiente una idea y explica cómo funciona de verdad (la fórmula original).",
