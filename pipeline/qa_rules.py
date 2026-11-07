@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from common import load_json
+from common import engine_of, load_json
 from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, HOOK_STATIC_CAMERAS, LOOP_TAIL_MAX_S, MAX_EVENT_GAP_S, MAX_SHOTS,
                             at_seconds, event_gap, script_closing)
 
@@ -42,8 +42,12 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
     if closing == "bucle":
         row("cola tras la última palabra con bucle (s)", tail, f"≤ {LOOP_TAIL_MAX_S}", tail <= LOOP_TAIL_MAX_S)
         s0, s1 = beats[0]["scene"], beats[-1]["scene"]
-        same = s0["env"] == s1["env"] and s0["hero"]["asset"] == s1["hero"]["asset"]
-        row("el último beat vuelve al entorno y objeto del primero", "sí" if same else "no", "sí", same)
+        if engine_of(story) == "2d":   # motor 2D: misma paleta y los mismos assets
+            same = s0["palette"] == s1["palette"] and {x["asset"] for x in s0["layers"]} == {x["asset"] for x in s1["layers"]}
+            row("el último beat vuelve a la paleta y a los assets del primero", "sí" if same else "no", "sí", same)
+        else:
+            same = s0["env"] == s1["env"] and s0["hero"]["asset"] == s1["hero"]["asset"]
+            row("el último beat vuelve al entorno y objeto del primero", "sí" if same else "no", "sí", same)
         last = beats[-1]["text"].lower()
         row("el cierre en bucle no se despide", "sí" if not re.search(FAREWELL_ES, last) else "no", "sí", not re.search(FAREWELL_ES, last))
     plan = d / "08_sfx_plan.json"

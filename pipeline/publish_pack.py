@@ -27,16 +27,21 @@ GENERIC = {"explicacion", "curiosidad"}
 
 def hashtags(story: dict, lang: str) -> list[str]:
     """etiquetas de los dos objetos más usados (las 2 primeras de cada uno) más dos genéricas del idioma"""
-    cat = load_json(ROOT / "templates" / "catalog.json")
-    assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in story["beats"]]
+    two_d = story.get("meta", {}).get("engine") == "2d"
+    cat = load_json(ROOT / "templates" / ("catalog2d.json" if two_d else "catalog.json"))
+    if two_d:   # motor 2D: los assets más usados por capa
+        assets = [ly["asset"] for b in story["beats"] for ly in b["scene"]["layers"] if cat["assets"].get(ly["asset"], {}).get("kind") != "fondo"]
+    else:
+        assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in story["beats"]]
     top = sorted(set(assets), key=lambda x: -assets.count(x))[:2]
     tags: list[str] = []
     for asset in top:
-        for t in cat["heroes"].get(asset, {}).get("tags", [])[:2]:
+        for t in cat["assets" if two_d else "heroes"].get(asset, {}).get("tags", [])[:2]:
             t = re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFD", t.lower()))
             if t and t not in tags and t not in GENERIC and len(t) > 3:
                 tags.append(t)
-    return ["#" + t for t in tags[: MAX_HASHTAGS - 2]] + (["#sabiasque", "#ciencia"] if lang == "es" else ["#didyouknow", "#science"])
+    generic = (["#filosofia", "#historia"] if lang == "es" else ["#philosophy", "#story"]) if two_d else (["#sabiasque", "#ciencia"] if lang == "es" else ["#didyouknow", "#science"])
+    return ["#" + t for t in tags[: MAX_HASHTAGS - 2]] + generic
 
 
 def cover(d: Path, words: list[dict]) -> str:
@@ -106,7 +111,8 @@ def meta(d: Path) -> dict:
             "duration_s": round(words[-1]["end"] + story["meta"].get("tailS", 1.0), 1), "words": len(words),
             "hook_spoken_s": round(max(w["end"] for w in words if w["beat"] == story["beats"][0]["id"]), 1),
             "beats": len(story["beats"]), "max_event_gap_s": round(gap, 1),
-            "heroes": sorted({b["scene"]["hero"]["asset"] for b in story["beats"]}),
+            "engine": story["meta"].get("engine", "3d"),
+            "heroes": sorted({b["scene"]["hero"]["asset"] for b in story["beats"]} if story["meta"].get("engine") != "2d" else {ly["asset"] for b in story["beats"] for ly in b["scene"]["layers"]}),
             "shots": sum(len(b.get("shots", [])) for b in story["beats"])}
 
 

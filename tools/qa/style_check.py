@@ -42,6 +42,14 @@ METRICS = [
 REF_SET = [("R1", "video5", True), ("R3", "video4", True), ("R4", "video2", True), ("R5", "video1", False)]
 PASS_RATE = 0.8
 
+
+def metrics_for(engine: str = "3d") -> list:
+    """rangos de las métricas: los del 3D vienen de las referencias; los del 2D, de templates/qa2d_ranges.json (calibración propia, plan story-2d F6)"""
+    if engine != "2d":
+        return METRICS
+    ov = json.loads((ROOT / "templates" / "qa2d_ranges.json").read_text(encoding="utf-8"))["ranges"]
+    return [(n, k, tuple(ov.get(k, rng))) for n, k, rng in METRICS]
+
 # reglas de corte de bloques de studio/src/explainer/captions/chunker.ts y CAPTION en style.ts (sin el corte por ancho)
 SENTENCE_END = re.compile(r"[.?!…][\"»”)]*$")
 SOFT_END = re.compile(r"[,;:][\"»”)]*$")
@@ -115,9 +123,9 @@ def measure(video: Path, words: list[dict] | None) -> dict:
     return out
 
 
-def grade(m: dict) -> list[tuple[str, str, object, tuple, bool | None]]:
+def grade(m: dict, metrics: list | None = None) -> list[tuple[str, str, object, tuple, bool | None]]:
     rows = []
-    for name, k, rng in METRICS:
+    for name, k, rng in (metrics or METRICS):
         v = m.get(k)
         rows.append((name, k, v, rng, None if v is None else rng[0] <= v <= rng[1]))
     return rows
@@ -221,10 +229,10 @@ def caption_ok(c: dict) -> bool:
     return c["found_pct"] >= 90 and c["band_pct"] >= 100
 
 
-def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None) -> tuple[bool, list[str], dict]:
+def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d") -> tuple[bool, list[str], dict]:
     words = json.loads(words_path.read_text(encoding="utf-8")) if words_path else None
     m = measure(video, words)
-    rows = grade(m)
+    rows = grade(m, metrics_for(engine))
     rated = [r for r in rows if r[4] is not None]
     passed = sum(r[4] for r in rated)
     md = [f"**Estilo**: {passed}/{len(rated)} métricas en rango ({passed / max(1, len(rated)):.0%}; objetivo ≥{PASS_RATE:.0%}).", "",

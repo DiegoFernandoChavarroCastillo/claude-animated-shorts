@@ -97,3 +97,8 @@ def run_main(fn):
     except PipelineError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(2)
+
+
+def engine_of(story: dict) -> str:
+    """motor visual del story: "3d" (explainer, por defecto) o "2d" (historias, plan story-2d)"""
+    return story.get("meta", {}).get("engine", "3d")

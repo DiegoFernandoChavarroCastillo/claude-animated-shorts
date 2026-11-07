@@ -139,6 +139,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     if inserts > MAX_INSERTS:
         errs.append(f"{inserts} Insert en el video (máximo {MAX_INSERTS})")
 
+    with_actions = sum(1 for b in beats if b.get("actions"))
+    if with_actions < -(-len(beats) // 2):
+        errs.append(f"solo {with_actions} de {len(beats)} beats llevan acciones (hacen falta al menos {-(-len(beats) // 2)}): que la escena reaccione a lo que dice la voz")
     # estructura: los roles siguen el orden de la estructura (cada uno puede repetirse) y cumplen sus mínimos
     st = cat["structures"].get(structure or STRUCTURE_DEFAULT)
     if not st:

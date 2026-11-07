@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, PipelineError, load_json, write_json  # noqa: E402
+from common import ROOT, PipelineError, engine_of, load_json, write_json  # noqa: E402
 
 PY = sys.executable
 STUDIO = ROOT / "studio"
@@ -173,8 +173,9 @@ class Run:
         out = self.p("05_story.validation.txt")
 
         def run():
-            r = subprocess.run([PY, "pipeline/validate_story.py", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")),
-                                "--script", str(self.p("02_SCRIPT.md")), "--require-actions"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+            two_d = engine_of(load_json(self.p("05_story.json"))) == "2d"   # motor 2D de historias (plan story-2d)
+            r = subprocess.run([PY, "pipeline/validate_story2d.py" if two_d else "pipeline/validate_story.py", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")),
+                                "--script", str(self.p("02_SCRIPT.md")), *([] if two_d else ["--require-actions"])], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
                                env=dict(os.environ, PYTHONIOENCODING="utf-8"))
             out.write_text(r.stdout, encoding="utf-8")
             if r.returncode != 0:

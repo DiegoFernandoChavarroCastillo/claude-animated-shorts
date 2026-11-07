@@ -1,0 +1,9 @@
+{
+  "_nota": "Rangos de style_check para el motor 2D (plan story-2d F6). Provisionales: se calibran con el piloto mito-caverna en F7 (n=1) y se afinan con cada video 2D. Solo se listan las métricas que difieren del 3D.",
+  "ranges": {
+    "luma_p5": [0.0, 0.19],
+    "luma_med": [0.08, 0.40],
+    "sat_med": [0.20, 0.70],
+    "pct_unique": [60, 100]
+  }
+}

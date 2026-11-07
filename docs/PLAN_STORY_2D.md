@@ -1,6 +1,6 @@
 # Plan piloto: skill `story-short` (shorts narrativos 2D plano)
 
-Estado general: **4 / 8 fases** (F0–F3 hechas; siguiente: F4, guion narrativo) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
+Estado general: **7 / 8 fases** (F0–F6 hechas; siguiente: F7, video piloto) · Rama de trabajo: `story-2d` (creada desde `ampliar-catalogo`, commit `c87a8bf`) · Última actualización: 2026-11-06
 
 > Cómo usar este archivo: marca `[x]` al terminar cada tarea, cambia el estado de la fase (⬜ pendiente · 🟡 en curso · ✅ hecha) y anota en la tabla de medidas lo que costó de verdad.
 
@@ -94,23 +94,23 @@ Reglas de calidad (heredadas de `visual-fidelity`): el asset se reconoce de un v
 - [ ] Segunda revisión independiente tras los arreglos (pendiente; se hace con los stills del beat real en F7).
 - **Listo cuando:** la hoja de contacto de assets se ve coherente (misma paleta, mismo grosor) y pasa la revisión de otra instancia. Estado: coherente a ojo; la 2.ª revisión queda para F7.
 
-### F4 · Guion narrativo — ⬜
-- [ ] `templates/prompts/story2d_script_es.md` con la estructura `alegoria` (y la lista de las demás como pendientes), tono, longitud 175–300 palabras.
-- [ ] `01_research.md` del piloto: texto de Platón (*La República*, VII, 514a–520a) y al menos 2 fuentes por dato.
-- [ ] Validador de guion: estructura, frases ≤22 palabras, sonidos «ll/y» seguidos, cierre en bucle (reuso de `validate_script.py`).
+### F4 · Guion narrativo — ✅
+- [x] `templates/prompts/story2d_script_es.md` con la estructura `alegoria` (y la lista de las demás como pendientes), tono, longitud 175–300 palabras.
+- [x] `01_research.md` del piloto: texto de Platón (*La República*, VII, 514a–520a) y al menos 2 fuentes por dato.
+- [x] Validador de guion: estructura, frases ≤22 palabras, sonidos «ll/y» seguidos, cierre en bucle (reuso de `validate_script.py`).
 - **Listo cuando:** un guion original de ~220 palabras valida y suena bien leído.
 
-### F5 · Audio de ambiente — ⬜
-- [ ] Voz del narrador (prueba con `diego` y variaciones de `pauseScale`).
-- [ ] SFX nuevos en `sfx_synth.py`: crepitar del fuego, cadenas, pasos en piedra, eco de cueva, viento exterior.
-- [ ] Cama sonora (reuso de `music: true`, con un `musicMood` adecuado).
+### F5 · Audio de ambiente — ✅
+- [x] Voz del narrador (prueba con `diego` y variaciones de `pauseScale`).
+- [x] SFX nuevos en `sfx_synth.py`: crepitar del fuego, cadenas, pasos en piedra, eco de cueva, viento exterior.
+- [x] Cama sonora (reuso de `music: true`, con un `musicMood` adecuado).
 - **Listo cuando:** la mezcla cumple −14 LUFS / TP ≤ −1 dBTP y la voz se entiende sobre los efectos.
 
-### F6 · Integración en el pipeline y QA — ⬜
-- [ ] `make_short.py` elige validador y composición con `meta.engine` (por defecto `3d`).
-- [ ] Recalibrar los rangos de QA de estilo para 2D (luz, saturación, cortes, racha estática) con referencias propias, sin copiar contenido.
-- [ ] `publish` y `meta.json` sin cambios de formato.
-- [ ] **Prueba de no regresión:** línea base de F0 igual que antes.
+### F6 · Integración en el pipeline y QA — ✅
+- [x] `make_short.py` elige validador y composición con `meta.engine` (por defecto `3d`).
+- [x] Recalibrar los rangos de QA de estilo para 2D (luz, saturación, cortes, racha estática) con referencias propias, sin copiar contenido.
+- [x] `publish` y `meta.json` sin cambios de formato.
+- [x] **Prueba de no regresión:** línea base de F0 igual que antes.
 - **Listo cuando:** `all` corre de punta a punta en un story 2D y en uno 3D sin errores.
 
 ### F7 · Video piloto y medición — ⬜
