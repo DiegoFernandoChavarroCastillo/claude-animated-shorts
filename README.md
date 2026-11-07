@@ -21,7 +21,8 @@ hace el resto (voz, alineación por palabra, validaciones, render, mezcla a −1
 | `pipeline/` | Orquestador y etapas en Python (TTS, alineación, SFX, mezcla, validadores, QA) |
 | `templates/` | Prompts (guion es/en, story, verificador), catálogo cerrado y ejemplos completos |
 | `tools/` | Medición de referencias y QA de estilo (`style_check.py`, hojas lado a lado), `catalog_search.py` (buscar objetos por tema) y `gallery.py` (probar objetos) |
-| `docs/` | Plan, decisiones (D1–D64), progreso y notas del look-match |
+| `story-short/` | El skill `story-short`: shorts narrativos 2D (mitos, alegorías, relatos); motor `studio/src/flat2d/` y catálogo `templates/catalog2d.json` |
+| `docs/` | Plan, decisiones (D1–D110), progreso, notas del look-match y el plan de los shorts 2D (`PLAN_STORY_2D.md`) |
 | `legacy/` | El skill anterior (`cartoon-3d-short`, el video del puente) y sus referencias |
 
 ## Instalación
@@ -127,6 +128,15 @@ En Claude Code, desde cualquier carpeta:
 Claude investiga el tema, te propone tres ganchos, tres estructuras y tres cierres (y recomienda uno de cada), escribe el guion con lo que elijas, lo valida, hace el plan visual, lanza el pipeline, revisa el resultado con
 un agente verificador y te entrega `out/<id>/09_final.mp4` con el informe de QA y las fuentes. Si quieres aprobar el
 guion antes del render, añade "para tras el guion" (o `--review`).
+
+### Shorts de historias (skill `story-short`)
+
+Para alegorías, mitos y relatos (no divulgación con objetos 3D) hay un segundo skill con el mismo pipeline y un motor 2D plano ("cut-out vectorial"):
+
+> Usa el skill story-short: el mito de la caverna, en español.
+
+Se instala igual que el otro, enlazando la subcarpeta: `ln -s "$PWD/story-short" ~/.claude/skills/story-short` (Linux/macOS). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (91 s,
+voz Kokoro). Un render de 91 s a escala 1 tarda ~4,5 min. Plan, decisiones y pendientes: `docs/PLAN_STORY_2D.md`, `docs/DECISIONES.md` (D101–D110) y `docs/PROGRESO.md`.
 
 ## Notas
 

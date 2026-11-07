@@ -11,6 +11,8 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 **La carpeta de este skill es la raíz del repo.** Todos los comandos se ejecutan desde ahí. Python del proyecto:
 `.venv/bin/python` en Linux y `.venv\Scripts\python.exe` en Windows (abajo, `PY`).
 
+> **¿Historia, mito, alegoría o reflexión en lugar de divulgación?** Usa el skill `story-short` (motor 2D, mismo pipeline; ver `story-short/SKILL.md`). Antes de comitear cambios en archivos compartidos, corre `tools/regression_check.py`.
+
 ## Antes de empezar
 
 1. Idioma: el que pida el usuario (`es` o `en`). Si no lo dice, el del prompt.

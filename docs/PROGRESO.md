@@ -190,3 +190,34 @@ plano de la molécula (b05); cambiar la cámara a `drift` no la movió. No se vo
 12. **Fidelidad visual (F19, 6 nov):** `manilla_rfid` y `servidor_rack` (de `manilla-concierto`, un video sobre la manilla equivocada) y otros prefabs antiguos pintan el estado de sus
    acciones solo en `update`; en un still suelto salen apagados (D99). Revisarlos como `manilla_led`. Tampoco se volvió a pasar el verificador tras los últimos arreglos de `manilla-luces`
    (notas de la 1.ª ronda: 6/5/5/5/4) ni se comprobó a ojo la ola de luz del estadio en el render final.
+
+## story-2d · Shorts narrativos 2D (6–7 nov, rama `story-2d`)
+
+Segundo tipo de video, para historias, alegorías y reflexiones, con el mismo pipeline de voz, mezcla, QA y publicación. Plan, medidas y registro: `docs/PLAN_STORY_2D.md`. Decisiones: D101–D110.
+
+| Fase | Qué | Estado | Commit |
+|---|---|---|---|
+| F0 | Rama, `tools/regression_check.py` y línea base del 3D | ✅ | `ff5dc5f` |
+| F1 | `catalog2d.json` y `validate_story2d.py` (24+ pruebas) | ✅ | `0b5a768` |
+| F2 | Motor `Flat2D`: capas, parallax, cámara 2D, acciones, luz, transiciones; `gallery2d.py` | ✅ | `74b6c8f` |
+| F3 | 9 assets, acciones propias, `catalog_search2d.py`, `test_catalog2d.py` | ✅ | `865a52e` |
+| F4–F5 | Estructura `alegoria`, guion y fuentes del mito, 4 sonidos, cama `tense` | ✅ | `c63c3f8` |
+| F6 | El pipeline elige validador, QA y publicación por `meta.engine` | ✅ | `61f4511` |
+| F7 | Piloto `mito-caverna` (91 s, QA OK), skill `story-short`, ejemplo versionado | ✅ aprobado por Diego | `e921369`, `ea7aacb` |
+
+**Cómo se hace un video 2D hoy:** `/story-short` (o "usa el skill story-short: el mito de…"). Claude investiga el texto original, propone gancho y cierre, escribe `02_SCRIPT.md`
+(`structure: alegoria`) y lo valida, arma `05_story.json` con `meta.engine: "2d"` y assets de `templates/catalog2d.json`, y lanza `make_short.py all` (primero a escala 0,5, `stills` antes
+de renderizar; final con `--force render,mix,mux,qa,publish`). Render de 91 s a escala 1: ~4,5 min. Detalle en `story-short/SKILL.md`.
+
+**Mapa del código nuevo:** `studio/src/flat2d/` (`Flat2D.tsx`, `timeline.ts`, `camera.ts`, `actions.ts`, `palette.ts`, `schema.ts`, `assets/*.tsx`, `assets/grain.tsx`) ·
+`templates/catalog2d.json`, `templates/qa2d_ranges.json`, `templates/prompts/story2d_script_es.md` · `pipeline/validate_story2d.py` (+ `engine_of` en `common.py`) ·
+`tools/gallery2d.py`, `tools/catalog_search2d.py`, `tools/regression_check.py`, `tools/baseline/` · pruebas `test_validate_story2d.py`, `test_catalog2d.py`, `test_alegoria.py`, `test_sfx2d.py`, `test_engine2d.py`.
+
+**Pendientes (story-2d):**
+1. Una segunda revisión independiente tras los últimos arreglos visuales del piloto (la 1.ª ronda dio 6–7).
+2. `prisionero_libre` y `exterior_sol` son sencillos; los portadores del muro son siluetas pequeñas.
+3. Probar el tono con la voz `diego` (Chatterbox).
+4. Rangos de QA 2D calibrados con un solo video: afinarlos con el siguiente.
+5. Formatos de guion `reglas`, `relato`, `reflexion`, `y_si` y `dilema` (la estructura `alegoria` es la única implementada) y los assets que pidan.
+6. `IconFlow` con 4 pasos se sale del cuadro (afecta también al 3D): arreglar el overlay o limitarlo a 3.
+7. Mezclar `story-2d` a `main` (pruebas y no regresión en verde; decisión de Diego).

@@ -610,3 +610,33 @@ mismo fragmento a −16 LUFS: A actual, B +200 ms en cada coma, C tratamiento y 
   para ver las luces encendidas y no solo el reposo. Antes del render final se pasa un agente verificador con una hoja de todos los stills y la rúbrica de fidelidad de
   `templates/prompts/verificador.md` (5 notas, paso con ≥7). Ahorro de tokens: una sola hoja de imagen y respuesta de ~220 palabras; el agente ve poco detalle, así que sus quejas se contrastan con los stills.
 - **Ejemplo:** 4 prefabs nuevos en `custom.ts` (`manilla_led`, `emisor_ir`, `consola_luces`, `estadio_zonas` con acciones `encender`, `emitir`, `mandar`, `ola`, `sincronizar`).
+
+## story-2d · Shorts narrativos 2D (6–7 nov, rama `story-2d`)
+
+Plan completo y registro de avance: `docs/PLAN_STORY_2D.md`. Piloto: `mito-caverna` (91 s, aprobado por Diego el 7 nov).
+
+- **D101 · Un segundo motor visual en el mismo repo.** Los shorts de historias (alegorías, mitos, relatos, reflexiones) usan `meta.engine: "2d"` y una composición propia
+  (`Flat2D`, `studio/src/flat2d/`); el explainer 3D sigue siendo el valor por defecto (`engine_of()` en `pipeline/common.py`). Se descartó un repo aparte: duplicaría voz, mezcla, QA
+  y publicación. El riesgo de romper el 3D se controla con rama, cambios aditivos y `tools/regression_check.py`.
+- **D102 · Red de seguridad de no regresión (F0).** `tools/regression_check.py` corre las pruebas, valida el ejemplo `bluetooth-wifi`, saca sus stills y los compara con 20 miniaturas PNG
+  en `tools/baseline/` (~50 s, determinista: diferencia 0,04; tolera 3,0). La línea base se guardó en PNG porque con JPEG la recompresión daba falsos positivos. Se corre antes de comitear
+  cualquier cambio en archivos compartidos.
+- **D103 · `validate-story` lista todos los problemas a la vez.** Antes decía un hueco de ritmo por intento (6–7 rondas en `internet-bajo-agua`). `event_gaps()` devuelve todos con su beat;
+  `validate_story2d.py` hace lo mismo con el resto de reglas.
+- **D104 · Catálogo 2D cerrado (`templates/catalog2d.json`).** Paletas (`cueva`, `exterior`, `noche`), luces, 9 assets con su `aspect`, anclaje, parallax, `when`, tags y acciones propias,
+  cámaras 2D (`push_in`, `pull_out`, `pan_slow`, `hold`), transiciones (`cut`, `crossfade`, `swipe`), acciones genéricas y estructuras. Coordenadas normalizadas 0–1; una capa se ancla por
+  los pies. Los overlays son los no anclados del explainer (se reutilizan tal cual, igual que los subtítulos).
+- **D105 · Estructura `alegoria`.** `hook → scene+ → rupture → ascent+ → return → twist → cta`, añadida a `templates/formulas.json` (así `validate_script.py` la reconoce). Cierre en `bucle` por
+  defecto; el último beat repite paleta y assets del primero. Prompt: `templates/prompts/story2d_script_es.md`.
+- **D106 · Asset = SVG React en un lienzo de 100 × (100·aspect).** Cada asset recibe `t`, `p` (progreso de sus acciones propias), `pal`, `flick` y `seed`. Las acciones propias llegan como
+  progreso 0–1 y se quedan aplicadas; `init` en la capa deja una acción ya aplicada sin gastar una de las 3 por beat.
+- **D107 · Un `crossfade` entre beats con la misma escena no funde.** Con los mismos assets, paleta y luz el timeline pone `half = 0` (como `glide` en el 3D) para no ver dos copias
+  desfasadas; el autor mantiene la cámara continua.
+- **D108 · El QA de movimiento no ve zooms lentos sobre fondos oscuros y lisos.** En el piloto, tramos con cámara en movimiento daban racha estática de 46–56 frames (límite 45) porque el
+  flujo óptico mide casi cero en zonas planas. Se resolvió dando textura (`assets/grain.tsx`, motas con semilla fija) y moviendo más la cámara, **no** relajando la regla. Los rangos de
+  estilo del 2D (`templates/qa2d_ranges.json`) están calibrados con un solo video y son provisionales.
+- **D109 · Sonido de historias.** Cuatro sonidos nuevos (`fire_crackle`, `chains`, `footsteps`, `wind`, ≤1,3 s), cama `tense` (graves con tritono) y mapeo de las acciones 2D a sonidos en
+  `sfx_plan.py` (`swipe` lleva whoosh). Están también en `catalog.json` porque es la fuente de nombres de sfx del 3D.
+- **D110 · Iterar con Kokoro, entregar con la voz que se pida.** El piloto usó Kokoro (`em_alex`) por decisión de Diego (Chatterbox con su voz tarda ~20 min). El tono no se probó con `diego`.
+  La caché de etapas solo mira story y palabras: tras cambiar el código de un asset hay que forzar `--force stills,render,mix,mux,qa`.
+- **Ejemplo y skill:** `templates/examples/mito-caverna/` (investigación, guion, story y palabras) y `story-short/SKILL.md` (enlazada en `~/.claude/skills/story-short`).
