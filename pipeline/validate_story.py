@@ -85,6 +85,18 @@ def event_gap(story: dict, words: list) -> tuple[float, float]:
     return gap, at
 
 
+def event_gaps(story: dict, words: list, limit: float) -> list[tuple[float, float, str]]:
+    """todos los huecos mayores que `limit`: (duración, segundo de inicio, beat en que empieza); así un solo intento los muestra todos"""
+    end = words[-1]["end"] + story["meta"].get("tailS", 1.0)
+    ev = event_times(story, words) + [end]
+    starts = [(min((w["start"] for w in words if w["beat"] == b["id"]), default=0.0), b["id"]) for b in story["beats"]]
+    out = []
+    for a, b in zip(ev, ev[1:]):
+        if b - a > limit:
+            out.append((b - a, a, max(((t, i) for t, i in starts if t <= a + 1e-6), default=(0, "?"))[1]))
+    return out
+
+
 BIG_OVERLAYS = {"NoSymbol", "BigWord"}   # iconos y palabras enormes (F19)
 
 
@@ -233,9 +245,8 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
             if cam in HOOK_STATIC_CAMERAS:
                 errs.append(f"el primer beat usa la cámara '{cam}', demasiado suave para el gancho: usa push_in, spiral_in u orbit_slow")
             # F16 · ritmo: algo cambia en pantalla al menos cada 3,5 s
-            gap, at = event_gap(story, words)
-            if gap > MAX_EVENT_GAP_S:
-                errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (máximo {MAX_EVENT_GAP_S} s): "
+            for gap, at, bid in event_gaps(story, words, MAX_EVENT_GAP_S):
+                errs.append(f"{gap:.1f} s sin ningún cambio en pantalla desde el segundo {at:.1f} (beat {bid}; máximo {MAX_EVENT_GAP_S} s): "
                             f"añade una acción o un overlay en ese tramo")
     # F17 · bucle visual: el último beat vuelve al entorno y al objeto del primero
     if closing == "bucle" and len(beats) > 1:

@@ -3,7 +3,7 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { type HeroDef, bin, poseOf, screenTex, shadows } from "../types";
-import { TONE, ball, beam, box, cyl, ghostMat, glowMat, halo, mat, place, rod, scatter, tube, type Bin } from "./kit";
+import { TONE, ball, beam, box, col, cyl, ghostMat, glowMat, halo, mat, place, rod, scatter, tube, type Bin } from "./kit";
 
 type P3 = [number, number, number];
 const done = (root: THREE.Object3D, b: Bin, update: (f: number) => void) => ({ root, update, dispose: b.dispose });
@@ -826,5 +826,383 @@ export const celdas_matriz: HeroDef = {
         upd(lf);
       },
     };
+  },
+};
+
+// celular-orientacion · acelerómetro MEMS visto desde arriba: masa de silicio colgada de resortes y dedos que forman condensadores
+export const acelerometro_mems: HeroDef = {
+  kind: "primitive",
+  when: "Acelerómetro MEMS por dentro: la masa microscópica de silicio colgada de resortes, los dedos que forman condensadores, cómo un celular siente la gravedad y la inclinación, sensor de giro de pantalla, sensor de movimiento, chip que mide empujones.",
+  poses: ["plano", "inclinado"],
+  actions: {
+    inclinar: "El chip se inclina y la masa se desliza cuesta abajo, estirando un resorte y comprimiendo el otro (se queda así): inclinas el celular, la gravedad tira, la masa se desplaza.",
+    leer: "Los dedos del condensador destellan: el chip mide cuánto cambia la distancia entre ellos (se queda así): cambia la capacitancia, el chip lo convierte en un número, lee la señal.",
+  },
+  center: [0, 0.85, 0], radius: 1.7,
+  anchors: { hero: [0, 0.9, 0], top: [0, 1.6, 0], base: [0, 0.05, 0], masa: [0, 0.95, 0], dedos: [0, 0.95, 0.5], resorte_izq: [-1.0, 0.9, 0], resorte_der: [1.0, 0.9, 0], paquete: [0, 0.7, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(acelerometro_mems, pose, "acelerometro_mems");
+    const b = bin(), root = new THREE.Group(), tilt = new THREE.Group(), g = new THREE.Group();
+    const epoxy = mat(b, "#13162b", { roughness: 0.5, metalness: 0.15 }), steel = mat(b, "#cfd5ea", { roughness: 0.25, metalness: 0.9 });
+    const silicon = mat(b, "#3b4a7a", { roughness: 0.3, metalness: 0.45 }), massM = glowMat(b, "#f3c968", 0.35, { roughness: 0.3, metalness: 0.5 });
+    const springM = glowMat(b, "#dfe6ff", 0.4, { roughness: 0.3, metalness: 0.7 });
+    // paquete negro con patillas y la marca de la patilla 1; dentro, la placa de silicio y su marco
+    g.add(place(rbox(b, 3.7, 0.2, 2.8, 0.05, epoxy), [0, 0, 0]), place(rbox(b, 3.3, 0.04, 2.4, 0.03, silicon), [0, 0.12, 0]));
+    for (let i = 0; i < 7; i++) [-1, 1].forEach((s) => g.add(place(box(b, 0.1, 0.03, 0.22, steel), [-1.35 + i * 0.45, -0.04, s * 1.5])));
+    g.add(place(cyl(b, 0.06, 0.06, 0.012, mat(b, "#3a4166", { roughness: 0.4 }), 16), [-1.6, 0.106, -1.15]));
+    // anclajes del marco (fijos) a cada lado y las dos barras de las que salen los dedos fijos
+    [-1, 1].forEach((s) => {
+      g.add(place(box(b, 0.2, 0.1, 0.9, steel), [s * 1.5, 0.19, 0]));
+      g.add(place(box(b, 1.9, 0.07, 0.12, steel), [0, 0.18, s * 0.98]));
+    });
+    // masa móvil (oro) con 5 dedos a cada lado; su grupo se desliza en x
+    const mass = new THREE.Group(); mass.position.y = 0.19;
+    mass.add(box(b, 1.5, 0.08, 0.7, massM));
+    const xs = [-0.6, -0.3, 0, 0.3, 0.6];
+    xs.forEach((x) => [-1, 1].forEach((s) => mass.add(place(box(b, 0.06, 0.06, 0.4, massM), [x, 0, s * 0.54]))));
+    g.add(mass);
+    // dedos fijos: uno a cada lado de cada dedo móvil (cian a la izquierda, naranja a la derecha); el brillo sube cuanto más cerca
+    const fl = glowMat(b, "#4fd8ff", 0.5, { roughness: 0.3, metalness: 0.5 }), fr = glowMat(b, "#ff9a4a", 0.5, { roughness: 0.3, metalness: 0.5 });
+    xs.forEach((x) => [-1, 1].forEach((s) => g.add(place(box(b, 0.04, 0.06, 0.4, fl), [x - 0.15, 0.19, s * 0.74]), place(box(b, 0.04, 0.06, 0.4, fr), [x + 0.15, 0.19, s * 0.74]))));
+    // resortes en meandro: 2 por lado; se estiran con scale.x desde su anclaje
+    const L0 = 0.45, springs = [-1, 1].flatMap((s) => [-0.2, 0.2].map((z) => {
+      const sg = new THREE.Group(), pts: P3[] = [[0, 0, 0]];
+      for (let k = 0; k < 6; k++) pts.push([(k + 0.5) * L0 / 6, 0, (k % 2 ? -1 : 1) * 0.1]);
+      pts.push([L0, 0, 0]);
+      for (let k = 0; k < pts.length - 1; k++) sg.add(rod(b, pts[k], pts[k + 1], 0.016, springM));
+      sg.position.set(s * 1.4, 0.19, z); sg.userData.s = s; g.add(sg); return sg;
+    }));
+    tilt.add(g); tilt.position.y = 0.9; g.rotation.set(1.0, -0.25, 0); root.add(tilt); shadows(tilt);
+    const glow = halo(b, "rgba(120,220,255,0.9)", 3.2, 0); glow.position.set(0, 1.0, 0.3); root.add(glow);
+    let inc = p === "inclinado" ? 1 : 0, rd = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f;
+      const d = -0.08 * ease(inc) + 0.002 * Math.sin(f * 0.08) * inc;
+      mass.position.x = d; tilt.rotation.z = 0.42 * ease(inc);
+      springs.forEach((sg) => { const s = sg.userData.s as number, len = L0 + (s < 0 ? d : -d); sg.scale.x = -s * len / L0; });
+      const near = (x: number) => 0.5 + 12 * Math.abs(x); // d<0: la masa se acerca a los dedos cian de la izquierda
+      (fl.emissive as THREE.Color).copy(col("#4fd8ff")).multiplyScalar(0.5 + near(Math.max(0, -d)) + 1.4 * rd * (0.6 + 0.4 * Math.sin(f * 0.3)));
+      (fr.emissive as THREE.Color).copy(col("#ff9a4a")).multiplyScalar(Math.max(0.15, 0.5 - near(Math.max(0, -d))) + 0.9 * rd * (0.6 + 0.4 * Math.sin(f * 0.3 + 2)));
+      (glow.material as THREE.MeshBasicMaterial).opacity = 0.5 * rd * (0.7 + 0.3 * Math.sin(f * 0.25));
+      tilt.position.y = 0.9 + 0.02 * Math.sin(f * 0.05);
+    };
+    return {
+      ...done(root, b, upd),
+      act: (name, u) => { if (name === "inclinar") inc = ease(u); if (name === "leer") rd = ease(u); upd(lf); },
+    };
+  },
+};
+
+// ── internet-bajo-agua · piezas comunes del fondo del mar: cúpula de agua, arena con rocas y algas, peces ──
+const seaDome = (b: Bin) => {
+  const tex = screenTex(b.track, 8, 256, (g) => { const gr = g.createLinearGradient(0, 0, 0, 256); gr.addColorStop(0, "#2a8fb8"); gr.addColorStop(0.5, "#0f5283"); gr.addColorStop(1, "#06243f"); g.fillStyle = gr; g.fillRect(0, 0, 8, 256); });
+  return new THREE.Mesh(b.track(new THREE.SphereGeometry(60, 24, 16)), b.track(new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide, fog: false })));
+};
+const seabed = (b: Bin, R: number, seed: number, skip: (x: number, z: number) => boolean) => {
+  const g = new THREE.Group(), sand = mat(b, "#d6bf88", { roughness: 0.95 }), rock = mat(b, "#7d7a74", { roughness: 0.9 }), weedM = mat(b, "#2fae6a", { roughness: 0.7, side: THREE.DoubleSide });
+  const disc = cyl(b, R, R * 1.04, 0.14, sand, 56); disc.position.y = -0.06; g.add(disc);
+  const far = cyl(b, 55, 55, 0.14, mat(b, "#5f8d96", { roughness: 1 }), 48); far.position.y = -0.07; g.add(far); // suelo lejano: tapa el del entorno
+  scatter(18, seed, (r) => [(r() - 0.5) * R * 1.7, 0, (r() - 0.5) * R * 1.7]).forEach(([x, , z], i) => {
+    if (Math.hypot(x, z) > R * 0.9 || skip(x, z)) return;
+    const m = ball(b, 0.09 + 0.12 * hash1(i + seed), i % 2 ? rock : sand, 10); m.scale.y = 0.5; m.position.set(x, 0.02, z); g.add(m);
+  });
+  const weeds: THREE.Group[] = [];
+  scatter(10, seed + 5, (r) => [(r() - 0.5) * R * 1.7, 0, (r() - 0.5) * R * 1.7]).forEach(([x, , z], i) => {
+    if (Math.hypot(x, z) > R * 0.9 || skip(x, z)) return;
+    const w = new THREE.Group();
+    for (let k = 0; k < 3; k++) { const h = 0.45 + 0.35 * hash1(i * 3 + k + seed), bl = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.035, h, 5)), weedM); bl.position.set((k - 1) * 0.05, h / 2, 0); bl.rotation.z = (k - 1) * 0.18; w.add(bl); }
+    w.position.set(x, 0, z); w.userData.ph = i; g.add(w); weeds.push(w);
+  });
+  return { g, sway: (f: number) => weeds.forEach((w) => { w.rotation.z = 0.14 * Math.sin(f * 0.05 + (w.userData.ph as number)); }) };
+};
+const fishMesh = (b: Bin, c: string, s: number) => {
+  const g = new THREE.Group(), body = glowMat(b, c, 0.25, { roughness: 0.4 }), fin = glowMat(b, col(c).offsetHSL(0, 0, -0.12).getStyle(), 0.2, { side: THREE.DoubleSide });
+  const bd = ball(b, 0.5, body, 16); bd.scale.set(1.5, 0.75, 0.5);
+  const tail = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.38, 0.55, 4)), fin); tail.rotation.z = -Math.PI / 2; tail.scale.z = 0.3; tail.position.x = -0.95;
+  const dorsal = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.2, 0.35, 4)), fin); dorsal.scale.z = 0.25; dorsal.position.set(-0.05, 0.42, 0);
+  const eye = place(ball(b, 0.09, mat(b, "#10101c"), 8), [0.5, 0.12, 0.2]);
+  g.add(bd, tail, dorsal, eye); g.scale.setScalar(s); g.userData.tail = tail; return g;
+};
+/** peces que dan vueltas por una elipse: se orientan según la velocidad */
+const swim = (fs: THREE.Group[], f: number, A: number, B: number, y0: number) => fs.forEach((m, i) => {
+  const w = 0.012 + 0.003 * (i % 3), ph = i * 1.3, a = f * w + ph, x = A * Math.cos(a), z = B * Math.sin(a) * (i % 2 ? 1 : -1);
+  m.position.set(x, y0 + 0.25 * Math.sin(i * 2 + f * 0.02) + 0.12 * (i % 3), z);
+  const vx = -A * Math.sin(a), vz = B * Math.cos(a) * (i % 2 ? 1 : -1); m.rotation.y = Math.atan2(-vz, vx);
+  (m.userData.tail as THREE.Object3D).rotation.y = 0.5 * Math.sin(f * 0.3 + i);
+});
+
+// internet-bajo-agua · el cable submarino tendido sobre la arena del fondo, con un repetidor, peces y algas
+export const cable_fondo: HeroDef = {
+  kind: "primitive",
+  when: "Cable submarino de internet tendido en el fondo del océano: datos que cruzan el mar de un continente a otro, el fondo marino con arena, peces y algas, un repetidor en mitad del cable, internet bajo el agua, mensajes y videos que viajan por debajo del mar.",
+  poses: ["fondo"],
+  actions: { enviar: "Pulsos de luz recorren el cable de un extremo al otro (se queda así): los datos viajan, mensajes, internet, cruza el océano, de un continente a otro." },
+  center: [0, 0.5, 0], radius: 1.35,
+  anchors: { hero: [0, 0.4, 0], top: [0, 1.7, 0], base: [0, 0.02, 0], cable: [-2.2, 0.15, -0.25], repetidor: [0.3, 0.3, -0.1], pez: [1.2, 1.1, 1.0] },
+  build: (_L, pose) => {
+    poseOf(cable_fondo, pose, "cable_fondo");
+    const b = bin(), root = new THREE.Group();
+    root.add(seaDome(b));
+    const bed = seabed(b, 4.4, 3, (x, z) => Math.abs(z) < 0.9 && Math.abs(x) < 3.8); root.add(bed.g);
+    const pts: P3[] = [[-3.8, 0.07, 0.6], [-2.2, 0.07, -0.25], [-0.9, 0.07, 0.35], [0.3, 0.07, -0.1], [1.7, 0.07, 0.45], [3.8, 0.07, -0.1]];
+    const curve = new THREE.CatmullRomCurve3(pts.map((q) => new THREE.Vector3(...q)));
+    root.add(tube(b, pts, 0.14, mat(b, "#7d8aa6", { roughness: 0.55, metalness: 0.25 }), 140));
+    // repetidor: cilindro de acero con collares y una luz verde, en el punto 3 del cable
+    const rep = new THREE.Group(), steel = mat(b, "#aab4c8", { roughness: 0.3, metalness: 0.9 });
+    const rb = cyl(b, 0.26, 0.26, 0.8, steel, 24); rb.rotation.z = Math.PI / 2; rep.add(rb);
+    [-0.31, 0.31].forEach((x) => { const c = cyl(b, 0.2, 0.2, 0.08, mat(b, "#4d566b", { metalness: 0.7, roughness: 0.4 }), 24); c.rotation.z = Math.PI / 2; c.position.x = x; rep.add(c); });
+    [-0.12, 0.12].forEach((x) => { const c = cyl(b, 0.18, 0.18, 0.03, mat(b, "#e3b04a", { metalness: 0.6, roughness: 0.4 }), 24); c.rotation.z = Math.PI / 2; c.position.x = x; rep.add(c); });
+    rep.add(place(ball(b, 0.03, beam(b, "#6bff9c", 2), 8), [0, 0.17, 0]));
+    rep.position.set(pts[3][0], 0.19, pts[3][2]); rep.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), curve.getTangent(0.6).setY(0).normalize()); root.add(rep); shadows(rep);
+    const fish = ["#ffb347", "#ff6f61", "#7dd3fc", "#ffd166", "#f78fb3", "#9be564"].map((c, i) => { const m = fishMesh(b, c, 0.3 + 0.04 * (i % 3)); root.add(m); return m; });
+    const dots = Array.from({ length: 8 }, () => { const d = ball(b, 0.11, beam(b, "#9fefff", 2.6), 10); d.visible = false; root.add(d); return d; });
+    let send = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f; bed.sway(f); swim(fish, f, 2.6, 1.5, 0.9);
+      dots.forEach((d, i) => { d.visible = send > 0.01; if (d.visible) { const t = ((f * 0.0065 + i / dots.length) % 1); d.position.copy(curve.getPointAt(t)).y += 0.05; d.scale.setScalar(0.7 + 0.5 * send); } });
+    };
+    return { ...done(root, b, upd), act: (name, u) => { if (name === "enviar") send = ease(u); upd(lf); } };
+  },
+};
+
+// internet-bajo-agua · corte de un cable submarino con sus capas (fibras, tubo de acero, cobre, aislante, funda) y, al lado, una manguera de jardín
+export const cable_corte: HeroDef = {
+  kind: "primitive",
+  when: "Cable submarino de fibra óptica visto por dentro y por fuera: sus capas (funda de plástico, cobre, alambres de acero, fibras de colores), cuánto mide de grueso (como una manguera de jardín), la armadura de acero cerca de la costa, los pulsos de luz que llevan los datos.",
+  poses: ["corte", "manguera", "armado"],
+  actions: { pulsos: "Pulsos de luz salen disparados por las fibras y destellan en sus puntas (se queda así): los datos viajan como luz, pulsos de luz, fibra óptica, velocidad de la luz." },
+  center: [0.8, 0.4, -0.2], radius: 0.9,
+  anchors: { hero: [0, 0.4, 0], top: [0, 1.0, 0], base: [0, 0.02, 0], fibras: [2.2, 0.4, 0], funda: [-1.0, 0.4, 0], cobre: [0.9, 0.4, 0], armadura: [-0.9, 0.7, 0], manguera: [0, 0.4, -1.2] },
+  build: (_L, pose) => {
+    const p = poseOf(cable_corte, pose, "cable_corte"), arm = p === "armado", whole = p === "manguera";
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const X0 = -1.9, R = 0.34, outerR = arm ? 0.55 : R;
+    const sheath = mat(b, "#2a2f3a", { roughness: 0.6 }), ins = mat(b, "#efe7d2", { roughness: 0.5 }), cu = mat(b, "#cf7a3e", { metalness: 0.9, roughness: 0.3 }), steel = mat(b, "#cfd5ea", { roughness: 0.25, metalness: 0.9 });
+    const along = (r: number, x1: number, m: THREE.Material) => { const c = cyl(b, r, r, x1 - X0, m, 40); c.rotation.z = Math.PI / 2; c.position.set((X0 + x1) / 2, 0, 0); return c; };
+    const e = (x: number, k: number) => (whole ? 1.7 + 0.004 * k : x); // pose manguera: cable entero con anillos visibles en la punta
+    g.add(along(R, e(0.45, 0), sheath), along(0.27, e(0.75, 1), ins), along(0.21, e(1.05, 2), cu));
+    for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2, w = along(0.032, e(1.3, 3), steel); w.position.set(0, 0.155 * Math.cos(a), 0.155 * Math.sin(a)); g.add(w); }
+    g.add(along(0.11, e(1.55, 4), mat(b, "#8b94ab", { metalness: 0.9, roughness: 0.3 })), along(0.085, e(1.62, 5), glowMat(b, "#7fe0ff", 0.5, { roughness: 0.3 })));
+    if (arm) { // armadura: capa de relleno y 20 alambres de acero trenzados
+      g.add(along(0.41, -0.1, mat(b, "#3b2f26", { roughness: 0.9 })));
+      for (let i = 0; i < 20; i++) {
+        const a0 = (i / 20) * Math.PI * 2; let prev: P3 | null = null;
+        for (let k = 0; k <= 8; k++) { const x = X0 + (-0.3 - X0) * (k / 8), a = a0 + x * 0.9, q: P3 = [x, 0.47 * Math.cos(a), 0.47 * Math.sin(a)]; if (prev) g.add(rod(b, prev, q, 0.07, steel)); prev = q; }
+      }
+    }
+    // fibras de colores que salen del tubo abiertas en abanico (código de colores real) y sus pulsos
+    const fibreC = ["#2d7bff", "#ff8a1f", "#35c46b", "#8a5a2b", "#aab3c4", "#f2f2f2"], tails: THREE.CatmullRomCurve3[] = [], tips: THREE.Mesh[] = [];
+    if (!whole) fibreC.forEach((c, i) => {
+      const a = (i / 6) * Math.PI * 2, d: P3 = [0, 0.26 * Math.cos(a), 0.26 * Math.sin(a)], q: P3[] = [[1.55, 0.04 * Math.cos(a), 0.04 * Math.sin(a)], [1.95, d[1] * 0.5, d[2] * 0.5], [2.45, d[1], d[2]]];
+      g.add(tube(b, q, 0.03, glowMat(b, c, 0.9, { roughness: 0.3 }), 24));
+      tails.push(new THREE.CatmullRomCurve3(q.map((v) => new THREE.Vector3(...v))));
+      const tip = ball(b, 0.06, beam(b, "#ffffff", 1.4), 10); tip.position.set(...q[2]); g.add(tip); tips.push(tip);
+    });
+    g.position.y = outerR; g.position.z = whole ? 0.5 : 0; root.add(g);
+    if (whole) { // manguera de jardín: tubo verde con acople de latón y pistola de riego roja
+      const hose = tube(b, [[X0, R, -1.35], [-0.9, R, -0.95], [0.1, R, -1.45], [1.45, R, -1.2]], R, mat(b, "#4cbf5c", { roughness: 0.6 }), 60); root.add(hose);
+      const brass = mat(b, "#c8a24a", { metalness: 0.8, roughness: 0.35 }), red = mat(b, "#d94b3a", { roughness: 0.5 });
+      const piece = (r: number, len: number, x: number, m: THREE.Material, sides = 20) => { const c = cyl(b, r, r, len, m, sides); c.rotation.z = Math.PI / 2; c.position.set(x, R, -1.2); root.add(c); };
+      piece(0.4, 0.3, 1.55, brass, 6); piece(0.34, 0.12, 1.75, brass); piece(0.3, 0.55, 2.05, red);
+      const tip = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.2, 0.3, 20)), red); tip.rotation.z = -Math.PI / 2; tip.position.set(2.45, R, -1.2); root.add(tip);
+    }
+    shadows(root);
+    const dots = Array.from({ length: 12 }, (_, i) => { const d = ball(b, 0.065, beam(b, "#ffffff", 2.8), 10); d.visible = false; d.userData.k = i % 6; g.add(d); return d; });
+    const streaks = Array.from({ length: 6 }, () => { const s = place(box(b, 0.5, 0.03, 0.09, beam(b, "#9fefff", 2.6)), [0, outerR + 0.012, 0]); s.visible = false; g.add(s); return s; });
+    let pl = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f;
+      dots.forEach((d, i) => { d.visible = pl > 0.01 && tails.length > 0; if (d.visible) d.position.copy(tails[d.userData.k as number].getPointAt(((f * 0.012 + i / 6) % 1))); });
+      streaks.forEach((s, i) => { s.visible = pl > 0.01 && !whole && !arm; s.position.x = X0 + ((f * 0.03 + i / 6 * 3.6) % 3.6); s.position.z = 0.26 * Math.sin(i * 2.1); s.position.y = Math.sqrt(Math.max(0, R * R - s.position.z ** 2)) + 0.012; });
+      tips.forEach((t, i) => t.scale.setScalar(1 + pl * (0.8 + 0.7 * Math.sin(f * 0.4 + i * 1.7))));
+    };
+    return { ...done(root, b, upd), act: (name, u) => { if (name === "pulsos") pl = ease(u); upd(lf); } };
+  },
+};
+
+// internet-bajo-agua · la Tierra con los cables submarinos que unen los continentes y pulsos de luz que los recorren
+const LAND: [number, number][][] = [
+  [[-168, 66], [-140, 70], [-95, 72], [-80, 68], [-62, 58], [-55, 48], [-70, 42], [-76, 35], [-81, 25], [-97, 26], [-97, 20], [-87, 21], [-83, 10], [-78, 8], [-90, 14], [-106, 22], [-112, 30], [-118, 34], [-124, 40], [-130, 52], [-150, 60], [-165, 62]],
+  [[-55, 60], [-20, 70], [-20, 80], [-60, 82], [-70, 76]],
+  [[-78, 8], [-60, 11], [-50, 0], [-35, -6], [-40, -22], [-48, -28], [-58, -38], [-65, -45], [-70, -54], [-75, -48], [-73, -30], [-70, -18], [-81, -5]],
+  [[-10, 36], [-9, 43], [-2, 48], [5, 53], [10, 58], [20, 70], [40, 68], [70, 73], [100, 78], [140, 72], [170, 68], [160, 58], [142, 52], [140, 40], [122, 30], [120, 22], [108, 10], [100, 3], [104, 1], [98, 15], [90, 22], [80, 12], [72, 20], [58, 24], [48, 30], [36, 36], [28, 41], [20, 40], [12, 38], [5, 43]],
+  [[35, 30], [56, 26], [59, 22], [44, 12], [38, 20]],
+  [[-17, 21], [-6, 36], [10, 37], [32, 31], [43, 12], [51, 12], [40, -5], [40, -15], [33, -26], [20, -35], [13, -25], [12, -5], [9, 4], [-8, 4], [-17, 14]],
+  [[114, -22], [130, -12], [142, -11], [153, -26], [146, -39], [132, -33], [115, -34]],
+  [[-5, 50], [2, 52], [0, 58], [-6, 58]], [[130, 32], [141, 36], [142, 44], [134, 35]],
+];
+const ll = (lat: number, lon: number, r = 1): THREE.Vector3 => { const a = lat * Math.PI / 180, o = lon * Math.PI / 180; return new THREE.Vector3(Math.cos(o) * Math.cos(a), Math.sin(a), -Math.sin(o) * Math.cos(a)).multiplyScalar(r); };
+const CITIES: Record<string, [number, number]> = { ny: [40.7, -74], lon: [51.5, -0.1], lis: [38.7, -9.1], for: [-3.7, -38.5], mia: [25.8, -80.2], la: [34, -118], tok: [35.7, 139.7], syd: [-33.9, 151.2], mum: [19, 72.8], mar: [43.3, 5.4], sin: [1.3, 103.8], cpt: [-33.9, 18.4], lag: [6.5, 3.4], hk: [22.3, 114.2] };
+const LINKS: [string, string][] = [["ny", "lon"], ["ny", "lis"], ["mia", "for"], ["for", "lis"], ["la", "tok"], ["syd", "la"], ["mum", "mar"], ["sin", "mum"], ["cpt", "lag"], ["lag", "lis"], ["hk", "la"], ["sin", "syd"], ["for", "lag"]];
+
+export const globo_cables: HeroDef = {
+  kind: "primitive",
+  when: "La Tierra con los cables submarinos de internet que unen los continentes: la red mundial de fibra por el fondo del mar, cables que cruzan el Atlántico y el Pacífico, el tráfico de datos entre continentes, más de un millón de kilómetros de cable, internet global.",
+  poses: ["cables"],
+  actions: {
+    trafico: "Los pulsos de luz se multiplican y los cables brillan más (se queda así): muchísimos datos, el tráfico de internet, casi todo pasa por aquí, el noventa y nueve por ciento.",
+  },
+  center: [0, 0.95, 0], radius: 1.05,
+  anchors: { hero: [0, 1.2, 0], top: [0, 2.3, 0], base: [0, 0.1, 0], atlantico: [-0.45, 1.5, 0.95], pacifico: [0.9, 1.2, -0.3] },
+  build: (_L, pose) => {
+    poseOf(globo_cables, pose, "globo_cables");
+    const b = bin(), root = new THREE.Group(), globe = new THREE.Group();
+    const W = 1024, H = 512, tex = screenTex(b.track, W, H, (c) => {
+      const gr = c.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, "#2b7cc4"); gr.addColorStop(1, "#1b5c9e"); c.fillStyle = gr; c.fillRect(0, 0, W, H);
+      c.fillStyle = "#eef6ff"; c.fillRect(0, H * (90 - -90) / 180 - H * 0.07, W, H * 0.07);
+      c.fillStyle = "#58b06a"; c.strokeStyle = "#8fd69a"; c.lineWidth = 3;
+      LAND.forEach((poly) => { c.beginPath(); poly.forEach(([lo, la], i) => { const x = (lo + 180) / 360 * W, y = (90 - la) / 180 * H; i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.closePath(); c.fill(); c.stroke(); });
+    });
+    const sph = new THREE.Mesh(b.track(new THREE.SphereGeometry(1, 64, 48)), mat(b, "#ffffff", { map: tex, emissive: new THREE.Color("#ffffff"), emissiveMap: tex, emissiveIntensity: 0.28, roughness: 0.7 }));
+    globe.add(sph, new THREE.Mesh(b.track(new THREE.SphereGeometry(1.045, 40, 28)), ghostMat(b, "#7fd0ff", 0.13)));
+    const cableM = beam(b, "#6fe6ff", 1.5), curves: THREE.CatmullRomCurve3[] = [];
+    LINKS.forEach(([a, c]) => {
+      const A = ll(...CITIES[a]), B = ll(...CITIES[c]), ang = A.angleTo(B), pts: THREE.Vector3[] = [];
+      for (let i = 0; i <= 24; i++) { const t = i / 24, q = new THREE.Vector3().copy(A).multiplyScalar(Math.sin((1 - t) * ang)).add(B.clone().multiplyScalar(Math.sin(t * ang))).multiplyScalar(1 / Math.sin(ang)); pts.push(q.normalize().multiplyScalar(1.012 + 0.05 * Math.sin(Math.PI * t))); }
+      const cv = new THREE.CatmullRomCurve3(pts); curves.push(cv);
+      globe.add(new THREE.Mesh(b.track(new THREE.TubeGeometry(cv, 48, 0.0085, 6, false)), cableM));
+    });
+    Object.values(CITIES).forEach((c) => { const d = ball(b, 0.024, beam(b, "#ffd166", 1.8), 8); d.position.copy(ll(c[0], c[1], 1.015)); globe.add(d); });
+    const dots = curves.flatMap((cv, i) => [0, 1].map((k) => { const d = ball(b, 0.035, beam(b, "#ffffff", 2.8), 8); d.userData = { cv, off: (i * 0.37 + k * 0.5) % 1 }; globe.add(d); return d; }));
+    globe.position.y = 1.2; globe.rotation.set(0.35, -Math.PI / 3, 0); root.add(globe);
+    let tr = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f; globe.rotation.y = -Math.PI / 3 - 0.009 * f;
+      dots.forEach((d) => { const t = (d.userData.off + f * (0.008 + 0.006 * tr)) % 1; d.position.copy((d.userData.cv as THREE.CatmullRomCurve3).getPointAt(t)); d.scale.setScalar(1 + 0.9 * tr); });
+      cableM.color.copy(col("#6fe6ff")).multiplyScalar(1.5 + 1.3 * tr);
+    };
+    return { ...done(root, b, upd), act: (name, u) => { if (name === "trafico") tr = ease(u); upd(lf); } };
+  },
+};
+
+// internet-bajo-agua · barco que arrastra el ancla (o una red de arrastre) por el fondo y engancha un cable submarino
+const setRod = (m: THREE.Mesh, a: THREE.Vector3, c: THREE.Vector3) => { m.position.copy(a).add(c).multiplyScalar(0.5); m.scale.y = Math.max(0.001, a.distanceTo(c)); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), c.clone().sub(a).normalize()); };
+export const ancla_barco: HeroDef = {
+  kind: "primitive",
+  when: "Barco que arrastra el ancla por el fondo del mar o una red de pesca de arrastre y engancha un cable submarino hasta romperlo: lo que de verdad daña los cables de internet, averías de cables, anclas de barcos, redes de pesca, pesca de arrastre.",
+  poses: ["ancla", "pesca"],
+  actions: { enganchar: "El barco avanza, el ancla (o la red) araña el fondo, engancha el cable, lo tensa y lo parte con una chispa roja (se queda así): arrastra, engancha, rompe el cable, daña, avería." },
+  center: [0, 0.75, 0], radius: 1.25,
+  anchors: { hero: [0, 1.0, 0], top: [0, 2.6, 0], base: [0, 0.02, 0], cable: [0, 0.1, 0], barco: [0, 2.2, 0], ancla: [0.4, 0.3, 0], red: [-0.8, 0.3, 0], rotura: [0, 0.2, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(ancla_barco, pose, "ancla_barco"), trawl = p === "pesca";
+    const b = bin(), root = new THREE.Group(), D = 2.0;
+    root.add(seaDome(b));
+    const bed = seabed(b, 4.6, 7, (x, z) => Math.abs(x) < 0.8 || (trawl && Math.abs(z) < 1)); root.add(bed.g);
+    const surface = cyl(b, 4.6, 4.6, 0.03, ghostMat(b, "#8fdcff", 0.32), 48); surface.position.y = D; root.add(surface);
+    // casco (vista en planta extruida), contenedores, puente de mando y chimenea
+    const sh = new THREE.Shape(); sh.moveTo(-1.2, -0.34); sh.lineTo(0.7, -0.34); sh.quadraticCurveTo(1.15, -0.2, 1.4, 0); sh.quadraticCurveTo(1.15, 0.2, 0.7, 0.34); sh.lineTo(-1.2, 0.34); sh.closePath();
+    const ship = new THREE.Group(), hull = new THREE.Mesh(b.track(new THREE.ExtrudeGeometry(sh, { depth: 0.38, bevelEnabled: false })), mat(b, "#b23a34", { roughness: 0.55 }));
+    hull.rotation.x = -Math.PI / 2; hull.position.y = -0.16; ship.add(hull);
+    ship.add(place(box(b, 2.5, 0.05, 0.62, mat(b, "#8d96a8", { roughness: 0.6 })), [0.05, 0.225, 0]));
+    const cols = ["#e24b3b", "#3b7de2", "#f2b134", "#35a86b", "#8f5fe0"];
+    for (let i = 0; i < 4; i++) for (let k = 0; k < 2; k++) for (let h = 0; h < (i % 2 ? 1 : 2); h++) ship.add(place(box(b, 0.26, 0.17, 0.2, mat(b, cols[(i * 2 + k + h) % 5], { roughness: 0.6 })), [-0.2 + i * 0.3, 0.33 + h * 0.18, (k - 0.5) * 0.24]));
+    ship.add(place(box(b, 0.42, 0.5, 0.52, mat(b, "#f0f2f7", { roughness: 0.5 })), [-0.9, 0.5, 0]), place(box(b, 0.44, 0.07, 0.54, mat(b, "#27304a", { roughness: 0.4 })), [-0.9, 0.62, 0]));
+    const fun = cyl(b, 0.08, 0.1, 0.3, mat(b, "#d94b3a", { roughness: 0.5 }), 14); fun.position.set(-1.0, 0.9, 0); ship.add(fun, rod(b, [-0.9, 0.75, 0], [-0.9, 1.05, 0], 0.015, mat(b, "#aab4c8")));
+    ship.position.y = D; root.add(ship); shadows(ship);
+    // cable a lo ancho del fondo (perpendicular al avance); se reconstruye al tensarse y al romperse
+    const cx = trawl ? 0 : 0.1, cableM = mat(b, "#6a7690", { roughness: 0.55, metalness: 0.25 }), cableG = new THREE.Group(); root.add(cableG);
+    const sparkM = beam(b, "#ff5a3c", 2.2), spark = halo(b, "rgba(255,110,70,0.95)", 1.6, 0); spark.position.set(cx, 0.2, 0); spark.rotation.y = 0; root.add(spark);
+    const tips = [-1, 1].map(() => { const t = ball(b, 0.06, sparkM, 8); t.visible = false; root.add(t); return t; });
+    let keyOld = "";
+    const rebuild = (dx: number, gap: number) => {
+      const key = dx.toFixed(3) + gap.toFixed(3); if (key === keyOld) return; keyOld = key;
+      cableG.children.slice().forEach((c) => { (c as THREE.Mesh).geometry.dispose(); cableG.remove(c); });
+      const half = (sign: number) => { const q: P3[] = []; for (let z = gap; z <= 3.8; z += 0.25) q.push([cx + dx * Math.exp(-((z / 0.8) ** 2)), 0.07, sign * z]); return q; };
+      [-1, 1].forEach((s, i) => { const q = half(s); if (gap > 0) q.unshift([cx + dx * Math.exp(-((gap / 0.8) ** 2)), 0.07, s * gap]); else if (s > 0) q.unshift([cx + dx, 0.07, 0]); if (gap > 0 || s > 0) cableG.add(tube(b, q, 0.11, cableM, 60)); tips[i].visible = gap > 0; tips[i].position.set(q[0][0], 0.09, q[0][2]); });
+    };
+    // ancla (cabeza, caña, cepo, uñas) o red de arrastre (cono de malla, tablas, flotadores)
+    const anchor = new THREE.Group(), irn = mat(b, "#3a4156", { roughness: 0.45, metalness: 0.8 }), net = new THREE.Group(), boards: THREE.Mesh[] = [], warps: THREE.Mesh[] = [], links: THREE.Mesh[] = [];
+    if (!trawl) {
+      anchor.add(place(cyl(b, 0.03, 0.03, 0.6, irn, 10), [0, 0.3, 0]), place(box(b, 0.34, 0.04, 0.04, irn), [0, 0.52, 0]));
+      const crown = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.25, 0.035, 8, 20, Math.PI)), irn); crown.rotation.z = Math.PI; anchor.add(crown);
+      [-1, 1].forEach((s) => { const fl = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.09, 0.22, 4)), irn); fl.position.set(s * 0.27, 0.06, 0); fl.rotation.z = -s * 0.9; anchor.add(fl); });
+      anchor.add(new THREE.Mesh(b.track(new THREE.TorusGeometry(0.06, 0.015, 6, 12)), irn)); anchor.children[anchor.children.length - 1].position.y = 0.66;
+      root.add(anchor); shadows(anchor);
+      for (let i = 0; i < 26; i++) { const l = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.06, 0.02, 6, 10)), irn); links.push(l); root.add(l); }
+    } else {
+      const cone = new THREE.ConeGeometry(0.5, 1.7, 14, 6, true), meshM = ghostMat(b, "#e9f3ee", 0.35), wire = b.track(new THREE.MeshBasicMaterial({ color: "#f4fbf6", wireframe: true, transparent: true, opacity: 0.8 }));
+      const body = new THREE.Mesh(b.track(cone), meshM), wf = new THREE.Mesh(cone, wire); [body, wf].forEach((m) => { m.rotation.z = Math.PI / 2; m.position.x = -0.85; net.add(m); });
+      net.scale.y = 0.55; net.scale.x = 1.4; net.scale.z = 1.5;
+      const netW = new THREE.Group(); netW.add(net);
+      [-0.4, -0.2, 0, 0.2, 0.4].forEach((z) => netW.add(place(ball(b, 0.045, mat(b, "#ff7a1a", { roughness: 0.5 }), 8), [0, 0.3, z])));
+      [-1, 1].forEach((s) => { const bd = box(b, 0.05, 0.38, 0.28, mat(b, "#7a4e2d", { roughness: 0.8 })); bd.position.set(0.05, 0.19, s * 0.62); bd.rotation.y = s * 0.35; netW.add(bd); boards.push(bd); const w = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.012, 0.012, 1, 6)), irn); warps.push(w); root.add(w); });
+      anchor.add(netW); root.add(anchor); shadows(anchor);
+    }
+    let prog = 0, lf = 0;
+    const upd = (f: number) => {
+      lf = f; bed.sway(f);
+      const c = -0.8 + 1.9 * prog, sx = trawl ? c + 2.0 : c - 0.9, bob = 0.025 * Math.sin(f * 0.06);
+      ship.position.set(sx, D + bob, 0); ship.rotation.z = 0.02 * Math.sin(f * 0.05);
+      const pull = Math.max(0, c - cx), snapAt = 0.34, snapped = pull > snapAt, rel = clamp01((pull - snapAt) / 0.5);
+      rebuild(snapped ? snapAt * (1 - ease(rel)) : Math.min(pull, snapAt), snapped ? 0.1 + 0.55 * ease(rel) : 0);
+      (spark.material as THREE.MeshBasicMaterial).opacity = snapped ? 0.9 * (1 - rel) : 0; spark.scale.setScalar(0.6 + 1.4 * rel); spark.position.set(cx, 0.25, 0);
+      if (!trawl) {
+        anchor.position.set(c, 0.45, 0); anchor.rotation.z = -0.45; anchor.scale.setScalar(1.8);
+        const H = new THREE.Vector3(sx + 1.28, D - 0.05, 0), A = new THREE.Vector3(c, 1.0, 0), C = new THREE.Vector3(c + 0.4, 1.0, 0);
+        links.forEach((l, i) => { const t = i / (links.length - 1), q = new THREE.Vector3().copy(H).multiplyScalar((1 - t) ** 2).add(C.clone().multiplyScalar(2 * (1 - t) * t)).add(A.clone().multiplyScalar(t * t)); l.position.copy(q); const tg = H.clone().multiplyScalar(-2 * (1 - t)).add(C.clone().multiplyScalar(2 - 4 * t)).add(A.clone().multiplyScalar(2 * t)).normalize(); l.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), tg); l.rotateX(i % 2 ? Math.PI / 2 : 0); });
+      } else {
+        anchor.position.set(c, 0.04, 0); anchor.rotation.set(0, 0, 0);
+        const stern = [-1, 1].map((s) => new THREE.Vector3(sx - 1.2, D - 0.05, s * 0.18));
+        warps.forEach((w, i) => { const s = i ? 1 : -1; setRod(w, stern[i], new THREE.Vector3(c + 0.05 + (boards[i].position.x - 0.05), 0.19, s * 0.62)); });
+      }
+    };
+    return { ...done(root, b, upd), act: (name, u) => { if (name === "enganchar") prog = ease(u); upd(lf); } };
+  },
+};
+
+// internet-bajo-agua · satélite de comunicaciones geoestacionario: cuerpo con manta térmica dorada, alas solares con celdas, dos antenas parabólicas, bocinas hacia la Tierra y buscador de estrellas
+export const satelite_geo: HeroDef = {
+  kind: "primitive",
+  when: "Satélite de comunicaciones geoestacionario con alas solares, antenas parabólicas y manta térmica dorada: internet por satélite, señal que sube y baja, retardo de la señal, satélites a miles de kilómetros, antenas en el espacio, órbita geoestacionaria, TV y llamadas por satélite.",
+  poses: ["orbita"],
+  center: [0, 1.15, 0], radius: 1.7,
+  anchors: { hero: [0, 1.4, 0], top: [0, 2.3, 0], base: [0, 0.1, 0], panel: [1.9, 1.4, 0], antena: [0.0, 1.95, 0.8], senal: [0, 0.6, 0], bocinas: [0, 1.0, 0] },
+  build: (_L, pose) => {
+    poseOf(satelite_geo, pose, "satelite_geo");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group(), sat = new THREE.Group();
+    const foilTex = screenTex(b.track, 256, 256, (c) => {
+      c.fillStyle = "#d9a441"; c.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 160; i++) { const x = hash1(i + 1) * 256, y = hash1(i + 7) * 256, r = 14 + hash1(i + 13) * 30, a = hash1(i + 19) * 6.28, t = hash1(i + 23); c.fillStyle = t < 0.5 ? "rgba(255,226,140,0.35)" : "rgba(150,90,20,0.30)"; c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r); c.lineTo(x + Math.cos(a + 2) * r, y + Math.sin(a + 2) * r); c.closePath(); c.fill(); }
+    });
+    const cellTex = screenTex(b.track, 128, 256, (c) => {
+      c.fillStyle = "#14307a"; c.fillRect(0, 0, 128, 256); c.strokeStyle = "#8da6e6"; c.lineWidth = 2;
+      for (let i = 0; i <= 4; i++) { c.beginPath(); c.moveTo(i * 32, 0); c.lineTo(i * 32, 256); c.stroke(); }
+      for (let j = 0; j <= 8; j++) { c.beginPath(); c.moveTo(0, j * 32); c.lineTo(128, j * 32); c.stroke(); }
+      c.strokeStyle = "#cfd8f5"; c.lineWidth = 4; c.strokeRect(2, 2, 124, 252);
+    });
+    const foil = mat(b, "#ffffff", { map: foilTex, metalness: 0.7, roughness: 0.35, emissive: new THREE.Color("#5a3a08"), emissiveIntensity: 0.5 });
+    const panelM = mat(b, "#ffffff", { map: cellTex, metalness: 0.35, roughness: 0.3, emissive: new THREE.Color("#0a1f60"), emissiveIntensity: 0.55 });
+    const silver = mat(b, "#cfd5ea", { metalness: 0.85, roughness: 0.3 }), dark = mat(b, "#2a2f4a", { metalness: 0.6, roughness: 0.4 }), white = mat(b, "#eef0f7", { metalness: 0.3, roughness: 0.4 });
+    sat.add(place(box(b, 0.9, 0.8, 0.9, foil), [0, 0, 0]));
+    sat.add(place(box(b, 0.7, 0.03, 0.7, white), [0, 0.415, 0])); // radiador blanco arriba
+    for (let i = 0; i < 6; i++) sat.add(place(box(b, 0.62, 0.012, 0.025, dark), [0, 0.435, -0.25 + i * 0.1]));
+    [-1, 1].forEach((s) => sat.add(place(box(b, 0.92, 0.03, 0.03, silver), [0, s * 0.4, 0.46]), place(box(b, 0.92, 0.03, 0.03, silver), [0, s * 0.4, -0.46])));
+    // alas solares: brazo, bisagras y tres paneles por lado
+    [-1, 1].forEach((s) => {
+      sat.add(rod(b, [s * 0.45, 0, 0], [s * 0.78, 0, 0], 0.035, silver));
+      for (let k = 0; k < 3; k++) { const x = s * (0.82 + 0.5 * k + 0.3); sat.add(place(box(b, 0.46, 0.03, 1.15, panelM), [x, 0, 0])); if (k < 2) sat.add(place(box(b, 0.04, 0.04, 0.2, silver), [x + s * 0.25, 0, 0])); }
+      sat.add(place(box(b, 0.04, 0.05, 0.2, silver), [s * 0.8, 0, 0]));
+    });
+    // dos antenas parabólicas a los lados (+z, -z) con su bocina en el foco y tres puntales
+    const dishes = [-1, 1].map((s) => {
+      const d = new THREE.Group(), cap = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.4, 28, 12, 0, Math.PI * 2, 0, 0.95)), mat(b, "#f3f5fb", { side: THREE.DoubleSide, metalness: 0.4, roughness: 0.35 }));
+      cap.scale.y = 0.6; cap.position.y = -0.15; d.add(cap, place(cyl(b, 0.04, 0.04, 0.2, silver, 10), [0, -0.12, 0]));
+      d.add(place(cyl(b, 0.012, 0.045, 0.14, dark, 10), [0, 0.2, 0]));
+      [0, 1, 2].forEach((i) => { const a = i * 2.094; d.add(rod(b, [Math.cos(a) * 0.3, 0.04, Math.sin(a) * 0.3], [0, 0.2, 0], 0.008, silver)); });
+      d.position.set(0, 0.1, s * 0.78); d.rotation.x = s * 1.05; sat.add(d, rod(b, [0, 0.0, s * 0.45], [0, 0.0, s * 0.72], 0.03, silver)); return d;
+    });
+    // bocinas de cobertura hacia la Tierra (abajo), buscador de estrellas arriba y tobera trasera
+    for (let i = 0; i < 6; i++) { const h = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.1, 0.22, 12, 1, true)), mat(b, "#e8ebf6", { side: THREE.DoubleSide, metalness: 0.5, roughness: 0.3 })); h.rotation.x = Math.PI; h.position.set(-0.28 + (i % 3) * 0.28, -0.5, -0.17 + Math.floor(i / 3) * 0.34); sat.add(h); }
+    sat.add(place(cyl(b, 0.07, 0.09, 0.2, dark, 14), [-0.25, 0.52, 0.2]), place(cyl(b, 0.05, 0.05, 0.03, glowMat(b, "#7fd0ff", 0.6), 12), [-0.25, 0.63, 0.2]));
+    const noz = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.12, 0.2, 14, 1, true)), mat(b, "#b57b3a", { side: THREE.DoubleSide, metalness: 0.8, roughness: 0.35 })); noz.rotation.x = -Math.PI / 2; noz.position.set(0.2, -0.1, -0.56); sat.add(noz);
+    const sig = [0, 1, 2].map(() => new THREE.Mesh(b.track(new THREE.TorusGeometry(0.4, 0.015, 6, 36)), beam(b, TONE.cyan, 1.5, { transparent: true, opacity: 0.8 }))); sig.forEach((s) => { s.rotation.x = Math.PI / 2; sat.add(s); });
+    g.add(sat); g.position.y = 1.4; root.add(g); shadows(g);
+    return done(root, b, (f) => {
+      sat.rotation.set(0.28, f * 0.012, 0.16 * Math.sin(f * 0.02));
+      sig.forEach((s, i) => { const t = (f * 0.012 + i / 3) % 1; s.position.y = -0.55 - t * 1.3; s.scale.setScalar(0.3 + t * 1.5); (s.material as THREE.MeshBasicMaterial).opacity = 0.9 * (1 - t); });
+      dishes.forEach((d, i) => { d.rotation.z = 0.05 * Math.sin(f * 0.03 + i); });
+      sat.position.y = 0.06 * Math.sin(f * 0.04);
+    });
   },
 };

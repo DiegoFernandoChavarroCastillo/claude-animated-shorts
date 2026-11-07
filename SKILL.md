@@ -221,6 +221,20 @@ Entrega:
 - **Tiempos de referencia** (portátil Intel UHD, video de 52 s a escala 0,5): voz ~13 min con Chatterbox (35 s con Kokoro), alineación ~1 min, stills
   40 s, render 5–6 min, mezcla + QA ~1 min. A escala 1, el render tarda unas 4 veces más.
 
+## Para no perder tiempo ni tokens (lecciones de `internet-bajo-agua`)
+
+- **Escribe el story con el ritmo ya resuelto:** un evento (acción, overlay o `shots`) como mucho cada 2,5 s y ≤3 cortes por minuto. La voz real cambia
+  los tiempos respecto a Kokoro, y un margen de 1 s evita rondas de «hueco de 3,6 s». `validate-story` ahora lista **todos** los huecos con su beat.
+- **Orden fijo antes de renderizar:** `stills` → mirar la hoja → arreglar → recién entonces `all`. `all` renderiza solo; si ves los stills después, pierdes ~8 min.
+- **Tras cada edición de `05_story.json`, corre `validate-story`** (0,1 s). No lances un render ni un `all` sin eso.
+- **Prueba cada objeto existente en la galería** (`tools/gallery.py`) antes de ponerlo en el story: un prefab viejo puede verse mal (el `satelite` parecía una caja).
+- **Prefabs nuevos:** `radius` ≈ mitad del ancho de la pieza (con 1,5× de más sale diminuto); en escenas submarinas usa cúpula de agua grande (`seaDome`) y suelo
+  lejano que tape el del entorno (`seabed` en `custom.ts`); los números grandes (`StatCallout`) en `slot: lower`, nunca en `upper` (tapan al objeto).
+- **Verificador:** una ronda bien preparada (hoja de stills + guion + `shows`) basta casi siempre; la 2.ª y la 3.ª solo si la nota baja de 7 en un área concreta.
+  Los overlays entran con fundido: un still justo al entrar los muestra tenues, no es un fallo.
+- **Shell:** nunca `pkill -f <patrón>` con un texto que aparece en tu propio comando (mata la shell y pierde ediciones); usa el PID o `pgrep` + `kill`.
+- **Esperas largas** (voz Chatterbox ~20 min, render): lánzalas en segundo plano y no vuelvas a mirar hasta el aviso.
+
 ## Legado
 
 El skill anterior (`cartoon-3d-short`, el video del puente) está en `legacy/`. Este skill no lo usa. La composición
