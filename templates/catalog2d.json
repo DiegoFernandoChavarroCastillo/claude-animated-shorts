@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "notes": "Catálogo cerrado del motor 2D plano (Flat2D, plan story-2d). Coordenadas normalizadas 0–1 sobre el cuadro de 1080x1920; `at` de una capa es el punto de anclaje del asset (por defecto sus pies: [0.5, 1]); `scale` 1 = el asset ocupa todo el ancho. Los overlays de datos son los NO anclados de templates/catalog.json (Pill, StatCallout, Insert, TitlePlaque, BigWord...).",
+  "palettes": {
+    "cueva": { "bg": "#0B0A14", "wall": "#1E1B2E", "wallLit": "#3A3350", "rock": "#2A2540", "rim": "#F08A4B", "ink": "#06050C", "skin": "#8A7A9A", "accent": "#F2B15C", "glow": "#FFB763" },
+    "exterior": { "bg": "#1F3A5C", "wall": "#3E6A8C", "wallLit": "#BFE3F2", "rock": "#4C7A66", "rim": "#FFE9A8", "ink": "#16283F", "skin": "#E8C9A0", "accent": "#FFD36B", "glow": "#FFF3C4" },
+    "noche": { "bg": "#0A0D1F", "wall": "#1A2140", "wallLit": "#33407A", "rock": "#222A55", "rim": "#9DB4FF", "ink": "#05060F", "skin": "#7F88B0", "accent": "#7FB2FF", "glow": "#BBD0FF" }
+  },
+  "lights": {
+    "fuego": "luz cálida que parpadea desde abajo (cueva)",
+    "sol": "luz clara y alta (exterior)",
+    "luna": "luz fría y tenue (noche)",
+    "ninguna": "sin luz local"
+  },
+  "assets": {
+    "cueva_corte": { "kind": "fondo", "aspect": 1.78, "anchor": [0.5, 0.5], "par": 0.4, "when": "Interior de una cueva: techo y paredes de roca con una boca de luz lejana arriba; fondo de la alegoría de la caverna, encierro, oscuridad.", "tags": ["cueva", "caverna", "interior", "roca", "oscuridad", "encierro"] },
+    "pared_sombras": { "kind": "escenario", "aspect": 0.72, "anchor": [0.5, 1.0], "par": 0.7, "when": "Pared lisa de la cueva donde se proyectan sombras de figuras que pasan: lo que los prisioneros creen que es real.", "tags": ["pared", "sombras", "proyección", "ilusión", "apariencia"], "actions": { "shadow_pass": "Una sombra (object: animal, jarra, arbol o persona; dir: left o right) cruza la pared de lado a lado (se queda quieta al final): pasa una figura, una sombra, lo que ven, un animal, un objeto." } },
+    "prisioneros": { "kind": "personaje", "aspect": 0.42, "anchor": [0.5, 1.0], "par": 1.0, "when": "Tres prisioneros sentados y encadenados vistos desde atrás, mirando la pared: personas que solo conocen las sombras, encierro desde el nacimiento.", "tags": ["prisioneros", "encadenados", "sentados", "espaldas", "personas"] },
+    "prisionero_libre": { "kind": "personaje", "aspect": 0.9, "anchor": [0.5, 1.0], "par": 1.0, "when": "Un prisionero que se libera, se levanta y se cubre los ojos por la luz: el que sale de la cueva, el primer paso hacia la verdad, deslumbramiento.", "tags": ["liberado", "levantarse", "ojos", "deslumbrado", "luz", "salir"], "actions": { "stand_up": "Pasa de sentado a de pie y se lleva la mano a los ojos (se queda así): se levanta, se libera, se suelta de las cadenas, se da la vuelta.", "walk": "Camina hacia delante (dir: left, right o up) un tramo corto (se queda donde llega): avanza, camina, sube, sale." } },
+    "muro_bajo": { "kind": "escenario", "aspect": 0.34, "anchor": [0.5, 1.0], "par": 1.0, "when": "Muro bajo detrás de los prisioneros con personas que pasan cargando objetos por encima: de ahí vienen las sombras; los que muestran cosas sin ser vistos.", "tags": ["muro", "portadores", "objetos", "cargar", "sombras"], "actions": { "carry": "Los portadores cruzan el muro con sus objetos (dir: left o right) (se quedan fuera de plano): pasan, cargan, llevan, muestran, desfilan." } },
+    "fuego": { "kind": "prop", "aspect": 0.9, "anchor": [0.5, 1.0], "par": 1.0, "when": "Hoguera que ilumina la cueva con llama parpadeante y brasas: la luz que hace posibles las sombras, luz artificial.", "tags": ["fuego", "hoguera", "llama", "luz", "calor"], "actions": { "flare": "La llama crece y brilla más un momento (se queda algo más alta): se aviva, arde más, la luz crece." } },
+    "tunel_ascenso": { "kind": "escenario", "aspect": 1.5, "anchor": [0.5, 1.0], "par": 0.6, "when": "Túnel o rampa empinada de roca que sube hacia una luz blanca: el ascenso difícil y doloroso fuera de la cueva.", "tags": ["túnel", "rampa", "ascenso", "subir", "camino", "luz"], "actions": { "light_grow": "La luz del fondo crece y ensancha el túnel (se queda grande): se acerca la luz, se ve cada vez más, sale al exterior." } },
+    "exterior_sol": { "kind": "fondo", "aspect": 1.78, "anchor": [0.5, 0.5], "par": 0.4, "when": "Paisaje exterior luminoso con sol, cielo, colinas, un árbol y un río: el mundo real fuera de la cueva, la verdad, el conocimiento.", "tags": ["sol", "exterior", "paisaje", "cielo", "árbol", "río", "verdad"], "actions": { "sunrise": "El sol sube y el cielo pasa de azul oscuro a claro (se queda arriba): amanece, sale el sol, se ilumina, descubre el mundo." } }
+  },
+  "camera": {
+    "push_in": { "params": { "from": "[cx, cy, zoom] (por defecto [0.5,0.5,1.0])", "to": "[cx, cy, zoom] (por defecto [0.5,0.5,1.16])" }, "when": "Acercamiento lento: plano sostenido por defecto." },
+    "pull_out": { "params": { "from": "[cx, cy, zoom]", "to": "[cx, cy, zoom]" }, "when": "Se aleja para revelar el contexto (por defecto zoom 1.25 → 1.0)." },
+    "pan_slow": { "params": { "from": "[cx, cy, zoom]", "to": "[cx, cy, zoom]" }, "when": "Recorre la escena de un punto a otro (de abajo arriba para seguir un ascenso); exige `to`." },
+    "hold": { "params": {}, "when": "Casi quieta, con una deriva mínima; no sirve para el primer beat (gancho)." }
+  },
+  "transitions": {
+    "cut": "Corte seco al cambiar de lugar (máx. 3 por minuto).",
+    "crossfade": "Fundido entre dos ideas.",
+    "swipe": "El beat siguiente entra deslizándose desde abajo (subir) o la derecha; sirve para el ascenso."
+  },
+  "actions": {
+    "appear": { "scope": "capa", "when": "Aparece con un pequeño rebote: surge, nace, aparece, se forma." },
+    "vanish": { "scope": "capa", "when": "Se desvanece: desaparece, se apaga, se esfuma." },
+    "tremble": { "scope": "capa", "fields": { "amp": "px (6)" }, "when": "Tiembla: miedo, ruido, golpe, tensión." },
+    "pop": { "scope": "capa", "fields": { "scale": "1.15" }, "when": "Un latido de tamaño: aquí está la clave, de pronto." },
+    "slide": { "scope": "capa", "fields": { "dx": "-1..1 del ancho", "dy": "-1..1 del alto" }, "when": "Se desplaza y se queda: avanza, se aparta, se va." },
+    "scale": { "scope": "capa", "fields": { "to": "factor" }, "when": "Crece o se encoge y se queda así." },
+    "flash": { "scope": "escena", "when": "Destello blanco de pantalla completa que se disipa: deslumbramiento, revelación, la luz." },
+    "camshake": { "scope": "escena", "fields": { "amp": "px (10)" }, "when": "La cámara tiembla un momento: golpe, miedo, impacto." },
+    "palette_shift": { "scope": "escena", "fields": { "to": "paleta destino" }, "when": "La paleta del beat cambia poco a poco a otra (cueva → exterior): de la oscuridad a la luz." }
+  },
+  "structures": {
+    "alegoria": { "order": ["hook", "scene", "rupture", "ascent", "return", "twist", "cta"], "min": { "scene": 1, "ascent": 1 }, "when": "Alegoría o mito contado como viaje: situación, ruptura, ascenso, regreso y giro (mito de la caverna)." }
+  },
+  "roles_pendientes": ["rule", "story", "reflection", "what_if", "dilemma"],
+  "overlay_slots": ["top", "upper", "center", "lower", "bottom"]
+}
