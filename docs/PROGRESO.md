@@ -34,8 +34,8 @@ cada decisión tomada, con su motivo, en `docs/DECISIONES.md` (D1–D64).
 | F17 | Segunda tanda: ganchos nuevos y rúbrica, patrones de bucle, sub-planos de cámara, golpe de escala en la palabra clave, `meta.json` y `ingest_stats` (D89–D91) | ✅ implementada y probada en `bluetooth-wifi` | rama `ampliar-catalogo` |
 | F16 | Gancho ≤3 s con acción en el primer segundo, hueco máximo de 3,5 s, cierre `bucle` por defecto con cola de 0,2 s, zona segura de las apps, etapa `publish` (D82–D87) | ✅ implementada y con pruebas; falta usarla en un video nuevo | rama `ampliar-catalogo` |
 | F15 | 14 efectos de sonido generales y director de acentos (D80–D81) | ✅ `1e6a516`; Diego los escuchó y le gustan | rama `ampliar-catalogo` |
-| F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 
+| F10 | Prueba de punta a punta con un tema nuevo | ⏳ siguiente (`celular-calienta` ya sirve como video `es`) | — |
 ## Cómo se hace un video hoy
 
 1. Claude escribe `out/<id>/01_research.md`, `02_SCRIPT.md` (con `templates/prompts/script_es.md` o `script_en.md`)
@@ -205,6 +205,7 @@ Segundo tipo de video, para historias, alegorías y reflexiones, con el mismo pi
 | F6 | El pipeline elige validador, QA y publicación por `meta.engine` | ✅ | `61f4511` |
 | F7 | Piloto `mito-caverna` (91 s, QA OK), skill `story-short`, ejemplo versionado | ✅ aprobado por Diego | `e921369`, `ea7aacb` |
 | F8 | Assets `dialogo`, `epocas`, `huevo`, `reflejo`, `vacio_luz`, música propia en la mezcla; videos `el-huevo` y `solipsismo` | ✅ QA OK (`solipsismo`: 75 s, voz `diego`) | commit «assets y música propia» |
+| F10 | Video `simulacion-render` (68 s, 4 assets nuevos: `doble_rendija`, `ojo_observador`, `mundo_render`, `servidor`) y etapa `review-script` (D117): crítico de guion antes de la voz, puerta en `tts` | ✅ pruebas en verde; el video salió con avisos de QA aceptados y su guion no pasaría el crítico nuevo (5,91) | este commit |
 | F9 | Perfil `viral` (D111–D114) y etapa `review` del crítico (D115): `pacing_viral.json`, `review.json`, `critico_story.md`, `review_story.py`, pruebas `test_pacing_viral.py` y `test_review_story.py` | ✅ pruebas y regresión 3D en verde; **sin render completo** | commit «perfil viral y etapa review» |
 
 **Cómo se hace un video 2D hoy:** `/story-short` (o "usa el skill story-short: el mito de…"). Claude investiga el texto original, propone gancho y cierre, escribe `02_SCRIPT.md`

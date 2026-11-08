@@ -21,7 +21,7 @@ from common import ROOT, load_json  # noqa: E402
 
 TMP = os.environ.get("REMOTION_TMP") or str(Path.home() / "remotion-tmp")
 CAT = load_json(ROOT / "templates" / "catalog2d.json")
-PARAMS = {"shadow_pass": {"object": "animal", "dir": "right"}, "walk": {"dir": "up"}, "carry": {"dir": "left"}}
+PARAMS = {"scan": {"dir": "right"}, "shadow_pass": {"object": "animal", "dir": "right"}, "walk": {"dir": "up"}, "carry": {"dir": "left"}}
 
 
 def asset_story(specs: list[str]) -> dict:

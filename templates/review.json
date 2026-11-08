@@ -1,9 +1,30 @@
 {
-  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario.",
-  "weights": { "gancho": 3, "retencion": 3, "narrativa": 2, "ritmo_verbal": 1, "coherencia_visual": 1, "cierre_bucle": 1 },
+  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario. `script`: umbrales de la etapa review-script (solo texto, antes de la voz; `tts` no arranca sin ella).",
+  "weights": {
+    "gancho": 3,
+    "retencion": 3,
+    "narrativa": 2,
+    "ritmo_verbal": 1,
+    "coherencia_visual": 1,
+    "cierre_bucle": 1
+  },
   "minTotal": 7.5,
   "minGancho": 7,
   "minDimension": 5,
   "maxRounds": 3,
-  "model": "sonnet"
+  "model": "sonnet",
+  "script": {
+    "weights": {
+      "gancho": 3,
+      "retencion": 3,
+      "narrativa": 2,
+      "ritmo_verbal": 1,
+      "cierre_bucle": 1,
+      "rigor": 1
+    },
+    "minTotal": 7.5,
+    "minGancho": 7,
+    "minDimension": 5,
+    "maxRounds": 3
+  }
 }

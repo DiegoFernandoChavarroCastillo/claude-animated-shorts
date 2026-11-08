@@ -15,11 +15,16 @@ import { Dialogo } from "./dialogo";
 import { Epocas } from "./epocas";
 import { Reflejo } from "./reflejo";
 import { Huevo } from "./huevo";
+import { DobleRendija } from "./doble_rendija";
+import { OjoObservador } from "./ojo_observador";
+import { MundoRender } from "./mundo_render";
+import { Servidor } from "./servidor";
 
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
   vacio_luz: VacioLuz, dialogo: Dialogo, epocas: Epocas, reflejo: Reflejo, huevo: Huevo,
+  doble_rendija: DobleRendija, ojo_observador: OjoObservador, mundo_render: MundoRender, servidor: Servidor,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));

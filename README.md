@@ -139,7 +139,7 @@ Se instala igual que el otro, enlazando la subcarpeta: `ln -s "$PWD/story-short"
 voz Kokoro). Un render de 91 s a escala 1 tarda ~4,5 min. Plan, decisiones y pendientes: `docs/PLAN_STORY_2D.md`, `docs/DECISIONES.md` (D101–D116) y `docs/PROGRESO.md`.
 
 Dos añadidos para retener audiencia: el **perfil viral** (`pacing: viral`; 60–80 s, gancho chocante, bucle, voz +13 %, SFX por escena, subtítulos de 1–3 palabras; todo en `templates/pacing_viral.json`) y la
-etapa **`review`** (un crítico independiente califica el story de 0 a 10 y lo devuelve si no llega a `templates/review.json`; `make_short.py --id <id> review`, saltable con `--no-story-review`).
+etapa **`review-script`** (un crítico califica solo el texto del guion **antes de la voz**; `tts` no arranca sin su aprobación) y etapa **`review`** (un crítico independiente califica el story de 0 a 10 y lo devuelve si no llega a `templates/review.json`; `make_short.py --id <id> review`, saltable con `--no-story-review`).
 Ejemplo del formato viral: `templates/examples/solipsismo-viral/`.
 
 ## Notas

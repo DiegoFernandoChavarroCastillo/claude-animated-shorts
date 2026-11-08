@@ -2,7 +2,7 @@
 
     python pipeline\\make_short.py init --id hielo-flota --from templates\\examples\\hielo-flota
     python pipeline\\make_short.py all --id hielo-flota [--scale 1] [--review] [--force tts,render | --force all]
-    python pipeline\\make_short.py <etapa> --id hielo-flota      (validate-script, tts, align, validate-story, stills,
+    python pipeline\\make_short.py <etapa> --id hielo-flota      (validate-script, review-script, tts, align, validate-story, stills,
                                                                 render, mix, mux, qa)
 
 Cada etapa escribe su artefacto en out/<id>/ y SE SALTA si ya existe y está al día (más nuevo que sus entradas).
@@ -33,7 +33,7 @@ STUDIO = ROOT / "studio"
 TMP = os.environ.get("REMOTION_TMP") or ("C:/remotion-tmp" if os.name == "nt" else str(Path.home() / "remotion-tmp"))
 BUNDLE = f"{TMP}/bundle"
 VOICE_DEFAULT = {"es": ("chatterbox", "diego"), "en": ("chatterbox", "default")}   # D64 (antes Kokoro, D46)
-STAGES = ["validate-script", "tts", "align", "validate-story", "review", "stills", "render", "mix", "mux", "qa", "publish"]
+STAGES = ["validate-script", "review-script", "tts", "align", "validate-story", "review", "stills", "render", "mix", "mux", "qa", "publish"]
 
 
 def action_frames(story: dict, words: list[dict], bts: list[dict], after_s: float = 0.9) -> list[int]:
@@ -158,8 +158,43 @@ class Run:
             return f"{res['stats']['words']} palabras"
         self.stage("validate-script", out, [self.p("02_SCRIPT.md")], run)
 
+    def script_review_applies(self) -> str:
+        """'' si la etapa no aplica; si aplica, el motivo de omitirla ('--no-story-review') o 'si'. Aplica al motor 2D, o al perfil viral si aún no hay story"""
+        if self.p("05_story.json").exists():
+            two_d = engine_of(load_json(self.p("05_story.json"))) == "2d"
+        else:
+            from validate_script import parse
+            two_d = parse(self.p("02_SCRIPT.md").read_text(encoding="utf-8")).pacing == "viral"
+        if not two_d:
+            return ""
+        return "--no-story-review" if getattr(self.a, "no_story_review", False) else "si"
+
+    def review_script(self):
+        """un agente independiente califica solo el TEXTO del guion antes de generar la voz (iterar texto es barato; la voz no)"""
+        t0, ap = time.time(), self.script_review_applies()
+        if ap != "si":
+            self.log_rows.append(("review-script", f"omitida ({ap or 'solo el motor 2D / perfil viral'})", 0.0, "—"))
+            print(f"[review-script] omitida ({ap or 'solo el motor 2D / perfil viral'})")
+            return
+        print("[review-script] …")
+        from review_story import evaluate
+        try:
+            cur = evaluate(self.d, self.a.reviewer, "script")
+        except Exception as e:
+            self.log_rows.append(("review-script", "DEVUELTO" if "DEVUELTO" in str(e) else "FALLÓ", time.time() - t0, str(e).splitlines()[0][:160]))
+            raise
+        detail = f"total {cur['verdict']['total']}, gancho {cur['scores']['gancho']} (ronda {cur['round']})"
+        self.log_rows.append(("review-script", "aprobada", time.time() - t0, detail))
+        print(f"[review-script] aprobada: {detail}")
+
     def tts(self):
         out = self.p("03_voice.wav")
+        if self.script_review_applies() == "si" and ("tts" in self.force or not self.fresh(out, [self.p("02_SCRIPT.md")])):   # solo si la voz se va a generar
+            from review_story import script_gate
+            ok, why = script_gate(self.d)
+            if not ok:
+                self.log_rows.append(("tts", "FALLÓ", 0.0, why))
+                raise PipelineError(f"[tts] no se genera la voz: {why}. Lanza `make_short.py review-script --id {self.id}` (o --no-story-review y dilo en la entrega).")
         self.stage("tts", out, [self.p("02_SCRIPT.md")], lambda: self.sh(
             [PY, "pipeline/voice.py", "--story", str(self.voice_story()), "--out", str(self.d), "--force"], tag="tts").splitlines()[-1])
 
@@ -278,7 +313,7 @@ class Run:
                    lambda: self.sh([PY, "pipeline/publish_pack.py", "--id", self.id], tag="publish").splitlines()[-1])
 
     def run(self, stages: list[str]):
-        fns = {"validate-script": self.validate_script, "tts": self.tts, "align": self.align, "validate-story": self.validate_story,
+        fns = {"validate-script": self.validate_script, "review-script": self.review_script, "tts": self.tts, "align": self.align, "validate-story": self.validate_story,
                "review": self.review, "stills": self.stills, "render": self.render, "mix": self.mix, "mux": self.mux, "qa": self.qa, "publish": self.publish}
         for s in stages:
             fns[s]()
