@@ -35,6 +35,9 @@ def transcribe(wav: Path, lang: str, model: str):
     return out
 
 
+MAX_WORD_S, PER_LETTER_S = 0.35, 0.09   # duración máxima creíble de una palabra hablada
+
+
 def align(script: list[dict], heard: list[dict], spans: list[tuple[float, float]]) -> list[dict]:
     """script: [{w, beat, seg}] ; heard: [{w, start, end}] ; spans: (inicio, fin) de cada frase"""
     a = [norm(x["w"]) for x in script]
@@ -48,7 +51,9 @@ def align(script: list[dict], heard: list[dict], spans: list[tuple[float, float]
             s0, s1 = spans[script[i]["seg"]]
             # una pareja que cae fuera de su frase es un falso emparejamiento (palabra repetida en otra frase)
             if s0 - 0.25 <= h["start"] <= s1 + 0.25:
-                times[i] = (h["start"], h["end"])
+                # Whisper a veces se salta un tramo (p. ej. un número largo) y estira la palabra anterior hasta el
+                # siguiente silencio: se limita su duración para que el tramo perdido se reparta al interpolar
+                times[i] = (h["start"], min(h["end"], h["start"] + MAX_WORD_S + PER_LETTER_S * len(a[i])))
     # huecos: interpolar dentro de la frase, repartiendo por número de letras
     n = len(script)
     i = 0

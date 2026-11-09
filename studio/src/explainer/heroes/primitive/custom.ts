@@ -1365,3 +1365,401 @@ export const dedo_contacto: HeroDef = {
     };
   },
 };
+
+// segundo-cesio · piezas comunes: dígitos de 7 segmentos pintados en canvas, pantalla que se repinta solo al cambiar,
+// cuerpo de teléfono y Tierra de neón (océano oscuro, costas cian)
+const SEG7 = ["abcdef", "bc", "abdeg", "abcdg", "bcfg", "acdfg", "acdefg", "abc", "abcdefg", "abcdfg"];
+const seg7 = (g: CanvasRenderingContext2D, ch: string, x: number, y: number, w: number, h: number, on: string) => {
+  const t = w * 0.2, v = h / 2 - t * 0.9;
+  const L: Record<string, [number, number, number, number]> = {
+    a: [x + t * 0.6, y, w - t * 1.2, t], g: [x + t * 0.6, y + h / 2 - t / 2, w - t * 1.2, t], d: [x + t * 0.6, y + h - t, w - t * 1.2, t],
+    f: [x, y + t * 0.6, t, v], b: [x + w - t, y + t * 0.6, t, v], e: [x, y + h / 2 + t * 0.3, t, v], c: [x + w - t, y + h / 2 + t * 0.3, t, v],
+  };
+  const lit = SEG7[Number(ch)] ?? "";
+  for (const k of "abcdefg") {
+    const [sx, sy, sw, sh] = L[k], isOn = lit.includes(k);
+    g.save(); if (isOn) { g.shadowColor = on; g.shadowBlur = 26; }
+    g.fillStyle = isOn ? on : "rgba(140,170,255,0.07)"; g.beginPath(); g.roundRect(sx, sy, sw, sh, t / 2); g.fill(); g.restore();
+  }
+};
+const liveTex = (b: Bin, w: number, h: number) => {
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const tex = b.track(new THREE.CanvasTexture(cv)); tex.colorSpace = THREE.SRGBColorSpace;
+  let key = "";
+  return { tex, draw: (k: string, fn: (g: CanvasRenderingContext2D) => void) => { if (k === key) return; key = k; fn(cv.getContext("2d")!); tex.needsUpdate = true; } };
+};
+const NEON = { cyan: "#5fe3ff", gold: "#ffd166", red: "#ff4d6a", green: "#5dffa8" };
+/** pantalla de reloj: MM:SS grandes, anillo de 60 marcas con los segundos, insignia SYNC y la frecuencia del cesio (detalle para ver dos veces) */
+const clockScreen = (g: CanvasRenderingContext2D, w: number, h: number, digits: string, col: string, sec: number, sync: number, bad: boolean) => {
+  const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#0d1838"); gr.addColorStop(1, "#03060f"); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  g.strokeStyle = "rgba(90,140,255,0.07)"; g.lineWidth = 2;
+  for (let x = 18; x < w; x += 36) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+  for (let y = 18; y < h; y += 36) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
+  const label = (s: string, x: number, y: number, size: number, c: string) => { g.font = `700 ${size}px Montserrat, sans-serif`; g.fillStyle = c; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(s, x, y); };
+  label("UTC", w / 2, 80, 34, "rgba(170,205,255,0.8)");
+  const dw = 96, dh = 196, gap = 18, cw = 34, x0 = (w - (4 * dw + 4 * gap + cw)) / 2, y0 = h * 0.2;
+  const xs = [x0, x0 + dw + gap, x0 + 2 * dw + 3 * gap + cw, x0 + 3 * dw + 4 * gap + cw];
+  digits.split("").forEach((d, i) => seg7(g, d, xs[i], y0, dw, dh, col));
+  g.save(); g.shadowColor = NEON.gold; g.shadowBlur = 20; g.fillStyle = NEON.gold;
+  [0.32, 0.68].forEach((k) => { g.beginPath(); g.arc(x0 + 2 * dw + 2 * gap + cw / 2, y0 + dh * k, 11, 0, Math.PI * 2); g.fill(); }); g.restore();
+  // anillo de segundos: 60 marcas, cada 5 más larga
+  const cx = w / 2, cy = h * 0.66, R = 150;
+  for (let i = 0; i < 60; i++) {
+    const a = -Math.PI / 2 + (i / 60) * Math.PI * 2, L = i % 5 ? 16 : 30, on = i < sec;
+    g.strokeStyle = on ? NEON.gold : "rgba(150,180,255,0.32)"; g.lineWidth = i % 5 ? 5 : 8; g.lineCap = "round";
+    g.save(); if (on) { g.shadowColor = NEON.gold; g.shadowBlur = 12; }
+    g.beginPath(); g.moveTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); g.lineTo(cx + Math.cos(a) * (R - L), cy + Math.sin(a) * (R - L)); g.stroke(); g.restore();
+  }
+  if (bad) label("✗", cx, cy, 120, NEON.red);
+  else if (sync > 0) { g.globalAlpha = sync; g.save(); g.shadowColor = NEON.green; g.shadowBlur = 24; label("✓", cx, cy - 10, 110, NEON.green); g.restore(); label("SYNC", cx, cy + 70, 34, NEON.green); g.globalAlpha = 1; }
+  label("9 192 631 770 Hz", w / 2, h * 0.9, 28, "rgba(95,227,255,0.55)");
+  g.fillStyle = "rgba(255,255,255,0.55)"; g.beginPath(); g.roundRect(w / 2 - 90, h - 30, 180, 8, 4); g.fill();
+};
+/** teléfono genérico (sin marca): cuerpo de aluminio oscuro, pantalla, isla de cámara, botones, altavoz y módulo trasero */
+const phoneBody = (b: Bin, tex: THREE.Texture) => {
+  const g = new THREE.Group(), W = 1.0, H = 2.06, D = 0.1;
+  const metal = mat(b, "#2a2f4f", { metalness: 0.7, roughness: 0.3 });
+  g.add(new THREE.Mesh(b.track(new RoundedBoxGeometry(W, H, D, 6, 0.09)), metal));
+  const scr = new THREE.Mesh(b.track(new THREE.PlaneGeometry(W - 0.07, H - 0.07)), b.track(new THREE.MeshBasicMaterial({ map: tex, color: new THREE.Color(1.25, 1.25, 1.25) })));
+  scr.position.z = D / 2 + 0.002; g.add(scr);
+  g.add(place(new THREE.Mesh(b.track(new RoundedBoxGeometry(0.26, 0.07, 0.01, 3, 0.03)), b.track(new THREE.MeshBasicMaterial({ color: "#02030a" }))), [0, H / 2 - 0.1, D / 2 + 0.006]));
+  [[W / 2 + 0.01, 0.45, 0.22], [-W / 2 - 0.01, 0.55, 0.14], [-W / 2 - 0.01, 0.3, 0.14]].forEach(([x, y, h]) => g.add(place(new THREE.Mesh(b.track(new RoundedBoxGeometry(0.03, h, 0.045, 2, 0.012)), metal), [x, y, 0])));
+  const cam = new THREE.Mesh(b.track(new RoundedBoxGeometry(0.42, 0.42, 0.04, 3, 0.08)), mat(b, "#1b1f36", { metalness: 0.6, roughness: 0.25 }));
+  cam.position.set(-0.22, H / 2 - 0.3, -D / 2 - 0.015); g.add(cam);
+  [[-0.31, 0.71], [-0.13, 0.71], [-0.22, 0.55]].forEach(([x, y]) => { const l = cyl(b, 0.06, 0.06, 0.03, mat(b, "#05060c", { metalness: 0.9, roughness: 0.1 }), 20); l.rotation.x = Math.PI / 2; l.position.set(x, y, -D / 2 - 0.04); g.add(l); });
+  g.add(place(box(b, 0.2, 0.012, 0.02, mat(b, "#05060c")), [0, -H / 2 + 0.02, 0]));
+  shadows(g); return g;
+};
+const earthNeonTex = (b: Bin, ocean0: string, ocean1: string, land: string, coast: string) => screenTex(b.track, 1024, 512, (c) => {
+  const gr = c.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, ocean0); gr.addColorStop(1, ocean1); c.fillStyle = gr; c.fillRect(0, 0, 1024, 512);
+  c.fillStyle = "#dff4ff"; c.fillRect(0, 0, 1024, 26); c.fillRect(0, 490, 1024, 22);
+  c.fillStyle = land; c.strokeStyle = coast; c.lineWidth = 4;
+  LAND.forEach((poly) => { c.beginPath(); poly.forEach(([lo, la], i) => { const x = (lo + 180) / 360 * 1024, y = (90 - la) / 180 * 512; i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.closePath(); c.fill(); c.stroke(); });
+});
+const inLand = (lon: number, lat: number) => LAND.some((poly) => {
+  let ins = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) ins = !ins; }
+  return ins;
+});
+
+// segundo-cesio · teléfono con reloj de neón: los dígitos se vuelven locos y se congelan en 00:01; o dos teléfonos que no van a la par
+export const telefono_hora: HeroDef = {
+  kind: "primitive",
+  when: "Teléfono con un reloj digital de neón grande en la pantalla (minutos y segundos, anillo de 60 marcas): la hora exacta, un segundo, cuánto dura un segundo, la hora de tu móvil, dos relojes que no van a la par, sincronizar la hora.",
+  poses: ["hora", "par"],
+  actions: {
+    caos: "Los dígitos cambian sin control y se congelan en 00:01 en amarillo (se queda así): un segundo, cuánto dura, quién decidió, el tiempo, la hora.",
+    recibir: "Anillos de señal bajan desde arriba hasta el teléfono y aparece «✓ SYNC» (se queda así): llega la hora, satélites, internet, se sincroniza, marcan lo mismo.",
+    desfase: "El reloj de la derecha falla: salta de cifra, se pone rojo con una ✗ y tiembla (se queda así): no van a la par, no coinciden, se atrasa, se adelanta, error.",
+  },
+  center: [0, 1.25, 0], radius: 0.8,
+  anchors: { hero: [0, 1.25, 0.06], top: [0, 2.35, 0], base: [0, 0.2, 0], screen: [0, 1.3, 0.07], digitos: [0, 1.65, 0.07], anillo: [0, 0.95, 0.07] },
+  build: (_L, pose) => {
+    const p = poseOf(telefono_hora, pose, "telefono_hora"), par = p === "par", b = bin(), root = new THREE.Group();
+    const screens = (par ? [0, 1] : [0]).map(() => liveTex(b, 540, 1112));
+    const phones = screens.map((s, i) => { const ph = phoneBody(b, s.tex); ph.position.set(par ? (i ? 0.6 : -0.6) : 0, 1.25, 0); if (par) ph.scale.setScalar(0.88); root.add(ph); return ph; });
+    // polvo de partículas de neón alrededor
+    const dotM = [beam(b, NEON.cyan, 2.2), beam(b, NEON.gold, 2.2)];
+    const dots = scatter(54, 17, (r) => [(r() - 0.5) * 3.6, 0.1 + r() * 2.6, -0.4 - r() * 1.6]).map((q, i) => { const d = ball(b, 0.012 + 0.012 * hash1(i + 3), dotM[i % 5 ? 0 : 1], 6); d.position.set(...q); d.userData.y = q[1]; root.add(d); return d; });
+    // anillos de señal que bajan al teléfono (recibir)
+    const rings = [0, 1, 2].map(() => { const r = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.5, 0.014, 6, 48)), beam(b, NEON.cyan, 1.8, { transparent: true, opacity: 0 })); r.rotation.x = Math.PI / 2; root.add(r); return r; });
+    // satélite GPS pequeño que llega con «recibir» (cuerpo dorado, dos paneles, antena hacia el teléfono)
+    const sat = new THREE.Group(); sat.add(box(b, 0.16, 0.16, 0.2, mat(b, "#d9a441", { metalness: 0.7, roughness: 0.35, emissive: new THREE.Color("#4a3008") })));
+    [-1, 1].forEach((d) => sat.add(place(box(b, 0.36, 0.014, 0.15, mat(b, "#1d3c9a", { metalness: 0.4, roughness: 0.3, emissive: new THREE.Color("#0a1f60") })), [d * 0.28, 0, 0]), rod(b, [d * 0.08, 0, 0], [d * 0.11, 0, 0], 0.012, mat(b, "#cfd5ea", { metalness: 0.8 }))));
+    sat.add(place(cyl(b, 0.03, 0.05, 0.07, mat(b, "#e8ebf6", { metalness: 0.5 }), 10), [0, -0.12, 0]), halo(b, "rgba(255,220,150,0.8)", 0.6, 0.5)); sat.visible = false; root.add(sat);
+    let caos = 0, rec = 0, des = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      sat.visible = rec > 0; sat.position.set(0.5 + 1.0 * (1 - rec), 2.8 + 0.6 * (1 - rec) + 0.04 * Math.sin(f * 0.05), -0.3); sat.rotation.set(0.3, f * 0.01, 0.2);
+      phones.forEach((ph, i) => {
+        const sx = par ? (i ? 0.6 : -0.6) : 0, jit = par && i === 1 ? des * 0.03 * Math.sin(f * 1.7) : 0;
+        ph.position.set(sx + jit, 1.25 + 0.03 * Math.sin(f * 0.045 + i), 0);
+        ph.rotation.set(-0.06 + 0.025 * Math.sin(f * 0.03 + i), (par ? (i ? -0.3 : 0.3) : -0.2) + 0.06 * Math.sin(f * 0.017 + i), 0.03 * Math.sin(f * 0.021 + i));
+      });
+      dots.forEach((d, i) => { d.position.y = d.userData.y + 0.08 * Math.sin(f * 0.03 + i) + (caos > 0 && caos < 1 ? 0.15 * Math.sin(f * 0.4 + i) : 0); });
+      rings.forEach((r, i) => { const t = (f * 0.02 + i / 3) % 1; r.position.set(0, 3.3 - 0.95 * t, 0.05); r.scale.setScalar(1.4 - 0.5 * t); (r.material as THREE.MeshBasicMaterial).opacity = rec * 0.9 * Math.sin(Math.PI * t); });
+      if (!par) {
+        const scr = caos > 0 && caos < 1, digits = scr ? [0, 1, 2, 3].map((k) => Math.floor(hash1(Math.floor(f / 2) * 7 + k) * 10)).join("") : caos >= 1 && rec === 0 ? "0001" : "0000";
+        const sec = scr ? Math.floor(hash1(Math.floor(f / 2)) * 60) : digits === "0001" ? 1 : 0, col = digits === "0001" ? NEON.gold : NEON.cyan;
+        screens[0].draw(`${digits}|${sec}|${rec.toFixed(2)}`, (g) => clockScreen(g, 540, 1112, digits, col, sec, rec, false));
+      } else {
+        const sL = (7 + Math.floor(f / 30)) % 60, sR = (4 + Math.floor(f / 26) + (des > 0 ? Math.floor(hash1(Math.floor(f / 5)) * 9) : 0)) % 60;
+        const dL = "30" + String(sL).padStart(2, "0"), dR = "30" + String(sR).padStart(2, "0");
+        screens[0].draw(`${dL}|${sL}`, (g) => clockScreen(g, 540, 1112, dL, NEON.cyan, sL, 0, false));
+        screens[1].draw(`${dR}|${sR}|${des > 0.5}`, (g) => clockScreen(g, 540, 1112, dR, des > 0.5 ? NEON.red : NEON.cyan, sR, 0, des > 0.5));
+      }
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "caos") caos = u; if (name === "recibir") rec = ease(u); if (name === "desfase") des = ease(u); paint(lf); } };
+  },
+};
+
+// segundo-cesio · la Tierra de neón: 24 husos horarios que se encienden, la Luna que la frena con las mareas, terremotos,
+// y un reloj de 60 marcas alrededor donde la hora oficial espera a la Tierra con un segundo extra
+export const tierra_husos: HeroDef = {
+  kind: "primitive",
+  when: "La Tierra girando como reloj: el día dividido en 24 horas (24 husos que se encienden), 86 400 segundos, la Luna que frena su giro con las mareas, terremotos que cambian la duración del día, la rotación irregular, el segundo intercalar (la hora oficial espera a la Tierra).",
+  poses: ["husos", "tambaleo", "segundo_extra"],
+  actions: {
+    dividir: "Se encienden uno a uno 24 meridianos dorados y los husos se tiñen alternos (se queda así): dividir el día, veinticuatro horas, husos horarios.",
+    subdividir: "Un anillo de marcas finísimas aparece alrededor del ecuador y gira (se queda así): dividir en muchas partes, ochenta y seis mil cuatrocientos, segundos del día.",
+    frenar: "La marea se estira hacia la Luna, aparecen arcos rojos de fricción y el giro se frena (se queda así): la Luna frena, mareas, se ralentiza, el día se alarga.",
+    temblor: "Ondas sísmicas rojas salen de un punto, la Tierra tiembla y su eje se tambalea: terremoto, sacudida, cambia su giro, inestable.",
+    esperar: "En el reloj de 60 marcas que rodea la Tierra, la marca de la hora atómica se detiene, se enciende un segundo extra dorado y la Tierra la alcanza (se queda así): segundo extra, segundo intercalar, esperar, va detrás, se corrige.",
+  },
+  center: [0, 1.2, 0], radius: 1.12,
+  anchors: { hero: [0, 1.2, 0], top: [0, 2.3, 0], base: [0, 0.1, 0], polo: [0, 2.25, 0], ecuador: [1.05, 1.2, 0], luna: [-1.5, 1.6, 0.4], sismo: [0.25, 1.6, 0.9], extra: [0, 2.65, 0.2] },
+  build: (_L, pose) => {
+    const p = poseOf(tierra_husos, pose, "tierra_husos"), b = bin(), root = new THREE.Group(), pivot = new THREE.Group(), globe = new THREE.Group();
+    pivot.position.y = 1.2; pivot.add(globe); root.add(pivot);
+    const tex = earthNeonTex(b, "#14407e", "#0a2250", "#2f8f6a", "#8affd6");
+    globe.add(new THREE.Mesh(b.track(new THREE.SphereGeometry(1, 64, 48)), mat(b, "#ffffff", { map: tex, emissive: new THREE.Color("#ffffff"), emissiveMap: tex, emissiveIntensity: 0.32, roughness: 0.65 })));
+    pivot.add(new THREE.Mesh(b.track(new THREE.SphereGeometry(1.06, 40, 28)), ghostMat(b, "#7fd0ff", 0.12)));
+    // noche: media cáscara oscura fija (no gira con la Tierra) y el Sol como halo a la izquierda
+    const night = new THREE.Mesh(b.track(new THREE.SphereGeometry(1.035, 48, 32, 0, Math.PI)), ghostMat(b, "#02040c", 0.5)); night.rotation.y = -Math.PI * 0.35; pivot.add(night);
+    const sun = halo(b, "rgba(255,214,120,0.95)", 1.6, 0.95); sun.position.set(-1.45, 2.25, -0.8); root.add(sun, place(ball(b, 0.16, beam(b, "#ffd98a", 2.2), 24), [-1.45, 2.25, -0.8]));
+    // 24 meridianos (medio círculo de polo a polo) y 24 husos translúcidos alternos
+    const merM = beam(b, NEON.gold, 1.7, { transparent: true, opacity: 1 }), mers: THREE.Group[] = [], secs: THREE.Mesh[] = [];
+    for (let k = 0; k < 24; k++) {
+      const m = new THREE.Group(), arc = new THREE.Mesh(b.track(new THREE.TorusGeometry(1.025, 0.007, 5, 48, Math.PI)), merM); arc.rotation.z = -Math.PI / 2; m.add(arc); m.rotation.y = (k / 24) * Math.PI * 2; globe.add(m); mers.push(m);
+      const s = new THREE.Mesh(b.track(new THREE.SphereGeometry(1.02, 6, 24, (k / 24) * Math.PI * 2, Math.PI / 12)), ghostMat(b, k % 2 ? NEON.gold : NEON.cyan, 0)); globe.add(s); secs.push(s);
+    }
+    // anillo de marcas finas en el ecuador (subdividir)
+    const tickTex = screenTex(b.track, 2048, 32, (c) => { c.clearRect(0, 0, 2048, 32); for (let i = 0; i < 480; i++) { c.fillStyle = i % 20 ? "rgba(95,227,255,0.9)" : "rgba(255,209,102,1)"; c.fillRect(i * (2048 / 480), i % 20 ? 10 : 0, 1.6, i % 20 ? 22 : 32); } });
+    const tickRing = new THREE.Mesh(b.track(new THREE.CylinderGeometry(1.2, 1.2, 0.09, 128, 1, true)), b.track(new THREE.MeshBasicMaterial({ map: tickTex, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(1.6, 1.6, 1.6) })));
+    pivot.add(tickRing);
+    // Luna, eje y marea (tambaleo)
+    const moonTex = screenTex(b.track, 256, 128, (c) => { c.fillStyle = "#c9cbd6"; c.fillRect(0, 0, 256, 128); for (let i = 0; i < 40; i++) { c.fillStyle = `rgba(90,92,110,${0.25 + 0.3 * hash1(i + 5)})`; c.beginPath(); c.arc(hash1(i + 1) * 256, hash1(i + 9) * 128, 4 + 12 * hash1(i + 3), 0, Math.PI * 2); c.fill(); } });
+    const moon = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.27, 32, 24)), mat(b, "#ffffff", { map: moonTex, roughness: 0.9, emissive: new THREE.Color("#30323f") }));
+    const tide = new THREE.Mesh(b.track(new THREE.SphereGeometry(1.04, 40, 28)), ghostMat(b, "#4fc8ff", 0.0)); pivot.add(tide);
+    const axis = cyl(b, 0.012, 0.012, 2.9, beam(b, "#cfe6ff", 1.3), 8); pivot.add(axis);
+    const fric = [0, 1, 2].map((i) => { const a = new THREE.Mesh(b.track(new THREE.TorusGeometry(1.1 + i * 0.07, 0.02, 5, 40, 1.1)), beam(b, NEON.red, 2.2, { transparent: true, opacity: 0 })); a.rotation.x = Math.PI / 2; pivot.add(a); return a; });
+    const quake = [0, 1, 2].map(() => { const r = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.12, 0.022, 5, 40)), beam(b, NEON.red, 2.4, { transparent: true, opacity: 0 })); pivot.add(r); return r; });
+    const qPos = ll(22, -75, 1.01);
+    quake.forEach((r) => { r.position.copy(qPos); r.lookAt(qPos.clone().multiplyScalar(2)); });
+    const tamb = p === "tambaleo"; root.children.forEach((c) => { if (p === "segundo_extra" && c !== pivot && c !== moon) c.visible = false; }); moon.visible = tamb; axis.visible = tamb; root.add(moon);
+    // reloj de 60 marcas alrededor (segundo extra): marca cian = hora atómica, marca dorada = la Tierra
+    const dial = new THREE.Group(); dial.position.y = 1.2; dial.visible = p === "segundo_extra"; root.add(dial);
+    for (let i = 0; i < 60; i++) { const a = Math.PI / 2 - (i / 60) * Math.PI * 2, L = i % 5 ? 0.07 : 0.14; const t = box(b, 0.018, L, 0.018, beam(b, "#9fb6ff", i % 5 ? 0.9 : 1.4)); t.position.set(Math.cos(a) * 1.42, Math.sin(a) * 1.42, 0); t.rotation.z = a - Math.PI / 2; dial.add(t); }
+    dial.add(new THREE.Mesh(b.track(new THREE.TorusGeometry(1.5, 0.008, 5, 96)), beam(b, "#6f8cff", 1.2)));
+    const atomBead = ball(b, 0.12, beam(b, NEON.cyan, 2.4), 16), earthBead = ball(b, 0.12, beam(b, NEON.gold, 2.4), 16), extra = box(b, 0.05, 0.22, 0.05, beam(b, NEON.gold, 2.6));
+    const extraHalo = halo(b, "rgba(255,209,102,0.95)", 0.7, 0); dial.add(atomBead, earthBead, extra, extraHalo);
+    const tag = (txt: string, c: string) => { const m = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.62, 0.17)), b.track(new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, depthTest: false, map: screenTex(b.track, 300, 82, (g) => { g.clearRect(0, 0, 300, 82); g.fillStyle = "rgba(8,14,36,0.85)"; g.beginPath(); g.roundRect(3, 3, 294, 76, 30); g.fill(); g.strokeStyle = c; g.lineWidth = 4; g.stroke(); g.fillStyle = c; g.font = "800 40px Montserrat, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, 150, 43); }) }))); m.renderOrder = 10; dial.add(m); return m; };
+    const atomTag = tag("ÁTOMO", NEON.cyan), earthTag = tag("TIERRA", NEON.gold); atomTag.scale.setScalar(1.3); earthTag.scale.setScalar(1.3);
+    let dv = 0, sb = 0, fr = 0, frT = 0, qk = 0, qkT = -1, es = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      globe.rotation.y = -2.1 + f * 0.004 - fr * frT * 0.003;
+      mers.forEach((m, k) => { const v = clamp01(dv * 24 - k); m.visible = v > 0; m.scale.set(1, v, 1); });
+      secs.forEach((s, k) => { (s.material as THREE.MeshStandardMaterial).opacity = 0.16 * clamp01(dv * 24 - k); });
+      (tickRing.material as THREE.MeshBasicMaterial).opacity = sb; tickRing.rotation.y = f * 0.03; tickRing.scale.set(1, 1 + 0.4 * sb, 1);
+      // tambaleo: eje inclinado que bambolea, Luna en órbita, marea estirada hacia ella
+      const wob = tamb ? 0.06 * Math.sin(f * 0.05) + (qkT >= 0 ? 0.12 * Math.exp(-qkT / 40) * Math.sin(qkT * 0.5) : 0) : 0;
+      pivot.rotation.set(0, 0, tamb ? -0.41 + wob : 0);
+      const ma = 2.4 + f * 0.008; moon.position.set(Math.cos(ma) * 1.55, 1.5 + 0.2 * Math.sin(ma), Math.sin(ma) * 0.9 + 0.3);
+      tide.scale.set(1 + 0.09 * fr, 1, 1); tide.lookAt(moon.position); tide.rotateY(Math.PI / 2); (tide.material as THREE.MeshStandardMaterial).opacity = 0.3 * fr;
+      fric.forEach((a, i) => { a.rotation.z = -f * 0.02 + i * 2.1; (a.material as THREE.MeshBasicMaterial).opacity = fr * (0.6 + 0.4 * Math.sin(f * 0.2 + i)); });
+      quake.forEach((r, i) => { const t = qkT < 0 ? -1 : ((qkT / 30) + i / 3) % 1; r.scale.setScalar(t < 0 ? 0.01 : 1 + 4 * t); (r.material as THREE.MeshBasicMaterial).opacity = t < 0 ? 0 : qk * (1 - t); });
+      pivot.position.set(qkT >= 0 ? 0.03 * Math.exp(-qkT / 30) * Math.sin(qkT * 2.1) : 0, 1.2, 0);
+      // reloj: la marca atómica va 3 marcas por delante; con «esperar» se detiene y la Tierra la alcanza
+      const base = 0.95 + 0.1 * Math.sin(f * 0.012), A = base - (3 / 60) * Math.PI * 2 * (1 - es), E = base;
+      atomBead.position.set(Math.cos(Math.PI / 2 + A) * 1.5, Math.sin(Math.PI / 2 + A) * 1.5, 0.02);
+      earthBead.position.set(Math.cos(Math.PI / 2 + E) * 1.5, Math.sin(Math.PI / 2 + E) * 1.5, 0.02);
+      atomTag.position.copy(atomBead.position).multiplyScalar(0.8).setZ(0.4); earthTag.position.copy(earthBead.position).multiplyScalar(0.62).setZ(0.4);
+      const xa = Math.PI / 2 + base - (1.5 / 60) * Math.PI * 2; extra.position.set(Math.cos(xa) * 1.42, Math.sin(xa) * 1.42, 0.03); extra.rotation.z = xa - Math.PI / 2; extra.scale.setScalar(Math.max(0.001, 1.6 * es));
+      extraHalo.position.copy(extra.position); (extraHalo.material as THREE.MeshBasicMaterial).opacity = 0.9 * es;
+    };
+    return {
+      ...done(root, b, paint),
+      act: (name, u, _s, t) => {
+        if (name === "dividir") dv = ease(u); if (name === "subdividir") sb = ease(u);
+        if (name === "frenar") { fr = ease(u); frT = t; } if (name === "temblor") { qk = 1; qkT = t; } if (name === "esperar") es = ease(u);
+        paint(lf);
+      },
+    };
+  },
+};
+
+// segundo-cesio · tablilla de arcilla babilónica con numerales cuneiformes y un reloj de 60 marcas de neón detrás; en
+// «segunda», una de sus partes se amplía en otras 60 (la segunda división: el segundo)
+const cuneiform = (g: CanvasRenderingContext2D, n: number, x: number, y: number, s: number) => {
+  // decenas = cuñas en ángulo (‹), unidades = cuñas verticales
+  const tens = Math.floor(n / 10), ones = n % 10; let cx = x;
+  const wedgeV = (px: number, py: number) => { g.beginPath(); g.moveTo(px - s * 0.28, py); g.lineTo(px + s * 0.28, py); g.lineTo(px, py + s * 0.5); g.closePath(); g.fill(); g.fillRect(px - s * 0.05, py + s * 0.4, s * 0.1, s * 0.55); };
+  const wedgeA = (px: number, py: number) => { g.beginPath(); g.moveTo(px + s * 0.4, py - s * 0.3); g.lineTo(px - s * 0.25, py + s * 0.05); g.lineTo(px + s * 0.4, py + s * 0.4); g.lineTo(px + s * 0.18, py + s * 0.05); g.closePath(); g.fill(); };
+  for (let i = 0; i < tens; i++) { wedgeA(cx, y + s * 0.45); cx += s * 0.55; }
+  for (let i = 0; i < ones; i++) wedgeV(cx + (i % 3) * s * 0.3, y + Math.floor(i / 3) * s * 0.45 - (ones > 3 ? s * 0.2 : 0));
+  return cx + Math.min(3, ones) * s * 0.3 + s * 0.5;
+};
+export const tablilla_sesenta: HeroDef = {
+  kind: "primitive",
+  when: "Tablilla de arcilla babilónica con números cuneiformes en base 60 y un reloj de neón de 60 marcas detrás: los babilonios, Mesopotamia, contar en base sesenta, sesenta minutos, sesenta segundos, la segunda división de la hora (de dónde viene la palabra segundo).",
+  poses: ["tablilla", "segunda"],
+  actions: {
+    sesenta: "Las 60 marcas del reloj de neón se encienden una a una alrededor de la tablilla (se queda así): base sesenta, sesenta minutos, contar, dividir la hora.",
+    dividir: "Una de las 60 partes se ilumina en dorado y se amplía en otro anillo con 60 marcas más pequeñas (se queda así): la segunda división, sesenta partes más, segunda parte pequeña, el segundo.",
+  },
+  center: [0, 1.3, 0], radius: 1.05,
+  anchors: { hero: [0, 1.2, 0.15], top: [0, 2.3, 0], base: [0, 0.1, 0], tablilla: [0, 1.2, 0.15], anillo: [0, 2.45, -0.3], parte: [0.15, 2.4, -0.3], zoom: [0.85, 2.05, 0.4] },
+  build: (_L, pose) => {
+    const p = poseOf(tablilla_sesenta, pose, "tablilla_sesenta"), b = bin(), root = new THREE.Group();
+    // tablilla: losa redondeada de arcilla con cuñas, grietas y bordes gastados; peana de piedra
+    const tex = screenTex(b.track, 512, 640, (g) => {
+      g.fillStyle = "#c4874f"; g.fillRect(0, 0, 512, 640);
+      for (let i = 0; i < 900; i++) { g.fillStyle = hash1(i) < 0.5 ? "rgba(90,55,30,0.12)" : "rgba(240,200,150,0.12)"; g.fillRect(hash1(i + 1) * 512, hash1(i + 2) * 640, 3 + hash1(i + 3) * 6, 2 + hash1(i + 4) * 4); }
+      g.strokeStyle = "rgba(80,45,22,0.45)"; g.lineWidth = 3; for (let r = 1; r < 6; r++) { g.beginPath(); g.moveTo(26, r * 110); g.lineTo(486, r * 110 + 2); g.stroke(); }
+      g.fillStyle = "#4a2810"; g.shadowColor = "rgba(255,225,180,0.55)"; g.shadowOffsetY = 3;
+      const rows = [[12, 23], [36, 59], [20, 7], [44, 15], [51, 30]];
+      rows.forEach((row, r) => { let x = 40; row.forEach((n) => { x = cuneiform(g, n, x, r * 110 + 22, 56) + 30; }); });
+      g.shadowColor = "transparent"; g.strokeStyle = "rgba(60,32,15,0.7)"; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(400, 0); g.lineTo(420, 80); g.lineTo(395, 150); g.lineTo(430, 230); g.stroke();
+      g.beginPath(); g.moveTo(0, 520); g.lineTo(70, 540); g.lineTo(110, 600); g.stroke();
+    });
+    const clay = mat(b, "#ffffff", { map: tex, roughness: 0.92 }), clayEdge = mat(b, "#a0683a", { roughness: 0.95 });
+    const tab = new THREE.Mesh(b.track(new RoundedBoxGeometry(1.2, 1.5, 0.22, 6, 0.09)), [clayEdge, clayEdge, clayEdge, clayEdge, clay, clayEdge]);
+    tab.position.set(0, 1.12, 0.1); tab.rotation.set(-0.08, 0, 0.03); root.add(tab);
+    const stone = mat(b, "#4a4f63", { roughness: 0.85 }); root.add(place(box(b, 1.5, 0.3, 0.6, stone), [0, 0.15, 0.1]), place(box(b, 1.34, 0.08, 0.5, mat(b, "#5b6177", { roughness: 0.8 })), [0, 0.34, 0.1]));
+    shadows(root);
+    // reloj de neón de 60 marcas detrás (arriba, para que no tape la tablilla)
+    const dial = new THREE.Group(); dial.position.set(0, 1.55, -0.35); root.add(dial);
+    const R = 1.12, ticks = Array.from({ length: 60 }, (_, i) => { const a = Math.PI / 2 - (i / 60) * Math.PI * 2, L = i % 5 ? 0.1 : 0.2; const t = box(b, 0.025, L, 0.02, beam(b, i % 5 ? NEON.cyan : NEON.gold, 1.9, { transparent: true, opacity: 0.12 })); t.position.set(Math.cos(a) * (R - L / 2), Math.sin(a) * (R - L / 2), 0); t.rotation.z = a - Math.PI / 2; dial.add(t); return t; });
+    dial.add(new THREE.Mesh(b.track(new THREE.TorusGeometry(R + 0.03, 0.008, 5, 96)), beam(b, "#6f8cff", 1.3)));
+    const hand = new THREE.Group(), handBar = box(b, 0.02, R * 0.85, 0.02, beam(b, NEON.gold, 2)); handBar.position.y = R * 0.42; hand.add(handBar, ball(b, 0.04, beam(b, NEON.gold, 2), 10)); hand.position.z = 0.01; dial.add(hand);
+    // ampliación: sector dorado, dos líneas de zoom y un anillo pequeño con 60 marcas finas
+    const seg = new THREE.Mesh(b.track(new THREE.RingGeometry(R - 0.22, R + 0.02, 8, 1, Math.PI / 2 - Math.PI * 2 / 60, Math.PI * 2 / 60)), beam(b, NEON.gold, 1.6, { transparent: true, opacity: 0, side: THREE.DoubleSide })); dial.add(seg);
+    const zoom = new THREE.Group(), zc = new THREE.Vector3(0.62, 0.5, 0.75); zoom.position.copy(zc); dial.add(zoom);
+    zoom.add(new THREE.Mesh(b.track(new THREE.CircleGeometry(0.5, 48)), ghostMat(b, "#0a1430", 0.75)), new THREE.Mesh(b.track(new THREE.TorusGeometry(0.5, 0.012, 5, 64)), beam(b, NEON.gold, 1.8)));
+    const micro = Array.from({ length: 60 }, (_, i) => { const a = Math.PI / 2 - (i / 60) * Math.PI * 2, L = i % 5 ? 0.05 : 0.1; const t = box(b, 0.012, L, 0.01, beam(b, i % 5 ? NEON.cyan : NEON.gold, 2)); t.position.set(Math.cos(a) * (0.45 - L / 2), Math.sin(a) * (0.45 - L / 2), 0.01); t.rotation.z = a - Math.PI / 2; zoom.add(t); return t; });
+    const zl = [0, 1].map(() => { const m = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.006, 0.006, 1, 6)), beam(b, NEON.gold, 1.5, { transparent: true, opacity: 0 })); dial.add(m); return m; });
+    const seg2 = p === "segunda";
+    let s60 = seg2 ? 1 : 0, dv = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      root.rotation.y = 0.12 * Math.sin(f * 0.012);
+      ticks.forEach((t, i) => { const v = clamp01(s60 * 60 - i); (t.material as THREE.MeshBasicMaterial).opacity = 0.12 + 0.88 * v; t.scale.setScalar(1 + 0.5 * (v > 0 && v < 1 ? 1 : 0)); });
+      hand.rotation.z = -(seg2 ? f * 0.02 : s60 * Math.PI * 2);
+      (seg.material as THREE.MeshBasicMaterial).opacity = 0.75 * ease(dv * 2);
+      const z = ease(dv * 1.6 - 0.2); zoom.scale.setScalar(Math.max(0.001, 0.8 * z)); zoom.visible = z > 0.01;
+      micro.forEach((m, i) => { m.visible = dv * 60 * 1.1 - 6 > i; });
+      const pA = new THREE.Vector3(Math.cos(Math.PI / 2) * (R - 0.1), Math.sin(Math.PI / 2) * (R - 0.1), 0), pB = new THREE.Vector3(Math.cos(Math.PI / 2 - Math.PI / 30) * (R - 0.1), Math.sin(Math.PI / 2 - Math.PI / 30) * (R - 0.1), 0);
+      [pA, pB].forEach((q, i) => { const tgt = zc.clone().add(new THREE.Vector3(i ? 0.28 : -0.28, 0.28, 0).multiplyScalar(z)); const m = zl[i]; m.position.copy(q).add(tgt).multiplyScalar(0.5); m.scale.y = Math.max(0.001, q.distanceTo(tgt)); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tgt.clone().sub(q).normalize()); (m.material as THREE.MeshBasicMaterial).opacity = 0.8 * z; });
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "sesenta") s60 = ease(u); if (name === "dividir") dv = clamp01(u); paint(lf); } };
+  },
+};
+
+// segundo-cesio · átomo de cesio-133: núcleo de 55 protones y 78 neutrones, seis capas con 2-8-18-18-8-1 electrones,
+// el electrón exterior dorado con su espín, y la onda electromagnética que «cuenta» los segundos
+export const atomo_cesio: HeroDef = {
+  kind: "primitive",
+  when: "Átomo de cesio-133 con su núcleo, seis capas de electrones y un electrón exterior que cambia de espín y emite una onda electromagnética: reloj atómico, cesio, vibraciones u oscilaciones del átomo, la definición del segundo, frecuencia, 1967.",
+  poses: ["atomo", "onda"],
+  actions: {
+    pulso: "El electrón exterior gira su espín, el núcleo destella y sale un pulso (se queda así): miramos al átomo, el cesio, transición, salto, se activa.",
+    vibrar: "Una onda electromagnética (campo eléctrico cian y magnético dorado) sale del átomo y oscila muy rápido (se queda así): vibraciones, oscila, frecuencia, nueve mil millones de veces, cuenta el tiempo.",
+  },
+  center: [0, 1.3, 0], radius: 1.0,
+  anchors: { hero: [0, 1.25, 0], top: [0, 2.6, 0], base: [0, 0.1, 0], nucleo: [0, 1.25, 0], electron: [1.25, 1.25, 0], onda: [1.2, 1.25, 0], etiqueta: [0, 2.55, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(atomo_cesio, pose, "atomo_cesio"), onda = p === "onda", b = bin(), root = new THREE.Group(), atom = new THREE.Group();
+    atom.position.set(onda ? -0.55 : 0, 1.25, 0); root.add(atom);
+    if (onda) atom.scale.setScalar(0.72);
+    // núcleo: 133 nucleones apretados (una geometría compartida)
+    const nucleus = new THREE.Group(), ng = b.track(new THREE.SphereGeometry(0.045, 14, 10)), pm = glowMat(b, NEON.gold, 0.6, { roughness: 0.35 }), nm = glowMat(b, "#9fc4ff", 0.35, { roughness: 0.35 });
+    scatter(133, 21, (r) => { const u = r() * 2 - 1, a = r() * Math.PI * 2, rr = 0.2 * Math.cbrt(r()), s = Math.sqrt(1 - u * u); return [s * Math.cos(a) * rr, u * rr, s * Math.sin(a) * rr]; })
+      .forEach((q, i) => { const m = new THREE.Mesh(ng, i < 55 ? pm : nm); m.position.set(...q); nucleus.add(m); });
+    const nHalo = halo(b, "rgba(255,209,102,0.9)", 0.9, 0.5); atom.add(nucleus, nHalo);
+    // capas: anillos inclinados con sus electrones
+    const SH = [2, 8, 18, 18, 8, 1], RS = [0.36, 0.52, 0.68, 0.84, 1.0, 1.2];
+    const eM = beam(b, NEON.cyan, 2.2), eg = b.track(new THREE.SphereGeometry(0.026, 10, 8));
+    const shells = SH.map((n, k) => {
+      const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(1.2 + 0.5 * Math.sin(k * 2.3), 0.7 * k, 0.4 * Math.cos(k * 1.7)));
+      const ring = new THREE.Mesh(b.track(new THREE.TorusGeometry(RS[k], 0.005, 5, 96)), beam(b, "#7f9cff", k === 5 ? 1.6 : 0.9, { transparent: true, opacity: k === 5 ? 0.9 : 0.55 }));
+      ring.quaternion.copy(q); atom.add(ring);
+      const es = Array.from({ length: n }, () => { const e = k === 5 ? ball(b, 0.07, beam(b, NEON.gold, 2.4), 16) : new THREE.Mesh(eg, eM); atom.add(e); return e; });
+      return { q, es, r: RS[k], w: 0.05 / (1 + k * 0.4) };
+    });
+    // espín del electrón exterior (flecha) y su halo
+    const spin = new THREE.Group(), sm = beam(b, "#ffffff", 1.8); spin.add(place(cyl(b, 0.008, 0.008, 0.16, sm, 6), [0, 0, 0]), place(new THREE.Mesh(b.track(new THREE.ConeGeometry(0.025, 0.05, 10)), sm), [0, 0.1, 0])); atom.add(spin);
+    const vHalo = halo(b, "rgba(255,209,102,0.95)", 0.5, 0.6); atom.add(vHalo);
+    // etiqueta Cs con número másico 133
+    const lab = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.62, 0.36)), b.track(new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, map: screenTex(b.track, 320, 186, (g) => {
+      g.clearRect(0, 0, 320, 186); g.fillStyle = "rgba(10,20,48,0.8)"; g.beginPath(); g.roundRect(4, 4, 312, 178, 24); g.fill(); g.strokeStyle = NEON.cyan; g.lineWidth = 4; g.stroke();
+      g.fillStyle = "#ffffff"; g.textAlign = "center"; g.textBaseline = "middle"; g.font = "800 112px Montserrat, sans-serif"; g.fillText("Cs", 186, 104);
+      g.fillStyle = NEON.gold; g.font = "700 46px Montserrat, sans-serif"; g.fillText("133", 70, 56); g.fillStyle = "rgba(170,205,255,0.85)"; g.fillText("55", 70, 140);
+    }) })));
+    lab.position.set(onda ? -0.55 : 0, onda ? 2.25 : 2.6, 0.1); root.add(lab);
+    // onda electromagnética: campo E (cian, vertical) y B (dorado, horizontal) hechos de cuentas
+    const wave = new THREE.Group(); wave.position.set(onda ? -0.05 : 0.9, 1.25, 0); root.add(wave);
+    const wg = b.track(new THREE.SphereGeometry(0.022, 8, 6)), wE = beam(b, NEON.cyan, 2.4), wB = beam(b, NEON.gold, 2.2);
+    const NW = 110, LW = onda ? 1.9 : 1.4, eb = Array.from({ length: NW }, () => { const m = new THREE.Mesh(wg, wE); wave.add(m); return m; }), bb = Array.from({ length: NW }, () => { const m = new THREE.Mesh(wg, wB); wave.add(m); return m; });
+    wave.add(place(cyl(b, 0.004, 0.004, LW, beam(b, "#9fb6ff", 1), 6), [LW / 2, 0, 0])); wave.children[wave.children.length - 1].rotation.z = Math.PI / 2;
+    let pu = 0, vb = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      atom.rotation.y = f * 0.004; nucleus.rotation.set(f * 0.003, f * 0.005, 0);
+      shells.forEach(({ q, es, r, w }) => es.forEach((e, i) => { const a = (i / es.length) * Math.PI * 2 + f * w; e.position.set(Math.cos(a) * r, Math.sin(a) * r, 0).applyQuaternion(q); }));
+      const ve = shells[5].es[0]; spin.position.copy(ve.position).add(new THREE.Vector3(0, 0.1, 0)); spin.rotation.z = Math.PI * ease(pu);
+      vHalo.position.copy(ve.position); vHalo.scale.setScalar(1 + 1.2 * pu * (0.7 + 0.3 * Math.sin(f * 0.3)));
+      nHalo.scale.setScalar(1 + 0.6 * pu + 0.08 * Math.sin(f * 0.1)); (nHalo.material as THREE.MeshBasicMaterial).opacity = 0.45 + 0.4 * pu;
+      const A = 0.32 * vb, k = (Math.PI * 2 * 5) / LW;
+      eb.forEach((m, i) => { const x = (i / (NW - 1)) * LW, env = clamp01(vb * 1.4 - x / LW * 0.4); m.visible = vb > 0 && x / LW <= vb * 1.3; m.position.set(x, A * env * Math.sin(k * x - f * 0.9), 0); });
+      bb.forEach((m, i) => { const x = (i / (NW - 1)) * LW, env = clamp01(vb * 1.4 - x / LW * 0.4); m.visible = vb > 0 && x / LW <= vb * 1.3; m.position.set(x, 0, A * env * Math.sin(k * x - f * 0.9)); });
+      wave.rotation.x = 0.35;
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "pulso") pu = ease(u); if (name === "vibrar") vb = ease(u); paint(lf); } };
+  },
+};
+
+// segundo-cesio · la red mundial de relojes atómicos: 80 laboratorios en la Tierra y satélites GPS que los comparan
+export const red_relojes: HeroDef = {
+  kind: "primitive",
+  when: "Red mundial de relojes atómicos: unos 80 laboratorios (puntos dorados) sobre la Tierra conectados con satélites GPS en órbita que los comparan; de destellar cada uno a su ritmo pasan a latir a la vez: hora oficial, UTC, sincronizar relojes, comparar por satélite, red global.",
+  poses: ["red"],
+  actions: { sincronizar: "Los laboratorios dejan de parpadear cada uno a su ritmo y laten todos a la vez, los enlaces con los satélites se encienden y sale una onda de la Tierra (se queda así): se comparan, sincronizan, la media, la hora oficial, a la vez." },
+  center: [0, 1.25, 0], radius: 1.3,
+  anchors: { hero: [0, 1.25, 0], top: [0, 2.9, 0], base: [0, 0.1, 0], tierra: [0, 1.25, 0], satelite: [1.5, 2.0, 0.3] },
+  build: (_L, pose) => {
+    poseOf(red_relojes, pose, "red_relojes");
+    const b = bin(), root = new THREE.Group(), sys = new THREE.Group(), globe = new THREE.Group(); sys.position.y = 1.25; sys.rotation.x = 0.3; sys.add(globe); root.add(sys);
+    const tex = earthNeonTex(b, "#0b1f48", "#050f28", "#123a5c", "#5fe3ff");
+    globe.add(new THREE.Mesh(b.track(new THREE.SphereGeometry(0.95, 64, 48)), mat(b, "#ffffff", { map: tex, emissive: new THREE.Color("#ffffff"), emissiveMap: tex, emissiveIntensity: 0.45, roughness: 0.7 })));
+    sys.add(new THREE.Mesh(b.track(new THREE.SphereGeometry(1.0, 40, 28)), ghostMat(b, "#5fe3ff", 0.1)));
+    // 80 laboratorios en tierra firme (puntos dorados con su pedestal)
+    const labs: THREE.Mesh[] = [], lg = b.track(new THREE.SphereGeometry(0.026, 10, 8));
+    for (let i = 0; i < 4000 && labs.length < 80; i++) {
+      const lat = -45 + hash1(i * 3 + 1) * 110, lon = -180 + hash1(i * 3 + 2) * 360; if (!inLand(lon, lat)) continue;
+      const m = new THREE.Mesh(lg, beam(b, NEON.gold, 2.2)); m.position.copy(ll(lat, lon, 0.97)); m.userData.ph = hash1(i + 77) * 6.28; globe.add(m); labs.push(m);
+    }
+    // satélites GPS (cuerpo dorado, dos paneles) en órbitas inclinadas
+    const sats = [0, 1, 2, 3, 4].map((k) => {
+      const orb = new THREE.Group(); orb.rotation.set(0.9 + 0.35 * k, 1.25 * k, 0); sys.add(orb);
+      const r = 1.6 + 0.08 * (k % 2); orb.add(new THREE.Mesh(b.track(new THREE.TorusGeometry(r, 0.004, 4, 120)), beam(b, "#7f9cff", 0.8, { transparent: true, opacity: 0.5 })));
+      const s = new THREE.Group(); s.add(box(b, 0.11, 0.11, 0.14, mat(b, "#d9a441", { metalness: 0.7, roughness: 0.35, emissive: new THREE.Color("#4a3008") })));
+      [-1, 1].forEach((d) => s.add(place(box(b, 0.26, 0.01, 0.1, mat(b, "#1d3c9a", { metalness: 0.4, roughness: 0.3, emissive: new THREE.Color("#0a1f60") })), [d * 0.2, 0, 0]), rod(b, [d * 0.055, 0, 0], [d * 0.08, 0, 0], 0.008, mat(b, "#cfd5ea", { metalness: 0.8 }))));
+      s.add(place(cyl(b, 0.02, 0.035, 0.05, mat(b, "#e8ebf6", { metalness: 0.5 }), 10), [0, -0.08, 0]));
+      s.scale.setScalar(1.5); s.add(halo(b, "rgba(255,220,150,0.8)", 0.5, 0.6)); orb.add(s); return { orb, s, r, w: 0.006 + 0.002 * k, ph: k * 1.3 };
+    });
+    // enlaces satélite-laboratorio (segmentos que se recalculan cada frame)
+    const NL = sats.length * 3, pos = new Float32Array(NL * 6), lgeo = b.track(new THREE.BufferGeometry()); lgeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    const lmat = b.track(new THREE.LineBasicMaterial({ color: new THREE.Color(NEON.cyan).multiplyScalar(1.8), transparent: true, opacity: 0.25 })); sys.add(new THREE.LineSegments(lgeo, lmat));
+    const wave = new THREE.Mesh(b.track(new THREE.TorusGeometry(1.0, 0.01, 5, 96)), beam(b, NEON.cyan, 2, { transparent: true, opacity: 0 })); sys.add(wave);
+    let sy = 0, lf = 0;
+    const tmp = new THREE.Vector3(), lw = new THREE.Vector3();
+    const paint = (f: number) => {
+      lf = f; globe.rotation.y = f * 0.005;
+      const beat = Math.max(0, Math.sin(f * 0.21)) ** 6;
+      labs.forEach((m) => { const own = Math.max(0, Math.sin(f * 0.21 + m.userData.ph)) ** 6, v = own * (1 - sy) + beat * sy; m.scale.setScalar(0.8 + 1.1 * v); });
+      sats.forEach(({ s, r, w, ph }) => { const a = ph + f * w; s.position.set(Math.cos(a) * r, Math.sin(a) * r, 0); s.lookAt(0, 0, 0); });
+      sys.updateMatrixWorld(true);
+      const inv = sys.matrixWorld.clone().invert();
+      sats.forEach(({ s }, k) => {
+        const sp = s.getWorldPosition(tmp).clone().applyMatrix4(inv);
+        const near = labs.map((m) => ({ m, d: m.getWorldPosition(lw).clone().applyMatrix4(inv).distanceTo(sp) })).sort((x, y) => x.d - y.d).slice(0, 3);
+        near.forEach(({ m }, j) => { const lp = m.getWorldPosition(lw).clone().applyMatrix4(inv), o = (k * 3 + j) * 6; pos.set([sp.x, sp.y, sp.z, lp.x, lp.y, lp.z], o); });
+      });
+      lgeo.attributes.position.needsUpdate = true; lmat.opacity = 0.25 + 0.6 * sy * (0.6 + 0.4 * beat);
+      const t = (f * 0.015) % 1; wave.scale.setScalar(1 + 1.2 * t); wave.rotation.x = Math.PI / 2; (wave.material as THREE.MeshBasicMaterial).opacity = sy * 0.8 * (1 - t);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "sincronizar") sy = ease(u); paint(lf); } };
+  },
+};
