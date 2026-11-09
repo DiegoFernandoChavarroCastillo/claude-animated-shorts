@@ -1206,3 +1206,162 @@ export const satelite_geo: HeroDef = {
     });
   },
 };
+
+// metal-madera-frio · bloque de aluminio cepillado y bloque de madera con veta sobre una mesa, cada uno con su termómetro: marcan lo mismo
+export const bloques_metal_madera: HeroDef = {
+  kind: "primitive",
+  when: "Dos materiales a la misma temperatura: un bloque de metal y uno de madera sobre una mesa con termómetro cada uno; metal frente a madera, por qué marcan lo mismo, temperatura ambiente, el mito de que el metal está más frío.",
+  poses: ["mesa"],
+  actions: {
+    igualar: "Los dos termómetros suben juntos al mismo nivel y aparece el signo igual (se queda así): misma temperatura, marcan lo mismo, igual, ambiente, equilibrio.",
+  },
+  center: [0, 0.85, 0.1], radius: 1.4,
+  anchors: { hero: [0, 0.95, 0.1], top: [0, 2.1, 0], base: [0, 0.05, 0], metal: [-1.15, 0.8, 0], madera: [1.15, 0.8, 0], term_metal: [-1.15, 0.85, 1.0], term_madera: [1.15, 0.85, 1.0], igual: [0, 1.4, 1.0] },
+  build: (_L, pose) => {
+    poseOf(bloques_metal_madera, pose, "bloques_metal_madera");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    // mesa: tablero oscuro con cuatro patas cortas
+    const tableM = mat(b, "#3a4259", { roughness: 0.7 });
+    g.add(place(box(b, 5.2, 0.14, 2.6, tableM), [0, 0.17, 0.2]));
+    for (const sx of [-2.3, 2.3]) for (const sz of [-0.9, 1.3]) g.add(place(box(b, 0.16, 0.12, 0.16, tableM), [sx, 0.06, sz]));
+    const top = 0.24, H = 1.1;
+    // aluminio cepillado: gris claro con rayas finas horizontales
+    const brushed = screenTex(b.track, 256, 256, (c) => {
+      const gr = c.createLinearGradient(0, 0, 256, 256); gr.addColorStop(0, "#dfe3ec"); gr.addColorStop(0.5, "#b9c0cf"); gr.addColorStop(1, "#d3d8e3"); c.fillStyle = gr; c.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 90; i++) { const y = (i * 37) % 256, a = 0.05 + 0.1 * ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 0.12; c.fillStyle = i % 2 ? `rgba(255,255,255,${a})` : `rgba(80,90,110,${a})`; c.fillRect(0, y, 256, 1.5); }
+    });
+    const metalM = b.track(new THREE.MeshStandardMaterial({ map: brushed, metalness: 0.75, roughness: 0.32, emissive: new THREE.Color("#8892aa").multiplyScalar(0.25) }));
+    const metalBlock = new THREE.Mesh(b.track(new RoundedBoxGeometry(1.6, H, 1.2, 4, 0.06)), metalM); metalBlock.position.set(-1.2, top + H / 2, 0);
+    // madera: veta con anillos y nudos pintados
+    const grain = screenTex(b.track, 256, 256, (c) => {
+      c.fillStyle = "#a96f3b"; c.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 46; i++) { const y = i * 5.6, w = 0.6 + ((i * 7) % 5) * 0.35; c.strokeStyle = i % 3 ? "rgba(92,52,22,0.55)" : "rgba(214,160,100,0.45)"; c.lineWidth = w; c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(70, y + 7 * Math.sin(i), 170, y - 8 * Math.cos(i * 1.3), 256, y + 3); c.stroke(); }
+      c.fillStyle = "rgba(70,38,16,0.7)"; c.beginPath(); c.ellipse(170, 120, 14, 8, 0.2, 0, 6.3); c.fill();
+    });
+    const woodM = b.track(new THREE.MeshStandardMaterial({ map: grain, roughness: 0.8, emissive: new THREE.Color("#6a3d18").multiplyScalar(0.25) }));
+    const woodBlock = new THREE.Mesh(b.track(new RoundedBoxGeometry(1.6, H, 1.2, 4, 0.06)), woodM); woodBlock.position.set(1.2, top + H / 2, 0);
+    g.add(metalBlock, woodBlock);
+    // termómetros: tubo de cristal, bulbo, columna roja y marcas; los dos con el mismo nivel
+    const colM = beam(b, "#ff4a3a", 1.5);
+    const fluids = [-1.2, 1.2].map((x) => {
+      const t = new THREE.Group(); t.position.set(x, top, 1.05); t.scale.setScalar(1.45);
+      t.add(place(cyl(b, 0.075, 0.075, 1.0, ghostMat(b, "#dfeaff", 0.35), 16), [0, 0.5, 0]), place(ball(b, 0.14, colM, 16), [0, 0.14, 0]), place(box(b, 0.34, 0.03, 0.2, mat(b, "#8d96b0")), [0, 0.015, 0]));
+      for (let i = 0; i < 6; i++) t.add(place(box(b, i % 5 ? 0.07 : 0.12, 0.012, 0.012, mat(b, "#e9efff")), [0.14, 0.25 + i * 0.14, 0]));
+      const fl = cyl(b, 0.035, 0.035, 1, colM, 10); t.add(fl); g.add(t); return fl;
+    });
+    // signo igual entre los dos
+    const eq = new THREE.Group(); eq.position.set(0, 1.0, 1.0);
+    eq.add(place(cyl(b, 0.34, 0.34, 0.06, glowMat(b, "#1f7a4f", 0.5), 28), [0, 0, 0]), place(box(b, 0.38, 0.08, 0.05, beam(b, "#9dffcf", 1.4)), [0, 0.09, 0.05]), place(box(b, 0.38, 0.08, 0.05, beam(b, "#9dffcf", 1.4)), [0, -0.09, 0.05]));
+    eq.children[0].rotation.x = Math.PI / 2; g.add(eq);
+    g.rotation.y = -0.18; root.add(g); shadows(g);
+    let eqU = 0, lf = 0;
+    const paint = (f: number) => {
+      const lvl = 0.12 + 0.4 * ease(eqU);
+      fluids.forEach((fl) => { fl.scale.y = lvl; fl.position.y = 0.14 + lvl / 2; });
+      const s = Math.max(0.001, ease(eqU * 1.6 - 0.6)); eq.scale.setScalar(s); eq.position.y = 1.0 + 0.03 * Math.sin(f * 0.1);
+      g.rotation.y = -0.18 + 0.1 * Math.sin(f * 0.012);
+    };
+    return { ...done(root, b, (f) => { lf = f; paint(f); }), act: (name, u) => { if (name === "igualar") eqU = clamp01(u); paint(lf); } };
+  },
+};
+
+// metal-madera-frio · corte de un dedo sobre un bloque translúcido (metal, madera o metal caliente): flechas de calor que cruzan el contacto,
+// la yema que se enfría (o se calienta) y el nervio que avisa hacia arriba
+export const dedo_contacto: HeroDef = {
+  kind: "primitive",
+  when: "Un dedo que toca una superficie: calor que sale de la piel hacia el metal o la madera, por qué el metal se siente frío (o el metal caliente quema), nervios de la yema que avisan, conducción del calor al tocar.",
+  poses: ["metal", "madera", "metal_caliente"],
+  actions: {
+    tocar: "El dedo baja y se posa sobre el bloque (se queda así): tocas, tocar, contacto, apoyas, al tocarlo, pones el dedo.",
+    fluir: "Flechas de calor cruzan el contacto y la yema cambia de color (fría en el metal, apenas en la madera, roja si está caliente; se queda así): el calor se escapa, se lleva el calor, pasa el calor, conduce, entra.",
+    alarma: "El nervio de la yema se enciende y manda pulsos hacia arriba (débil con madera): los nervios gritan, avisa, siente, frío, quema, señal.",
+  },
+  center: [0, 2.2, 0], radius: 2.0,
+  anchors: { hero: [0, 1.6, 0], top: [0, 3.4, 0], base: [0, 0.05, 0], dedo: [0, 1.7, 0.45], contacto: [0, 0.92, 0.5], bloque: [0, 0.45, 0.8], flujo: [0.9, 0.5, 0.8], nervio: [0.1, 3.0, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(dedo_contacto, pose, "dedo_contacto");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const hot = p === "metal_caliente", wood = p === "madera", T = 0.9;
+    // bloque translúcido con aristas y vetas/rayas en la cara frontal
+    const tint = wood ? "#b37a42" : hot ? "#ff8a3a" : "#aebcdc";
+    const blockGeo = b.track(new THREE.BoxGeometry(3.0, T, 1.7));
+    const block = new THREE.Mesh(blockGeo, ghostMat(b, tint, wood ? 0.55 : 0.4, { metalness: wood ? 0 : 0.6, emissive: col(tint).multiplyScalar(hot ? 0.8 : 0.2) }));
+    block.position.y = T / 2;
+    const edges = new THREE.LineSegments(b.track(new THREE.EdgesGeometry(blockGeo)), b.track(new THREE.LineBasicMaterial({ color: col(tint).lerp(new THREE.Color("#ffffff"), 0.5), transparent: true, opacity: 0.8 }))); edges.position.y = T / 2;
+    const lineM = beam(b, wood ? "#6b3d18" : "#f4f7ff", wood ? 1 : 1.1, { transparent: true, opacity: wood ? 0.7 : 0.5 });
+    for (let i = 0; i < 6; i++) g.add(place(box(b, 2.6 - (i % 3) * 0.5, 0.012, 0.01, lineM), [(i % 2 ? 0.1 : -0.1), 0.12 + i * 0.12, 0.855]));
+    g.add(block, edges, place(box(b, 3.5, 0.12, 2.3, mat(b, "#3a4259", { roughness: 0.7 })), [0, -0.06, 0]));
+    // dedo de perfil: apoya la yema inclinado (como al tocar), uña en el dorso, yema aplastada, falange doblada con nudillo y pliegues
+    const fing = new THREE.Group(), R = 0.5, L = 0.55;
+    const skinM = ghostMat(b, "#f3b690", 0.8, { roughness: 0.5, emissive: new THREE.Color("#f3b690").multiplyScalar(0.4) }), dermM = glowMat(b, "#e8887a", 0.3, { roughness: 0.6 });
+    const body = new THREE.Group(); body.scale.set(1, 1, 0.82);
+    // perfil de yema que se ensancha hacia la falange (no una cápsula pareja)
+    const prof: THREE.Vector2[] = [];
+    for (let i = 0; i <= 10; i++) { const a = (i / 10) * Math.PI / 2; prof.push(new THREE.Vector2(0.4 * Math.sin(a), 0.4 - 0.4 * Math.cos(a))); }
+    [[0.45, 0.7], [0.49, 1.0], [0.51, 1.4], [0.5, 1.7]].forEach(([r, y]) => prof.push(new THREE.Vector2(r, y)));
+    const outer = new THREE.Mesh(b.track(new THREE.LatheGeometry(prof, 28)), skinM);
+    const derm = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(R - 0.1, L - 0.05, 8, 20)), dermM); derm.position.y = L / 2 + R + 0.03;
+    const bone = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(0.14, L - 0.1, 6, 12)), mat(b, TONE.bone, { roughness: 0.5 })); bone.position.y = L / 2 + R + 0.3;
+    // yema que cambia de color: casquete en la punta
+    const tipM = glowMat(b, "#7da4e0", 0.5, { transparent: true, opacity: 0 }); const tip = ball(b, 0.43, tipM, 24); tip.position.y = 0.43; tip.scale.set(1, 1.05, 1);
+    body.add(outer, derm, bone, tip);
+    // uña en el dorso (lado +x), curva y brillante, con media luna
+    const nail = place(box(b, 0.05, 0.55, 0.4, glowMat(b, "#ffe9dc", 0.55, { roughness: 0.2 })), [-0.48, 0.62, 0]); nail.rotation.z = -0.03;
+    const lunula = place(ball(b, 0.11, mat(b, "#fff7ef", { roughness: 0.3 }), 12), [-0.45, 0.42, 0]); lunula.scale.set(0.35, 0.8, 1.6);
+    const endM = glowMat(b, TONE.gold, 0.6);
+    const ends = scatter(8, 4, (r) => [0.28 + (r() - 0.5) * 0.3, 0.1 + r() * 0.07, (r() - 0.5) * 0.4] as P3).map((q) => place(ball(b, 0.055, endM, 10), q));
+    const nerve = tube(b, [[0.2, 0.15, 0], [0.1, 0.9, 0.04], [0.0, 1.7, 0], [-0.1, 2.3, 0.02]], 0.028, glowMat(b, TONE.gold, 0.5), 32);
+    const pulses = [0, 1, 2, 3].map(() => ball(b, 0.07, beam(b, "#ffffff", 1.6, { transparent: true, opacity: 0 }), 10));
+    // segunda falange doblada hacia atrás, con nudillo y pliegues
+    const prox = new THREE.Group(); prox.position.set(0, 1.62, 0); prox.rotation.z = -0.55;
+    const pOut = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(R - 0.04, 0.7, 8, 24)), skinM); pOut.position.y = 0.55;
+    const pBone = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(0.14, 0.8, 6, 12)), mat(b, TONE.bone, { roughness: 0.5 })); pBone.position.y = 0.55;
+    const creaseM = mat(b, "#a85a45");
+    const crease = [-0.12, -0.02, 0.1].map((dy) => place(new THREE.Mesh(b.track(new THREE.TorusGeometry(R - 0.04, 0.014, 6, 28)), creaseM), [0, dy, 0]));
+    crease.forEach((c) => { c.rotation.x = Math.PI / 2; });
+    prox.add(pOut, pBone, place(ball(b, R - 0.02, skinM, 20), [0, 0, 0]), ...crease);
+    body.add(prox);
+    fing.add(body, nail, lunula, nerve, ...ends, ...pulses);
+    const TILT = -0.42; fing.rotation.z = TILT; g.add(fing);
+    // calor: flechas gruesas (asta + punta) que bajan del contacto y se abren dentro del bloque; halo bajo la yema
+    const arrM = beam(b, hot ? "#ff4a2a" : "#ffb02e", 2.2, { transparent: true, opacity: 0 });
+    const N = 10, spots = Array.from({ length: N }, (_, i) => [((i % 5) - 2) * 0.24, (i * 0.37) % 1, i < 5 ? -0.22 : 0.22] as P3);
+    const arrows = spots.map((q) => {
+      const a = new THREE.Group(), m = arrM.clone();
+      const shaft = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.045, 0.045, 0.34, 8)), m); shaft.position.y = 0.17;
+      const head = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.15, 0.26, 10)), m); head.position.y = -0.04; head.rotation.x = Math.PI;
+      a.add(shaft, head); a.scale.setScalar(1.5); a.rotation.x = hot ? Math.PI : 0; g.add(a); return { a, q, m };
+    });
+    const CX = 0.25;
+    const pad = halo(b, hot ? "rgba(255,90,60,1)" : "rgba(110,190,255,1)", 1.9, 0); pad.rotation.x = -Math.PI / 2; pad.position.set(CX, T + 0.02, 0); g.add(pad);
+    g.position.z = -0.1; g.rotation.y = -0.45; g.scale.setScalar(1.35); g.position.y = 0.2; root.add(g); shadows(g);
+    const depth = wood ? 0.18 : 0.8, speed = wood ? 0.006 : 0.02, shown = wood ? 3 : N, amp = wood ? 0.2 : 1, target = wood ? 0.1 : hot ? -1 : 1;
+    const cool = new THREE.Color("#5f8fe6"), warm = new THREE.Color("#ff4a2a"), skin0 = new THREE.Color("#f3b690"), derm0 = new THREE.Color("#e8887a");
+    let touch = 0, flow = 0, alarm = 0, lf = 0;
+    const paint = (f: number) => {
+      fing.position.set(CX - 0.12 + 0.02 * Math.sin(f * 0.05), T + 0.07 + 0.45 * (1 - ease(touch)), 0.0);
+      const c = target * ease(flow), k = Math.abs(c), tone = c >= 0 ? cool : warm;
+      skinM.color.copy(skin0).lerp(tone, k * 0.7); skinM.emissive.copy(skinM.color).multiplyScalar(0.4); dermM.color.copy(derm0).lerp(tone, k * 0.7);
+      tipM.color.copy(tone); tipM.emissive.copy(tone); tipM.opacity = 0.75 * Math.min(1, k * 1.2);
+      const gm = pad.material as THREE.MeshBasicMaterial; gm.opacity = 0.8 * k * ease(touch);
+      const on = ease(touch) > 0.95 ? ease(flow) : 0;
+      arrows.forEach(({ a, q, m }, i) => {
+        const t = (f * speed + q[1] + i * 0.05) % 1, vis = i < shown ? on : 0, u = hot ? 1 - t : t;
+        a.position.set(CX + q[0] * (1 + (wood ? 0 : 0.9 * u)), T + 0.1 - u * (depth + 0.2), q[2]); m.opacity = vis * Math.min(1, t * 6) * (1 - t * t) * 1;
+      });
+      const al = alarm * amp, fl = 0.5 + 2.5 * al * (0.6 + 0.4 * Math.sin(f * 0.8));
+      endM.emissiveIntensity = fl; endM.emissive.copy(col(TONE.gold)).lerp(hot ? warm : new THREE.Color("#8be9ff"), al);
+      pulses.forEach((s, i) => { const t = (f * 0.02 + i / 4) % 1; s.position.set(0.2 - 0.3 * t, 0.15 + t * 2.15, 0.02); (s.material as THREE.MeshBasicMaterial).opacity = al * 0.95 * Math.sin(t * Math.PI); (s.material as THREE.MeshBasicMaterial).color.set(hot ? "#ff7a5a" : "#bff4ff").multiplyScalar(1.6); });
+      g.rotation.y = -0.45 + 0.08 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, (f) => { lf = f; paint(f); }),
+      act: (name, u) => {
+        if (name === "tocar") touch = clamp01(u);
+        if (name === "fluir") { flow = clamp01(u); touch = Math.max(touch, 1); }
+        if (name === "alarma") { alarm = ease(u); touch = Math.max(touch, 1); }
+        paint(lf);
+      },
+    };
+  },
+};
