@@ -22,7 +22,7 @@ beats = []
 for i, spec in enumerate(sys.argv[2:]):
     h, pose, env, light, cam = (spec.split(":") + [""] * 5)[:5]
     d = cat["heroes"][h]
-    env = env or "macro_corte"
+    env = env or ("plano" if d["kind"] == "plano" else "macro_corte")
     light = light or cat["envs"][env]["lights"][0]
     beats.append({"id": f"b{i + 1:02d}", "role": "tension", "text": f"Este es el objeto {h.replace('_', ' ')} visto de cerca ahora mismo",
                   "scene": {"env": env, "light": light, "hero": {"kind": d["kind"], "asset": h, **({"pose": pose} if pose else {})},

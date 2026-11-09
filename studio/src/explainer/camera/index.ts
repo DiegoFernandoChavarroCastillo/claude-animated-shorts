@@ -4,6 +4,7 @@
 import { CAMERA, BASE } from "../style";
 import type { Timeline, BeatT } from "../timeline";
 import { heroDef, type V3 } from "../heroes";
+import type { Cam2 } from "../heroes/types";
 import { envDef } from "../envs";
 import { cameraFx } from "../actions";
 
@@ -86,7 +87,11 @@ const preset = (bt: BeatT, t: number, p: Params): Params => {
     case "follow_anchor": {
       // la mirada viaja del centro del objeto al ancla con nombre mientras se acerca
       const a = heroDef(bt.beat.scene.hero.asset), h = a.anchors[c.anchor ?? "hero"] ?? a.center, u = glide(t / dur);
-      q.focus = [(h[0] - a.center[0]) * u, (h[1] - a.center[1]) * u, (h[2] - a.center[2]) * u];
+      if (a.kind === "plano") {
+        // en un plano las anclas son px del lienzo: se pasan a metros con la escala del encuadre base para que cam2At las devuelva a px
+        const wp = (2 * q.dist * Math.tan(rad(q.fov / 2)) * ASPECT) / BASE.width;
+        q.focus = [(h[0] - BASE.width / 2) * wp * u, -(h[1] - BASE.height * CAMERA.heroScreenYK) * wp * u, 0];
+      } else q.focus = [(h[0] - a.center[0]) * u, (h[1] - a.center[1]) * u, (h[2] - a.center[2]) * u];
       q.dist *= 1 - 0.3 * u; push(CAMERA.pushMin); break;
     }
     case "spiral_in": {
@@ -164,6 +169,22 @@ export const camAt = (tl: Timeline, i: number, f: number): Cam => {
   const c = posOf(paramsAt(tl, i, f), heroDef(tl.beats[i].beat.scene.hero.asset).center), fx = cameraFx(tl, i, f);
   // efectos de cámara de las acciones (punch, camshake): zoom de golpe y temblor, funciones puras del frame
   return { pos: [c.pos[0] + fx.shake[0], c.pos[1] + fx.shake[1], c.pos[2] + fx.shake[2]], look: c.look, fov: c.fov * fx.fovK, roll: c.roll + fx.roll };
+};
+
+/** px a 1080 por grado de giro u elevación de la cámara 3D al pasarla a 2D (orbit, crane, arc_over…) */
+const PX_PER_DEG = 7;
+
+/** cámara 2D de un beat plano (Cam2): sale de los MISMOS presets, sub-planos, transiciones y efectos que la 3D, convertidos a
+ *  desplazamiento y zoom respecto del encuadre base. Así un plano admite cualquier preset y los overlays anclados lo siguen. */
+export const cam2At = (tl: Timeline, i: number, f: number): Cam2 => {
+  const b = baseParams(tl.beats[i]), p = paramsAt(tl, i, f), fx = cameraFx(tl, i, f);
+  const wpp = (2 * b.dist * Math.tan(rad(b.fov / 2)) * ASPECT) / BASE.width;
+  const zoom = (b.dist / p.dist) * (Math.tan(rad(b.fov / 2)) / Math.tan(rad((p.fov * fx.fovK) / 2)));
+  return {
+    x: (p.lat + p.focus[0] + fx.shake[0]) / wpp + (p.az - b.az) * PX_PER_DEG,
+    y: -(p.el - b.el) * PX_PER_DEG - (p.focus[1] + p.lift - b.lift + fx.shake[1]) / wpp,
+    zoom, roll: p.roll + fx.roll,
+  };
 };
 
 /** dirección horizontal media de la cámara en el beat (para fijar la luz relativa a cámara, congelada por beat) */

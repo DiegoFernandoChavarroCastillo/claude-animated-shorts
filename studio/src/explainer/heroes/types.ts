@@ -1,10 +1,12 @@
-// Tipos y utilidades comunes de los objetos protagonistas (F4). Tres clases (plan §8 F4): primitive (construido
-// en código), gltf (modelo CC0 con licencia en LICENSES.md) y card (animales y personas pintados como tarjetas).
+// Tipos y utilidades comunes de los objetos protagonistas (F4). Cinco clases: primitive (construido en código), gltf
+// (modelo CC0 con licencia en LICENSES.md), card (animales y personas pintados como tarjetas), lamina (diorama 2.5D:
+// láminas pintadas a varias profundidades dentro del mundo 3D) y plano (ilustración 2D a pantalla completa, sin three.js).
+import type React from "react";
 import * as THREE from "three";
 import type { LightPreset } from "../style";
 
 export type V3 = [number, number, number];
-export type HeroKind = "primitive" | "gltf" | "card";
+export type HeroKind = "primitive" | "gltf" | "card" | "lamina" | "plano";
 export type HeroInstance = {
   root: THREE.Object3D; update: (f: number, cam: THREE.Camera) => void; dispose: () => void;
   /** acciones propias del objeto (`HeroDef.actions`): se llama en cada frame con el progreso u (0..1) y los frames t desde el inicio */
@@ -19,7 +21,22 @@ export type HeroDef = {
   radius: number;              // radio de ENCUADRE: la cámara se aleja para que 2 x radius ocupe ~55 % del ancho
   anchors: Record<string, V3>; // puntos con nombre para overlays anclados (PulseRings, Callout3D)
   build: (light: LightPreset, pose?: string) => HeroInstance;
+  /** solo kind "plano": la ilustración 2D (en un plano, `center`/`radius` no se usan y las anclas son px del lienzo 1080 x 1920, z = profundidad) */
+  flat?: FlatComp;
 };
+
+/** cámara 2D de un beat plano: desplazamiento (px a 1080), zoom y giro, derivados de los mismos presets que la cámara 3D */
+export type Cam2 = { x: number; y: number; zoom: number; roll: number };
+/** transformación 2D de las acciones genéricas sobre el sujeto (px, grados, escala, estiramiento y giro en y como escala en x) */
+export type Pose2 = { dx: number; dy: number; rot: number; scale: number; sx: number; sy: number };
+export type FlatProps = {
+  /** frame global y frame desde el inicio del beat */
+  t: number; tb: number;
+  /** progreso 0..1 de las acciones propias del plano (por nombre) */
+  u: Record<string, number>;
+  pose: string; cam: Cam2; subject: Pose2; light: string;
+};
+export type FlatComp = React.FC<FlatProps>;
 
 /** registro de lo que hay que liberar al desmontar el protagonista */
 export const bin = () => {

@@ -58,6 +58,7 @@ beat de cada fallo:
 | C · Overlays | ¿Alguno tapa al protagonista, se corta en el borde o se pisa con otro? |
 | D · Acciones | ¿Se ven en el segundo frame (luces encendidas, ola, haz, movimiento)? |
 | E · Encuadre | ¿Tamaño del objeto, centrado, entorno que distrae (ciudad de casas), zonas vacías? |
+| F · Estilos (solo si el video mezcla 3D con 2.5D, 2D o `Cutaway`) | ¿Los beats en lámina o ilustración parecen del mismo video (paleta, luz, nivel de detalle)? ¿El cambio de estilo llega cuando cambia la idea o salta sin motivo? ¿Alguna ilustración se ve pobre o de clip-art al lado del 3D? |
 
 Criterio de paso: todas ≥ 7. Si no, arregla lo que diga y repite (máx. 3 rondas). El agente solo ve una imagen pequeña: contrasta sus quejas con
 los stills antes de actuar (puede inventar o no ver un LED encendido).

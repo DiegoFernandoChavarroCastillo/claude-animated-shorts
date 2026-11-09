@@ -7,7 +7,7 @@ export const ROLES = ["hook", "tension", "mechanism", "layer2", "twist", "cta", 
 export const LIGHT_NAMES = ["atardecer", "noche", "dorado", "tech"] as const;
 export const CAMERA_PRESETS = ["push_in", "drift", "glide", "zoom_through", "orbit_slow", "cut", "pull_out", "orbit_fast", "crane_up", "crane_down", "dolly_side", "whip_pan", "dutch_tilt", "follow_anchor", "spiral_in", "arc_over"] as const;
 export const TRANSITIONS = ["glide", "zoom_through", "cut", "crossfade"] as const;
-export const HERO_KINDS = ["primitive", "gltf", "card"] as const;
+export const HERO_KINDS = ["primitive", "gltf", "card", "lamina", "plano"] as const;
 
 /** palabra del texto del beat (1.ª aparición), índice "#3" o número de frames desde el inicio del beat */
 export const AtSchema = z.union([z.string().min(1), z.number().int().min(0)]);

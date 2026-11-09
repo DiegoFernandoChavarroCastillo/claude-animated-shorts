@@ -52,6 +52,23 @@ def action_frames(story: dict, words: list[dict], bts: list[dict], after_s: floa
     return out
 
 
+def cut_frames(story: dict, words: list[dict], bts: list[dict]) -> list[int]:
+    """F20: un frame a 2/3 de cada corte (Insert, Cutaway), que en el still de mitad de beat no suele verse."""
+    import re
+    norm = lambda t: re.sub(r"[^\wáéíóúüñ]", "", t.lower())
+    out = []
+    for beat, bt in zip(story["beats"], bts):
+        ws = [w for w in words if w["beat"] == beat["id"]]
+        for o in beat.get("overlays", []):
+            if o.get("type") not in ("Insert", "Cutaway"):
+                continue
+            hit = next((w for w in ws if norm(w["w"]) == norm(str(o.get("at", "")))), None)
+            if hit:
+                start = int(hit["start"] * 30)
+                out.append(min(start + (2 * o.get("hold", 60 if o["type"] == "Cutaway" else 36)) // 3, bt["b"] - 2))
+    return out
+
+
 class Run:
     def __init__(self, oid: str, a):
         self.id, self.a = oid, a
@@ -249,6 +266,7 @@ class Run:
             bts, _ = beat_frames(load_json(self.p("05_story.json")), load_json(self.p("04_words.json")))
             fl = [(b["a"] + b["b"]) // 2 for b in bts]
             fl += action_frames(load_json(self.p("05_story.json")), load_json(self.p("04_words.json")), bts)   # F19: cómo se ve cada acción ya activada
+            fl += cut_frames(load_json(self.p("05_story.json")), load_json(self.p("04_words.json")), bts)      # F20: insertos y cortes ilustrados
             frames = ",".join(str(f) for f in sorted(set(fl)))
             shutil.rmtree(out, ignore_errors=True)
             self.sh(["node", "scripts/job.mjs", "stills", BUNDLE, str(self.props()), str(out), frames, "--scale", str(self.a.stills_scale)],

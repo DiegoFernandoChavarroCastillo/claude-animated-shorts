@@ -22,6 +22,11 @@ const planetTex = (b: Bin, kind: string) => screenTex(b.track, 512, 256, (g) => 
     g.fillStyle = "#b4543a"; g.fillRect(0, 0, W, H);
     for (let i = 0; i < 60; i++) { g.fillStyle = `rgba(${90 + (i * 7) % 60},${40 + (i * 3) % 30},30,0.35)`; g.beginPath(); g.ellipse((i * 83) % W, (i * 41) % H, 20 + (i % 5) * 8, 8 + (i % 4) * 4, i, 0, 6.3); g.fill(); }
     g.fillStyle = "rgba(255,255,255,0.8)"; g.fillRect(0, 0, W, 10);
+    g.fillStyle = "rgba(255,250,245,0.92)"; g.beginPath(); g.ellipse(W / 2, 0, W * 0.6, 26, 0, 0, 6.3); g.fill(); g.beginPath(); g.ellipse(W / 2, H, W * 0.6, 16, 0, 0, 6.3); g.fill();
+    g.fillStyle = "rgba(70,30,22,0.55)"; for (const [x, y, rx, ry] of [[120, 120, 60, 26], [300, 150, 45, 30], [420, 105, 38, 20]]) { g.beginPath(); g.ellipse(x, y, rx, ry, 0.3, 0, 6.3); g.fill(); }
+    g.strokeStyle = "rgba(60,22,16,0.8)"; g.lineWidth = 5; g.beginPath(); g.moveTo(190, 135); g.bezierCurveTo(230, 128, 270, 140, 320, 132); g.stroke(); g.lineWidth = 2; g.beginPath(); g.moveTo(200, 142); g.lineTo(300, 140); g.stroke();
+    for (let i = 0; i < 26; i++) { const x = (i * 157) % W, y = 30 + ((i * 89) % (H - 60)), r = 3 + (i % 5) * 2.5; g.fillStyle = "rgba(80,30,20,0.55)"; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill(); g.strokeStyle = "rgba(240,170,130,0.55)"; g.lineWidth = 1.5; g.beginPath(); g.arc(x - 0.6, y - 0.6, r, 3.6, 5.8); g.stroke(); }
+    g.fillStyle = "#d9824f"; g.beginPath(); g.arc(70, 110, 9, 0, 6.3); g.fill();
   } else {
     const cols = ["#e8c58f", "#c9985a", "#f3deb3", "#b07a45", "#e5b878", "#d8a86a"];
     for (let i = 0; i < 14; i++) { g.fillStyle = cols[i % cols.length]; g.fillRect(0, (i * H) / 14, W, H / 14 + 1); }

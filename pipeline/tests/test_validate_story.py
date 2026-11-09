@@ -199,4 +199,44 @@ ok = not has(validate(story(["telefono", "chip"])), "shows")   # sin schema f19 
 print("OK " if ok else "MAL", "F19: sin schema no se exige")
 fails += not ok
 
+# F20 · estilos: 2D (plano), 2.5D (lamina) y cortes ilustrados (Cutaway)
+def styled(heroes: list[str]) -> dict:
+    st = story(heroes)
+    for b in st["beats"]:
+        if b["scene"]["hero"]["kind"] == "plano":
+            b["scene"]["env"] = "plano"
+    return st
+
+
+def cut(ov: dict, role: str = "tension") -> dict:
+    st = styled(["telefono", "chip", "perro", "persona"])
+    st["beats"][1]["role"] = role
+    st["beats"][1]["overlays"] = [{"type": "Cutaway", "at": "una", **ov}]
+    return st
+
+
+mixed = styled(["telefono", "pizarra_hipotesis", "comida_fermi", "planetas_campo", "chip"])
+bad_env = styled(["telefono", "pizarra_hipotesis"]); bad_env["beats"][1]["scene"]["env"] = "tech_oscuro"
+plano_env_3d = story(["telefono", "chip"]); plano_env_3d["beats"][0]["scene"]["env"] = "plano"
+marker = styled(["telefono", "pizarra_hipotesis"]); marker["beats"][1]["actions"] = [{"type": "ring", "at": "una"}]
+own = styled(["telefono", "pizarra_hipotesis"]); own["beats"][1]["actions"] = [{"type": "escribir", "at": "una"}, {"type": "punch", "at": "dos"}, {"type": "lift", "at": "tres"}]
+four = cut({"asset": "planetas_campo"}); four["beats"][0]["overlays"] = [{"type": "Insert", "at": "una", "text": "A"}] * 3
+for name, st, frag in [
+    ("plano con env 3D", bad_env, "van siempre juntos"),
+    ("env plano con objeto 3D", plano_env_3d, "van siempre juntos"),
+    ("marcador 3D en un plano", marker, "marcador 3D"),
+    ("más de la mitad en 2D", styled(["pizarra_hipotesis", "planetas_campo", "pizarra_hipotesis", "telefono", "planetas_campo"]), "ilustración 2D"),
+    ("Cutaway de un objeto 3D", cut({"asset": "telefono"}), "objeto de clase plano"),
+    ("Cutaway con acción ajena", cut({"asset": "planetas_campo", "act": "escribir"}), "no es una acción de planetas_campo"),
+    ("Cutaway en el gancho", cut({"asset": "planetas_campo"}, role="hook"), "no va en el gancho"),
+    ("Cutaway de 5 s", cut({"asset": "planetas_campo", "hold": 150}), "Cutaway con hold"),
+    ("Cutaway cuenta como Insert", four, "entre los dos"),
+]:
+    ok = has(validate(st), frag)
+    print("OK " if ok else "MAL", f"F20: {name} falla")
+    fails += not ok
+ok = not [e for e in validate(mixed) + validate(own) + validate(cut({"asset": "planetas_campo", "act": "resaltar", "hold": 60})) if "plano" in e or "Cutaway" in e or "marcador" in e or "2D" in e]
+print("OK " if ok else "MAL", "F20: mezcla 3D/2.5D/2D, acciones propias y genéricas en un plano y un Cutaway válido pasan")
+fails += not ok
+
 sys.exit(1 if fails else 0)

@@ -22,6 +22,7 @@ import { Arrow3D, Highlight, ZoomLens, FlowArrow } from "./Guides";
 import { Speedometer, BatteryLevel, ProgressRing, Countdown, Stopwatch, ColorScale, DotGrid, LineChart } from "./Meters";
 import { Compass, Venn, Pyramid, BigWord, ECG, OrbitDiagram, ReactionEq, NumberLine, ForceArrows, DepthScale, ThoughtBubble, FoodChain } from "./Diagrams";
 import { Insert } from "./Insert";
+import { Cutaway } from "./Cutaway";
 import { Timeline, Thermometer, VersusCard, Checklist, Steps, Equation, ScaleBar, TrendArrow, WarningTag } from "./Panels";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,6 +75,7 @@ export const OVERLAYS: Record<string, { component: Comp; anchored: boolean; nume
   Pyramid: { component: Pyramid, anchored: false, numeric: false },
   BigWord: { component: BigWord, anchored: false, numeric: false },
   Insert: { component: Insert, anchored: false, numeric: false },
+  Cutaway: { component: Cutaway, anchored: false, numeric: false },
   ECG: { component: ECG, anchored: false, numeric: true },
   OrbitDiagram: { component: OrbitDiagram, anchored: false, numeric: false },
   ReactionEq: { component: ReactionEq, anchored: false, numeric: false },

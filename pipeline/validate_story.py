@@ -36,6 +36,8 @@ MAX_INSERTS = 3          # insertos (cortes de datos de ~1 s) por video (F18)
 MAX_INSERT_HOLD = 60     # frames que dura un inserto como máximo (2 s)
 MAX_INSERT_TEXT = 18     # letras del texto de un inserto
 MAX_SHOTS = 3            # sub-planos por beat (F17)
+MAX_FLAT_SHARE = 0.5     # F20: fracción máxima de beats en ilustración 2D (clase plano): el 3D sigue siendo la base del formato
+CUTAWAY_HOLD = (30, 90)  # frames de un Cutaway (1–3 s)
 MIN_SHOT_GAP_S = 1.5     # separación mínima entre dos cambios de plano dentro de un beat
 
 
@@ -124,6 +126,13 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: hero.kind '{hero.get('kind')}' no corresponde a {hero.get('asset')} ({h['kind']})")
             if hero.get("pose") and hero["pose"] not in h["poses"]:
                 errs.append(f"{bid}: pose '{hero['pose']}' no existe para {hero.get('asset')} ({', '.join(h['poses'])})")
+        # F20 · estilos: un objeto plano (ilustración 2D) va siempre con el entorno 'plano', y ese entorno solo con planos
+        if (s.get("env") == "plano") != (bool(h) and h["kind"] == "plano"):
+            errs.append(f"{bid}: el entorno 'plano' y los objetos de clase plano van siempre juntos")
+        if h and h["kind"] == "plano":
+            for a in b.get("actions", []):
+                if cat.get("actions", {}).get(a.get("type"), {}).get("kind") == "marker":
+                    errs.append(f"{bid}: {a['type']} es un marcador 3D y {hero.get('asset')} es un plano 2D: usa un overlay (PulseRings, Arrow3D, Highlight…)")
         if s.get("camera", {}).get("preset") not in cat["camera"]:
             errs.append(f"{bid}: preset de cámara '{s.get('camera', {}).get('preset')}' no existe")
         cam = s.get("camera", {})
@@ -165,6 +174,21 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                     errs.append(f"{bid}: el Insert lleva un número y el beat no tiene 'sources'")
                 if o.get("icon", "star") not in cat["icons"]:
                     errs.append(f"{bid}: Insert con icono '{o.get('icon')}' que no existe")
+            if o.get("type") == "Cutaway":
+                c2 = cat["heroes"].get(o.get("asset"))
+                if not c2 or c2["kind"] != "plano":
+                    errs.append(f"{bid}: Cutaway necesita 'asset', un objeto de clase plano")
+                elif o.get("act") and o["act"] not in c2.get("actions", {}):
+                    errs.append(f"{bid}: Cutaway con act '{o['act']}' que no es una acción de {o.get('asset')}")
+                if b.get("role") == "hook":
+                    errs.append(f"{bid}: un Cutaway no va en el gancho")
+                hold = o.get("hold", 60)
+                if not isinstance(hold, int) or not CUTAWAY_HOLD[0] <= hold <= CUTAWAY_HOLD[1]:
+                    errs.append(f"{bid}: Cutaway con hold {hold} (entre {CUTAWAY_HOLD[0]} y {CUTAWAY_HOLD[1]} frames)")
+                if len(str(o.get("text", ""))) > MAX_INSERT_TEXT:
+                    errs.append(f"{bid}: el texto del Cutaway pasa de {MAX_INSERT_TEXT} letras")
+                if re.search(r"\d", str(o.get("text", ""))) and not b.get("sources"):
+                    errs.append(f"{bid}: el Cutaway lleva un número y el beat no tiene 'sources'")
             if o.get("type") == "FlowArrow" and (not o.get("to") or (h and o["to"] not in h["anchors"])):
                 errs.append(f"{bid}: FlowArrow necesita 'to', un ancla de {hero.get('asset')}")
         if numeric and not b.get("sources"):
@@ -201,9 +225,12 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
                 errs.append(f"{bid}: sfx '{x.get('type')}' no existe")
             if not resolves(x.get("at"), text):
                 errs.append(f"{bid}: sfx con at '{x.get('at')}' que no es una palabra del beat")
-    n_ins = sum(1 for b in beats for o in b.get("overlays", []) if o.get("type") == "Insert")
+    n_ins = sum(1 for b in beats for o in b.get("overlays", []) if o.get("type") in ("Insert", "Cutaway"))
     if n_ins > MAX_INSERTS:
-        errs.append(f"{n_ins} Insert en el video (máximo {MAX_INSERTS}): son cortes, no decoración")
+        errs.append(f"{n_ins} Insert y Cutaway en el video (máximo {MAX_INSERTS} entre los dos): son cortes, no decoración")
+    kinds = [cat["heroes"].get(b.get("scene", {}).get("hero", {}).get("asset"), {}).get("kind") for b in beats]
+    if len(beats) >= 4 and kinds.count("plano") / len(beats) > MAX_FLAT_SHARE:
+        errs.append(f"{kinds.count('plano')} de {len(beats)} beats son ilustración 2D (máximo {MAX_FLAT_SHARE:.0%}): el 3D es la base del formato")
     # variedad visual: un mismo protagonista no puede ocupar casi todo el video
     assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in beats]
     run = best = 1

@@ -42,6 +42,53 @@ cargas, un corte de muñeca con LED), no lo sustituyas por un objeto que no enca
    `drift` o un `push_in` suave el QA marca racha estática.
 6. Si se puede reutilizar (un plano de ondas, un vaso que late), ponle un nombre general y una pose por variante.
 
+## Estilos: 3D, 2.5D y 2D (F20). Tú decides beat a beat
+
+Cada beat se ve en uno de tres estilos. **Eliges tú** el que mejor cuente esa línea; no se le pregunta al usuario. El objetivo es
+la calidad y la retención: que cada imagen sea la más clara para lo que dice la voz y que el cambio de registro llegue cuando
+cambia la idea, como un golpe de ritmo.
+
+| Estilo | Clase de objeto | Va bien para | Va mal para |
+|---|---|---|---|
+| **3D** (la base) | `primitive`, `gltf` | Objetos y mecanismos: un chip, un planeta, un corte de garganta, una escalera de etapas. Cosas que giran, se abren o se encienden | Personas, escenas con mucha gente, momentos históricos, lugares con mucho detalle |
+| **2.5D** (diorama) | `card`, `lamina` | **Personas y escenas**: una anécdota (Fermi comiendo con colegas), un grupo, un lugar histórico. Son láminas pintadas dentro del mundo 3D, con su luz, su niebla y el parallax de la cámara | Mecanismos que hay que ver por dentro o desde varios lados (las láminas no aguantan órbitas grandes) |
+| **2D** (ilustración plana) | `plano` | **Ideas, esquemas y muchos casos a la vez**: una hipótesis en una pizarra, un mapa, una línea de tiempo, un campo de cien planetas, un antes y después. Ilustración vectorial a pantalla completa con capas en parallax | Objetos físicos concretos (ahí el 3D se lee mejor y es la marca del canal) |
+
+Además, el overlay **`Cutaway`** mete 1–3 s de una ilustración `plano` dentro de un beat 3D (una ventana sobre la escena). Úsalo cuando
+el objeto del beat no puede enseñar algo concreto que dice la voz («seis mil millones de planetas parecidos a la Tierra» sobre una galaxia).
+Cuenta como `Insert` (máx. 3 entre los dos por video) y no va en el gancho.
+
+**Cómo repartirlos** (criterio, no fórmula):
+1. **El 3D es la base**: lo normal es 60–85 % de los beats en 3D. El validador falla si más del 50 % son `plano`.
+2. **Cambia de estilo cuando cambia la idea**, no dentro de una misma secuencia: tres beats sobre el mismo mecanismo van en el mismo estilo.
+   Un salto de estilo funciona como corte de ritmo: guárdalo para una anécdota, una hipótesis, un giro o un dato abrumador.
+3. **No alternes beat a beat** (3D → 2D → 3D → 2D): parece otro video en cada plano. Lo habitual es 1–4 beats en 2D o 2.5D y 0–2 `Cutaway` por video.
+4. **El gancho** casi siempre en 3D (es la imagen de marca y la que pide una acción antes de 1 s). Un 2D en el gancho solo si el tema es un esquema.
+5. **Transiciones entre estilos**: `crossfade` o `glide`; un `cut` entre 3D y 2D se nota como salto de calidad.
+6. Si el objeto de una línea es una persona o una escena, prefiere 2.5D a una metáfora 3D. Si es una idea abstracta con partes, prefiere 2D a un objeto 3D genérico (`esfera_flotante`, `caja_etiquetada`).
+
+**Reglas técnicas de cada estilo** (las comprueba el validador):
+- Un objeto `plano` va **siempre** con `"env": "plano"` (y ese entorno solo con planos). La `light` del beat tiñe el resplandor y el grade 2D.
+- Los planos admiten **todos los presets de cámara** (se convierten a pan, zoom y parallax entre capas), las acciones genéricas (`lift`, `pulse`,
+  `shake`…), las de cámara (`punch`, `camshake`) y las propias. **No admiten marcadores 3D** (`ring`, `arrow`, `halo`, `mark`…): usa overlays
+  (`PulseRings`, `Arrow3D`, `Highlight`, que siguen las anclas del plano).
+- Las láminas (`lamina`) son 3D a todos los efectos: entorno 3D, marcadores, `Callout3D`. Cámaras con parallax lateral (`dolly_side`, `drift`,
+  `push_in`, `crane_up`) les sientan mejor que las órbitas grandes (`orbit_fast`, `spiral_in` ≥40°), que las ponen de canto.
+
+**Crear láminas y planos que faltan** (cuentan en el máximo de 5 prefabs por video):
+- **Lámina 2.5D**: en `studio/src/explainer/heroes/laminas_custom.ts`, con `buildLaminas` (`heroes/laminas.ts`). Pinta cada capa con Canvas2D
+  (`fillPath` acepta paths SVG; `drawSeated` dibuja una persona sentada de perfil). Pon 4–8 láminas a distintas profundidades: un fondo grande que
+  tape el entorno, el plano medio y un primer plano. Las partes que se mueven (un brazo, un bocadillo) van en láminas propias y se animan en `act`.
+  Ejemplo: `comida_fermi`.
+- **Plano 2D**: en `studio/src/explainer/flat/custom.tsx`, un `HeroDef` con `kind: "plano"` y `flat` (un componente SVG de 1080 x 1920). Usa
+  `Depth` (capa a profundidad z: 0,2 el fondo, 0,5 el plano medio, 1 el sujeto, >1 el primer plano) y `Subject` (la capa que mueven las acciones
+  genéricas), más `Backdrop`, `Glow`, `Stars`, `Person` y `Grain` de `flat/kit.tsx`. Las anclas son px del lienzo con la profundidad en z.
+  **Composición**: lo importante entre y = 560 y 1380 (arriba van los subtítulos y abajo la interfaz de las apps), el sujeto hacia y ≈ 900, y el fondo
+  más grande que el lienzo, para que el zoom no deje bordes. Paleta de `style.ts`. Ejemplos: `pizarra_hipotesis`, `planetas_campo`.
+- **Calidad**: el mismo nivel que un prefab 3D. Siluetas reconocibles, 3+ capas de profundidad, luz de recorte o resplandor, y nada de clip-art. Mira el
+  still en la galería (`tools/gallery.py <dir> plano_id:pose:plano:noche:push_in`) y comprueba la luma y la saturación: un plano demasiado oscuro
+  o saturado hace fallar el QA igual que un 3D.
+
 Duración: el video final debe durar **más de 60 s y menos de 120 s** (≈175–300 palabras), así que espera **10–20 beats**.
 Con un guion largo, reparte objetos y entornos; el límite de cortes sigue siendo 3 por minuto.
 

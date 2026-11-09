@@ -4,7 +4,7 @@ import { PALETTE } from "../style";
 import { BaseProps, Card, Place, tok, useAnim } from "./common";
 import { Pill } from "./Pill";
 
-export type WaveKind = "pulse" | "sine" | "noise";
+export type WaveKind = "pulse" | "sine" | "noise" | "spike";
 export type WaveformProps = BaseProps & { kind?: WaveKind; labels?: string[] };
 
 /** trazo de la onda en un ancho w y alto h; `phase` la desplaza para que siga viva */
@@ -15,6 +15,7 @@ export const wavePath = (kind: WaveKind, w: number, h: number, phase: number) =>
     let y = 0;
     if (kind === "sine") y = Math.sin(u * Math.PI * 6) * 0.8;
     else if (kind === "noise") y = Math.sin(u * 37) * 0.35 + Math.sin(u * 91) * 0.25 + Math.sin(u * 13) * 0.3;
+    else if (kind === "spike") { const v = x / w, d = Math.abs(v - 0.5); y = 0.04 * Math.sin(v * 97) + (d < 0.03 ? -(1 - d / 0.03) : 0); }   // un único pico sobre ruido plano: no se desplaza ni se repite
     else { const c = ((u * 4) % 1 + 1) % 1; y = c > 0.42 && c < 0.46 ? -1 : c > 0.46 && c < 0.5 ? 0.55 : c > 0.62 && c < 0.7 ? -0.18 : 0; }
     pts.push(`${x},${h / 2 + y * h * 0.45}`);
   }

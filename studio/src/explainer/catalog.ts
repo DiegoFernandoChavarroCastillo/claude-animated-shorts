@@ -61,6 +61,15 @@ export const storyErrors = (story: Story): string[] => {
       if (h.kind !== s.hero.kind) errs.push(`${b.id}: hero.kind "${s.hero.kind}" no corresponde a ${s.hero.asset} (${h.kind})`);
       if (s.hero.pose && !h.poses.includes(s.hero.pose)) errs.push(`${b.id}: pose "${s.hero.pose}" no existe para ${s.hero.asset}`);
     }
+    // estilos (F20): un objeto plano (ilustración 2D) va siempre con el entorno "plano", y ese entorno solo con planos
+    if ((s.env === "plano") !== (h?.kind === "plano")) errs.push(`${b.id}: el entorno "plano" y los objetos de clase plano van siempre juntos`);
+    if (h?.kind === "plano") for (const a of b.actions) if (ACTION_DEFS[a.type]?.kind === "marker") errs.push(`${b.id}: ${a.type} es un marcador 3D y ${s.hero.asset} es un plano 2D: usa un overlay`);
+    for (const o of b.overlays) if (o.type === "Cutaway") {
+      const c2 = heroes[String((o as { asset?: string }).asset)] as (typeof heroes)[string] & { actions?: Record<string, string> } | undefined;
+      if (c2?.kind !== "plano") errs.push(`${b.id}: Cutaway necesita "asset", un objeto de clase plano`);
+      const act = (o as { act?: string }).act;
+      if (act && !(act in (c2?.actions ?? {}))) errs.push(`${b.id}: Cutaway con act "${act}" que no es una acción de ${(o as { asset?: string }).asset}`);
+    }
     for (const sh of b.shots) if (!(sh.camera.preset in c.camera)) errs.push(`${b.id}: shot con cámara "${sh.camera.preset}" que no existe`);
     const cam = s.camera;
     if (cam.preset === "follow_anchor" && (!cam.anchor || (h && !h.anchors.includes(cam.anchor)))) errs.push(`${b.id}: follow_anchor necesita camera.anchor, un ancla de ${s.hero.asset}`);

@@ -1,6 +1,6 @@
 ---
 name: explainer-short
-description: Hace un short vertical explicativo de más de 60 s y menos de 120 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
+description: Hace un short vertical explicativo de más de 60 s y menos de 120 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, que Claude alterna beat a beat con dioramas 2.5D de láminas pintadas e ilustraciones 2D cuando cuentan mejor la idea, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
 ---
 
 # Explainer short (es / en)
@@ -103,12 +103,21 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   acción se vea (luces encendidas, ola, haz) y que no quede nada bajo el suelo; (5) objeto pequeño en pantalla → baja `radius` (acerca la cámara); entornos
   con casas o edificios restan: con objetos pequeños usa `tech_oscuro`; (6) un prefab plano pide cámara con movimiento real (`orbit_slow`, `spiral_in`,
   `push_in` rápido), o la racha estática falla. Medido: ~25 min por prefab con detalle; sin coste de render.
+- **Estilos: 3D, 2.5D y 2D (F20). Decides tú, beat a beat, sin preguntar.** El 3D (`primitive`, `gltf`) es la base del formato: objetos y mecanismos.
+  El **2.5D** (`card`, `lamina`: láminas pintadas dentro del mundo 3D, con su luz y su parallax) es para personas, anécdotas y escenas históricas. El
+  **2D** (`plano`: ilustración a pantalla completa con capas en parallax, siempre con `env: "plano"`) es para ideas, esquemas, mapas, líneas de tiempo y
+  muchos casos a la vez. El overlay **`Cutaway`** mete 1–3 s de un plano dentro de un beat 3D (cuenta como `Insert`). Criterio: la imagen más clara para
+  cada línea; cambia de estilo cuando cambia la idea (es un golpe de ritmo), no alternes beat a beat, y lo habitual es 60–85 % de 3D (el validador falla
+  con más del 50 % de `plano`). Los planos no admiten marcadores 3D (usa overlays). Guía completa, reglas técnicas y cómo crear láminas y planos:
+  `templates/prompts/story_es_en.md` → «Estilos». Piloto: `out/fermi-mix` (b05 `Cutaway`, b07 `comida_fermi`, b10 `pizarra_hipotesis`). En la entrega
+  di qué beats fueron 2.5D o 2D y por qué.
 - **Fidelidad y limpieza visual (F19):** (1) cada beat lleva `"shows"`: una frase de lo que se ve; si la voz dice una cosa y `shows` otra, cambia
   el objeto, no la frase; (2) un overlay nunca tapa al protagonista: `NoSymbol`, `BigWord` y `Insert` grandes solo donde no quiten lo que se explica; para
   rótulos usa `Pill` en `lower` o `bottom`; dos rótulos en el mismo hueco se pisan; (3) los `Callout3D` van hacia el lado con espacio: uno cortado por el
   borde se ve mal (mira el still); (4) **revisión visual obligatoria:** hoja con todos los stills (mitad de beat y tras la acción) y un agente verificador
   distinto con `templates/prompts/verificador.md`; sus 5 notas (coincide lo dicho con lo visto, reconocible, overlays, acciones visibles, tamaño y
-  encuadre) deben ser ≥7 antes del render final.
+  encuadre), más la 6.ª (estilos) si el video mezcla 3D con 2.5D o 2D, deben ser ≥7 antes del render final. En la lista de beats que le pasas, marca el
+  estilo de cada uno (3D, 2.5D, 2D, con Cutaway). Los stills ya incluyen un frame dentro de cada `Insert` y `Cutaway`.
 - **Sub-planos, bucle y datos (F17):** en beats largos (>~5 s) usa `shots` (la cámara barre a otro preset a mitad de beat, sin corte duro, máx. 3
   por beat); con cierre `bucle` el último beat vuelve al entorno y objeto del primero, y la última frase no se despide (patrones de bucle
   en `templates/prompts/script_es.md`); guarda algo que solo se entienda al repetir el video. `publish` también deja `meta.json` y
@@ -186,6 +195,7 @@ Entrega:
 | Ejemplos | `templates/examples/` (`bluetooth-wifi` completo y vigente, `hielo-flota` el original; solo guion: `cielo-azul`, `dedos-arrugados` y uno por estructura: `agua-rara-lista`, `agua-contra-hielo`, `dedos-historia`, `atardecer-cadena`) |
 | Look del video (paleta, subtítulos, cámara, luces) | `studio/src/explainer/style.ts` y `world/grade.ts` |
 | Acciones sincronizadas con la voz | `studio/src/explainer/actions/index.ts` (genéricas y marcadores), `HeroDef.actions` + `HeroInstance.act` (propias de cada objeto) |
+| Estilos 2.5D y 2D (F20) | Láminas: `heroes/laminas.ts` (constructor y `drawSeated`) y `heroes/laminas_custom.ts` (las de cada video). Planos: `flat/FlatScene.tsx` (render y grade 2D), `flat/kit.tsx` (`Depth`, `Subject`, `Person`, `Backdrop`, `Glow`, `Stars`, `Grain`) y `flat/custom.tsx` (los de cada video). Cámara 2D: `cam2At` en `camera/index.ts`. Corte ilustrado: `overlays/Cutaway.tsx` |
 | Entornos, objetos, overlays | `studio/src/explainer/envs/` (`ciencia.ts`), `heroes/primitive/` (`body`, `micro`, `space`, `physics`, `chemistry`, `earth`, `mind`, `life`, `home`, `generic`, y sus segundas tandas `*2.ts`), `overlays/` (`Guides`, `Panels`, `Meters`, `Diagrams`) |
 | Buscar en el catálogo, probar objetos | `tools/catalog_search.py`, `tools/gallery.py` (galería con stills), `tools/add_heroes.py`; prefabs de cada video en `heroes/primitive/custom.ts` |
 | Pruebas y huecos | `tools/run_tests.py` (todas las pruebas y `tsc`), `tools/gaps_report.py` (huecos de catálogo por frecuencia) |

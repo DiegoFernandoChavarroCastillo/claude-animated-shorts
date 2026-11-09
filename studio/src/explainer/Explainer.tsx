@@ -1,11 +1,14 @@
-// Compositor del explainer: una o dos capas three.js (dos solo durante una transición con fundido) y, encima,
-// la capa 2D de overlays y subtítulos. Todo sale de story.json + words.json; nada se escribe a mano por video.
+// Compositor del explainer: una o dos capas de escena (dos solo durante una transición con fundido) y, encima,
+// la capa 2D de overlays y subtítulos. Cada capa es three.js (objetos 3D, tarjetas y láminas 2.5D) o, si el objeto
+// del beat es de clase "plano", una ilustración 2D (FlatScene) sin lienzo 3D. Todo sale de story.json + words.json; nada se escribe a mano por video.
 import React, { useMemo } from "react";
 import { AbsoluteFill, CalculateMetadataFunction, useCurrentFrame, useVideoConfig } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import { ExplainerPropsSchema, type ExplainerProps } from "./schema";
 import { buildTimeline, layersAt } from "./timeline";
 import { Scene } from "./Scene";
+import { FlatScene } from "./flat/FlatScene";
+import { heroDef } from "./heroes";
 import { Captions } from "./captions/Caption";
 import { OverlayLayer } from "./overlays/OverlayLayer";
 import { CAMERA, PALETTE } from "./style";
@@ -29,10 +32,12 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
     <AbsoluteFill style={{ background: PALETTE.bg.night0 }}>
       {layers.map((l, k) => (
         <AbsoluteFill key={k ? "over" : "base"} style={{ opacity: l.alpha }}>
-          <ThreeCanvas width={width} height={height} shadows camera={{ fov: CAMERA.fov, near: 0.1, far: 2000 }}
-            gl={{ antialias: false, stencil: false, powerPreference: "high-performance" }}>
-            <Scene tl={tl} i={l.beat} />
-          </ThreeCanvas>
+          {heroDef(tl.beats[l.beat].beat.scene.hero.asset).kind === "plano" ? <FlatScene tl={tl} i={l.beat} /> : (
+            <ThreeCanvas width={width} height={height} shadows camera={{ fov: CAMERA.fov, near: 0.1, far: 2000 }}
+              gl={{ antialias: false, stencil: false, powerPreference: "high-performance" }}>
+              <Scene tl={tl} i={l.beat} />
+            </ThreeCanvas>
+          )}
         </AbsoluteFill>
       ))}
       <OverlayLayer tl={tl} words={words} lang={story.meta.lang} />

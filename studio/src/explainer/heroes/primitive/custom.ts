@@ -1763,3 +1763,232 @@ export const red_relojes: HeroDef = {
     return { ...done(root, b, paint), act: (name, u) => { if (name === "sincronizar") sy = ease(u); paint(lf); } };
   },
 };
+
+// fermi-filtro · campo de estrellas con algún planeta: cada estrella lanza un aviso que nadie contesta; al «apagar», todo queda mudo
+export const cielo_mudo: HeroDef = {
+  kind: "primitive",
+  when: "Cielo lleno de estrellas (algunas con planetas), cada una con su pulso de señal que se apaga sin respuesta: el silencio del universo, nadie contesta, ¿estamos solos?, buscar extraterrestres, la paradoja de Fermi, puntos de luz sin señal.",
+  poses: ["cielo"],
+  actions: {
+    encender: "Las estrellas aparecen una a una en el cielo (se quedan): mira al cielo, cada punto de luz, aparecen, se encienden.",
+    apagar: "Los pulsos de señal se cortan y las estrellas se atenúan: todo queda en silencio (se queda así): nada, silencio, ninguno, nadie contesta, ni una voz.",
+  },
+  center: [0, 1.9, -0.2], radius: 1.6,
+  anchors: { hero: [0, 1.9, 0], top: [0, 3.3, 0], base: [0, 0.5, 0], estrella: [0.9, 2.4, -0.2], cielo: [0, 2.1, -0.6] },
+  build: (_L, pose) => {
+    poseOf(cielo_mudo, pose, "cielo_mudo");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const tints = ["#ffffff", "#ffe6a8", "#a9c8ff", "#ffd0a0", "#d8e4ff"];
+    // estrellas: núcleo brillante + halo; algunas con un planeta diminuto en órbita
+    const stars = Array.from({ length: 46 }, (_, i) => {
+      const x = -1.7 + hash1(i + 3) * 3.4, y = 0.5 + hash1(i + 11) * 2.9, z = -1.2 + hash1(i + 29) * 1.8, s = 0.03 + hash1(i + 41) ** 2 * 0.06, c = tints[i % tints.length];
+      const n = place(ball(b, s, beam(b, c, 2.2, { transparent: true, opacity: 1 }), 10), [x, y, z]);
+      const h = halo(b, "rgba(255,240,210,0.9)", s * 9, 0.55); h.position.set(x, y, z);
+      const ring = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.1, 0.006, 4, 40)), beam(b, TONE.cyan, 1.4, { transparent: true, opacity: 0 })); ring.position.set(x, y, z);
+      g.add(n, h, ring);
+      let pl: THREE.Mesh | null = null;
+      if (i % 7 === 0) { pl = ball(b, 0.018, mat(b, i % 2 ? "#5fa8ff" : "#d98a4a", { roughness: 0.6, emissive: new THREE.Color("#203050"), emissiveIntensity: 0.6 }), 10); g.add(pl); }
+      return { n, h, ring, pl, x, y, z, s, ph: hash1(i + 53), delay: hash1(i + 61) * 0.85 };
+    });
+    // polvo de fondo y una franja de nebulosa muy tenue
+    const D = 500, dp = new Float32Array(D * 3);
+    for (let i = 0; i < D; i++) dp.set([-3.4 + hash1(i + 101) * 6.8, 0.4 + hash1(i + 211) * 3.2, -2.6 + hash1(i + 307) * 1.0], i * 3);
+    const dgeo = b.track(new THREE.BufferGeometry()); dgeo.setAttribute("position", new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dgeo, b.track(new THREE.PointsMaterial({ size: 0.018, color: "#c9d6ff", transparent: true, opacity: 0.7, depthWrite: false, sizeAttenuation: true })));
+    const neb = halo(b, "rgba(160,110,235,0.6)", 5.2, 0.55); neb.position.set(-0.5, 2.1, -2.4); neb.scale.set(1.5, 0.75, 1);
+    const neb2 = halo(b, "rgba(90,150,240,0.55)", 4.2, 0.45); neb2.position.set(0.9, 1.3, -2.3); neb2.scale.set(1.3, 0.6, 1);
+    g.add(dust, neb, neb2);
+    root.add(g);
+    let vis = 1, mute = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f; dust.rotation.z = Math.sin(f * 0.003) * 0.02;
+      stars.forEach((st) => {
+        const show = clamp01((vis - st.delay) / 0.15), tw = 0.8 + 0.2 * Math.sin(f * 0.11 + st.ph * 20), dim = 1 - 0.55 * mute;
+        st.n.scale.setScalar(Math.max(0.001, show * (0.9 + 0.2 * tw)));
+        (st.n.material as THREE.MeshBasicMaterial).opacity = show * dim;
+        (st.h.material as THREE.MeshBasicMaterial).opacity = 0.55 * show * tw * dim;
+        const t = (f * 0.012 + st.ph) % 1;
+        st.ring.scale.setScalar(0.3 + t * 2.2);
+        (st.ring.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - t) * show * (1 - mute) * (st.s > 0.035 ? 1 : 0.5);
+        if (st.pl) { const a = f * 0.03 + st.ph * 6; st.pl.position.set(st.x + Math.cos(a) * 0.12, st.y + Math.sin(a) * 0.04, st.z + Math.sin(a) * 0.12); st.pl.visible = show > 0.5; }
+      });
+    };
+    return {
+      ...done(root, b, paint),
+      act: (name, u) => { if (name === "encender") vis = u; if (name === "apagar") mute = ease(u); paint(lf); },
+    };
+  },
+};
+
+// fermi-filtro · radiotelescopio de plato: pedestal, montura de horquilla, plato parabólico con costillas, cuadrípode con receptor y caseta de control
+export const radiotelescopio: HeroDef = {
+  kind: "primitive",
+  when: "Radiotelescopio de plato parabólico que escucha el cielo: SETI, buscar señales extraterrestres, ondas de radio del espacio, la señal Wow!, escuchar el universo, antena gigante, observatorio de radio.",
+  poses: ["escucha"],
+  actions: {
+    escuchar: "El plato barre el cielo despacio y un cono de escucha tenue sube desde él (se queda así): escuchar, buscar, llevamos décadas, apuntar al cielo.",
+    senal: "Un único pulso baja del cielo al receptor, que destella y vuelve a apagarse: una señal extraña, un pico que no se repite, algo que llega una sola vez.",
+  },
+  center: [0, 1.5, 0], radius: 1.6,
+  anchors: { hero: [0, 1.7, 0], top: [0, 3.0, 0], base: [0, 0.05, 0], plato: [0, 1.9, 0.2], receptor: [0, 2.5, 0.5], cielo: [0.4, 3.4, 1.2], caseta: [1.5, 0.35, 0.6] },
+  build: (_L, pose) => {
+    poseOf(radiotelescopio, pose, "radiotelescopio");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const concrete = mat(b, "#a9a8a2", { roughness: 0.9 }), steel = mat(b, "#c9ced8", { roughness: 0.35, metalness: 0.6 }), dark = mat(b, "#3b4150", { roughness: 0.5, metalness: 0.5 });
+    const white = mat(b, "#f2f3f6", { roughness: 0.4, metalness: 0.15, side: THREE.DoubleSide });
+    // suelo propio, pedestal y vía de azimut
+    g.add(place(cyl(b, 2.0, 2.05, 0.06, mat(b, "#6f7a52", { roughness: 1 }), 48), [0, 0.03, 0]));
+    g.add(place(cyl(b, 0.55, 0.7, 0.5, concrete, 32), [0, 0.3, 0]));
+    const track = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.62, 0.03, 8, 48)), dark); track.rotation.x = Math.PI / 2; track.position.y = 0.56; g.add(track);
+    // cabeza giratoria (azimut) con horquilla, eje de elevación y contrapeso
+    const az = new THREE.Group(); az.position.y = 0.58; g.add(az);
+    az.add(place(cyl(b, 0.5, 0.5, 0.14, steel, 32), [0, 0.07, 0]), place(box(b, 0.5, 0.3, 0.5, dark), [0, 0.3, -0.05]));
+    [-1, 1].forEach((s) => { az.add(place(box(b, 0.12, 1.0, 0.36, steel), [s * 0.62, 0.65, 0])); az.add(rod(b, [s * 0.62, 0.15, 0.17], [s * 0.25, 0.15, 0.25], 0.025, steel)); });
+    const el = new THREE.Group(); el.position.y = 1.15; az.add(el);
+    el.add(place(cyl(b, 0.07, 0.07, 1.4, dark, 16), [0, 0, 0])); el.children[el.children.length - 1].rotation.z = Math.PI / 2;
+    el.add(place(box(b, 0.42, 0.42, 0.3, dark), [0, -0.3, -0.5]));
+    // plato parabólico (torno), aros de paneles, costillas traseras y borde
+    const R = 1.25, F = 0.62, prof: THREE.Vector2[] = [];
+    for (let i = 0; i <= 24; i++) { const r = (i / 24) * R; prof.push(new THREE.Vector2(r, (r * r) / (4 * F))); }
+    const dish = new THREE.Group(); dish.position.set(0, 0.12, 0.12); el.add(dish);
+    dish.add(new THREE.Mesh(b.track(new THREE.LatheGeometry(prof, 64)), white));
+    const seam = mat(b, "#b9bfcc", { roughness: 0.5, metalness: 0.3 });
+    [0.4, 0.75, 1.05].forEach((r) => { const t = new THREE.Mesh(b.track(new THREE.TorusGeometry(r, 0.008, 4, 64)), seam); t.rotation.x = Math.PI / 2; t.position.y = (r * r) / (4 * F) + 0.004; dish.add(t); });
+    for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, pts: [number, number, number][] = [0.1, 0.5, 0.9, R].map((r) => [Math.cos(a) * r, (r * r) / (4 * F) - 0.03, Math.sin(a) * r]); dish.add(tube(b, pts, 0.012, dark, 12)); dish.add(rod(b, [Math.cos(a) * 0.6, 0.05, Math.sin(a) * 0.6], [0, -0.2, 0], 0.01, dark)); }
+    const lip = new THREE.Mesh(b.track(new THREE.TorusGeometry(R, 0.025, 6, 72)), steel); lip.rotation.x = Math.PI / 2; lip.position.y = (R * R) / (4 * F); dish.add(lip);
+    // cuadrípode al foco con receptor (bocina) y su luz
+    const fy = F, rimY = (R * R) / (4 * F);
+    [0, 1, 2, 3].forEach((k) => { const a = k * Math.PI / 2 + Math.PI / 4; dish.add(rod(b, [Math.cos(a) * R * 0.95, rimY, Math.sin(a) * R * 0.95], [0, fy - 0.04, 0], 0.014, steel)); });
+    dish.add(place(cyl(b, 0.09, 0.06, 0.2, dark, 16), [0, fy + 0.05, 0]));
+    const feedM = glowMat(b, "#ffcc66", 0.2, { roughness: 0.3 }); const feed = place(cyl(b, 0.05, 0.05, 0.03, feedM, 14), [0, fy - 0.06, 0]); dish.add(feed);
+    const flash = halo(b, "rgba(255,220,120,1)", 1.4, 0); flash.position.set(0, fy - 0.05, 0); dish.add(flash);
+    // cono de escucha tenue que sale del plato hacia el cielo
+    const cone = new THREE.Mesh(b.track(new THREE.CylinderGeometry(R * 1.6, R * 0.95, 2.4, 40, 1, true)), beam(b, TONE.cyan, 1.0, { transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+    cone.position.y = rimY + 1.2; dish.add(cone);
+    const pulse = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.5, 0.025, 6, 40)), beam(b, "#ffd27a", 2.2, { transparent: true, opacity: 0 })); pulse.rotation.x = Math.PI / 2; dish.add(pulse);
+    el.rotation.x = 0.7;
+    // caseta de control con ventana encendida y antena pequeña
+    const hut = new THREE.Group(); hut.position.set(1.45, 0.06, 0.55); g.add(hut);
+    hut.add(place(box(b, 0.55, 0.36, 0.42, mat(b, "#d8d2c4", { roughness: 0.8 })), [0, 0.18, 0]), place(box(b, 0.62, 0.05, 0.5, dark), [0, 0.385, 0]));
+    hut.add(place(box(b, 0.2, 0.12, 0.01, glowMat(b, "#ffd98a", 0.9)), [0.08, 0.22, 0.215]), place(box(b, 0.1, 0.2, 0.01, dark), [-0.16, 0.1, 0.215]));
+    hut.add(rod(b, [0.18, 0.41, 0], [0.18, 0.7, 0], 0.008, steel));
+    g.rotation.y = -0.35; root.add(g); shadows(g);
+    let lis = 0, sig = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f; az.rotation.y = 0.25 * Math.sin(f * 0.006) + lis * 0.35 * Math.sin(f * 0.01); el.rotation.x = 0.7 + 0.04 * Math.sin(f * 0.008);
+      (cone.material as THREE.MeshBasicMaterial).opacity = 0.05 * lis + 0.03 * lis * Math.sin(f * 0.08);
+      const travel = clamp01(sig / 0.7), bump = Math.sin(Math.PI * clamp01((sig - 0.6) / 0.4));
+      pulse.position.y = rimY + 2.4 * (1 - travel); pulse.scale.setScalar(1.4 - 1.1 * travel);
+      (pulse.material as THREE.MeshBasicMaterial).opacity = sig > 0 && sig < 0.72 ? 0.95 : 0;
+      (flash.material as THREE.MeshBasicMaterial).opacity = 0.95 * bump; feedM.emissiveIntensity = 0.2 + 2.5 * bump;
+    };
+    return {
+      ...done(root, b, paint),
+      act: (name, u) => { if (name === "escuchar") lis = ease(u); if (name === "senal") sig = u; paint(lf); },
+    };
+  },
+};
+
+// fermi-filtro · el Gran Filtro: escalera de cinco etapas (roca, células, vida compleja, inteligencia, civilización entre estrellas) cortada por un muro rojo
+export const gran_filtro: HeroDef = {
+  kind: "primitive",
+  when: "El Gran Filtro (hipótesis de Robin Hanson): una escalera de etapas desde una roca sin vida hasta una civilización entre estrellas, cortada por un muro que casi nadie cruza; luces que suben y se apagan contra él, y un marcador de dónde estamos nosotros: ¿el filtro quedó atrás o está delante?, etapas de la vida, evolución, extinción, autodestrucción.",
+  poses: ["escalera"],
+  actions: {
+    subir: "Muchas luces suben la escalera; casi todas se apagan en rojo contra el muro y solo una llega arriba: casi nadie lo supera, filtro, intentos.",
+    vida: "El muro se desliza al primer escalón (entre la roca y las células): el origen de la vida.",
+    inteligencia: "El muro se desliza al escalón de la inteligencia (entre la vida compleja y nosotros): el salto a la inteligencia.",
+    destruirse: "El muro se desliza delante de nosotros (antes de las estrellas) y late en rojo: destruirse, autodestrucción.",
+    atras: "El muro se va detrás de nosotros y nuestro marcador se pone verde: quedó atrás, ya lo pasamos, rareza afortunada.",
+    delante: "El muro se pone delante de nosotros, crece y late en rojo; nuestro marcador se pone rojo: está delante, nos espera.",
+  },
+  // anclas ya giradas (g.rotation.y = 1, escala 1,1): la escalera sube hacia la izquierda y el fondo
+  center: [-0.28, 1.49, -0.18], radius: 1.5,
+  anchors: { hero: [-0.28, 1.49, -0.18], top: [-1.11, 3.19, -0.71], base: [0.83, 0.06, 0.53], roca: [1.02, 0.5, 0.65], celulas: [0.46, 0.99, 0.3], compleja: [-0.09, 1.49, -0.06], nosotros: [-0.65, 2.15, -0.42], estrellas: [-1.2, 2.7, -0.77], muro: [-0.37, 2.09, -0.24] },
+  build: (_L, pose) => {
+    poseOf(gran_filtro, pose, "gran_filtro");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const Z = (i: number) => 1.1 - i * 0.6, Y = (i: number) => 0.3 + i * 0.45;
+    const stepM = [0, 1, 2, 3, 4].map((i) => mat(b, col("#4a5788", "#8091d0", i / 4), { roughness: 0.55, metalness: 0.15, emissive: col("#1a2450", "#2e4088", i / 4), emissiveIntensity: 0.7 }));
+    const edge = beam(b, "#8fb2ff", 1.3);
+    // escalones: bloque redondeado con un filo de luz
+    [0, 1, 2, 3, 4].forEach((i) => {
+      const h = Y(i); g.add(place(rbox(b, 1.7, h, 0.6, 0.04, stepM[i]), [0, h / 2, Z(i)]));
+      g.add(rod(b, [-0.85, h + 0.005, Z(i) + 0.3], [0.85, h + 0.005, Z(i) + 0.3], 0.008, edge));
+    });
+    const top = (i: number): [number, number, number] => [0, Y(i), Z(i)];
+    // 0 roca sin vida
+    const rock = new THREE.Mesh(b.track(new THREE.DodecahedronGeometry(0.17, 0)), mat(b, "#8a8378", { roughness: 1, flatShading: true }));
+    rock.position.set(0.15, Y(0) + 0.17, Z(0)); rock.scale.set(1.7, 1.15, 1.4); g.add(rock, place(ball(b, 0.06, mat(b, "#6d675e", { roughness: 1, flatShading: true }), 6), [-0.15, Y(0) + 0.05, Z(0) + 0.1]));
+    // 1 células: racimo translúcido con núcleos
+    const cells = new THREE.Group(); cells.position.set(0, Y(1) + 0.17, Z(1)); cells.scale.setScalar(1.4); g.add(cells);
+    [[0, 0, 0], [0.16, 0.02, 0.05], [-0.15, 0.01, -0.03], [0.04, 0.13, -0.05], [-0.06, 0.03, 0.15]].forEach(([x, y, z], k) => {
+      cells.add(place(ball(b, 0.09, ghostMat(b, "#6cf0a0", 0.45), 16), [x, y, z]), place(ball(b, 0.03, glowMat(b, "#2f9d5c", 0.7), 8), [x + 0.02, y + 0.01, z + 0.02 * k]));
+    });
+    // 2 vida compleja: un árbol con copa en tres pisos y hierba
+    const tree = new THREE.Group(); tree.position.set(0.1, Y(2), Z(2)); tree.scale.setScalar(1.4); g.add(tree);
+    tree.add(place(cyl(b, 0.03, 0.045, 0.25, mat(b, "#7a5230", { roughness: 0.9 }), 10), [0, 0.125, 0]));
+    [0, 1, 2].forEach((k) => tree.add(place(new THREE.Mesh(b.track(new THREE.ConeGeometry(0.2 - k * 0.05, 0.22, 12)), mat(b, col("#2f8f4a", "#58c46a", k / 2), { roughness: 0.8 })), [0, 0.28 + k * 0.12, 0])));
+    for (let k = 0; k < 6; k++) g.add(place(new THREE.Mesh(b.track(new THREE.ConeGeometry(0.02, 0.09, 5)), mat(b, "#4fb35c")), [-0.35 + hash1(k + 5) * 0.3, Y(2) + 0.045, Z(2) - 0.1 + hash1(k + 9) * 0.25]));
+    // 3 inteligencia (nosotros): figura humana y un marcador de anillo encima
+    const us = new THREE.Group(); us.position.set(0, Y(3), Z(3)); us.scale.setScalar(1.45); g.add(us);
+    const skin = mat(b, "#e8d6c8", { roughness: 0.6, emissive: new THREE.Color("#302018"), emissiveIntensity: 0.4 });
+    us.add(place(new THREE.Mesh(b.track(new THREE.CapsuleGeometry(0.06, 0.16, 6, 12)), mat(b, "#4a78c8", { roughness: 0.6 })), [0, 0.2, 0]), place(ball(b, 0.055, skin, 16), [0, 0.37, 0]));
+    [-1, 1].forEach((s) => { us.add(rod(b, [s * 0.04, 0.12, 0], [s * 0.05, 0.0, 0], 0.022, mat(b, "#2a3048"))); us.add(rod(b, [s * 0.07, 0.27, 0], [s * 0.12, 0.13, 0.02], 0.018, skin)); });
+    const markM = beam(b, TONE.cyan, 2, { transparent: true, opacity: 0.95 });
+    const mark = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.11, 0.012, 6, 36)), markM); mark.rotation.x = Math.PI / 2; mark.position.y = 0.55; us.add(mark);
+    const pin = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.04, 0.09, 12)), markM); pin.rotation.x = Math.PI; pin.position.y = 0.66; us.add(pin);
+    const usGlow = halo(b, "rgba(120,220,255,0.9)", 0.9, 0.35); usGlow.position.y = 0.3; us.add(usGlow);
+    // 4 civilización entre estrellas: cohete y estación en anillo, dorados
+    const civ = new THREE.Group(); civ.position.set(0, Y(4), Z(4)); civ.scale.setScalar(1.4); g.add(civ);
+    const gold = mat(b, "#f0c25a", { metalness: 0.6, roughness: 0.3, emissive: new THREE.Color("#5a3a08"), emissiveIntensity: 0.6 });
+    civ.add(place(cyl(b, 0.04, 0.05, 0.24, gold, 14), [-0.25, 0.17, 0]), place(new THREE.Mesh(b.track(new THREE.ConeGeometry(0.04, 0.09, 14)), gold), [-0.25, 0.335, 0]));
+    const st = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.16, 0.03, 8, 32)), gold); st.position.set(0.18, 0.32, 0); civ.add(st, place(ball(b, 0.05, gold, 12), [0.18, 0.32, 0]));
+    const civGlow = halo(b, "rgba(255,210,120,0.9)", 1.1, 0.35); civGlow.position.y = 0.3; civ.add(civGlow);
+    // el muro: panel rojo translúcido con trama, entre dos escalones
+    const wallTex = screenTex(b.track, 256, 256, (c) => {
+      c.fillStyle = "rgba(255,40,60,0.35)"; c.fillRect(0, 0, 256, 256); c.strokeStyle = "rgba(255,150,160,0.9)"; c.lineWidth = 3;
+      for (let i = 0; i <= 256; i += 32) { c.beginPath(); c.moveTo(i, 0); c.lineTo(i, 256); c.stroke(); c.beginPath(); c.moveTo(0, i); c.lineTo(256, i); c.stroke(); }
+      c.lineWidth = 8; c.strokeRect(4, 4, 248, 248);
+    });
+    const wallM = new THREE.MeshBasicMaterial({ map: wallTex, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false, color: new THREE.Color("#ff5060").multiplyScalar(1.6) }); b.track(wallM);
+    const wall = new THREE.Mesh(b.track(new THREE.PlaneGeometry(1.9, 0.7)), wallM); g.add(wall);
+    const wallGlow = halo(b, "rgba(255,60,80,0.9)", 2.4, 0.4); g.add(wallGlow);
+    // luces que intentan subir (la 0 es la única que cruza)
+    const NC = 18, climbers = Array.from({ length: NC }, (_, k) => { const m = ball(b, 0.035, beam(b, "#ffe9a8", 2.2, { transparent: true, opacity: 0 }), 10); g.add(m); return { m, k, ph: hash1(k + 71), x: -0.65 + hash1(k + 83) * 1.3 }; });
+    const burst = climbers.map(() => { const h = halo(b, "rgba(255,70,90,1)", 0.35, 0); g.add(h); return h; });
+    const halos = [rock, cells, tree, us, civ].map((o) => { const h = halo(b, "rgba(255,230,160,0.9)", 0.9, 0); h.position.copy(o.position).add(new THREE.Vector3(0, 0.2, 0.05)); g.add(h); return h; });
+    g.rotation.y = 1.0; g.scale.setScalar(1.1); root.add(g); shadows(g);
+    let sub = 0, lf = 0; const u = { vida: 0, inteligencia: 0, destruirse: 0, atras: 0, delante: 0 };
+    const paint = (f: number) => {
+      lf = f;
+      // posición del muro (hueco 0..3, entre el escalón n y el n+1)
+      let gap = 2; gap += (0 - gap) * u.vida; gap += (2 - gap) * u.inteligencia; gap += (3 - gap) * u.destruirse; gap += (2 - gap) * u.atras; gap += (3 - gap) * u.delante;
+      const wz = Z(gap + 0.5), wy = Y(gap + 1) + 0.3;
+      const red = Math.max(u.destruirse, u.delante), beat = 0.5 + 0.5 * Math.sin(f * 0.25);
+      wall.position.set(0, wy, wz + 0.3); wall.scale.set(1, 1 + 0.35 * u.delante, 1);
+      wallM.opacity = 0.5 + 0.35 * red * beat; wallGlow.position.copy(wall.position);
+      (wallGlow.material as THREE.MeshBasicMaterial).opacity = 0.3 + 0.45 * red * beat;
+      halos[1].material.opacity = 0.7 * u.vida * (1 - u.inteligencia); halos[3].material.opacity = 0.7 * u.inteligencia * (1 - u.destruirse) + 0.6 * u.atras;
+      halos[4].material.opacity = 0.7 * u.destruirse * (1 - u.atras);
+      markM.color.copy(col(TONE.cyan, "#5dff8a", u.atras).lerp(new THREE.Color("#ff4a5a"), u.delante)).multiplyScalar(2);
+      mark.scale.setScalar(1 + 0.25 * Math.max(u.atras, u.delante) * beat); mark.rotation.z = f * 0.03; pin.position.y = 0.66 + 0.03 * Math.sin(f * 0.1);
+      civ.rotation.y = f * 0.01; st.rotation.y = f * 0.03; cells.rotation.y = f * 0.008;
+      // escaladores: avanzan un escalón cada ~0,6 s con un saltito; chocan con el muro salvo el 0
+      climbers.forEach(({ m, k, ph, x }) => {
+        const cyc = 150, t = ((f + ph * cyc) % cyc) / cyc * 5.2, alive = sub > 0.02;
+        const stop = k === 0 ? 4 : gap + 0.5, s = Math.min(t, stop), i0 = Math.floor(s), fr = s - i0, i1 = Math.min(4, i0 + 1);
+        const hop = Math.sin(Math.PI * fr) * 0.18, y = Y(i0) + (Y(i1) - Y(i0)) * fr + hop + 0.04, z = Z(i0) + (Z(i1) - Z(i0)) * fr + 0.15;
+        m.position.set(x * (k === 0 ? 0.3 : 1), y, z);
+        const hit = k !== 0 && t > stop, after = hit ? (t - stop) / 0.5 : 0;
+        (m.material as THREE.MeshBasicMaterial).opacity = alive ? (hit ? Math.max(0, 1 - after) : Math.min(1, t * 4)) : 0;
+        (m.material as THREE.MeshBasicMaterial).color.set(hit ? "#ff5060" : k === 0 ? "#ffe27a" : "#ffe9a8").multiplyScalar(2.2);
+        burst[k].position.copy(m.position); (burst[k].material as THREE.MeshBasicMaterial).opacity = alive && hit ? 0.9 * Math.max(0, 1 - after) : 0;
+      });
+    };
+    return {
+      ...done(root, b, paint),
+      act: (name, v) => { if (name === "subir") sub = v; else if (name in u) u[name as keyof typeof u] = ease(v); paint(lf); },
+    };
+  },
+};

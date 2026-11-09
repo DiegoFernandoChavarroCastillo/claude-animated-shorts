@@ -1,5 +1,5 @@
-// Catálogo de objetos protagonistas (plan §8 F4): primitivas construidas en código, modelos glTF CC0 y tarjetas
-// pintadas. La cámara y la capa 2D solo leen los datos (centro, radio de encuadre, anclas); `build` crea el objeto.
+// Catálogo de objetos protagonistas (plan §8 F4): primitivas construidas en código, modelos glTF CC0, tarjetas
+// pintadas, dioramas 2.5D de láminas (laminas_custom.ts) e ilustraciones 2D a pantalla completa (flat/custom.tsx). La cámara y la capa 2D solo leen los datos (centro, radio de encuadre, anclas); `build` crea el objeto.
 import type { HeroDef } from "./types";
 import { telefono, reloj } from "./primitive/devices";
 import { chip, vaso_agua_hielo, cubo_hielo, moleculas_agua, lago_corte } from "./primitive/science";
@@ -23,8 +23,10 @@ import { sistema_solar, cometa_asteroide, satelite, telescopio, eclipse_solar, a
 import { ciclo_agua, arcoiris, huracan, estratos_fosil, aurora, duna_desierto } from "./primitive/earth2";
 import { hongo_micelio, mariposa, medusa, murcielago, huevo_embrion, flor_polinizacion } from "./primitive/life2";
 import { nevera, candado_cifrado, engranajes, catapulta, pitagoras, moneda_azar } from "./primitive/home2";
-import { rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces, memoria_usb, celda_flash, celdas_matriz, acelerometro_mems, cable_fondo, cable_corte, globo_cables, ancla_barco, satelite_geo, bloques_metal_madera, dedo_contacto, telefono_hora, tierra_husos, tablilla_sesenta, atomo_cesio, red_relojes } from "./primitive/custom";
+import { rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces, memoria_usb, celda_flash, celdas_matriz, acelerometro_mems, cable_fondo, cable_corte, globo_cables, ancla_barco, satelite_geo, bloques_metal_madera, dedo_contacto, telefono_hora, tierra_husos, tablilla_sesenta, atomo_cesio, red_relojes, cielo_mudo, radiotelescopio, gran_filtro } from "./primitive/custom";
 import { perro, persona } from "./cards";
+import { comida_fermi } from "./laminas_custom";
+import { pizarra_hipotesis, planetas_campo } from "../flat/custom";
 import { GLTF_HEROES } from "./gltf";
 
 export type { HeroDef, HeroInstance, V3 } from "./types";
@@ -51,8 +53,10 @@ export const HEROES: Record<string, HeroDef> = {
   hongo_micelio, mariposa, medusa, murcielago, huevo_embrion, flor_polinizacion,
   nevera, candado_cifrado, engranajes, catapulta, pitagoras, moneda_azar,
   rejilla_ondas, aluminio_cargas, sensor_pulso, espectro_canales, manilla_rfid, servidor_rack, manilla_led, estadio_zonas, emisor_ir, consola_luces, memoria_usb, celda_flash, celdas_matriz,
-  acelerometro_mems, cable_fondo, cable_corte, globo_cables, ancla_barco, satelite_geo, bloques_metal_madera, dedo_contacto, telefono_hora, tierra_husos, tablilla_sesenta, atomo_cesio, red_relojes,
+  acelerometro_mems, cable_fondo, cable_corte, globo_cables, ancla_barco, satelite_geo, bloques_metal_madera, dedo_contacto, telefono_hora, tierra_husos, tablilla_sesenta, atomo_cesio, red_relojes, cielo_mudo, radiotelescopio, gran_filtro,
   perro, persona,
+  comida_fermi,
+  pizarra_hipotesis, planetas_campo,
   ...GLTF_HEROES,
 };
 
