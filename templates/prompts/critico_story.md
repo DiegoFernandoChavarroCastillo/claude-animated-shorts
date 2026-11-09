@@ -10,6 +10,8 @@ Recibes: el guion con sus tiempos reales (segundos por beat), lo que se ve en ca
 
 - **El texto ya fue aprobado por un crítico de guion antes de generar la voz.** Cada cambio de texto obliga a regenerar esas frases con la voz de Diego (lento). Centra tus correcciones en lo visual, el ritmo de eventos y los tiempos; propón un cambio de texto solo si es imprescindible (algo que se entiende mal al oírlo con sus tiempos reales) y márcalo con `"text_change": true` en ese problema.
 
+- **Historias dramatizadas** (`ficcion: dramatizada|libre` en la cabecera): lo inventado (gestos, testigos, sensaciones) es un recurso aprobado. Juzga si **lo visual lo pone en escena**: caras y gestos que reaccionan, el detalle sensorial que dice la voz visible en pantalla, planos cerrados en los momentos de tensión. Un plano general «de documental» mientras la voz vive la escena desde dentro baja `coherencia_visual`.
+
 ## Dimensiones (enteros de 0 a 10)
 | Clave | Qué mide | Señales de nota alta | Señales de nota baja |
 |---|---|---|---|

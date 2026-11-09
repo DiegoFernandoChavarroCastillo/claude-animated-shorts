@@ -93,6 +93,16 @@
       "max": {"scene": 5, "rupture": 3, "ascent": 3, "return": 3},
       "ejemplo": "templates/examples/mito-caverna/02_SCRIPT.md"
     },
+    "drama": {
+      "nombre": "Historia dramatizada",
+      "resumen": "Cuenta un hecho real como una escena vivida (presente, punto de vista dentro de la historia): arranca en el momento tenso, pone algo en juego, escala y revela un giro que pasa dentro de la historia; la moraleja nunca se dice. Hechos ancla verificados; el cómo (gestos, sensaciones, pensamientos, frases privadas) se dramatiza.",
+      "mejor_para": "Anécdotas, rivalidades, traiciones y decisiones de personajes reales (Diógenes, Marco Aurelio) contadas con ficción controlada.",
+      "orden": ["hook", "scene", "rupture", "ascent", "twist", "return", "cta"],
+      "requeridos": ["twist"],
+      "min": {"scene": 1, "ascent": 1},
+      "max": {"scene": 4, "rupture": 2, "ascent": 4, "twist": 4, "return": 2},
+      "ejemplo": "templates/examples/diogenes-pollo/02_SCRIPT.md"
+    },
     "mito": {
       "nombre": "Mito y mecanismo",
       "resumen": "Desmiente una idea y explica cómo funciona de verdad (la fórmula original).",

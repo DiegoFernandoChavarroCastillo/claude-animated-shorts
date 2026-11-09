@@ -1,0 +1,1851 @@
+{
+ "meta": {
+  "id": "diogenes-pollo",
+  "lang": "es",
+  "title": "El hombre de Platón",
+  "engine": "2d",
+  "pacing": "viral",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "voice": {
+   "engine": "chatterbox",
+   "voice": "diego",
+   "speed": 1.28
+  },
+  "music": true,
+  "musicMood": "tense",
+  "captionEmphasis": "accent",
+  "tailS": 0.3
+ },
+ "beats": [
+  {
+   "id": "b01",
+   "role": "hook",
+   "text": "Para Platón, tú y un pollo desplumado son lo mismo.",
+   "keywords": [
+    "Platón,",
+    "tú",
+    "pollo",
+    "desplumado"
+   ],
+   "shows": "la Academia: Platón a la derecha con el índice alzado, en el centro un pollo desplumado de pie sobre el mármol; al decir tú aparece a la izquierda una mano humana junto a la pata del pollo",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.78,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "finger": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.47,
+       0.62
+      ],
+      "scale": 0.34,
+      "id": "pol"
+     },
+     {
+      "asset": "unas",
+      "z": 3,
+      "at": [
+       0.17,
+       0.6
+      ],
+      "scale": 0.28,
+      "id": "una"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.47,
+      1.05
+     ],
+     "to": [
+      0.46,
+      0.575,
+      1.22
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "Para",
+     "target": "pla"
+    },
+    {
+     "type": "appear",
+     "at": "tú",
+     "target": "una"
+    },
+    {
+     "type": "pop",
+     "at": "pollo",
+     "target": "pol",
+     "scale": 1.25
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b02",
+   "role": "scene",
+   "text": "Estás en Atenas, sentado en la Academia. Aquí enseña Aristocles. Todos lo llaman Platón: el Ancho.",
+   "keywords": [
+    "Atenas,",
+    "Academia.",
+    "Aristocles.",
+    "Ancho."
+   ],
+   "shows": "plano general de la Academia con dos filas de alumnos sentados (tú entre ellos); aparece Platón, ancho de hombros, ante ellos; cartel «PLATÓN = EL ANCHO»; al fondo a la derecha, la puerta cerrada tiembla, como si alguien empujara",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "puerta",
+      "z": 1,
+      "at": [
+       0.93,
+       0.5
+      ],
+      "scale": 0.18,
+      "id": "pue"
+     },
+     {
+      "asset": "platon",
+      "z": 1,
+      "at": [
+       0.74,
+       0.44
+      ],
+      "scale": 0.3,
+      "id": "pla"
+     },
+     {
+      "asset": "alumnos",
+      "z": 2,
+      "at": [
+       0.42,
+       0.62
+      ],
+      "scale": 0.72,
+      "id": "alu"
+     }
+    ],
+    "camera": {
+     "preset": "pull_out",
+     "from": [
+      0.4,
+      0.591,
+      1.35
+     ],
+     "to": [
+      0.5,
+      0.46,
+      1.05
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "sentado",
+     "target": "alu"
+    },
+    {
+     "type": "appear",
+     "at": "enseña",
+     "target": "pla"
+    },
+    {
+     "type": "tremble",
+     "at": "Todos",
+     "target": "pue",
+     "amp": 4
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Ancho.",
+     "text": "PLATÓN = «EL ANCHO»",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "Todos",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.7,
+       0.36,
+       1.3
+      ],
+      "to": [
+       0.72,
+       0.33,
+       1.55
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b03",
+   "role": "scene",
+   "text": "Hoy el maestro promete definir al ser humano. En una sola frase.",
+   "keywords": [
+    "promete",
+    "humano.",
+    "frase."
+   ],
+   "shows": "Platón de cerca, sonriente y seguro, con su rollo de papiro; cartel con la pregunta",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.55,
+       0.62
+      ],
+      "scale": 0.5,
+      "id": "pla"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.55,
+      0.45,
+      1.1
+     ],
+     "to": [
+      0.55,
+      0.42,
+      1.3
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "promete",
+     "target": "pla",
+     "scale": 1.08
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "humano.",
+     "text": "¿QUÉ ES UN SER HUMANO?",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "En",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.55,
+       0.38,
+       1.45
+      ],
+      "to": [
+       0.55,
+       0.36,
+       1.65
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b04",
+   "role": "scene",
+   "text": "Levanta un dedo. Silencio. El hombre es un animal. Bípedo. Sin plumas.",
+   "keywords": [
+    "dedo.",
+    "Silencio.",
+    "Bípedo.",
+    "plumas."
+   ],
+   "shows": "Platón alza el índice y la sala calla; la definición en un cartel: animal bípedo sin plumas",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.55,
+       0.46
+      ],
+      "scale": 0.4,
+      "id": "pla"
+     },
+     {
+      "asset": "alumnos",
+      "z": 3,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.9,
+      "id": "alu"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.55,
+      0.45,
+      1.1
+     ],
+     "to": [
+      0.55,
+      0.42,
+      1.2
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "finger",
+     "at": "Levanta",
+     "target": "pla",
+     "dur": 14
+    },
+    {
+     "type": "pop",
+     "at": "Silencio.",
+     "target": "pla",
+     "scale": 1.06
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "animal.",
+     "text": "ANIMAL · BÍPEDO · SIN PLUMAS",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "El",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.55,
+       0.4,
+       1.3
+      ],
+      "to": [
+       0.55,
+       0.45,
+       1.1
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b05",
+   "role": "scene",
+   "text": "La sala aplaude. Tú también. Suena tan simple. Tan perfecto.",
+   "keywords": [
+    "aplaude.",
+    "también.",
+    "simple.",
+    "perfecto."
+   ],
+   "shows": "las filas de alumnos aplauden; primer plano de unas manos que aplauden (las tuyas); Platón sonríe satisfecho",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 1,
+      "at": [
+       0.76,
+       0.48
+      ],
+      "scale": 0.3,
+      "id": "pla",
+      "init": {
+       "finger": 1
+      }
+     },
+     {
+      "asset": "alumnos",
+      "z": 2,
+      "at": [
+       0.45,
+       0.62
+      ],
+      "scale": 1.0,
+      "id": "alu"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.54,
+      0.5,
+      1.9
+     ],
+     "to": [
+      0.54,
+      0.5,
+      2.3
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "applaud",
+     "at": "aplaude.",
+     "target": "alu",
+     "dur": 60
+    },
+    {
+     "type": "pop",
+     "at": "perfecto.",
+     "target": "pla",
+     "scale": 1.12
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "perfecto.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.74,
+       0.38,
+       1.3
+      ],
+      "to": [
+       0.75,
+       0.36,
+       1.6
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b06",
+   "role": "rupture",
+   "text": "Entonces la puerta se abre de golpe. Entra un viejo descalzo, con olor a mercado.",
+   "keywords": [
+    "puerta",
+    "golpe.",
+    "descalzo,",
+    "mercado."
+   ],
+   "shows": "la puerta de la Academia se abre de golpe, entra la luz de la calle; en el umbral aparece un viejo descalzo y sucio",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "puerta",
+      "z": 1,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.8,
+      "id": "pue"
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "dio"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.44,
+      1.05
+     ],
+     "to": [
+      0.5,
+      0.587,
+      1.3
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "burst",
+     "at": "golpe.",
+     "target": "pue",
+     "dur": 24
+    },
+    {
+     "type": "camshake",
+     "at": "golpe."
+    },
+    {
+     "type": "appear",
+     "at": "Entra",
+     "target": "dio"
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "descalzo,",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.5,
+       0.595,
+       1.4
+      ],
+      "to": [
+       0.5,
+       0.608,
+       1.8
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b07",
+   "role": "rupture",
+   "text": "Es Diógenes, el que duerme en una tinaja. Platón deja de sonreír.",
+   "keywords": [
+    "Diógenes,",
+    "tinaja.",
+    "sonreír."
+   ],
+   "shows": "Diógenes, barba blanca y manto raído, frente a Platón; cartel: vive en una tinaja; a Platón se le borra la sonrisa",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.27,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "dio"
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.75,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.3,
+      0.587,
+      1.3
+     ],
+     "to": [
+      0.3,
+      0.6,
+      1.5
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "Diógenes,",
+     "target": "dio"
+    },
+    {
+     "type": "frown",
+     "at": "sonreír.",
+     "target": "pla",
+     "dur": 16
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "tinaja.",
+     "text": "DIÓGENES · VIVE EN UNA TINAJA",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "Platón",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.75,
+       0.4,
+       1.5
+      ],
+      "to": [
+       0.75,
+       0.38,
+       1.7
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b08",
+   "role": "ascent",
+   "text": "Los alumnos se apartan. Este loco ya le pisoteó las alfombras delante de sus invitados.",
+   "keywords": [
+    "apartan.",
+    "loco",
+    "pisoteó",
+    "alfombras",
+    "invitados."
+   ],
+   "shows": "los alumnos se echan atrás y se apartan; detrás de ellos, la alfombra del banquete de Platón se llena de pisadas de barro",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "alfombra",
+      "z": 1,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 0.95,
+      "id": "alf"
+     },
+     {
+      "asset": "alumnos",
+      "z": 2,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 1.0,
+      "id": "alu"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.57,
+      1.2
+     ],
+     "to": [
+      0.5,
+      0.595,
+      1.4
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "part",
+     "at": "apartan.",
+     "target": "alu",
+     "dur": 18
+    },
+    {
+     "type": "vanish",
+     "at": "Este",
+     "target": "alu"
+    },
+    {
+     "type": "stomp",
+     "at": "pisoteó",
+     "target": "alf",
+     "dur": 50
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "invitados.",
+     "text": "DELANTE DE SUS INVITADOS",
+     "slot": "top"
+    }
+   ],
+   "transition": "crossfade",
+   "shots": [
+    {
+     "at": "pisoteó",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.45,
+       0.56,
+       1.6
+      ],
+      "to": [
+       0.5,
+       0.57,
+       1.9
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "b09",
+   "role": "ascent",
+   "text": "Escupe al suelo y suelta: tiempo perdido. Bajo su manto, algo abulta.",
+   "keywords": [
+    "Escupe",
+    "tiempo",
+    "perdido.",
+    "abulta."
+   ],
+   "shows": "Diógenes de cerca escupe al suelo; cartel «TIEMPO PERDIDO»; bajo su manto aparece un bulto",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.52,
+      "id": "dio"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.45,
+      1.15
+     ],
+     "to": [
+      0.5,
+      0.43,
+      1.3
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "spit",
+     "at": "Escupe",
+     "target": "dio",
+     "dur": 24
+    },
+    {
+     "type": "bundle",
+     "at": "abulta.",
+     "target": "dio",
+     "dur": 12
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "tiempo",
+     "text": "«TIEMPO PERDIDO»",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "Bajo",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.58,
+       0.55,
+       1.8
+      ],
+      "to": [
+       0.6,
+       0.56,
+       2.1
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b10",
+   "role": "ascent",
+   "text": "Tú ves una pata asomando bajo la tela. Platón todavía no.",
+   "keywords": [
+    "pata",
+    "tela.",
+    "todavía"
+   ],
+   "shows": "primerísimo plano del bulto bajo el manto: asoma una pata amarilla de ave; luego Platón, que no se ha dado cuenta",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.3,
+       0.62
+      ],
+      "scale": 0.48,
+      "id": "dio",
+      "init": {
+       "bundle": 1
+      }
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.78,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.36,
+      0.55,
+      1.5
+     ],
+     "to": [
+      0.36,
+      0.56,
+      1.75
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "pata",
+     "target": "dio",
+     "scale": 1.06
+    },
+    {
+     "type": "tremble",
+     "at": "tela.",
+     "target": "dio",
+     "amp": 3
+    },
+    {
+     "type": "pop",
+     "at": "Platón",
+     "target": "pla",
+     "scale": 1.06
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "Platón",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.6,
+       0.45,
+       1.4
+      ],
+      "to": [
+       0.76,
+       0.42,
+       1.6
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b11",
+   "role": "ascent",
+   "text": "Cruza la sala dejando barro en el mármol. Se planta frente a Platón. Nadie respira.",
+   "keywords": [
+    "Cruza",
+    "barro",
+    "mármol.",
+    "planta",
+    "respira."
+   ],
+   "shows": "Diógenes cruza la sala con el bulto y deja pisadas de barro en el mármol; se planta frente a Platón; tensión",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "huellas",
+      "z": 1,
+      "at": [
+       0.4,
+       0.6
+      ],
+      "scale": 0.7,
+      "id": "hue"
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.14,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "dio",
+      "init": {
+       "bundle": 1
+      }
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.8,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     }
+    ],
+    "camera": {
+     "preset": "pan_slow",
+     "from": [
+      0.25,
+      0.587,
+      1.3
+     ],
+     "to": [
+      0.55,
+      0.57,
+      1.2
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "slide",
+     "at": "Cruza",
+     "target": "dio",
+     "dx": 0.34,
+     "dur": 60
+    },
+    {
+     "type": "trail",
+     "at": "barro",
+     "target": "hue",
+     "dur": 50
+    },
+    {
+     "type": "pop",
+     "at": "respira.",
+     "target": "pla",
+     "scale": 1.05
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "planta",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.64,
+       0.48,
+       1.35
+      ],
+      "to": [
+       0.64,
+       0.46,
+       1.6
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b12",
+   "role": "twist",
+   "text": "Diógenes lanza el bulto a sus pies. Algo cae, blando, sobre el mármol.",
+   "keywords": [
+    "lanza",
+    "bulto",
+    "cae,",
+    "blando,"
+   ],
+   "shows": "plano cerrado de Diógenes que lanza el bulto; plano bajo del fardo que cae blando sobre el mármol con polvo; se abre a Platón mirándolo",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.38,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "dio",
+      "init": {
+       "bundle": 1
+      }
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.82,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.62,
+       0.62
+      ],
+      "scale": 0.22,
+      "id": "pol",
+      "init": {
+       "wrapped": 1
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.42,
+      0.5,
+      1.6
+     ],
+     "to": [
+      0.45,
+      0.5,
+      1.7
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "fling",
+     "at": "lanza",
+     "target": "dio",
+     "dur": 16
+    },
+    {
+     "type": "appear",
+     "at": "bulto",
+     "target": "pol"
+    },
+    {
+     "type": "drop",
+     "at": "bulto",
+     "target": "pol",
+     "dur": 26
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade",
+   "shots": [
+    {
+     "at": "bulto",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.62,
+       0.58,
+       2.2
+      ],
+      "to": [
+       0.62,
+       0.6,
+       2.4
+      ]
+     }
+    },
+    {
+     "at": "blando,",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.6,
+       0.5,
+       1.6
+      ],
+      "to": [
+       0.6,
+       0.47,
+       1.25
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "b13",
+   "role": "twist",
+   "text": "Abre los brazos y grita: ¡He aquí el hombre de Platón!",
+   "keywords": [
+    "brazos",
+    "grita:",
+    "hombre",
+    "Platón!"
+   ],
+   "shows": "Diógenes abre los brazos y grita; cartel con la frase; el bulto a los pies de Platón",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "diogenes",
+      "z": 2,
+      "at": [
+       0.38,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "dio",
+      "init": {
+       "bundle": 1,
+       "fling": 1
+      }
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.82,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.62,
+       0.62
+      ],
+      "scale": 0.22,
+      "id": "pol",
+      "init": {
+       "wrapped": 1
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.42,
+      0.45,
+      1.2
+     ],
+     "to": [
+      0.42,
+      0.42,
+      1.4
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "arms",
+     "at": "Abre",
+     "target": "dio",
+     "dur": 12
+    },
+    {
+     "type": "camshake",
+     "at": "grita:",
+     "amp": 8
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "hombre",
+     "text": "«¡HE AQUÍ EL HOMBRE DE PLATÓN!»",
+     "slot": "top"
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b14",
+   "role": "twist",
+   "text": "Es un pollo. Desplumado. Piel de gallina, patas flacas. Bípedo y sin plumas.",
+   "keywords": [
+    "pollo.",
+    "Desplumado.",
+    "gallina,",
+    "Bípedo"
+   ],
+   "shows": "cae la tela: es un pollo desplumado, piel de gallina y patas flacas, de pie sobre el mármol; plano cerrado",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 1,
+      "at": [
+       0.84,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "pol",
+      "init": {
+       "wrapped": 1
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.57,
+      1.2
+     ],
+     "to": [
+      0.5,
+      0.598,
+      1.45
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "unwrap",
+     "at": "pollo.",
+     "target": "pol",
+     "dur": 16
+    },
+    {
+     "type": "pop",
+     "at": "Desplumado.",
+     "target": "pol",
+     "scale": 1.12
+    },
+    {
+     "type": "tremble",
+     "at": "Bípedo",
+     "target": "pol",
+     "amp": 3
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Bípedo",
+     "text": "BÍPEDO ✓  SIN PLUMAS ✓",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "Piel",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.5,
+       0.606,
+       1.7
+      ],
+      "to": [
+       0.48,
+       0.61,
+       2.0
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b15",
+   "role": "twist",
+   "text": "Platón mira el pollo. Luego te mira a ti. Tú aplaudiste hace un momento. Se te escapa la risa. La sala estalla.",
+   "keywords": [
+    "pollo.",
+    "mira",
+    "ti.",
+    "risa.",
+    "estalla."
+   ],
+   "shows": "Platón mira el pollo; primer plano de su cara girando hacia ti; tus manos, que aplaudían, quietas; plano general: la sala estalla de risa",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 1,
+      "at": [
+       0.72,
+       0.46
+      ],
+      "scale": 0.36,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 2,
+      "at": [
+       0.5,
+       0.44
+      ],
+      "scale": 0.2,
+      "id": "pol"
+     },
+     {
+      "asset": "alumnos",
+      "z": 3,
+      "at": [
+       0.5,
+       0.62
+      ],
+      "scale": 0.62,
+      "id": "alu"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.62,
+      0.4,
+      1.3
+     ],
+     "to": [
+      0.6,
+      0.38,
+      1.45
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "look",
+     "at": "Luego",
+     "target": "pla",
+     "dur": 14
+    },
+    {
+     "type": "laugh",
+     "at": "risa.",
+     "target": "alu",
+     "dur": 20
+    },
+    {
+     "type": "camshake",
+     "at": "estalla.",
+     "amp": 8
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "Luego",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.72,
+       0.3,
+       1.9
+      ],
+      "to": [
+       0.72,
+       0.28,
+       2.2
+      ]
+     }
+    },
+    {
+     "at": "momento.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.55,
+       0.54,
+       2.2
+      ],
+      "to": [
+       0.55,
+       0.55,
+       2.5
+      ]
+     }
+    },
+    {
+     "at": "estalla.",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.5,
+       0.5,
+       1.3
+      ],
+      "to": [
+       0.5,
+       0.47,
+       1.05
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b16",
+   "role": "return",
+   "text": "Platón no dice nada. Pero la definición cambia: bípedo, sin plumas, de uñas anchas.",
+   "keywords": [
+    "nada.",
+    "definición",
+    "uñas",
+    "anchas."
+   ],
+   "shows": "Platón callado junto a una estela con la definición; se talla en dorado: DE UÑAS ANCHAS; el pollo desplumado sigue allí, al pie de la estela",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 1,
+      "at": [
+       0.82,
+       0.6
+      ],
+      "scale": 0.36,
+      "id": "pla",
+      "init": {
+       "frown": 1
+      }
+     },
+     {
+      "asset": "definicion",
+      "z": 2,
+      "at": [
+       0.42,
+       0.6
+      ],
+      "scale": 0.62,
+      "id": "def"
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.64,
+       0.6
+      ],
+      "scale": 0.15,
+      "id": "pol"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.55,
+      0.4,
+      1.1
+     ],
+     "to": [
+      0.45,
+      0.5,
+      1.3
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "tremble",
+     "at": "nada.",
+     "target": "pol",
+     "amp": 3
+    },
+    {
+     "type": "appear",
+     "at": "definición",
+     "target": "def"
+    },
+    {
+     "type": "add",
+     "at": "uñas",
+     "target": "def",
+     "dur": 36
+    }
+   ],
+   "overlays": [],
+   "shots": [
+    {
+     "at": "bípedo,",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.42,
+       0.514,
+       1.35
+      ],
+      "to": [
+       0.42,
+       0.55,
+       1.6
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b17",
+   "role": "return",
+   "text": "Uñas anchas. Platón, el Ancho. El chiste ya estaba dentro de su nombre.",
+   "keywords": [
+    "Uñas",
+    "Ancho.",
+    "chiste",
+    "nombre."
+   ],
+   "shows": "una mano humana con uñas anchas junto a la pata del pollo (✓ y ✗); luego Platón, ancho de hombros, con el cartel PLATYS = ANCHO",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "unas",
+      "z": 2,
+      "at": [
+       0.32,
+       0.6
+      ],
+      "scale": 0.42,
+      "id": "una"
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.78,
+       0.62
+      ],
+      "scale": 0.4,
+      "id": "pla"
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.4,
+      0.58,
+      1.25
+     ],
+     "to": [
+      0.38,
+      0.595,
+      1.4
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "compare",
+     "at": "Uñas",
+     "target": "una",
+     "dur": 24
+    },
+    {
+     "type": "pop",
+     "at": "Platón,",
+     "target": "pla",
+     "scale": 1.1
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "chiste",
+     "text": "PLATYS = ANCHO",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "Platón,",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.6,
+       0.44,
+       1.35
+      ],
+      "to": [
+       0.76,
+       0.42,
+       1.55
+      ]
+     }
+    },
+    {
+     "at": "nombre.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.78,
+       0.4,
+       1.55
+      ],
+      "to": [
+       0.78,
+       0.36,
+       1.8
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b18",
+   "role": "cta",
+   "text": "Así que antes de reírte del pollo, mírate las uñas. Porque",
+   "keywords": [
+    "reírte",
+    "pollo,",
+    "uñas."
+   ],
+   "shows": "vuelve la escena del principio: Platón con el índice alzado, el pollo desplumado en el centro y tu mano a la izquierda; las uñas brillan",
+   "scene": {
+    "palette": "academia",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "academia",
+      "z": 0
+     },
+     {
+      "asset": "platon",
+      "z": 2,
+      "at": [
+       0.78,
+       0.62
+      ],
+      "scale": 0.42,
+      "id": "pla",
+      "init": {
+       "finger": 1
+      }
+     },
+     {
+      "asset": "pollo",
+      "z": 3,
+      "at": [
+       0.47,
+       0.62
+      ],
+      "scale": 0.34,
+      "id": "pol"
+     },
+     {
+      "asset": "unas",
+      "z": 3,
+      "at": [
+       0.17,
+       0.6
+      ],
+      "scale": 0.28,
+      "id": "una"
+     }
+    ],
+    "camera": {
+     "preset": "pull_out",
+     "from": [
+      0.4,
+      0.587,
+      1.3
+     ],
+     "to": [
+      0.48,
+      0.495,
+      1.08
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "pollo,",
+     "target": "pol",
+     "scale": 1.2
+    },
+    {
+     "type": "compare",
+     "at": "uñas.",
+     "target": "una",
+     "dur": 20
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade"
+  }
+ ]
+}

@@ -61,11 +61,12 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
   );
 };
 
-/** perfil `meta.pacing: "viral"`: subtítulos grandes de 1–3 palabras en la franja baja-central, con la palabra clave en amarillo */
+/** perfil `meta.pacing: "viral"`: subtítulos grandes de 1–3 palabras en la franja baja-central, con la palabra clave en amarillo y un contorno
+ *  oscuro que los hace legibles sobre fondos y ropas claras (pergamino, arena, mantos blancos; D118) */
 const captionCfg = (viral: boolean): typeof CAPTION => {
   if (!viral) return CAPTION;
   const c = pacingViral.captions;
-  return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor } as typeof CAPTION;
+  return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor, shadow: c.shadow } as typeof CAPTION;
 };
 
 export const Flat2D: React.FC<Props2> = (props) => {

@@ -84,10 +84,10 @@ hist = [{"round": i, "fingerprint": "x", "scores": scores(), "verdict": {"pass":
 check(f"tras {rs.CFG['maxRounds']} devoluciones se para y se consulta al usuario", raises(lambda: rs.evaluate(d2, "manual"), "consulta con el usuario"))
 
 # ---- crítico de guion (etapa review-script, antes de la voz)
-check("el crítico de guion usa sus propias dimensiones", "rigor" in rs.SCRIPT_DIMS and "coherencia_visual" not in rs.SCRIPT_DIMS)
+check("el crítico de guion usa sus propias dimensiones", "fidelidad" in rs.SCRIPT_DIMS and "drama" in rs.SCRIPT_DIMS and "coherencia_visual" not in rs.SCRIPT_DIMS)
 sc_ok = {k: 8 for k in rs.SCRIPT_DIMS}
 check("guion todo 8 pasa", rs.verdict({"scores": sc_ok}, "script")["pass"])
-check("guion con rigor 4 devuelve", not rs.verdict({"scores": {**sc_ok, "rigor": 4}}, "script")["pass"])
+check("guion con fidelidad 4 devuelve", not rs.verdict({"scores": {**sc_ok, "fidelidad": 4}}, "script")["pass"])
 check("las notas del story no sirven para el guion", raises(lambda: rs.verdict({"scores": scores()}, "script"), "incompleta"))
 d3 = sandbox()
 req = rs.build_request_script(d3)

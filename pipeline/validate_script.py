@@ -9,6 +9,8 @@ Formato del guion:
     hook: pregunta                (opcional: tipo de gancho; ver templates/formulas.json)
     structure: mito               (opcional, por defecto "mito": mito | lista | versus | historia | cadena)
     closing: pregunta             (opcional: pregunta | envia | sigue | bucle | reto_casa)
+    ficcion: dramatizada          (opcional, historias 2D: fiel | dramatizada | libre; ver templates/dramatizacion.json)
+    pov: tu                       (opcional, con ficcion: tu | yo | testigo | cercano)
 
     ## Guion
     [hook] ¿Te has preguntado por qué flota el hielo?
@@ -20,6 +22,9 @@ Formato del guion:
 
     ## Fuentes
     - nueve por ciento: https://...      (el número tal como aparece en el guion, en cifras o en palabras)
+
+    ## Ficción                    (obligatoria con ficcion: dramatizada | libre)
+    - ancla: lo que no se toca (verificado)   /   - inventado: lo que se dramatiza
 
 Comprueba: 175–300 palabras (el video debe durar entre 60 y 120 s para monetizar); gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
 tipo); los roles, su orden y cuántas líneas lleva cada uno según la estructura; la última línea es el cierre (y, si se
@@ -52,6 +57,7 @@ LL_START = re.compile(r"^(ll|y[aeiouáéíóú])", re.I)
 # La voz real da ~2,6 palabras/s con pausas: 175 palabras ≈ 67 s y 300 ≈ 115 s.
 WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 175, 300, 12, 22
 VIRAL = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))["script"]   # perfil `pacing: viral`
+DRAMA = json.loads((ROOT / "templates" / "dramatizacion.json").read_text(encoding="utf-8"))   # `ficcion:` y `pov:` (historias 2D)
 
 
 def fold(s: str) -> str:
@@ -175,6 +181,9 @@ class Script:
     structure: str = ""
     closing: str = ""
     pacing: str = ""
+    ficcion: str = ""
+    pov: str = ""
+    fiction: list[str] = field(default_factory=list)   # sección "## Ficción": anclas y lo inventado
     lines: list[tuple[str, str]] = field(default_factory=list)  # (rol, texto)
     sources: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -186,14 +195,15 @@ def parse(md: str) -> Script:
         line = raw.strip()
         if not line:
             continue
-        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|gancho|estructura|cierre|ritmo):\s*(\w+)", line, re.I)
+        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|ficcion|pov|gancho|estructura|cierre|ritmo|ficción):\s*(\w+)", line, re.I)
         if m and section is None:
-            key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing"}.get(m.group(1).lower(), m.group(1).lower())
+            key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing", "ficción": "ficcion"}.get(m.group(1).lower(), m.group(1).lower())
             setattr(s, key, m.group(2).lower())
             continue
         if line.startswith("## "):
             name = fold(line[3:]).strip()
-            section = "guion" if name.startswith(("guion", "script")) else "fuentes" if name.startswith(("fuentes", "sources")) else "otra"
+            section = ("guion" if name.startswith(("guion", "script")) else "fuentes" if name.startswith(("fuentes", "sources"))
+                       else "ficcion" if name.startswith(("ficcion", "fiction")) else "otra")
             continue
         if section == "guion":
             m = re.fullmatch(r"\[(\w+)\]\s*(.+)", line)
@@ -205,6 +215,8 @@ def parse(md: str) -> Script:
                 s.lines.append((m.group(1), m.group(2).strip()))
         elif section == "fuentes" and line.startswith(("-", "*")):
             s.sources.append(line.lstrip("-* ").strip())
+        elif section == "ficcion" and line.startswith(("-", "*")):
+            s.fiction.append(line.lstrip("-* ").strip())
     if s.lang not in ("es", "en"):
         s.errors.append("falta 'lang: es' o 'lang: en' antes de las secciones")
     if not s.lines:
@@ -298,6 +310,30 @@ def viral_errors(s: Script, hook: str, last: str) -> list[str]:
     return errs
 
 
+def fiction_errors(s: Script) -> list[str]:
+    """`ficcion:` dramatizada/libre: la historia se vive (no se cita) y declara qué es ancla y qué es inventado"""
+    errs = []
+    if s.ficcion not in DRAMA["niveles"]:
+        return [f"nivel de ficción desconocido '{s.ficcion}' (válidos: {', '.join(DRAMA['niveles'])})"]
+    if s.pov and s.pov not in DRAMA["pov"]:
+        errs.append(f"punto de vista desconocido '{s.pov}' (válidos: {', '.join(DRAMA['pov'])})")
+    if s.ficcion == "fiel":
+        return errs
+    if not s.pov:
+        errs.append("con `ficcion: " + s.ficcion + "` declara también `pov:` (" + ", ".join(DRAMA["pov"]) + ")")
+    kinds = [fold(x).split(":")[0].strip() for x in s.fiction]
+    if "ancla" not in kinds or "inventado" not in kinds:
+        errs.append("falta la sección '## Ficción' con al menos una línea '- ancla: …' (hecho verificado que no se toca) y una '- inventado: …' (lo dramatizado)")
+    lim = DRAMA["muletillas"]["max"][s.ficcion]
+    text = " " + fold(" ".join(t for _, t in s.lines)) + " "
+    hits = [m for m in DRAMA["muletillas"]["es" if s.lang == "es" else "en"] if re.search(rf"\b{re.escape(m)}\b", text)]
+    n = sum(len(re.findall(rf"\b{re.escape(m)}\b", text)) for m in hits)
+    if n > lim:
+        errs.append(f"suena a documental: {n} muletillas de crónica ({', '.join(hits)}; máximo {lim} con `ficcion: {s.ficcion}`). "
+                    "No cites al historiador ni a la tradición en la voz: vive la escena (las fuentes van en la descripción)")
+    return errs
+
+
 def validate(md: str) -> tuple[list[str], dict]:
     s = parse(md)
     errs = list(s.errors)
@@ -351,6 +387,10 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(e)
     if viral:
         errs += viral_errors(s, hook, last)
+    if s.ficcion:
+        errs += fiction_errors(s)
+    elif structure == "drama":
+        errs.append("la estructura 'drama' pide `ficcion:` (" + ", ".join(DRAMA["niveles"]) + ") y `pov:`")
     order = [spec["orden"].index(r) for r in roles if r in spec["orden"]]
     if any(b < a for a, b in zip(order, order[1:])):
         errs.append("los beats no siguen el orden " + " → ".join(spec["orden"]))
@@ -374,7 +414,8 @@ def validate(md: str) -> tuple[list[str], dict]:
             for pair in ll_clashes(t):
                 errs.append(f"'{pair}': dos sonidos ll/y seguidos; la voz hace una pausa como si hubiera una coma. "
                             f"Reescribe para separarlos ([{r}] {t[:50]}…)")
-    stats = {"lang": lang, "structure": structure, "hook": s.hook, "closing": s.closing, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources)}
+    stats = {"lang": lang, "structure": structure, "hook": s.hook, "closing": s.closing, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources),
+             "ficcion": s.ficcion, "pov": s.pov}
     return errs, stats
 
 

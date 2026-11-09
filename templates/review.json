@@ -1,5 +1,5 @@
 {
-  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario. `script`: umbrales de la etapa review-script (solo texto, antes de la voz; `tts` no arranca sin ella).",
+  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario. `script`: umbrales de la etapa review-script (solo texto, antes de la voz; `tts` no arranca sin ella). `drama` mide si suena a historia vivida o a documental; `fidelidad` (antes `rigor`) que no se altere ningún hecho ancla ni se presente lo inventado como dato (D118).",
   "weights": {
     "gancho": 3,
     "retencion": 3,
@@ -18,9 +18,10 @@
       "gancho": 3,
       "retencion": 3,
       "narrativa": 2,
+      "drama": 2,
       "ritmo_verbal": 1,
       "cierre_bucle": 1,
-      "rigor": 1
+      "fidelidad": 1
     },
     "minTotal": 7.5,
     "minGancho": 7,

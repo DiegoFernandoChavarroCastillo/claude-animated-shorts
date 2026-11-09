@@ -1,0 +1,20 @@
+{
+  "_nota": "Dramatización de las historias 2D (cabeceras `ficcion:` y `pov:` de 02_SCRIPT.md). Regla de oro: los hechos ancla no se tocan; el CÓMO se inventa. Lo lee pipeline/validate_script.py; la guía para elegir está en templates/prompts/story2d_script_es.md («Dramatización»). Quien escribe el guion elige nivel y punto de vista; no se le pregunta al usuario.",
+  "niveles": {
+    "fiel": "Solo lo que dicen las fuentes, con atribución si hace falta. Para hechos muy disputados, temas delicados (muertes recientes, víctimas reales) o cuando la gracia está en que es literal.",
+    "dramatizada": "Por defecto. Hechos ancla verificados (quién, qué pasó, cómo acabó, las frases famosas) y se inventa lo que nadie registró: gestos, olores, el silencio antes de responder, lo que piensa, un testigo, frases privadas fieles al personaje, comprimir el tiempo.",
+    "libre": "Inspirado en el hecho real: un «¿y si…?», un final alternativo, un personaje inventado como protagonista o un mito/alegoría sin hechos que proteger. El cierre o la descripción dicen que es ficción."
+  },
+  "pov": {
+    "tu": "El espectador ES un personaje («Eres el general. Te llega un rumor.»). Máxima inmersión; ideal cuando la historia es una decisión.",
+    "yo": "El protagonista lo cuenta en primera persona, como confesión. Ideal para personajes con voz propia y frases célebres.",
+    "testigo": "Alguien que estaba allí (un alumno, un soldado, un sirviente; puede ser inventado, o el propio espectador como testigo). Ideal para anécdotas con remate: ve la escena desde la grada.",
+    "cercano": "Narrador en tercera persona pegado al personaje, en presente y con sus sensaciones. Para historias con varios protagonistas."
+  },
+  "muletillas": {
+    "_nota": "Marcas de crónica que sacan al espectador de la escena. Se cuentan sobre el texto sin tildes ni mayúsculas.",
+    "max": { "dramatizada": 1, "libre": 0 },
+    "es": ["segun", "cuentan que", "cuenta la tradicion", "la tradicion", "se dice que", "dicen que", "se cuenta", "el historiador", "los historiadores", "las fuentes", "anos despues", "siglos despues"],
+    "en": ["according to", "legend has it", "it is said", "they say", "historians", "the historian", "the sources", "years later", "centuries later"]
+  }
+}

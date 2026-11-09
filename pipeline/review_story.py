@@ -2,7 +2,7 @@
 
     python pipeline/review_story.py --id <id> [--kind script|story] [--reviewer claude|manual]
 
-`--kind script` (por defecto `story`) califica SOLO el texto de 02_SCRIPT.md (gancho, retención, narrativa, ritmo verbal, cierre, rigor) y se
+`--kind script` (por defecto `story`) califica SOLO el texto de 02_SCRIPT.md (gancho, retención, narrativa, drama, ritmo verbal, cierre, fidelidad) y se
 hace antes de generar la voz: iterar el texto es barato, regenerar la voz de Diego (~20 min) no. Sus archivos son 06a_script_review.* y
 `tts` no arranca sin una calificación vigente y aprobada (script_gate). `--kind story` es la crítica de siempre, con tiempos reales y plan visual.
 
@@ -56,8 +56,13 @@ def build_request_script(d: Path) -> str:
     rows = [f"{i + 1:02d} [{r}] {t}" for i, (r, t) in enumerate(sc.lines)]
     stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; el video debe durar 60–80 s: no lo acortes por debajo de 60 s)\n"
              f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
+    if sc.ficcion:
+        stats += f"\n- Ficción: {sc.ficcion} · punto de vista: {sc.pov or '—'}"
     src = "\n".join(f"- {x}" for x in sc.sources) or "—"
-    return f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows) + f"\n\n## Fuentes que declara el autor\n{src}\n"
+    fic = "\n".join(f"- {x}" for x in sc.fiction)
+    fic = f"\n## Ficción que declara el autor (anclas = verificadas; inventado = dramatizado a propósito)\n{fic}\n" if fic else ""
+    return (f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows)
+            + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}")
 
 
 def build_request(d: Path) -> str:
