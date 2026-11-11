@@ -53,6 +53,30 @@ import { Huellas } from "./huellas";
 import { Alfombra } from "./alfombra";
 import { Definicion } from "./definicion";
 import { Unas } from "./unas";
+import { Banquete } from "./banquete";
+import { Esclavos } from "./esclavos";
+import { PiernaTorcida } from "./pierna_torcida";
+import { Parpados } from "./parpados";
+import { Vendaje } from "./vendaje";
+import { EscuelaMar } from "./escuela_mar";
+import { MarcoLee } from "./marco_lee";
+import { OficinaGrito } from "./oficina_grito";
+import { Insomnio } from "./insomnio";
+import { CirculoControl } from "./circulo_control";
+import { Ugarit } from "./ugarit";
+import { NavesMar } from "./naves_mar";
+import { SalaUgarit } from "./sala_ugarit";
+import { Dictado } from "./dictado";
+import { Tablilla } from "./tablilla";
+import { MapaBronce } from "./mapa_bronce";
+import { Armero } from "./armero";
+import { CampoSeco } from "./campo_seco";
+import { Hitita } from "./hitita";
+import { Hambre } from "./hambre";
+import { RelieveEgipto } from "./relieve_egipto";
+import { Excavacion } from "./excavacion";
+import { Homero } from "./homero";
+import { CelularEstano } from "./celular_estano";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -61,6 +85,9 @@ const REAL: Record<string, AssetFC> = {
   marco: Marco, brasero_cartas: BraseroCartas, mapa_imperio: MapaImperio, susurro: Susurro, proclamacion: Proclamacion, arenga: Arenga, golpe: Golpe, mensajero: Mensajero, cofres: Cofres, senado: Senado, campamento: Campamento, palacio: Palacio, siria: Siria,
   tinaja: Tinaja, encuentro: Encuentro, diogenes: Diogenes, fuente_nino: FuenteNino, alejandro: Alejandro, asamblea: Asamblea, multitud: Multitud, sabios: Sabios, dos_destinos: DosDestinos, agora: Agora, india: India,
   academia: Academia, platon: Platon, alumnos: Alumnos, pollo: Pollo, puerta: Puerta, huellas: Huellas, alfombra: Alfombra, definicion: Definicion, unas: Unas,
+  banquete: Banquete, esclavos: Esclavos, pierna_torcida: PiernaTorcida, parpados: Parpados, vendaje: Vendaje, escuela_mar: EscuelaMar, marco_lee: MarcoLee, oficina_grito: OficinaGrito, insomnio: Insomnio, circulo_control: CirculoControl,
+  ugarit: Ugarit, naves_mar: NavesMar, sala_ugarit: SalaUgarit, dictado: Dictado, tablilla: Tablilla, mapa_bronce: MapaBronce,
+  armero: Armero, campo_seco: CampoSeco, hitita: Hitita, hambre: Hambre, relieve_egipto: RelieveEgipto, excavacion: Excavacion, homero: Homero, celular_estano: CelularEstano,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));
