@@ -35,7 +35,7 @@ def _vec(v, n: int) -> bool:
 
 
 def validate(story: dict, words: list | None = None, script: list[str] | None = None, closing: str | None = None,
-             structure: str | None = None) -> list[str]:
+             structure: str | None = None, order: list[str] | None = None) -> list[str]:
     cat = load_json(ROOT / "templates" / "catalog2d.json")
     cat3 = load_json(ROOT / "templates" / "catalog.json")
     overlays_ok = {k for k, v in cat3["overlays"].items() if not v.get("anchored")}
@@ -163,8 +163,11 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
         errs.append(f"solo {with_actions} de {len(beats)} beats llevan acciones (hacen falta al menos {-(-len(beats) // 2)}): que la escena reaccione a lo que dice la voz")
     # estructura: los roles siguen el orden de la estructura (cada uno puede repetirse) y cumplen sus mínimos
     st = cat["structures"].get(structure or STRUCTURE_DEFAULT)
+    if not st and order:   # estructura nueva del guion (D120): su orden lo declara `beats:` y ya lo validó validate_script
+        st = {"order": order}
     if not st:
-        errs.append(f"estructura '{structure}' sin implementar en 2D (disponibles: {', '.join(cat['structures'])}; pendientes: {', '.join(cat['roles_pendientes'])})")
+        errs.append(f"estructura '{structure}' sin orden conocido (del catálogo 2D: {', '.join(cat['structures'])}; "
+                    "una nueva necesita `beats:` en 02_SCRIPT.md y pasar --script)")
     else:
         roles = [b.get("role") for b in beats]
         bad = [r for r in roles if r not in st["order"]]
@@ -236,6 +239,14 @@ def script_structure(md: str) -> str | None:
     return m.group(1) if m else None
 
 
+def script_beats(md: str) -> list[str] | None:
+    """`beats:` de una estructura nueva (D120), con el mismo formato que lee validate_script"""
+    import re
+    from validate_script import beats_of
+    m = re.search(r"^beats:\s*(.+)$", md, re.M | re.I)
+    return beats_of(m.group(1)) if m else None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("story", type=Path)
@@ -244,7 +255,7 @@ def main():
     a = ap.parse_args()
     md = a.script.read_text(encoding="utf-8") if a.script else None
     errs = validate(load_json(a.story), load_json(a.words) if a.words else None, script_lines(md) if md else None,
-                    script_closing(md) if md else None, script_structure(md) if md else None)
+                    script_closing(md) if md else None, script_structure(md) if md else None, script_beats(md) if md else None)
     print(f"{'PASA' if not errs else 'FALLA'}: {a.story}")
     for e in errs:
         print(f"  - {e}")

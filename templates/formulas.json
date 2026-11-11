@@ -1,5 +1,5 @@
 {
-  "_nota": "Catálogo de fórmulas de guion (F12). El validador (pipeline/validate_script.py) lee 'structures' de aquí; hooks y closings se comprueban con las reglas de ese archivo. La evidencia y sus límites están en docs/FORMULAS.md.",
+  "_nota": "Catálogo de fórmulas de guion (F12). Es una caja de herramientas, no un menú cerrado (D120): un gancho, una estructura o un cierre nuevos valen si el guion los describe en '## Fórmulas nuevas' (y una estructura nueva declara `beats:`). El validador (pipeline/validate_script.py) comprueba la forma de los del catálogo y las reglas comunes de todos. La evidencia y sus límites están en docs/FORMULAS.md.",
   "hooks": {
     "pregunta": {
       "nombre": "Pregunta cotidiana",
@@ -87,20 +87,57 @@
       "nombre": "Alegoría o mito como viaje",
       "resumen": "Cuenta una alegoría o un mito como un viaje: situación de partida, ruptura, ascenso, regreso y giro que lo reinterpreta (mito de la caverna). Es la estructura del motor 2D de historias.",
       "mejor_para": "Alegorías, mitos y relatos filosóficos con una situación, un cambio y una consecuencia.",
-      "orden": ["hook", "scene", "rupture", "ascent", "return", "twist", "cta"],
-      "requeridos": ["twist"],
-      "min": {"scene": 1, "ascent": 1},
-      "max": {"scene": 5, "rupture": 3, "ascent": 3, "return": 3},
+      "orden": [
+        "hook",
+        "scene",
+        "rupture",
+        "ascent",
+        "return",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "scene": 1,
+        "ascent": 1
+      },
+      "max": {
+        "scene": 5,
+        "rupture": 3,
+        "ascent": 3,
+        "return": 3
+      },
       "ejemplo": "templates/examples/mito-caverna/02_SCRIPT.md"
     },
     "drama": {
       "nombre": "Historia dramatizada",
       "resumen": "Cuenta un hecho real como una escena vivida (presente, punto de vista dentro de la historia): arranca en el momento tenso, pone algo en juego, escala y revela un giro que pasa dentro de la historia; la moraleja nunca se dice. Hechos ancla verificados; el cómo (gestos, sensaciones, pensamientos, frases privadas) se dramatiza.",
       "mejor_para": "Anécdotas, rivalidades, traiciones y decisiones de personajes reales (Diógenes, Marco Aurelio) contadas con ficción controlada.",
-      "orden": ["hook", "scene", "rupture", "ascent", "twist", "return", "cta"],
-      "requeridos": ["twist"],
-      "min": {"scene": 1, "ascent": 1},
-      "max": {"scene": 4, "rupture": 2, "ascent": 4, "twist": 4, "return": 2},
+      "orden": [
+        "hook",
+        "scene",
+        "rupture",
+        "ascent",
+        "twist",
+        "return",
+        "cta"
+      ],
+      "requeridos": [
+        "twist"
+      ],
+      "min": {
+        "scene": 1,
+        "ascent": 1
+      },
+      "max": {
+        "scene": 4,
+        "rupture": 2,
+        "ascent": 4,
+        "twist": 4,
+        "return": 2
+      },
       "ejemplo": "templates/examples/diogenes-pollo/02_SCRIPT.md"
     },
     "mito": {
@@ -259,9 +296,73 @@
       "ejemplo_en": "Try it tonight in the shower and tell me what you notice."
     }
   },
+  "formatos": {
+    "_nota": "Premisas para el video entero, por encima de gancho y estructura: inspiración para salir de lo de siempre, no reglas. Se combinan con cualquier estructura (del catálogo o nueva) y sirven a las dos skills.",
+    "que_pasaria_si": {
+      "nombre": "¿Qué pasaría si…?",
+      "idea": "Se cambia una regla del mundo y se siguen sus consecuencias, de la inmediata a la más lejana.",
+      "ejemplo": "Si la Luna desapareciera esta noche…"
+    },
+    "cuenta_atras": {
+      "nombre": "Cuenta atrás",
+      "idea": "Un reloj marca el tiempo que queda (o el que pasa) y cada beat es un salto de tiempo.",
+      "ejemplo": "Te quedan 8 minutos de luz antes de que el Sol se apague."
+    },
+    "punto_de_vista": {
+      "nombre": "Eres la cosa",
+      "idea": "El espectador es un objeto, una célula o un personaje y vive el proceso desde dentro.",
+      "ejemplo": "Eres un glóbulo rojo y tienes 60 segundos para dar la vuelta al cuerpo."
+    },
+    "escala": {
+      "nombre": "Cambio de escala",
+      "idea": "Zoom continuo (de lo diminuto a lo enorme o al revés); cada beat es un salto de tamaño.",
+      "ejemplo": "Tu mano, la célula, el átomo… y lo que hay dentro."
+    },
+    "linea_de_tiempo": {
+      "nombre": "Línea de tiempo comprimida",
+      "idea": "Mucho tiempo contado en un minuto, con una fecha o una época por beat.",
+      "ejemplo": "Cuatro mil millones de años de tu agua en sesenta segundos."
+    },
+    "un_dia_sin": {
+      "nombre": "Un día sin…",
+      "idea": "Se quita algo cotidiano y se recorre un día normal viendo lo que falla.",
+      "ejemplo": "Te despiertas y la fricción ha desaparecido."
+    },
+    "desmontaje": {
+      "nombre": "Desmontaje",
+      "idea": "Se abre un objeto o una idea capa a capa; cada capa sorprende más que la anterior.",
+      "ejemplo": "Lo que hay dentro del botón de tu ascensor."
+    },
+    "juicio": {
+      "nombre": "Juicio o dilema",
+      "idea": "Dos posturas, pruebas a favor y en contra y un veredicto que el espectador no ve venir.",
+      "ejemplo": "¿Fue Nerón culpable del incendio de Roma?"
+    },
+    "misterio": {
+      "nombre": "Caso sin resolver",
+      "idea": "Se plantea un enigma, se descartan sospechosos y se llega a la explicación (o a la duda mejor fundada).",
+      "ejemplo": "Una civilización entera desaparece en cincuenta años."
+    },
+    "experimento_mental": {
+      "nombre": "Experimento mental",
+      "idea": "Una situación imposible pero lógica que lleva a una conclusión incómoda.",
+      "ejemplo": "Te teletransportas: ¿el que llega eres tú?"
+    },
+    "carta_o_diario": {
+      "nombre": "Carta o diario",
+      "idea": "La historia la cuenta un documento de alguien que estuvo allí (real o dramatizado según `ficcion`).",
+      "ejemplo": "La última tablilla de Ugarit, escrita mientras llegaban los barcos."
+    },
+    "receta": {
+      "nombre": "Receta o instrucciones",
+      "idea": "El proceso contado como pasos de receta, con ingredientes y tiempos.",
+      "ejemplo": "Cómo fabricar una estrella: ingredientes, hidrógeno y paciencia."
+    }
+  },
   "elegir": {
-    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py).",
-    "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro.",
-    "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar."
+    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py). Comodín (D120): de los 3 candidatos, al menos uno es un tipo nuevo, inventado para este tema (descríbelo en '## Fórmulas nuevas').",
+    "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro. Comodín (D120): de las 3 propuestas, al menos una es nueva: una forma diseñada para este tema (declara `beats:` y descríbela en '## Fórmulas nuevas'). Piensa también en un formato de 'formatos' que cambie la premisa entera.",
+    "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar.",
+    "nuevas": "Una fórmula nueva no es un nombre distinto para algo del catálogo: tiene que cambiar cómo se cuenta (otro orden, otro punto de vista, otra promesa). Se juzga con los mismos criterios (gancho concreto, conflicto, 2.ª persona, promesa que el video cumple, ≤3 s; estructura con giro y un cambio en pantalla por beat). Nombre corto en snake_case. Si una fórmula nueva se repite y funciona (tools/recent_formulas.py --nuevas, tools/ingest_stats.py), pásala al catálogo."
   }
 }

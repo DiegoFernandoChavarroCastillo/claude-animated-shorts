@@ -1,4 +1,4 @@
-# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales) y `alegoria` (mitos)
+# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) o una nueva
 
 Escribes el guion de un short vertical de **más de 60 y menos de 120 s** (objetivo 80–100 s; unas 220–260 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
 
@@ -58,12 +58,25 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 | `twist` | Lo que el relato revela, mostrado como un acto o una imagen que reencuadra todo (no una clase: «Para Platón…» como mucho una vez; la moraleja nunca se dice) | Vuelve a la imagen del principio, cargada de sentido |
 | `cta` | **Cierre en bucle**: la última frase no se despide, termina abierta (dos puntos o pregunta) y comparte una palabra de ≥5 letras con el gancho | La misma escena del gancho |
 
+## Estructuras nuevas (D120)
+`drama` y `alegoria` son puntos de partida, no las únicas formas. Si el tema se cuenta mejor de otra manera, diséñala: un
+**juicio** (`hook > acusacion > prueba > defensa > twist > cta`), una **carta o diario** (`hook > fecha > entrada > ultima_entrada > twist > cta`),
+una **cuenta atrás** (`hook > aviso > dias > ultima_hora > twist > cta`), un **¿y si…?** sobre un hecho real (`hook > hecho > desvio > mundo_nuevo > twist > cta`),
+un **dilema** que el espectador decide (`hook > situacion > opcion_a > opcion_b > twist > cta`)… Más premisas en `formulas.json` → `formatos`.
+
+- Cabecera: `structure: <nombre>` y `beats:` con los roles en orden (≥5; empieza en `hook`, acaba en `cta`, lleva `twist`), y la
+  línea del nombre en `## Fórmulas nuevas`. Formato completo en `script_es.md` → «Fórmulas nuevas».
+- Valen las mismas reglas de dramatización (`ficcion`, `pov`, `## Ficción`, sin muletillas de crónica) y las del perfil viral.
+- `riser` automático antes del `twist` (y de `rupture` si lo usas); los roles propios no llevan riser.
+- Al proponer, la estructura nueva es una opción más (no hace falta preguntarla aparte): dila en la misma línea que la dramatización
+  y por qué cuenta mejor este tema que `drama`.
+
 ## Gancho (el que más pesa)
 - **Prueba de los 3 s:** alguien que no conoce el tema, ¿entiende qué le prometes al oírlo una sola vez? Si no, reescríbelo.
 - Evita como palabra central una abstracción («conversación», «conciencia», «realidad», «sentido»): no pinta nada. Usa una **consecuencia concreta para el espectador** (tú + verbo + descubrimiento) o una imagen que se vea: «Cuando mueres, descubres que todos fueron tú.»
 - Con la voz `diego` (Chatterbox) el gancho debe tener unas 7 palabras para entrar en ≤3,2 s. Como afirmación en presente en 2.ª persona valida como `hook: escena`; `mito` y `contradiccion` exigen una forma más rígida.
 - El cierre en bucle retoma una palabra **clave y concreta** del gancho (p. ej. «todos»: «…¿y si todos fueran tú?»), no una abstracción repetida.
-- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta) y deja que elija.
+- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta) y deja que elija. **Comodín (D120):** al menos uno de los tres es de un tipo nuevo, inventado para este tema (descrito en `## Fórmulas nuevas`); se juzga con la misma prueba de los 3 s.
 
 ## Tono
 - Cercano, de tú a tú, como quien cuenta un chisme histórico que no se puede creer; suspenso en `rupture` y `ascent`, humor si el material lo da. Ni solemne ni de clase.
@@ -71,7 +84,7 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 - Cierra con una pregunta al espectador que lo haga volver al principio, no con moraleja cerrada.
 
 ## Formato de salida
-Igual que `script_es.md`, con cabecera `hook: mito|…`, `structure: drama|alegoria`, `closing: bucle`, `ficcion:` y `pov:` (si es `drama`), la sección `## Fuentes` y, con ficción, `## Ficción` (`- ancla: …` / `- inventado: …`). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (con `01_research.md`). Después, `python pipeline/validate_script.py out/<id>/02_SCRIPT.md` hasta **PASA**.
+Igual que `script_es.md`, con cabecera `hook: mito|…|<nuevo>`, `structure: drama|alegoria|<nueva>` (con `beats:` si es nueva), `closing: bucle`, `ficcion:` y `pov:` (si es `drama`), la sección `## Fuentes` y, con ficción, `## Ficción` (`- ancla: …` / `- inventado: …`). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (con `01_research.md`). Después, `python pipeline/validate_script.py out/<id>/02_SCRIPT.md` hasta **PASA**.
 
 ## Perfil `pacing: viral` (por defecto en los videos nuevos)
 Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pacing: "viral"`. Todo lo que cambia está en `templates/pacing_viral.json` (una sola fuente de verdad) y lo comprueban `validate_script.py`, `validate_story2d.py` y el QA. Sin esa cabecera rigen las reglas de arriba.

@@ -61,6 +61,44 @@ Notas por rol:
 - `[chain]` (cadena): cada línea arranca donde acabó la anterior ("Esa luz…", "Por eso…").
 - El `[twist]` y el `[cta]` existen en todas las estructuras.
 
+### Fórmulas nuevas (D120): el catálogo no es un menú cerrado
+
+Si el tema se cuenta mejor de otra forma, inventa el tipo de gancho, la estructura o el cierre (en el paso 1b, al menos una
+de las tres propuestas de gancho y una de estructura son nuevas). No vale renombrar algo del catálogo: tiene que cambiar cómo se
+cuenta (otro orden, otro punto de vista, otra promesa). Pistas en `formulas.json` → `formatos` (¿qué pasaría si…?, cuenta atrás,
+eres la cosa, cambio de escala, juicio, desmontaje…).
+
+- **Gancho o cierre nuevo:** `hook: <nombre>` / `closing: <nombre>` en snake_case y una línea en `## Fórmulas nuevas`. El validador
+  no comprueba su forma (no hay patrón), pero sí las reglas de siempre (≤12 palabras, 2.ª persona, cierre sin despedida).
+- **Estructura nueva:** `structure: <nombre>` y `beats:` con sus roles en orden. Empieza en `hook`, acaba en `cta`, lleva `twist`
+  (la pausa larga y el riser cuelgan de ese rol) y tiene al menos 5 roles. Cada rol de `beats:` sale al menos una vez en el guion,
+  en ese orden, y puede ocupar varias líneas seguidas (máx. 8). Nombra los roles por lo que hacen (`escenario`, `consecuencia`,
+  `prueba`), no por su número. En el story, cada rol propio recibe la imagen de lo que hace.
+
+```markdown
+# Si el Sol se apagara
+lang: es
+hook: cuenta_atras
+structure: efecto_domino
+closing: bucle
+beats: hook > ahora > ocho_minutos > una_semana > un_año > twist > cta
+
+## Guion
+[hook] El Sol acaba de apagarse y tú aún no lo sabes.
+[ahora] …
+[ocho_minutos] …
+…
+[twist] …
+[cta] …
+
+## Fuentes
+- …
+
+## Fórmulas nuevas
+- cuenta_atras: un reloj corre desde el primer segundo (la luz tarda ocho minutos en llegar); el espectador quiere saber qué pasa al llegar a cero
+- efecto_domino: cada rol es un salto de tiempo más lejano, y cada consecuencia es más grande que la anterior
+```
+
 ### Cierres (`closing:`; siempre en la línea `[cta]`)
 
 | `closing:` | Nombre | Forma | Ejemplo |

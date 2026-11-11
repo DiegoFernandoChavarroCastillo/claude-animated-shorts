@@ -226,6 +226,10 @@ frase «el agua se expande…» y `{ "type": "burst", "at": "revienta", "anchor"
 - `historia` (`[story]`): `Timeline`, `TitlePlaque` o `ThoughtBubble` para lo que se creía o se descubrió; el objeto entra en `[mechanism]`.
 - `cadena` (`[chain]`): `FlowArrow` o `IconFlow` y una cámara que siga el recorrido (`follow_anchor`, `dolly_side`); cada beat
   arranca donde acabó el anterior (mismo entorno si la cadena no cambia de lugar).
+- **Estructura nueva** (D120, `beats:` en la cabecera del guion): los roles propios no tienen receta. Lee su descripción en
+  `## Fórmulas nuevas` y dale a cada rol la imagen de lo que hace (un salto de tiempo → `Timeline` o un reloj y otro entorno; una
+  prueba → el objeto y su dato; un punto de vista → plano cerrado del protagonista). Los roles que repiten función mantienen el
+  mismo tipo de plano para que el patrón se lea; el `twist` rompe ese patrón.
 
 ## Fidelidad y limpieza visual (F19)
 

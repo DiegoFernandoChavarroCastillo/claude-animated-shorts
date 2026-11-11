@@ -32,6 +32,8 @@ tags = publish_pack.hashtags(story, "es")
 check("hashtags: entre 3 y 5, con # y sin acentos ni espacios", 3 <= len(tags) <= 5 and all(t.startswith("#") and t[1:].isascii() and " " not in t for t in tags), tags)
 check("hashtags: incluyen los dos genéricos del idioma", {"#sabiasque", "#ciencia"} <= set(tags))
 check("hashtags en inglés usan los genéricos en inglés", {"#didyouknow", "#science"} <= set(publish_pack.hashtags(story, "en")))
+md = "## Guion\n[hook] x\n\n## Fuentes\n- uno: https://a\n- dos: https://b\n\n## Fórmulas nuevas\n- tour: patrón\n"
+check("publish: las fuentes paran en la sección siguiente (no cuelan Fórmulas nuevas)", publish_pack.script_sources(md) == "- uno: https://a\n- dos: https://b", publish_pack.script_sources(md))
 m = publish_pack.meta(d)
 check("meta.json: gancho, estructura y cierre del guion", (m["hook"], m["structure"], m["closing"]) == ("mito", "versus", "bucle"), m)
 check("meta.json: gancho dicho en ≤ 3,2 s, duración 60–120 s y hueco ≤ 3,5 s", m["hook_spoken_s"] <= 3.2 and 60 < m["duration_s"] < 120 and m["max_event_gap_s"] <= 3.5, m)

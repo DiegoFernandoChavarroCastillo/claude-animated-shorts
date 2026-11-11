@@ -56,11 +56,15 @@ def build_request_script(d: Path) -> str:
     rows = [f"{i + 1:02d} [{r}] {t}" for i, (r, t) in enumerate(sc.lines)]
     stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; el video debe durar 60–80 s: no lo acortes por debajo de 60 s)\n"
              f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
+    if sc.beats:
+        stats += f"\n- Beats de la estructura nueva: {' → '.join(sc.beats)}"
     if sc.ficcion:
         stats += f"\n- Ficción: {sc.ficcion} · punto de vista: {sc.pov or '—'}"
     src = "\n".join(f"- {x}" for x in sc.sources) or "—"
     fic = "\n".join(f"- {x}" for x in sc.fiction)
     fic = f"\n## Ficción que declara el autor (anclas = verificadas; inventado = dramatizado a propósito)\n{fic}\n" if fic else ""
+    new = "\n".join(f"- {k}: {v}" for k, v in sc.new.items())
+    fic += f"\n## Fórmulas nuevas que declara el autor (fuera del catálogo; júzgalas por su propia promesa)\n{new}\n" if new else ""
     return (f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows)
             + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}")
 

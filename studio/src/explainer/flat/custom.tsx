@@ -136,3 +136,219 @@ export const planetas_campo: HeroDef = {
   build: (_L, pose) => { poseOf(planetas_campo, pose, "planetas_campo"); return noBuild(); },
   flat: PlanetasCampo,
 };
+
+// ---------------------------------------------------------------- pulsos_ir (control-rebote)
+const IRV = "#C45CFF", IRV2 = "#E6B8FF";
+/** bits del código (ver dos veces: 0x04 0xFB 0x08 0xF7, dirección, su inversa, POWER y su inversa) */
+const NEC_BITS = [0x04, 0xfb, 0x08, 0xf7].flatMap((byte) => [...Array(8)].map((_, i) => (byte >> i) & 1));
+const ScopePanel: React.FC<{ x: number; y: number; w: number; h: number; id: string }> = ({ x, y, w, h, id }) => (
+  <g>
+    <defs><linearGradient id={id} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#141a3a" /><stop offset="1" stopColor="#0a0d22" /></linearGradient></defs>
+    <rect x={x - 14} y={y - 14} width={w + 28} height={h + 28} rx={30} fill="#2a2f4a" />
+    <rect x={x} y={y} width={w} height={h} rx={18} fill={`url(#${id})`} stroke={PALETTE.mid.lavender} strokeOpacity={0.35} strokeWidth={3} />
+    {[...Array(Math.floor(w / 60))].map((_, i) => <line key={`v${i}`} x1={x + 30 + i * 60} y1={y + 10} x2={x + 30 + i * 60} y2={y + h - 10} stroke="#5a7cff" strokeOpacity={0.12} strokeWidth={2} />)}
+    {[...Array(Math.floor(h / 60))].map((_, i) => <line key={`h${i}`} x1={x + 10} y1={y + 30 + i * 60} x2={x + w - 10} y2={y + 30 + i * 60} stroke="#5a7cff" strokeOpacity={0.12} strokeWidth={2} />)}
+  </g>
+);
+/** silueta de la punta del mando con su LED (mirando a la derecha) */
+const RemoteTip: React.FC<{ x: number; y: number; on: number }> = ({ x, y, on }) => (
+  <g>
+    <rect x={x - 300} y={y - 70} width={320} height={140} rx={60} fill="#23262f" />
+    <rect x={x - 285} y={y - 56} width={285} height={112} rx={48} fill="#30343f" />
+    {[...Array(3)].map((_, i) => <rect key={i} x={x - 250 + i * 80} y={y - 24} width={50} height={48} rx={14} fill="#555b6e" />)}
+    <path d={`M${x + 18} ${y - 34} A34 34 0 0 1 ${x + 18} ${y + 34} Z`} fill="#3a0a18" />
+    <circle cx={x + 26} cy={y} r={60 + 30 * on} fill={IRV} opacity={0.35 * on} />
+    <circle cx={x + 26} cy={y} r={20} fill={on > 0.5 ? IRV2 : "#5a1830"} />
+  </g>
+);
+
+const PulsosIR: FlatComp = ({ t, u, cam, subject, pose }) => {
+  const lightBg = (
+    <Depth cam={cam} z={0.2}>
+      <Backdrop id="pib" top="#1b1d4a" mid="#121436" bottom="#0a0b22" />
+      <Glow id="pig1" cx={200} cy={880} r={520} color={IRV} a={0.22} />
+      <Glow id="pig2" cx={900} cy={1200} r={520} color={PALETTE.ui.cyan} a={0.12} />
+      <Stars n={60} t={t} seed={9} color={IRV2} />
+    </Depth>
+  );
+  if (pose === "distancia") {
+    const k = ease(u.alejar ?? 0), sx = 170, sy = 820, d1 = 470, d2 = 800, s1 = 110, s2 = 220;
+    const ray = (yy: number, xEnd: number, op: number) => <line x1={sx} y1={sy} x2={xEnd} y2={yy} stroke={IRV} strokeWidth={4} opacity={op} />;
+    return (
+      <>
+        {lightBg}
+        <Depth cam={cam} z={0.6}>
+          <path d={`M${sx} ${sy} L${d1} ${sy - s1 / 2} L${d1} ${sy + s1 / 2} Z`} fill={IRV} opacity={0.18} />
+          {k > 0 ? <path d={`M${d1} ${sy - s1 / 2} L${d1 + (d2 - d1) * k} ${sy - s1 / 2 - ((s2 - s1) / 2) * k} L${d1 + (d2 - d1) * k} ${sy + s1 / 2 + ((s2 - s1) / 2) * k} L${d1} ${sy + s1 / 2} Z`} fill={IRV} opacity={0.1} /> : null}
+          {ray(sy - s1 / 2, d1, 0.8)}{ray(sy + s1 / 2, d1, 0.8)}
+          {k > 0 ? <>{ray(sy - s2 / 2, d1 + (d2 - d1) * k, 0.5 * k)}{ray(sy + s2 / 2, d1 + (d2 - d1) * k, 0.5 * k)}</> : null}
+          <line x1={sx} y1={980} x2={d1} y2={980} stroke={PALETTE.light.cream} strokeWidth={4} opacity={0.7} />
+          <text x={(sx + d1) / 2} y={1030} textAnchor="middle" fontSize={56} fontWeight={800} fill={PALETTE.light.cream}>d</text>
+          <g opacity={k}>
+            <line x1={sx} y1={1060} x2={d2} y2={1060} stroke={PALETTE.ui.cyan} strokeWidth={4} opacity={0.8} />
+            <text x={(sx + d2) / 2} y={1115} textAnchor="middle" fontSize={56} fontWeight={800} fill={PALETTE.ui.cyan}>2d</text>
+          </g>
+        </Depth>
+        <Subject cam={cam} pose={subject} at={[620, 820]}>
+          <rect x={d1 - 8} y={sy - s1 / 2} width={16} height={s1} fill={IRV2} opacity={0.95} />
+          <rect x={d1 + 8} y={sy - s1 / 2} width={s1 * 0.5} height={s1} fill={IRV} opacity={0.75 * (1 - 0.6 * k)} />
+          <g opacity={k}>
+            {[0, 1].map((i) => [0, 1].map((j) => (
+              <rect key={`${i}${j}`} x={d2 + 6 + i * (s2 * 0.25)} y={sy - s2 / 2 + j * (s2 / 2) + 3} width={s2 * 0.25 - 6} height={s2 / 2 - 6} fill={IRV} opacity={0.3} stroke={IRV2} strokeWidth={3} />
+            )))}
+            <text x={d2 + s2 * 0.25} y={sy - s2 / 2 - 24} textAnchor="middle" fontSize={64} fontWeight={800} fill={IRV2}>¼</text>
+          </g>
+          <circle cx={sx} cy={sy} r={70} fill={IRV} opacity={0.35} />
+          <circle cx={sx} cy={sy} r={26} fill={IRV2} />
+        </Subject>
+        <Grain />
+      </>
+    );
+  }
+  if (pose === "trama") {
+    const w = ease(u.trama ?? 0), x0 = 170, X = 740, unit = 9.6;
+    // fila 1: cabecera (16 u de ráfaga + 8 de silencio) y 16 bits; fila 2: los otros 16
+    const row = (bits: number[], lead: boolean, y: number, reveal: number) => {
+      const els: React.ReactNode[] = []; let x = x0;
+      if (lead) { els.push(<rect key="ld" x={x} y={y - 90} width={16 * unit} height={90} rx={4} fill={IRV} />); els.push(<text key="lt" x={x + 8 * unit} y={y - 110} textAnchor="middle" fontSize={44} fontWeight={800} fill={IRV2}>9 ms</text>); x += 24 * unit; }
+      bits.forEach((bit, i) => {
+        if ((x - x0) / X > reveal) return;
+        els.push(<rect key={`b${i}`} x={x} y={y - 90} width={unit} height={90} rx={2} fill={IRV} />);
+        els.push(<text key={`t${i}`} x={x + (bit ? 2 * unit : unit)} y={y + 50} textAnchor="middle" fontSize={34} fontWeight={700} fill={bit ? PALETTE.ui.cyan : PALETTE.light.cream} opacity={0.9}>{bit}</text>);
+        x += unit * (bit ? 4 : 2);
+      });
+      return <g>{els}<line x1={x0 - 20} y1={y} x2={x0 + X + 20} y2={y} stroke={PALETTE.mid.lavender} strokeWidth={3} opacity={0.6} /></g>;
+    };
+    return (
+      <>
+        {lightBg}
+        <Depth cam={cam} z={0.6}><ScopePanel x={130} y={560} w={820} h={560} id="pit" /></Depth>
+        <Subject cam={cam} pose={subject} at={[540, 840]}>
+          {row(NEC_BITS.slice(0, 16), true, 790, clamp01(w * 2))}
+          {row(NEC_BITS.slice(16), false, 1020, clamp01(w * 2 - 1))}
+        </Subject>
+        <Grain />
+      </>
+    );
+  }
+  // ráfagas: el LED parpadea; arriba la envolvente (ráfagas largas y cortas), abajo una ráfaga ampliada con sus dientes
+  const p = ease(u.parpadear ?? 0), scroll = (t * 6 * p) % 120, on = p * (Math.floor(t / 2) % 2 ? 1 : 0.4);
+  const env = [3, 1, 1, 1, 3, 1, 1, 3, 1, 1, 1, 1, 3];
+  let ex = 450 - scroll; const envEls: React.ReactNode[] = [];
+  env.forEach((len, i) => { const wdt = len === 3 ? 70 : 24; if (ex > 420 && ex + wdt < 915) envEls.push(<rect key={i} x={ex} y={620} width={wdt} height={110} rx={3} fill={IRV} opacity={0.4 + 0.6 * p} />); ex += wdt + (i % 3 === 2 ? 60 : 30); });
+  return (
+    <>
+      {lightBg}
+      <Depth cam={cam} z={0.6}>
+        <ScopePanel x={410} y={560} w={520} h={540} id="pir" />
+        <path d="M500 730 L430 860 M570 730 L920 860" stroke={IRV2} strokeWidth={3} strokeDasharray="10 10" opacity={0.6} />
+      </Depth>
+      <Subject cam={cam} pose={subject} at={[540, 960]}>
+        <RemoteTip x={330} y={830} on={on} />
+        <line x1={425} y1={750} x2={915} y2={750} stroke={PALETTE.mid.lavender} strokeWidth={2} opacity={0.6} />
+        {envEls}
+        {[...Array(26)].map((_, i) => <rect key={i} x={440 + i * 18} y={900} width={10} height={140} rx={2} fill={IRV} opacity={(0.5 + 0.5 * p) * (0.6 + 0.4 * Math.abs(Math.sin(t * 0.4 + i * 0.5)))} />)}
+        <line x1={425} y1={1040} x2={915} y2={1040} stroke={PALETTE.mid.lavender} strokeWidth={2} opacity={0.6} />
+      </Subject>
+      <Grain />
+    </>
+  );
+};
+
+export const pulsos_ir: HeroDef = {
+  kind: "plano",
+  when: "Esquemas 2D de la señal del control remoto: la punta del mando con un osciloscopio que muestra las ráfagas y, ampliada, la portadora de 38 kHz (rafagas); la trama del código con la cabecera de 9 ms y 32 unos y ceros (trama); la ley del inverso del cuadrado, al doble de distancia la luz se reparte en cuatro cuadros (distancia).",
+  poses: ["rafagas", "trama", "distancia"],
+  actions: {
+    parpadear: "El LED parpadea y las ráfagas avanzan por la pantalla, con los dientes de la portadora latiendo: parpadea, ráfagas, treinta y ocho mil veces.",
+    trama: "La trama se dibuja de izquierda a derecha: la ráfaga larga de cabecera y luego los 32 bits con su 0 o 1 debajo: mensaje, código, unos y ceros, bits.",
+    alejar: "La luz sigue hasta el doble de distancia y el mismo haz se reparte en cuatro cuadros más tenues (¼): distancia, al doble de lejos, se debilita, cuarta parte.",
+  },
+  center: [0, 1, 0], radius: 1.5,
+  anchors: { hero: [600, 860, 1], top: [600, 580, 1], base: [600, 1120, 1], led: [276, 830, 1], pantalla: [700, 960, 0.6], fuente: [150, 930, 1], lejos: [880, 930, 1] },
+  build: (_L, pose) => { poseOf(pulsos_ir, pose, "pulsos_ir"); return noBuild(); },
+  flat: PulsosIR,
+};
+
+// ---------------------------------------------------------------- mapa_vecindario (mudanza-planeta)
+// mapa del vecindario estelar con el Sol abajo y anillos de distancia (no a escala lineal): «casas» en Próxima b, Teegarden b y TRAPPIST-1;
+// con «lejos» todo se encoge hacia el Sol y aparece, muy arriba, Kepler-452b a 1.400 años luz
+const SUN: [number, number] = [540, 1260];
+const RINGS = [{ r: 170, t: "4,2 AL" }, { r: 330, t: "12,5 AL" }, { r: 520, t: "40 AL" }];
+const HOMES = [
+  { ring: 0, a: -62, name: "PRÓXIMA b", c: "#C96A48" },
+  { ring: 1, a: -128, name: "TEEGARDEN b", c: "#3F8FC8" },
+  { ring: 2, a: -78, name: "TRAPPIST-1", c: "#5FB89A" },
+];
+const House: React.FC<{ x: number; y: number; s: number; c: string; on: number }> = ({ x, y, s, c, on }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`} opacity={on}>
+    <circle cx={0} cy={0} r={40} fill={c} />
+    <circle cx={0} cy={0} r={40} fill="url(#mvsh)" />
+    <circle cx={0} cy={0} r={56 + 6 * on} fill="none" stroke={PALETTE.light.cream} strokeWidth={3} opacity={0.35} />
+    <path d="M-30 -62 L0 -92 L30 -62 Z" fill={PALETTE.ui.red} />
+    <rect x={-22} y={-64} width={44} height={30} fill={PALETTE.light.cream} />
+    <rect x={-6} y={-52} width={12} height={18} fill={PALETTE.warm.brown} />
+    <line x1={0} y1={-34} x2={0} y2={-40} stroke={PALETTE.light.cream} strokeWidth={4} />
+  </g>
+);
+const MapaVecindario: FlatComp = ({ t, u, cam, subject }) => {
+  const casas = u.casas ?? 1, far = ease(u.lejos ?? 0), k = 1 - 0.72 * far;
+  const pos = (ring: number, a: number): [number, number] => { const r = RINGS[ring].r * k, rad = (a * Math.PI) / 180; return [SUN[0] + Math.cos(rad) * r, SUN[1] + Math.sin(rad) * r]; };
+  const fy = 690 - 40 * (1 - far);
+  return (
+    <>
+      <Depth cam={cam} z={0.15}>
+        <Backdrop id="mvb" top="#2A3478" mid="#232A62" bottom="#1A1E48" />
+        <Stars n={190} t={t} seed={8} />
+        <Glow id="mvn1" cx={300} cy={760} r={540} color={PALETTE.mid.violet} a={0.35} />
+        <Glow id="mvn2" cx={820} cy={1180} r={460} color={PALETTE.ui.cyan} a={0.2} />
+      </Depth>
+      <defs><radialGradient id="mvsh" cx="0.32" cy="0.3" r="0.85"><stop offset="0.35" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#05061A" stopOpacity={0.8} /></radialGradient></defs>
+      <Subject cam={cam} pose={subject} at={[540, 960]}>
+        {RINGS.map((rg, i) => (
+          <g key={i}>
+            <circle cx={SUN[0]} cy={SUN[1]} r={rg.r * k} fill="none" stroke={PALETTE.mid.lavender} strokeWidth={3} strokeDasharray="10 14" opacity={0.45} />
+            <text x={SUN[0] + rg.r * k * 0.74 + 12} y={SUN[1] - rg.r * k * 0.66} fill={PALETTE.mid.lavender} fontSize={34 - 12 * far} fontWeight={700} fontFamily="sans-serif" opacity={0.85}>{rg.t}</text>
+          </g>
+        ))}
+        <Glow id="mvsun" cx={SUN[0]} cy={SUN[1]} r={120} color={PALETTE.warm.gold} a={0.85} />
+        <circle cx={SUN[0]} cy={SUN[1]} r={34} fill="#FFD27A" />
+        <text x={SUN[0]} y={SUN[1] + 84} textAnchor="middle" fill={PALETTE.warm.gold} fontSize={38} fontWeight={800} fontFamily="sans-serif">SOL</text>
+        {HOMES.map((h, i) => {
+          const [x, y] = pos(h.ring, h.a), on = ease(clamp01(casas * 3.2 - i)), s = (0.6 + 0.4 * on) * (1 - 0.45 * far);
+          return (
+            <g key={i}>
+              <line x1={SUN[0]} y1={SUN[1]} x2={x} y2={y} stroke={h.c} strokeWidth={3} opacity={0.4 * on} />
+              <House x={x} y={y + 2 * Math.sin(t * 0.05 + i)} s={s} c={h.c} on={on} />
+              <text x={x} y={y + 76 * s} textAnchor="middle" fill={PALETTE.light.cream} fontSize={32 * (1 - 0.4 * far)} fontWeight={800} fontFamily="sans-serif" opacity={on}>{h.name}</text>
+            </g>
+          );
+        })}
+        {far > 0 ? (
+          <g opacity={far}>
+            <path d={`M${SUN[0]} ${SUN[1]} L${SUN[0]} ${fy + 60}`} stroke={PALETTE.warm.gold} strokeWidth={4} {...draw(far)} />
+            <Glow id="mvk" cx={SUN[0]} cy={fy} r={110} color={PALETTE.warm.gold} a={0.5} />
+            <House x={SUN[0]} y={fy} s={1.1} c="#5F9FD0" on={1} />
+            <text x={SUN[0]} y={fy - 128} textAnchor="middle" fill={PALETTE.warm.gold} fontSize={40} fontWeight={900} fontFamily="sans-serif">KEPLER-452b</text>
+            <text x={SUN[0] + 120} y={(fy + SUN[1]) / 2} fill={PALETTE.warm.gold} fontSize={44} fontWeight={900} fontFamily="sans-serif">1.400 AL</text>
+          </g>
+        ) : null}
+      </Subject>
+      <Grain n={600} />
+    </>
+  );
+};
+
+export const mapa_vecindario: HeroDef = {
+  kind: "plano",
+  when: "Mapa del vecindario estelar con el Sol abajo, anillos de distancia en años luz y casitas en los planetas candidatos (Próxima b, Teegarden b, TRAPPIST-1); al alejar, aparece muy lejos Kepler-452b a 1.400 años luz: casas disponibles en el espacio, a qué distancia están las estrellas, mudarse a otro planeta, lo lejos que está.",
+  poses: ["mapa"],
+  actions: {
+    casas: "Las casitas aparecen una tras otra sobre cada planeta del mapa: las casas disponibles, te enseño, el catálogo.",
+    lejos: "El mapa se encoge hacia el Sol y una línea dorada sube hasta un planeta muy lejano con su distancia: el problema, está lejísimos, mil cuatrocientos años luz.",
+  },
+  center: [0, 1, 0], radius: 1.5,
+  anchors: { hero: [540, 960, 1], top: [540, 640, 1], base: [540, 1340, 1], sol: [540, 1260, 1], lejos: [540, 690, 1] },
+  build: (_L, pose) => { poseOf(mapa_vecindario, pose, "mapa_vecindario"); return noBuild(); },
+  flat: MapaVecindario,
+};

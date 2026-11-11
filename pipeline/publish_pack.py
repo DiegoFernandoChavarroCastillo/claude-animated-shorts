@@ -52,6 +52,12 @@ def cover(d: Path, words: list[dict]) -> str:
     return out.name
 
 
+def script_sources(md: str) -> str:
+    """las líneas de «## Fuentes» del guion, hasta la sección siguiente (Ficción, Fórmulas nuevas)"""
+    m = re.search(r"^## Fuentes\s*(.*?)(?=^## |\Z)", md, re.S | re.M)
+    return "\n".join(x for x in (m.group(1).strip().splitlines() if m else []) if x.startswith("-"))
+
+
 def build(d: Path) -> str:
     script = parse((d / "02_SCRIPT.md").read_text(encoding="utf-8"))
     story = load_json(d / "05_story.json")
@@ -63,8 +69,7 @@ def build(d: Path) -> str:
     dur = words[-1]["end"] + story["meta"].get("tailS", 1.0)
     tags = " ".join(hashtags(story, lang))
     body = " ".join(lines[1:4])
-    sources = re.search(r"## Fuentes\s*(.*)", (d / "02_SCRIPT.md").read_text(encoding="utf-8"), re.S)
-    src = "\n".join(x for x in (sources.group(1).strip().splitlines() if sources else []) if x.startswith("-"))
+    src = script_sources((d / "02_SCRIPT.md").read_text(encoding="utf-8"))
     cov = cover(d, words)
     return f"""# Publicación: {story['meta']['title']}
 

@@ -73,7 +73,7 @@ s = base(); s["beats"][0]["scene"]["palette"] = "x"; del s["beats"][1]["shows"];
 check("varios problemas se listan a la vez", len(validate(s)) >= 3, validate(s))
 s = base(); s["meta"]["engine"] = "3d"
 check("engine distinto de 2d falla", has(validate(s), 'meta.engine debe ser "2d"'))
-check("estructura sin implementar falla", has(validate(base(), structure="reflexion"), "sin implementar"))
+check("estructura sin implementar falla", has(validate(base(), structure="reflexion"), "sin orden conocido"))
 check("gancho largo falla", has(validate(base(), words(per=0.9)), "el gancho dura"))
 s = base(); s["beats"][0]["actions"] = []
 check("gancho sin acción falla", has(validate(s, words()), "no tiene una acción antes de 1 s"))
@@ -103,6 +103,15 @@ s = base(); s["beats"][0]["scene"]["layers"].append({"asset": "prisionero_libre"
 check("init con acción propia pasa", not has(validate(s), "init"))
 s = base(); s["beats"][0]["scene"]["layers"].append({"asset": "prisionero_libre", "z": 3, "init": {"flare": 1}})
 check("init con acción ajena falla", has(validate(s), "layers[3].init 'flare'"))
+# estructura nueva del guion (D120): el orden lo da `beats:`
+s = base(); s["beats"][1]["role"], s["beats"][2]["role"] = "acusacion", "prueba"
+NEW = ["hook", "acusacion", "prueba", "twist", "cta"]
+check("estructura nueva con beats: pasa", not has(validate(s, structure="juicio", order=NEW), "estructura"), validate(s, structure="juicio", order=NEW))
+s2 = copy.deepcopy(s); s2["beats"][1]["role"], s2["beats"][2]["role"] = "prueba", "acusacion"
+check("estructura nueva en mal orden falla", has(validate(s2, structure="juicio", order=NEW), "no siguen el orden"))
+check("estructura nueva sin beats: falla", has(validate(s, structure="juicio"), "sin orden conocido"))
+from validate_story2d import script_beats  # noqa: E402
+check("script_beats lee la cabecera", script_beats("lang: es\nbeats: hook > acusacion → prueba, twist > cta\n") == NEW)
 from common import ROOT, load_json  # noqa: E402
 from validate_story import script_closing, script_lines  # noqa: E402
 from validate_story2d import script_structure  # noqa: E402

@@ -59,6 +59,32 @@ Role notes:
 - `[chain]`: each line starts where the previous one ended ("That light…", "So…").
 - `[twist]` and `[cta]` exist in every structure.
 
+### New formulas (D120): the catalog is not a closed menu
+
+If the topic is told better another way, invent the hook type, the structure or the closing (in step 1b, at least one of the
+three hook proposals and one of the structures are new). Renaming a catalog item doesn't count: it must change how the story is
+told (another order, viewpoint or promise). Ideas in `formulas.json` → `formatos` (what if…, countdown, you are the thing, change
+of scale, trial, teardown…).
+
+- **New hook or closing:** `hook: <name>` / `closing: <name>` in snake_case and one line in `## New formulas`. The validator
+  doesn't check its shape (there is no pattern), only the usual rules (≤12 words, 2nd person, closing with no farewell).
+- **New structure:** `structure: <name>` and `beats:` with its roles in order. It starts at `hook`, ends at `cta`, has a `twist`
+  (the long pause and the riser hang on that role) and at least 5 roles. Every role in `beats:` appears at least once in the
+  script, in that order, and may take several consecutive lines (max 8). Name roles by what they do (`setup`, `consequence`,
+  `evidence`), not by number. In the story, each custom role gets the image of what it does.
+
+```markdown
+lang: en
+hook: countdown
+structure: domino
+closing: bucle
+beats: hook > now > eight_minutes > one_week > one_year > twist > cta
+…
+## New formulas
+- countdown: a clock runs from the first second; the viewer wants to know what happens at zero
+- domino: each role is a bigger jump in time, and each consequence is bigger than the last
+```
+
 ### Closings (`closing:`; always on the `[cta]` line)
 
 | `closing:` | Name | Shape | Example |

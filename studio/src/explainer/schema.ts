@@ -3,6 +3,7 @@
 import { z } from "zod";
 
 export const LANGS = ["es", "en"] as const;
+/** roles de las estructuras del catálogo; una estructura nueva (D120) declara los suyos en `beats:` del guion, en snake_case */
 export const ROLES = ["hook", "tension", "mechanism", "layer2", "twist", "cta", "item", "versus", "story", "chain"] as const;
 export const LIGHT_NAMES = ["atardecer", "noche", "dorado", "tech"] as const;
 export const CAMERA_PRESETS = ["push_in", "drift", "glide", "zoom_through", "orbit_slow", "cut", "pull_out", "orbit_fast", "crane_up", "crane_down", "dolly_side", "whip_pan", "dutch_tilt", "follow_anchor", "spiral_in", "arc_over"] as const;
@@ -35,7 +36,7 @@ export const SceneSchema = z.object({
 
 export const BeatSchema = z.object({
   id: z.string(),
-  role: z.enum(ROLES),
+  role: z.union([z.enum(ROLES), z.string().regex(/^[a-z][a-z0-9_]*$/)]),
   text: z.string().min(1),
   keyword: z.string().optional(),
   scene: SceneSchema,

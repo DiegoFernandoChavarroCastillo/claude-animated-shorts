@@ -1992,3 +1992,667 @@ export const gran_filtro: HeroDef = {
     };
   },
 };
+
+// ---------------------------------------------------------------- control-rebote
+// El mando de la tele, la sala con la pared que rebota, el receptor de la tele y el vidrio común frente al Low-E.
+// El infrarrojo es invisible: se pinta en violeta, el color con el que lo enseña la cámara del celular.
+const IRC = "#c45cff";
+const V = (p: P3) => new THREE.Vector3(...p);
+/** anclas de un objeto girado: el punto local p, girado con e, escalado con s y movido a o (espacio del root) */
+const xf = (e: THREE.Euler, o: P3, s = 1) => (p: P3): P3 => { const v = V(p).multiplyScalar(s).applyEuler(e).add(V(o)); return [v.x, v.y, v.z]; };
+
+/** mando de tele: cuerpo redondeado, power rojo, botones de color, teclado 3x4, cruceta, volumen y canal, y la ventana
+ *  infrarroja en la punta (+Y). `cut` vuelve la carcasa translúcida y enseña placa, chip, pistas, LED y dos pilas AA. */
+const remoteBody = (b: Bin, cut = false) => {
+  const g = new THREE.Group();
+  const shell = cut ? ghostMat(b, "#9aa6d6", 0.18) : mat(b, "#23262f", { roughness: 0.55, metalness: 0.15 });
+  g.add(rbox(b, 0.62, 2.3, 0.2, 0.09, shell));
+  if (!cut) g.add(place(rbox(b, 0.56, 2.22, 0.02, 0.06, mat(b, "#30343f", { roughness: 0.35, metalness: 0.35 })), [0, -0.01, 0.095]));
+  const rub = mat(b, "#555b6e", { roughness: 0.8 });
+  const key = (w: number, h: number, x: number, y: number, m: THREE.Material = rub) => { const k = rbox(b, w, h, 0.05, Math.min(w, h) * 0.45, m); k.position.set(x, y, 0.12); g.add(k); return k; };
+  const powerMat = glowMat(b, "#e0354a", 0.25, { roughness: 0.5 });
+  const power = key(0.15, 0.15, -0.17, 0.93, powerMat);
+  key(0.13, 0.08, 0.17, 0.93);
+  ["#e0354a", "#3fbf6a", "#e8c23a", "#3a74e0"].forEach((c, i) => key(0.1, 0.05, -0.195 + i * 0.13, 0.77, mat(b, c, { roughness: 0.6 })));
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) key(0.14, 0.1, -0.18 + c * 0.18, 0.6 - r * 0.15);
+  const ring = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.17, 0.05, 10, 36)), rub); ring.position.set(0, -0.3, 0.12); g.add(ring);
+  key(0.13, 0.13, 0, -0.3, mat(b, "#6a7088", { roughness: 0.5 }));
+  [[0, -0.12], [0, -0.48], [-0.18, -0.3], [0.18, -0.3]].forEach(([x, y]) => g.add(place(ball(b, 0.018, mat(b, "#c9cede"), 8), [x, y, 0.17])));
+  key(0.12, 0.34, -0.17, -0.76); key(0.12, 0.34, 0.17, -0.76); key(0.09, 0.07, 0, -0.66); key(0.09, 0.07, 0, -0.86);
+  // ventana infrarroja (cúpula oscura) con el LED dentro
+  const win = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2)), mat(b, "#3a0a18", { roughness: 0.12, metalness: 0.2, transparent: true, opacity: cut ? 0.5 : 0.85 }));
+  win.position.set(0, 1.15, 0); g.add(win);
+  const ledMat = glowMat(b, "#5a1830", 0.3, { roughness: 0.3 }), led = ball(b, 0.05, ledMat, 16); led.position.set(0, 1.14, 0); g.add(led);
+  const chipMat = glowMat(b, "#12162b", 0.2, { roughness: 0.3, metalness: 0.5 });
+  const trace: THREE.Vector3[] = [V([0, 0.27, 0.05]), V([0.12, 0.45, 0.05]), V([0.12, 0.98, 0.05]), V([0, 1.1, 0.05])];
+  if (cut) {
+    g.add(place(box(b, 0.52, 2.02, 0.025, mat(b, "#1f6b3f", { roughness: 0.6 })), [0, 0.05, 0.03]));
+    const gold = glowMat(b, "#ffd36b", 0.5, { metalness: 0.6, roughness: 0.3 });
+    g.add(tube(b, trace.map((v) => [v.x, v.y, v.z] as P3), 0.01, gold));
+    [[-0.12, 0.3, 0.05], [-0.18, 0.1, 0.05], [0.1, -0.1, 0.05]].forEach((p) => g.add(tube(b, [[0, 0.15, 0.05], p as P3, [(p[0] as number) * 1.2, (p[1] as number) - 0.3, 0.05]], 0.007, gold)));
+    g.add(place(box(b, 0.22, 0.22, 0.045, chipMat), [0, 0.15, 0.065]));
+    for (let k = 0; k < 5; k++) [-1, 1].forEach((s) => { g.add(place(box(b, 0.04, 0.022, 0.01, gold), [s * 0.13, 0.07 + k * 0.04, 0.05])); g.add(place(box(b, 0.022, 0.04, 0.01, gold), [-0.08 + k * 0.04, 0.15 + s * 0.13, 0.05])); });
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) { const d = cyl(b, 0.035, 0.035, 0.008, gold, 14); d.rotation.x = Math.PI / 2; d.position.set(-0.18 + c * 0.18, 0.6 - r * 0.15, 0.047); g.add(d); }
+    [[-0.03, 1.0], [0.03, 1.0]].forEach(([x, y]) => g.add(rod(b, [x, y, 0.04], [x * 0.6, 1.12, 0.0], 0.008, mat(b, "#cfd5ea", { metalness: 0.8 }))));
+    [-0.12, 0.12].forEach((x, i) => {
+      const bt = cyl(b, 0.075, 0.075, 0.52, mat(b, i ? "#2c3550" : "#3b2f52", { roughness: 0.4, metalness: 0.3 }), 20); bt.position.set(x, -0.62, -0.04); g.add(bt);
+      g.add(place(cyl(b, 0.076, 0.076, 0.12, mat(b, "#d9a441", { metalness: 0.7, roughness: 0.3 }), 20), [x, i ? -0.42 : -0.82, -0.04]));
+      g.add(place(cyl(b, 0.025, 0.025, 0.03, mat(b, "#cfd5ea", { metalness: 0.8 }), 10), [x, -0.35 + (i ? 0 : -0.55), -0.04]));
+    });
+  }
+  return { g, power, powerMat, ledMat, chipMat, trace };
+};
+
+/** tren del código: una ráfaga larga de cabecera y bits cortos, que salen de la punta (+Y local) mientras el LED emite */
+const CODE: [number, number][] = (() => {
+  const s: [number, number][] = [[0, 0.3]]; let y = 0.44;
+  for (let i = 0; i < 12; i++) { s.push([y, 0.04]); y += 0.04 + (hash1(i * 5 + 2) > 0.5 ? 0.12 : 0.045); }
+  return s;
+})();
+const codeTrain = (b: Bin, parent: THREE.Object3D, y0: number, w = 0.16) => {
+  const m = beam(b, IRC, 1.9, { transparent: true, opacity: 0, depthWrite: false });
+  const bars = CODE.map(([, len]) => { const o = box(b, w, len, w * 0.5, m); parent.add(o); return o; });
+  const cone = new THREE.Mesh(b.track(new THREE.ConeGeometry(0.5, 2.4, 28, 1, true)), beam(b, IRC, 1.1, { transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+  cone.rotation.x = Math.PI; cone.position.y = y0 + 1.2; parent.add(cone);
+  const glow = halo(b, "rgba(200,110,255,0.9)", 0.7, 0); glow.position.y = y0; parent.add(glow);
+  return (f: number, k: number) => {
+    const s = (f * 0.03) % 2.6;
+    bars.forEach((o, i) => { const [st, len] = CODE[i], y = y0 + s - st - len / 2; o.visible = k > 0.01 && y > y0 + len / 2; o.position.y = y; });
+    m.opacity = 0.9 * k * (1 - clamp01((s - 1.8) / 0.8));
+    (cone.material as THREE.MeshBasicMaterial).opacity = 0.07 * k;
+    (glow.material as THREE.MeshBasicMaterial).opacity = k * (0.55 + 0.35 * Math.sin(f * 0.9));
+  };
+};
+
+/** recorrido de la señal por una polilínea: haz fino que avanza (prog) y paquetes que lo recorren; fade(s) da la opacidad a lo largo (0..1) */
+const irPath = (b: Bin, parent: THREE.Object3D, pts: THREE.Vector3[], n = 9, r = 0.035) => {
+  const L = pts.slice(1).map((p, i) => p.distanceTo(pts[i])), tot = L.reduce((a, c) => a + c, 0);
+  const segs = L.map(() => { const m = cyl(b, r * 0.35, r * 0.35, 1, beam(b, IRC, 1.4, { transparent: true, opacity: 0, depthWrite: false }), 8); parent.add(m); return m; });
+  const pk = Array.from({ length: n }, () => { const m = ball(b, r, beam(b, IRC, 2.2, { transparent: true, opacity: 0, depthWrite: false }), 10); parent.add(m); return m; });
+  const at = (d: number) => { let acc = 0; for (let i = 0; i < L.length; i++) { if (d <= acc + L[i] || i === L.length - 1) return pts[i].clone().lerp(pts[i + 1], clamp01((d - acc) / L[i])); acc += L[i]; } return pts[0].clone(); };
+  return (f: number, prog: number, k: number, fade: (s: number) => number = () => 1) => {
+    const D = clamp01(prog) * tot; let acc = 0;
+    segs.forEach((m, i) => {
+      const vis = Math.min(L[i], Math.max(0, D - acc)), mm = m.material as THREE.MeshBasicMaterial;
+      m.visible = vis > 0.005 && k > 0.01;
+      if (m.visible) { setRod(m, pts[i], pts[i].clone().lerp(pts[i + 1], vis / L[i])); mm.opacity = 0.5 * k * fade((acc + vis / 2) / tot); }
+      acc += L[i];
+    });
+    pk.forEach((m, j) => {
+      const d = ((f * 0.02 + j / n) % 1) * D, mm = m.material as THREE.MeshBasicMaterial;
+      m.position.copy(at(d)); mm.opacity = D > 0.01 ? k * 0.95 * fade(d / tot) : 0; m.scale.setScalar(0.8 + 0.4 * Math.abs(Math.sin(f * 0.5 + j)));
+    });
+  };
+};
+
+/** tele de pie: marco negro, pantalla que se enciende (paisaje de colores), patas, y la ventanita oscura del receptor con su LED rojo */
+const tvSet = (b: Bin) => {
+  const g = new THREE.Group(), W = 1.5, H = 0.88;
+  g.add(place(rbox(b, W, H, 0.06, 0.02, mat(b, "#15171e", { roughness: 0.3, metalness: 0.4 })), [0, H / 2 + 0.12, 0]));
+  g.add(place(box(b, W - 0.12, 0.04, 0.03, mat(b, "#2a2d38", { metalness: 0.6, roughness: 0.3 })), [0, 0.16, 0.02]));
+  const scr = new THREE.Mesh(b.track(new THREE.PlaneGeometry(W - 0.06, H - 0.08)), mat(b, "#07080c", { roughness: 0.15, metalness: 0.5 }));
+  scr.position.set(0, H / 2 + 0.14, 0.032); g.add(scr);
+  const img = screenTex(b.track, 512, 300, (c) => {
+    const sk = c.createLinearGradient(0, 0, 0, 300); sk.addColorStop(0, "#3a6fe0"); sk.addColorStop(0.6, "#f2a26b"); sk.addColorStop(1, "#ffd27a"); c.fillStyle = sk; c.fillRect(0, 0, 512, 300);
+    c.fillStyle = "#fff3c4"; c.beginPath(); c.arc(360, 170, 38, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#3d2a5c"; c.beginPath(); c.moveTo(0, 230); c.lineTo(110, 150); c.lineTo(210, 220); c.lineTo(320, 130); c.lineTo(512, 240); c.lineTo(512, 300); c.lineTo(0, 300); c.fill();
+    c.fillStyle = "#1f6b5a"; c.fillRect(0, 262, 512, 38);
+  });
+  const onMat = b.track(new THREE.MeshBasicMaterial({ map: img, transparent: true, opacity: 0, color: new THREE.Color(1.15, 1.15, 1.15) }));
+  const on = new THREE.Mesh(b.track(new THREE.PlaneGeometry(W - 0.06, H - 0.08)), onMat); on.position.set(0, H / 2 + 0.14, 0.035); g.add(on);
+  const light = halo(b, "rgba(255,190,140,0.9)", 2.4, 0); light.position.set(0, H / 2 + 0.14, 0.2); g.add(light);
+  [-0.55, 0.55].forEach((x) => g.add(rod(b, [x, 0.12, 0], [x * 1.12, 0, 0.12], 0.02, mat(b, "#2a2d38", { metalness: 0.7 }))));
+  const rx = 0.42, recv = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.04, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2)), mat(b, "#2a0610", { roughness: 0.1, metalness: 0.3 }));
+  recv.rotation.x = Math.PI / 2; recv.position.set(rx, 0.15, 0.04); g.add(recv);
+  const sbMat = glowMat(b, "#ff2a3a", 1.2), sb = ball(b, 0.012, sbMat, 8); sb.position.set(rx - 0.07, 0.15, 0.04); g.add(sb);
+  return { g, receiver: V([rx, 0.15, 0.08]), set: (k: number, f: number) => {
+    onMat.opacity = k; (light.material as THREE.MeshBasicMaterial).opacity = 0.35 * k;
+    sbMat.emissive.set(k > 0.5 ? "#40ff90" : "#ff2a3a").multiplyScalar(0.9 + 0.3 * Math.sin(f * 0.2));
+  } };
+};
+const lookY = (o: THREE.Object3D, from: THREE.Vector3, to: THREE.Vector3) => { o.position.copy(from); o.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize()); };
+
+const M_E = new THREE.Euler(-0.45, 0.3, -0.5), M_O: P3 = [0, 1.25, 0], mA = xf(M_E, M_O);
+export const mando_tv: HeroDef = {
+  kind: "primitive",
+  when: "Mando a distancia de la tele (control remoto): botón de encendido rojo, teclado numérico, cruceta, volumen y canal, y el LED infrarrojo en la punta; por dentro (corte) placa, chip, pistas y pilas; y la cámara del celular que ve su destello violeta. Pulsar un botón, el código, la luz invisible, probar el control con el celular.",
+  poses: ["entero", "corte", "celular"],
+  actions: {
+    pulsar: "El botón de encendido se hunde y se ilumina; en el corte, el chip se enciende y el código corre por la pista hasta el LED (se queda así): pulsar, botón, elige un código, orden.",
+    emitir: "El LED de la punta lanza el código: una ráfaga larga y bits cortos de luz violeta dentro de un cono tenue (se queda así): sale, emite, LED infrarrojo, luz invisible, parpadea.",
+    destello: "En la pantalla del celular aparece el destello violeta en la punta del control, que a simple vista sigue apagada (se queda así): la cámara lo ve, destello, violeta, pruébalo.",
+  },
+  center: [0, 1.25, 0], radius: 1.15,
+  anchors: { hero: mA([0, 0, 0.1]), top: mA([0, 1.15, 0]), base: [0, 0.05, 0], led: mA([0, 1.18, 0]), power: mA([-0.17, 0.93, 0.15]), chip: mA([0, 0.15, 0.08]), pilas: mA([0, -0.62, 0]), botones: mA([0, 0.4, 0.15]), pantalla: [0.45, 1.3, 0.4] },
+  build: (_L, pose) => {
+    const p = poseOf(mando_tv, pose, "mando_tv"), cel = p === "celular";
+    const b = bin(), root = new THREE.Group(), r = remoteBody(b, p === "corte");
+    const rg = new THREE.Group(); rg.add(r.g); root.add(rg);
+    if (cel) { rg.position.set(-0.75, 1.1, -0.2); rg.rotation.set(-0.3, 0.35, -0.35); rg.scale.setScalar(0.75); }
+    else { rg.position.set(...M_O); rg.rotation.copy(M_E); }
+    const code = codeTrain(b, r.g, 1.2);
+    // pulso que corre por la pista del corte
+    const run = ball(b, 0.035, beam(b, "#ffd36b", 2.4, { transparent: true, opacity: 0 }), 10); r.g.add(run);
+    const runCurve = new THREE.CatmullRomCurve3(r.trace);
+    // celular con la vista de cámara
+    const scr = liveTex(b, 512, 1056), phone = phoneBody(b, scr.tex);
+    phone.position.set(0.45, 1.3, 0.35); phone.rotation.set(-0.05, -0.28, 0.04); phone.scale.setScalar(1.2); phone.visible = cel; root.add(phone);
+    const camView = (g: CanvasRenderingContext2D, k: number, f: number) => {
+      const W = 512, H = 1056, bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#2b2f3c"); bg.addColorStop(1, "#14161d"); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+      g.save(); g.translate(250, 600); g.rotate(-0.45);
+      g.fillStyle = "#23262f"; g.beginPath(); g.roundRect(-85, -330, 170, 640, 40); g.fill();
+      g.fillStyle = "#d63a4c"; g.beginPath(); g.arc(-42, -250, 17, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#5a6072"; for (let rr = 0; rr < 4; rr++) for (let c = 0; c < 3; c++) { g.beginPath(); g.roundRect(-58 + c * 42, -180 + rr * 40, 32, 24, 8); g.fill(); }
+      g.beginPath(); g.arc(0, 60, 42, 0, Math.PI * 2); g.lineWidth = 16; g.strokeStyle = "#5a6072"; g.stroke();
+      g.fillStyle = "#3a0a18"; g.beginPath(); g.arc(0, -330, 24, Math.PI, 0); g.fill();
+      if (k > 0.01) {
+        const fl = k * (0.75 + 0.25 * Math.sin(f * 1.3)), rg2 = g.createRadialGradient(0, -335, 0, 0, -335, 150);
+        rg2.addColorStop(0, `rgba(255,240,255,${fl})`); rg2.addColorStop(0.18, `rgba(214,140,255,${0.95 * fl})`); rg2.addColorStop(0.55, `rgba(150,80,255,${0.35 * fl})`); rg2.addColorStop(1, "rgba(120,60,255,0)");
+        g.fillStyle = rg2; g.beginPath(); g.arc(0, -335, 150, 0, Math.PI * 2); g.fill();
+      }
+      g.restore();
+      g.fillStyle = "rgba(255,255,255,0.85)"; g.font = "bold 30px sans-serif"; g.fillText("1x", 236, 960);
+      g.beginPath(); g.arc(256, 1010, 34, 0, Math.PI * 2); g.lineWidth = 6; g.strokeStyle = "#fff"; g.stroke();
+      g.fillStyle = "#ff3b4a"; g.beginPath(); g.arc(60, 70, 10, 0, Math.PI * 2); g.fill(); g.fillStyle = "#fff"; g.font = "26px sans-serif"; g.fillText("REC", 80, 80);
+      g.strokeStyle = "rgba(255,255,255,0.5)"; g.lineWidth = 3; [[40, 140], [472, 140], [40, 900], [472, 900]].forEach(([x, y], i) => { g.beginPath(); g.moveTo(x + (i % 2 ? -40 : 40), y); g.lineTo(x, y); g.lineTo(x, y + (i > 1 ? -40 : 40)); g.stroke(); });
+    };
+    root.add(place(cyl(b, 0.9, 1.0, 0.08, mat(b, "#2a2f4a", { roughness: 0.5, metalness: 0.3 }), 48), [0, 0.04, 0]));
+    shadows(root);
+    let pu = 0, em = 0, de = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      r.power.position.z = 0.12 - 0.035 * Math.sin(Math.PI * clamp01(pu * 1.6));
+      r.powerMat.emissive.set("#ff3b4f").multiplyScalar(0.25 + 1.2 * pu);
+      r.chipMat.emissive.set("#ffd36b").multiplyScalar(0.05 + 0.6 * pu * (0.7 + 0.3 * Math.sin(f * 0.4)));
+      const rm = run.material as THREE.MeshBasicMaterial; rm.opacity = pu > 0.05 ? pu : 0; run.position.copy(runCurve.getPoint((f * 0.025) % 1));
+      const lk = Math.max(em, cel ? 0 : pu * 0.4);
+      r.ledMat.emissive.set(IRC).multiplyScalar(0.05 + 0.5 * lk);
+      code(f, cel ? 0 : em);
+      if (cel) scr.draw(`${de.toFixed(2)}|${de > 0 ? f % 6 : 0}`, (g) => camView(g, de, f));
+      rg.position.y = (cel ? 1.1 : M_O[1]) + 0.03 * Math.sin(f * 0.04);
+      if (cel) phone.position.y = 1.3 + 0.025 * Math.sin(f * 0.05 + 1);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "pulsar") pu = ease(u); if (name === "emitir") em = ease(u); if (name === "destello") de = ease(u); paint(lf); } };
+  },
+};
+
+/** pared con ladrillo oscuro (absorbe) o yeso blanco (refleja) */
+const brickTex = (b: Bin) => screenTex(b.track, 512, 512, (c) => {
+  c.fillStyle = "#2a1a18"; c.fillRect(0, 0, 512, 512);
+  for (let r = 0; r < 16; r++) for (let k = -1; k < 6; k++) { const x = k * 96 + (r % 2 ? 48 : 0); c.fillStyle = `hsl(${8 + hash1(r * 9 + k) * 10},${35 + hash1(r + k * 3) * 15}%,${17 + hash1(r * 3 + k * 7) * 9}%)`; c.fillRect(x + 4, r * 32 + 4, 88, 26); }
+});
+const plasterTex = (b: Bin) => screenTex(b.track, 256, 256, (c) => {
+  c.fillStyle = "#ece6da"; c.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 900; i++) { c.fillStyle = `rgba(${hash1(i) > 0.5 ? "255,255,255" : "150,140,120"},0.08)`; c.fillRect(hash1(i * 3.1) * 256, hash1(i * 7.3) * 256, 2, 2); }
+});
+
+export const sala_rebote: HeroDef = {
+  kind: "primitive",
+  when: "Sala de estar en corte (suelo de madera, pared del fondo, sofá, lámpara, cuadro y la tele en su mueble) donde la señal del control rebota en la pared y llega a la tele: apuntar a la pared, el rebote, pared blanca que refleja o pared oscura de ladrillo que absorbe, señal que no alcanza, la tele se enciende o no.",
+  poses: ["blanca", "oscura"],
+  actions: {
+    rebotar: "La señal sale del control, choca con la pared, se esparce en abanico y un rayo llega a la tele, que se enciende (se queda así): rebota, refleja, apuntas a la pared, enciende.",
+    absorber: "La señal llega a la pared y se apaga en ella, sin abanico; la tele sigue apagada (se queda así): se la traga, absorbe, ladrillo, oscura, tela.",
+    debil: "La señal rebota pero se desvanece por el camino y no llega a la tele (se queda así): no alcanza, distancia, pilas gastadas, débil, lejos.",
+  },
+  center: [0.1, 1.1, -0.35], radius: 1.4,
+  anchors: { hero: [0.1, 1.1, -0.3], top: [0, 2.9, -1.5], base: [0, 0.02, 0], pared: [0, 1.55, -1.45], tele: [1.25, 1.05, -0.65], control: [-0.95, 0.95, 0.55], sofa: [-1.3, 0.6, 0.6], lampara: [-2.0, 1.7, -1.0] },
+  build: (_L, pose) => {
+    const p = poseOf(sala_rebote, pose, "sala_rebote"), dark = p === "oscura";
+    const b = bin(), root = new THREE.Group();
+    const wood = screenTex(b.track, 512, 512, (c) => { for (let i = 0; i < 16; i++) { c.fillStyle = `hsl(28,${38 + hash1(i) * 10}%,${30 + hash1(i * 5) * 9}%)`; c.fillRect(0, i * 32, 512, 31); c.fillStyle = "rgba(0,0,0,0.25)"; c.fillRect(hash1(i * 3) * 512, i * 32, 3, 32); } });
+    wood.wrapS = wood.wrapT = THREE.RepeatWrapping; wood.repeat.set(2, 2);
+    root.add(place(box(b, 5.2, 0.06, 3.6, b.track(new THREE.MeshStandardMaterial({ map: wood, roughness: 0.6 }))), [0, -0.03, 0.2]));
+    const wt = dark ? brickTex(b) : plasterTex(b); wt.wrapS = wt.wrapT = THREE.RepeatWrapping; wt.repeat.set(dark ? 2.5 : 2, dark ? 1.5 : 1.2);
+    root.add(place(box(b, 5.2, 3.0, 0.1, b.track(new THREE.MeshStandardMaterial({ map: wt, roughness: 0.92 }))), [0, 1.5, -1.55]));
+    root.add(place(box(b, 5.2, 0.1, 0.03, mat(b, dark ? "#1c1414" : "#f6f2ea")), [0, 0.05, -1.49]));
+    // cuadro, lámpara de pie, planta y alfombra
+    root.add(place(box(b, 0.9, 0.62, 0.04, mat(b, "#3a2a1e")), [-1.2, 1.95, -1.48]));
+    root.add(place(new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.78, 0.5)), b.track(new THREE.MeshStandardMaterial({ map: screenTex(b.track, 256, 160, (c) => { const gr = c.createLinearGradient(0, 0, 256, 160); gr.addColorStop(0, "#5d7fb8"); gr.addColorStop(1, "#d98a6a"); c.fillStyle = gr; c.fillRect(0, 0, 256, 160); c.fillStyle = "#2e3f5e"; c.beginPath(); c.moveTo(0, 160); c.lineTo(90, 70); c.lineTo(170, 130); c.lineTo(256, 90); c.lineTo(256, 160); c.fill(); }), roughness: 0.7 }))), [-1.2, 1.95, -1.455]));
+    const brass = mat(b, "#c9a25a", { metalness: 0.7, roughness: 0.35 });
+    root.add(place(cyl(b, 0.2, 0.22, 0.04, brass, 24), [-2.0, 0.02, -1.0]), rod(b, [-2.0, 0.04, -1.0], [-2.0, 1.6, -1.0], 0.022, brass));
+    root.add(place(cyl(b, 0.16, 0.3, 0.34, glowMat(b, "#f5d9a0", 0.55, { roughness: 0.8, side: THREE.DoubleSide }), 28), [-2.0, 1.72, -1.0]));
+    root.add(place(cyl(b, 0.2, 0.15, 0.36, mat(b, "#b8643e", { roughness: 0.7 }), 20), [2.2, 0.18, -1.15]));
+    for (let i = 0; i < 7; i++) { const lf = blobLeaf(b, i); lf.position.set(2.2, 0.55 + hash1(i) * 0.4, -1.15); lf.rotation.set(0.3 * Math.sin(i * 2.1), i * 0.9, 0.5 + 0.3 * hash1(i * 3)); root.add(lf); }
+    root.add(place(box(b, 2.4, 0.015, 1.5, mat(b, "#6a4a7a", { roughness: 0.95 })), [0.1, 0.008, 0.35]));
+    // sofá mirando a la tele
+    const sofa = new THREE.Group(), fab = mat(b, "#3e6a78", { roughness: 0.9 });
+    sofa.add(place(rbox(b, 1.7, 0.36, 0.75, 0.08, fab), [0, 0.28, 0]), place(rbox(b, 1.7, 0.55, 0.2, 0.08, fab), [0, 0.65, -0.3]));
+    [-1, 1].forEach((s) => sofa.add(place(rbox(b, 0.2, 0.5, 0.78, 0.07, fab), [s * 0.88, 0.4, 0])));
+    [-0.4, 0.4].forEach((x) => sofa.add(place(rbox(b, 0.76, 0.12, 0.62, 0.05, mat(b, "#4b7c8b", { roughness: 0.9 })), [x, 0.5, 0.05])));
+    [-0.75, 0.75].forEach((x) => [-0.3, 0.3].forEach((z) => sofa.add(place(cyl(b, 0.03, 0.025, 0.1, mat(b, "#2a1d14"), 8), [x, 0.05, z]))));
+    sofa.position.set(-1.3, 0, 0.75); sofa.rotation.y = 2.7; root.add(sofa);
+    // mueble y tele
+    const tvG = new THREE.Group(); tvG.position.set(1.25, 0, -0.75); tvG.rotation.y = -0.55; root.add(tvG);
+    tvG.add(place(rbox(b, 1.6, 0.42, 0.45, 0.03, mat(b, "#6b4a32", { roughness: 0.6 })), [0, 0.21, 0]));
+    [-0.4, 0.4].forEach((x) => tvG.add(place(box(b, 0.74, 0.3, 0.01, mat(b, "#5a3d29", { roughness: 0.5 })), [x, 0.21, 0.226])));
+    const tv = tvSet(b); tv.g.position.set(0, 0.42, 0); tvG.add(tv.g);
+    // control sobre el brazo del sofá, apuntando a la pared
+    const W = V([0.1, 1.55, -1.48]), T0 = V([-0.95, 0.95, 0.55]);
+    const rem = remoteBody(b); rem.g.scale.setScalar(0.3); lookY(rem.g, T0, W); root.add(rem.g);
+    shadows(root);
+    root.updateMatrixWorld(true);
+    const R = tv.g.localToWorld(tv.receiver.clone()), T = T0.clone().add(W.clone().sub(T0).normalize().multiplyScalar(0.36));
+    const path = irPath(b, root, [T, W, R], 10, 0.04);
+    // abanico difuso en la pared
+    const fanM = beam(b, IRC, 1.2, { transparent: true, opacity: 0, depthWrite: false });
+    const fan = [-1.1, -0.7, -0.35, 0.35, 0.7, 1.1, 0].map((a, i) => { const m = cyl(b, 0.01, 0.01, 1, fanM, 6); const dir = new THREE.Vector3(Math.sin(a), 0.25 * Math.sin(i * 1.7) - 0.15, Math.cos(a)).normalize(); setRod(m, W, W.clone().add(dir.multiplyScalar(1.1))); root.add(m); return m; });
+    const hit = halo(b, "rgba(205,120,255,0.9)", 0.9, 0); hit.position.copy(W).add(V([0, 0, 0.05])); root.add(hit);
+    const lamp = halo(b, "rgba(255,210,150,0.7)", 1.6, 0.35); lamp.position.set(-2.0, 1.7, -0.9); root.add(lamp);
+    const wSplit = T.distanceTo(W) / (T.distanceTo(W) + W.distanceTo(R));
+    let re = 0, ab = 0, de = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      const u = Math.max(re, ab, de), p1 = clamp01(u / wSplit), p2 = clamp01((u - wSplit) / (1 - wSplit));
+      const fade = ab > 0 ? (s: number) => (s < wSplit ? 1 : 0) : de > 0 ? (s: number) => 1 - clamp01((s - wSplit * 0.6) / (1 - wSplit * 0.6)) ** 0.7 : () => 1;
+      path(f, ab > 0 ? Math.min(u, wSplit) : de > 0 ? Math.min(u, wSplit + (1 - wSplit) * 0.55) : u, u > 0 ? 1 : 0, fade);
+      fanM.opacity = (re > 0 ? 0.32 : de > 0 ? 0.12 : 0.04) * p2 * (0.8 + 0.2 * Math.sin(f * 0.3));
+      (hit.material as THREE.MeshBasicMaterial).opacity = p1 >= 1 ? (ab > 0 ? 0.6 * (1 - p2) + 0.1 : 0.7) : 0;
+      tv.set(re > 0 ? clamp01((re - 0.9) / 0.1) : 0, f);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "rebotar") re = ease(u); if (name === "absorber") ab = ease(u); if (name === "debil") de = ease(u); paint(lf); } };
+  },
+};
+const blobLeaf = (b: Bin, i: number) => { const m = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.16, 12, 8)), mat(b, i % 2 ? "#3f8a55" : "#2f6f45", { roughness: 0.7 })); m.scale.set(0.45, 1.3, 0.15); m.geometry.translate(0, 0.14, 0); return m; };
+
+export const receptor_ir: HeroDef = {
+  kind: "primitive",
+  when: "El receptor infrarrojo de la tele visto de cerca: cápsula negra con lente en cúpula, blindaje metálico y tres patas sobre una placa, detrás de la ventanita oscura del marco; filtra la luz que parpadea a 38 kHz e ignora la luz fija; el sol lo deslumbra. Receptor, sensor, ventanita, sensible, filtra, ignora la lámpara, deslumbra.",
+  poses: ["modulo"],
+  actions: {
+    recibir: "Llegan los pulsos violetas, la lente se ilumina, la señal corre a un chip con LED verde y la pantalla de detrás se enciende (se queda así): recibe, le basta, sensible, reflejo débil.",
+    filtrar: "Un haz amarillo fijo de lámpara choca contra un anillo rojo delante de la lente y no entra, mientras los pulsos violetas sí pasan (se queda así): ignora, filtra, solo hace caso, luz fija.",
+    deslumbrar: "Un chorro de luz blanca de sol inunda el receptor: la lente se satura en blanco, los pulsos se pierden y el LED se pone rojo (se queda así): sol, deslumbra, ciega, satura, tapa.",
+  },
+  center: [0, 1.1, 0], radius: 0.9,
+  anchors: { hero: [0, 1.2, 0.3], top: [0, 2.1, 0], base: [0, 0.05, 0], lente: [0, 1.3, 0.5], chip: [0.95, 0.4, 0.3], ventana: [0, 1.15, -1.5], patas: [0, 0.55, 0] },
+  build: (_L, pose) => {
+    poseOf(receptor_ir, pose, "receptor_ir");
+    const b = bin(), root = new THREE.Group();
+    // fondo: esquina del marco de la tele con la ventanita y la pantalla encima
+    const bez = new THREE.Group(); bez.position.set(0, -0.15, -1.7); root.add(bez);
+    bez.add(place(rbox(b, 4.2, 0.7, 0.2, 0.05, mat(b, "#15171e", { roughness: 0.3, metalness: 0.4 })), [0, 1.3, 0]));
+    const scrM = mat(b, "#0b0d16", { roughness: 0.15, metalness: 0.4 }); bez.add(place(box(b, 4.0, 1.6, 0.05, scrM), [0, 2.45, 0]));
+    bez.add(place(rbox(b, 0.6, 0.24, 0.05, 0.05, mat(b, "#3a0a18", { roughness: 0.1, metalness: 0.3, transparent: true, opacity: 0.85 })), [0, 1.3, 0.11]));
+    // módulo receptor
+    const epoxy = glowMat(b, "#151520", 0.05, { roughness: 0.25, metalness: 0.1 });
+    root.add(place(rbox(b, 0.9, 0.78, 0.38, 0.06, epoxy), [0, 1.25, 0]));
+    const lensM = mat(b, "#1a0f2a", { roughness: 0.05, metalness: 0.2, emissive: new THREE.Color(0, 0, 0) });
+    const lens = new THREE.Mesh(b.track(new THREE.SphereGeometry(0.27, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2)), lensM); lens.rotation.x = Math.PI / 2; lens.position.set(0, 1.3, 0.19); root.add(lens);
+    const steel = mat(b, "#aab2cc", { metalness: 0.85, roughness: 0.3 });
+    root.add(place(box(b, 0.98, 0.06, 0.46, steel), [0, 1.67, -0.02]), place(box(b, 0.98, 0.84, 0.04, steel), [0, 1.25, -0.23]));
+    [-0.49, 0.49].forEach((x) => root.add(place(box(b, 0.04, 0.5, 0.46, steel), [x, 1.42, -0.02])));
+    root.add(place(new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.34, 0.12)), b.track(new THREE.MeshBasicMaterial({ map: screenTex(b.track, 128, 48, (c) => { c.fillStyle = "#151520"; c.fillRect(0, 0, 128, 48); c.fillStyle = "#9aa0b8"; c.font = "bold 30px monospace"; c.fillText("38K", 30, 34); }) }))), [0, 1.0, 0.192]));
+    [-0.25, 0, 0.25].forEach((x) => root.add(rod(b, [x, 0.86, 0], [x, 0.3, 0], 0.025, steel)));
+    root.add(place(box(b, 2.6, 0.06, 0.9, mat(b, "#1f6b3f", { roughness: 0.6 })), [0.4, 0.27, 0.05]));
+    const gold = glowMat(b, "#ffd36b", 0.5, { metalness: 0.6, roughness: 0.3 });
+    const trace = [V([0.25, 0.31, 0]), V([0.5, 0.31, 0.15]), V([0.8, 0.31, 0.25])];
+    root.add(tube(b, trace.map((v) => [v.x, v.y, v.z] as P3), 0.012, gold));
+    const mcuM = glowMat(b, "#12162b", 0.2, { roughness: 0.3, metalness: 0.5 }); root.add(place(box(b, 0.36, 0.06, 0.36, mcuM), [0.98, 0.33, 0.3]));
+    for (let k = 0; k < 4; k++) [-1, 1].forEach((s) => root.add(place(box(b, 0.05, 0.02, 0.04, gold), [0.98 + s * 0.2, 0.31, 0.18 + k * 0.08])));
+    const ledM = glowMat(b, "#203020", 0.2), led = ball(b, 0.08, ledM, 12); led.position.set(1.35, 0.36, 0.3); root.add(led);
+    const ledH = halo(b, "rgba(255,60,70,0.9)", 0.6, 0); ledH.position.set(1.35, 0.36, 0.36); root.add(ledH);
+    [[-0.7, 0.32, 0.3], [-0.95, 0.32, -0.1]].forEach((q) => root.add(place(cyl(b, 0.07, 0.07, 0.14, mat(b, "#2a3a8a", { roughness: 0.4 }), 14), q as P3)));
+    shadows(root);
+    // entradas: pulsos desde la izquierda, haz fijo de lámpara desde arriba a la derecha, chorro de sol desde arriba a la izquierda
+    const L0 = V([0, 1.3, 0.48]);
+    const pulses = irPath(b, root, [V([-2.2, 1.9, 1.6]), L0], 8, 0.05);
+    const lampM = beam(b, "#ffd27a", 1.3, { transparent: true, opacity: 0, depthWrite: false }), lampB = cyl(b, 0.06, 0.06, 1, lampM, 12); root.add(lampB);
+    const LS = V([2.2, 2.4, 1.4]), LE = V([0.18, 1.38, 0.62]); setRod(lampB, LS, LE);
+    const bulb = place(ball(b, 0.14, glowMat(b, "#ffe2a0", 1.2), 16), [LS.x, LS.y, LS.z]); bulb.visible = false; root.add(bulb);
+    const guard = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.34, 0.025, 8, 40)), beam(b, "#ff4d6a", 1.6, { transparent: true, opacity: 0 })); guard.position.set(0, 1.3, 0.62); root.add(guard);
+    const sunM = beam(b, "#ffe2a0", 1.5, { transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false });
+    const sun = new THREE.Mesh(b.track(new THREE.ConeGeometry(1.1, 3.2, 32, 1, true)), sunM); lookY(sun, V([-1.0, 2.4, 1.9]).lerp(L0, 0.5), V([-2.0, 3.5, 3.3])); root.add(sun);
+    const sunDisc = ball(b, 0.35, beam(b, "#ffd27a", 2.0), 24); sunDisc.position.set(-2.0, 3.5, 3.3); root.add(sunDisc);
+    const sunHalo = halo(b, "rgba(255,200,110,0.9)", 2.2, 0); sunHalo.position.copy(sunDisc.position); root.add(sunHalo);
+    const glare = halo(b, "rgba(255,240,200,1)", 1.6, 0); glare.position.set(0, 1.3, 0.6); root.add(glare);
+    const out = ball(b, 0.035, beam(b, "#5dffa8", 2.2, { transparent: true, opacity: 0 }), 10); root.add(out);
+    const outC = new THREE.CatmullRomCurve3(trace);
+    let rc = 0, fl = 0, ds = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      const drown = 1 - 0.85 * ds;
+      pulses(f, Math.max(rc, fl, ds > 0 ? 1 : 0), Math.max(rc, fl, ds) > 0 ? drown : 0);
+      const ok = Math.max(rc, fl) * drown;
+      lensM.emissive.set(IRC).multiplyScalar(0.6 * ok * (0.7 + 0.3 * Math.sin(f * 0.6))).lerp(new THREE.Color(1.6, 1.55, 1.4), ds);
+      (out.material as THREE.MeshBasicMaterial).opacity = ok > 0.05 ? ok : 0; out.position.copy(outC.getPoint((f * 0.03) % 1));
+      mcuM.emissive.set("#5dffa8").multiplyScalar(0.25 * ok);
+      ledM.emissive.set(ds > 0.5 ? "#ff3b4a" : ok > 0.3 ? "#40ff90" : "#203020").multiplyScalar(ds > 0.5 || ok > 0.3 ? 1.6 : 0.2);
+      scrM.emissive.set("#6a8cff").multiplyScalar(0.18 * rc * drown);
+      lampM.opacity = 0.55 * fl; bulb.visible = fl > 0.02;
+      (guard.material as THREE.MeshBasicMaterial).opacity = fl * (0.6 + 0.4 * Math.sin(f * 0.25));
+      sunM.opacity = 0.13 * ds; (glare.material as THREE.MeshBasicMaterial).opacity = 0.6 * ds; sunDisc.visible = ds > 0.02; (sunHalo.material as THREE.MeshBasicMaterial).opacity = 0.8 * ds; (ledH.material as THREE.MeshBasicMaterial).opacity = ds > 0.5 ? 0.9 : 0;
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "recibir") rc = ease(u); if (name === "filtrar") fl = ease(u); if (name === "deslumbrar") ds = ease(u); paint(lf); } };
+  },
+};
+
+export const vidrio_lowe: HeroDef = {
+  kind: "primitive",
+  when: "Dos dioramas uno encima del otro con un control, una tele pequeña y lo que hay en medio: una pared que rebota la señal hacia la tele, un vidrio común que la deja pasar o un vidrio con capa metálica (Low-E, control solar) que la refleja y la tele no se entera. Vidrio transparente frente a pared opaca, ventana, capa invisible de metal, la señal pasa o se frena.",
+  poses: ["contraste", "par"],
+  actions: {
+    pasar: "En el diorama de arriba la señal llega a la tele (rebotando en la pared o atravesando el vidrio común) y la tele se enciende (se queda así): ayuda, pasa, deja pasar, opaco, espejo.",
+    frenar: "En el diorama de abajo la señal choca con el vidrio de capa metálica, que brilla dorado, y vuelve atrás; la tele sigue apagada (se queda así): frena, estorba, muro, capa, metal.",
+  },
+  center: [0, 1.25, 0], radius: 1.15,
+  anchors: { hero: [0, 1.25, 0], top: [0, 3.0, -0.3], base: [0, 0.02, 0.3], izquierda: [0, 2.25, -0.3], derecha: [0, 0.8, 0.3], arriba: [0, 2.25, -0.3], abajo: [0, 0.8, 0.3], pared: [-0.85, 2.4, -0.43], vidrio: [0.6, 1.0, 0.23], tele_abajo: [0, 0.6, -0.45] },
+  build: (_L, pose) => {
+    const p = poseOf(vidrio_lowe, pose, "vidrio_lowe"), wall = p === "contraste";
+    const b = bin(), root = new THREE.Group(), S = 1.35;
+    const side = (y: number, z: number) => {
+      const g = new THREE.Group(); g.position.set(0, y, z); g.scale.setScalar(S); root.add(g);
+      g.add(place(cyl(b, 0.82, 0.88, 0.08, mat(b, "#2a2f4a", { roughness: 0.5, metalness: 0.3 }), 48), [0, 0.04, 0]));
+      const rim = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.86, 0.012, 6, 64)), beam(b, IRC, 1.2, { transparent: true, opacity: 0.6 })); rim.rotation.x = Math.PI / 2; rim.position.y = 0.0; g.add(rim);
+      return g;
+    };
+    const pane = (g: THREE.Group, lowe: boolean) => {
+      const m = lowe ? mat(b, "#e8d9a8", { transparent: true, opacity: 0.2, metalness: 0.3, roughness: 0.05, emissive: new THREE.Color(0, 0, 0), side: THREE.DoubleSide, depthWrite: false })
+        : mat(b, "#cfeaf2", { transparent: true, opacity: 0.16, roughness: 0.02, side: THREE.DoubleSide, depthWrite: false });
+      g.add(place(box(b, 1.1, 0.9, 0.03, m), [0, 0.57, -0.05]));
+      const fr = mat(b, "#d8dce8", { metalness: 0.6, roughness: 0.3 });
+      [[0, 1.03], [0, 0.11]].forEach(([x, y]) => g.add(place(box(b, 1.16, 0.04, 0.06, fr), [x, y, -0.05])));
+      [-0.57, 0.57].forEach((x) => g.add(place(box(b, 0.04, 0.96, 0.06, fr), [x, 0.57, -0.05])));
+      if (lowe) for (let i = 0; i < 2; i++) g.add(place(box(b, 1.06, 0.004, 0.034, beam(b, "#ffd36b", 0.6, { transparent: true, opacity: 0.25 })), [0, 0.35 + i * 0.44, -0.05]));
+      return m;
+    };
+    const miniTV = (g: THREE.Group, pos: P3, ry: number) => { const t = tvSet(b); t.g.scale.setScalar(0.5); t.g.position.set(...pos); t.g.rotation.y = ry; g.add(t.g); return t; };
+    const miniRemote = (g: THREE.Group, from: THREE.Vector3, to: THREE.Vector3) => { const r = remoteBody(b); r.g.scale.setScalar(0.2); lookY(r.g, from, to); g.add(r.g); return from.clone().add(to.clone().sub(from).normalize().multiplyScalar(0.24)); };
+    const recvIn = (g: THREE.Group, t: ReturnType<typeof tvSet>) => { root.updateMatrixWorld(true); return g.worldToLocal(t.g.localToWorld(t.receiver.clone())); };
+    // arriba: pared que rebota (contraste) o vidrio común (par); abajo: vidrio con capa metálica
+    const gl = side(1.5, -0.3), gr = side(0, 0.3);
+    let tvL: ReturnType<typeof tvSet>, ptsL: THREE.Vector3[];
+    if (wall) {
+      gl.add(place(box(b, 0.1, 1.1, 1.1, b.track(new THREE.MeshStandardMaterial({ map: plasterTex(b), roughness: 0.9 }))), [-0.66, 0.6, -0.1]));
+      tvL = miniTV(gl, [0.42, 0.05, -0.38], -0.8);
+      const W = V([-0.6, 0.72, -0.1]), tip = miniRemote(gl, V([-0.12, 0.32, 0.66]), W);
+      ptsL = [tip, W, recvIn(gl, tvL)];
+    } else {
+      pane(gl, false); tvL = miniTV(gl, [0, 0.05, -0.55], 0);
+      const tip = miniRemote(gl, V([0.08, 0.45, 0.62]), V([0.12, 0.2, -0.5]));
+      ptsL = [tip, recvIn(gl, tvL)];
+    }
+    const lm = pane(gr, true) as THREE.MeshStandardMaterial, tvR = miniTV(gr, [0, 0.05, -0.55], 0);
+    const tipR = miniRemote(gr, V([-0.08, 0.45, 0.62]), V([-0.12, 0.2, -0.5]));
+    const hitR = V([-0.04, 0.3, -0.03]), backR = V([0.45, 0.6, 0.75]);
+    shadows(root);
+    const pathL = irPath(b, gl, ptsL, 8, 0.03), pathR = irPath(b, gr, [tipR, hitR, backR], 8, 0.03);
+    const flash = halo(b, "rgba(255,215,120,0.9)", 0.8, 0); flash.position.copy(hitR).add(V([0, 0, 0.04])); gr.add(flash);
+    const split = tipR.distanceTo(hitR) / (tipR.distanceTo(hitR) + hitR.distanceTo(backR));
+    let pa = 0, fr = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      pathL(f, pa, pa > 0 ? 1 : 0, wall ? () => 1 : (s) => (s > 0.5 ? 0.85 : 1));
+      tvL.set(clamp01((pa - 0.88) / 0.12), f);
+      pathR(f, fr, fr > 0 ? 1 : 0, (s) => (s > split ? 0.75 - 0.5 * (s - split) : 1));
+      tvR.set(0, f);
+      const hk = fr > split ? 1 : 0;
+      lm.emissive.set("#ffd36b").multiplyScalar(0.35 * hk * (0.7 + 0.3 * Math.sin(f * 0.2)));
+      (flash.material as THREE.MeshBasicMaterial).opacity = 0.7 * hk;
+      gl.position.y = 1.5 + 0.03 * Math.sin(f * 0.04); gr.position.y = 0.03 * Math.sin(f * 0.04 + 1.5);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "pasar") pa = ease(u); if (name === "frenar") fr = ease(u); paint(lf); } };
+  },
+};
+
+// mudanza-planeta · esfera iluminada desde una dirección fija (día y noche con terminador) para planetas junto a su estrella
+const litSphere = (b: Bin, r: number, tex: THREE.Texture, tint: string, dir: P3, seg = 64) => {
+  const uni = { sunDir: { value: new THREE.Vector3(...dir).normalize() }, map: { value: tex }, tint: { value: col(tint) }, spin: { value: 0 }, term: { value: 0 }, hit: { value: 0 } };
+  const m = new THREE.Mesh(b.track(new THREE.SphereGeometry(r, seg, Math.round(seg * 0.75))), b.track(new THREE.ShaderMaterial({
+    uniforms: uni, fog: false,
+    vertexShader: "varying vec3 n; varying vec2 u; void main(){ n = normalize(mat3(modelMatrix) * normal); u = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
+    fragmentShader: `uniform vec3 sunDir; uniform sampler2D map; uniform vec3 tint; uniform float spin; uniform float term; uniform float hit; varying vec3 n; varying vec2 u;
+      void main(){ vec3 N = normalize(n); float d = dot(N, sunDir); float l = smoothstep(-0.1, 0.32, d);
+        vec3 c = texture2D(map, vec2(fract(u.x + spin), u.y)).rgb;
+        vec3 day = c * mix(vec3(1.0), tint, 0.35) * 1.18; vec3 night = c * vec3(0.05, 0.06, 0.12) + vec3(0.012, 0.016, 0.05);
+        vec3 o = mix(night, day, l); float edge = 1.0 - smoothstep(0.0, 0.07, abs(d - 0.03));
+        o += term * edge * vec3(1.0, 0.72, 0.32) * 1.5; o = mix(o, vec3(1.6, 0.9, 0.7), hit * (0.35 + 0.65 * l));
+        gl_FragColor = vec4(o, 1.0); }`,
+  })));
+  return { m, uni };
+};
+
+const exoTex = (b: Bin, p: string) => screenTex(b.track, 512, 256, (g) => {
+  const W = 512, H = 256;
+  if (p === "proxima" || p === "roca") {
+    g.fillStyle = "#a0603e"; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 80; i++) { g.fillStyle = `rgba(${70 + (i * 13) % 70},${34 + (i * 7) % 30},26,0.35)`; g.beginPath(); g.ellipse((i * 83) % W, (i * 47) % H, 14 + (i % 6) * 9, 6 + (i % 4) * 5, i, 0, 6.3); g.fill(); }
+    for (let i = 0; i < 34; i++) { const x = (i * 151) % W, y = 20 + ((i * 71) % (H - 40)), r = 3 + (i % 5) * 3; g.fillStyle = "rgba(55,24,18,0.5)"; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill(); g.strokeStyle = "rgba(235,165,120,0.45)"; g.lineWidth = 1.5; g.beginPath(); g.arc(x - 0.6, y - 0.6, r, 3.6, 5.8); g.stroke(); }
+    g.fillStyle = "rgba(240,235,230,0.75)"; g.fillRect(0, 0, W, 9); g.fillRect(0, H - 9, W, 9);
+  } else {
+    const ocean = p === "kepler" ? "#2a6aa6" : "#1f5a8f", land = p === "kepler" ? ["#8a9450", "#c2a266"] : ["#3f8a58", "#6f7f45"];
+    g.fillStyle = ocean; g.fillRect(0, 0, W, H);
+    for (const [x, y, r, k] of [[80, 100, 55, 0], [170, 150, 40, 1], [300, 80, 60, 0], [390, 160, 48, 1], [250, 195, 32, 0], [460, 70, 30, 1], [30, 190, 26, 0]]) {
+      g.fillStyle = land[k]; g.beginPath(); g.ellipse(x, y, r, r * 0.65, x * 0.01, 0, 6.3); g.fill();
+      g.fillStyle = "rgba(255,255,255,0.1)"; g.beginPath(); g.ellipse(x - r * 0.2, y - r * 0.15, r * 0.5, r * 0.3, 0, 0, 6.3); g.fill();
+    }
+    g.fillStyle = "rgba(255,255,255,0.85)"; g.fillRect(0, 0, W, 12); g.fillRect(0, H - 12, W, 12);
+    g.fillStyle = "rgba(255,255,255,0.42)"; for (let i = 0; i < 18; i++) { g.beginPath(); g.ellipse((i * 97 + 30) % W, 30 + ((i * 53) % 190), 34 + (i % 3) * 12, 7, 0.1 * (i % 5), 0, 6.3); g.fill(); }
+  }
+});
+
+const rgbaOf = (hex: string, a: number) => `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${a})`;
+
+/** estrella pintada (enana roja o como el Sol): núcleo con granulado, dos halos aditivos */
+const starBall = (b: Bin, r: number, base: string, hot: string, spot: string) => {
+  const tex = screenTex(b.track, 512, 256, (c) => {
+    c.fillStyle = base; c.fillRect(0, 0, 512, 256);
+    for (let i = 0; i < 240; i++) { c.fillStyle = i % 2 ? hot : "rgba(120,20,10,0.25)"; c.globalAlpha = 0.12 + (i % 4) * 0.05; c.beginPath(); c.ellipse((i * 97) % 512, (i * 59) % 256, 6 + (i % 7) * 4, 4 + (i % 5) * 3, i, 0, 6.3); c.fill(); }
+    c.globalAlpha = 1; c.fillStyle = spot; for (const [x, y, s] of [[110, 100, 18], [320, 150, 14], [400, 80, 10]]) { c.beginPath(); c.ellipse(x, y, s, s * 0.6, 0, 0, 6.3); c.fill(); }
+  });
+  return ball(b, r, beam(b, "#ffffff", 1.1, { map: tex }), 48);
+};
+
+/** cartel de «SE VENDE» (tablero blanco con borde rojo y poste) */
+const signTex = (b: Bin) => screenTex(b.track, 512, 240, (c) => {
+  c.fillStyle = "#f6f2e6"; c.fillRect(0, 0, 512, 240); c.strokeStyle = "#d9444e"; c.lineWidth = 22; c.strokeRect(11, 11, 490, 218);
+  c.fillStyle = "#d9444e"; c.font = "900 84px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("SE VENDE", 256, 108);
+  c.fillStyle = "#3b4150"; c.font = "700 28px sans-serif"; c.fillText("PLANETA · VISTAS AL ESPACIO", 256, 186);
+});
+
+// mudanza-planeta · exoplaneta en venta: planeta junto a su estrella (cara de día y de noche) con un cartel de SE VENDE clavado arriba
+const EXO: Record<string, { star: [string, string, string]; sr: number; sp: P3; atm: string; tint: string }> = {
+  proxima: { star: ["#ff5a32", "#ffb070", "rgba(110,10,10,0.6)"], sr: 1.05, sp: [2.3, 2.1, -2.6], atm: "#ff8a60", tint: "#ff7a50" },
+  teegarden: { star: ["#ff7a40", "#ffc48a", "rgba(120,30,10,0.5)"], sr: 0.42, sp: [1.9, 2.15, -2.4], atm: "#8cc8ff", tint: "#ffb080" },
+  kepler: { star: ["#ffc04a", "#fff0b0", "rgba(130,60,0,0.45)"], sr: 0.55, sp: [1.9, 2.15, -2.4], atm: "#8cc8ff", tint: "#fff2d0" },
+};
+export const planeta_venta: HeroDef = {
+  kind: "primitive",
+  when: "Un exoplaneta junto a su estrella, con un cartel de SE VENDE clavado arriba: mudarse a otro planeta, planetas habitables, exoplanetas como casas, Próxima b (enana roja, cara de día y de noche), Teegarden b, Kepler-452b (como la Tierra), colonizar otro mundo.",
+  poses: ["proxima", "teegarden", "kepler"],
+  actions: {
+    cartel: "El cartel de SE VENDE brota del planeta con un rebote: se vende, mudarte, casa disponible, otro planeta.",
+    cara: "El planeta deja de girar y la línea entre el día y la noche se enciende (se queda así): siempre la misma cara, día eterno, noche eterna, acoplamiento de marea.",
+    favorita: "Aparece una estrella dorada de «favorita» en el cartel y destellos: la mejor, la más parecida, la favorita, recomendada.",
+  },
+  center: [0, 1.72, 0], radius: 1.05,
+  anchors: { hero: [0, 1.4, 0], top: [0, 2.6, 0], base: [0, 0.3, 0], cartel: [-1.45, 1.95, 0.15], planeta: [0, 1.35, 0.6], estrella: [1.5, 2.0, -1.6], dia: [0.55, 1.6, 0.6], noche: [-0.6, 1.2, 0.6] },
+  build: (_L, pose) => {
+    const p = poseOf(planeta_venta, pose, "planeta_venta"), cfg = EXO[p], b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const R = 0.95, Y = 1.35;
+    // la luz entra de lado y algo de frente (no desde la posición real de la estrella, que queda detrás): se ven el día y la noche
+    const { m: planet, uni } = litSphere(b, R, exoTex(b, p), cfg.tint, [cfg.sp[0], cfg.sp[1] - Y, cfg.sp[2] + 2.6]);
+    planet.position.y = Y; planet.rotation.z = 0.25;
+    const atm = new THREE.Mesh(b.track(new THREE.SphereGeometry(R * 1.05, 48, 32)), b.track(new THREE.MeshBasicMaterial({ color: col(cfg.atm).multiplyScalar(0.9), transparent: true, opacity: 0.16, side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })));
+    atm.position.y = Y;
+    const star = starBall(b, cfg.sr, ...cfg.star); star.position.set(...cfg.sp);
+    const sh = [halo(b, rgbaOf(cfg.star[0], 0.9), cfg.sr * 4.6, 0.85), halo(b, "rgba(255,150,90,0.5)", cfg.sr * 8, 0.35)];
+    sh.forEach((h) => { h.position.set(cfg.sp[0], cfg.sp[1], cfg.sp[2] - 0.2); g.add(h); });
+    // cartel: poste clavado en el polo, tablero con su textura, dos tornillos y una estrella de «favorita» escondida
+    const SA = 1.05, sign = new THREE.Group(); sign.position.set(-Math.sin(SA) * (R - 0.05), Y + Math.cos(SA) * (R - 0.05), 0.12); sign.rotation.z = SA; sign.scale.setScalar(0.85);
+    const wood = mat(b, "#6b4a32", { roughness: 0.8 }), st = signTex(b);
+    sign.add(place(cyl(b, 0.035, 0.045, 0.62, wood, 12), [0, 0.31, 0]));
+    const board = box(b, 0.98, 0.46, 0.05, mat(b, "#f6f2e6", { roughness: 0.6 })); board.position.y = 0.66; sign.add(board);
+    const face = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.96, 0.45)), b.track(new THREE.MeshStandardMaterial({ map: st, roughness: 0.6, emissive: new THREE.Color("#ffffff").multiplyScalar(0.55), emissiveMap: st })));
+    face.position.set(0, 0.66, 0.027); sign.add(face);
+    [-0.4, 0.4].forEach((x) => sign.add(place(ball(b, 0.018, mat(b, "#9aa0ad", { metalness: 0.6, roughness: 0.3 }), 8), [x, 0.84, 0.03])));
+    const badge = new THREE.Group(); badge.position.set(0.47, 0.9, 0.06); sign.add(badge);
+    const starShape = new THREE.Shape(); for (let k = 0; k < 10; k++) { const a = Math.PI / 2 + (k * Math.PI) / 5, rr = k % 2 ? 0.07 : 0.16; k ? starShape.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : starShape.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+    badge.add(new THREE.Mesh(b.track(new THREE.ExtrudeGeometry(starShape, { depth: 0.03, bevelEnabled: false })), beam(b, "#ffcf5a", 1.8)));
+    const bglow = halo(b, "rgba(255,210,110,0.9)", 0.8, 0); badge.add(bglow); badge.scale.setScalar(0.001);
+    // rocas y un pequeño cráter alrededor del poste (que el cartel se vea clavado en el suelo)
+    scatter(6, 5, (r) => [(r() - 0.5) * 0.5, 0, (r() - 0.5) * 0.3] as P3).forEach((q, i) => sign.add(place(ball(b, 0.035 + (i % 3) * 0.015, mat(b, "#5a3a2a", { roughness: 1 }), 8), [q[0], 0.02, q[2]])));
+    const scraps = scatter(70, 9, (r) => [(r() - 0.5) * 9, 0.2 + r() * 5, -3 - r() * 2] as P3).map((q, i) => place(ball(b, 0.012 + (i % 4) * 0.006, beam(b, i % 3 ? "#ffffff" : "#ffd9b0", 1.4), 6), q));
+    g.add(planet, atm, star, sign, ...scraps); root.add(g); shadows(g);
+    const s = { cartel: 1, cara: 0, favorita: 0 }; let lf = 0;
+    const paint = (f: number) => {
+      lf = f; const lock = ease(s.cara);
+      uni.spin.value = f * 0.0016 * (1 - lock); uni.term.value = lock;
+      star.rotation.y = f * 0.003; sh[0].scale.setScalar(1 + 0.05 * Math.sin(f * 0.05));
+      const pc = clamp01(s.cartel), bounce = pc < 1 ? ease(pc) * (1 + 0.3 * Math.sin(Math.PI * pc)) : 1;
+      sign.scale.set(0.85, 0.85 * Math.max(0.001, bounce), 0.85); sign.rotation.z = SA + 0.04 * Math.sin(f * 0.04) * (pc < 1 ? 3 : 1);
+      const fv = ease(s.favorita); badge.scale.setScalar(Math.max(0.001, fv * (1 + 0.15 * Math.sin(f * 0.15)))); badge.rotation.z = f * 0.02 * fv;
+      (bglow.material as THREE.MeshBasicMaterial).opacity = 0.7 * fv;
+      g.position.y = 0.03 * Math.sin(f * 0.03);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name in s) s[name as keyof typeof s] = u; paint(lf); } };
+  },
+};
+
+// mudanza-planeta · enana roja: sola y enorme con su planeta pegado (llamaradas), o TRAPPIST-1 con sus siete planetas y la zona habitable
+const TRAP = [0.62, 0.8, 1.0, 1.2, 1.42, 1.64, 1.86];   // radios de órbita (no a escala): b, c, d, e, f, g, h
+export const enana_roja: HeroDef = {
+  kind: "primitive",
+  when: "Una enana roja: estrella pequeña, roja y fría, con llamaradas violentas que barren a su planeta, o el sistema TRAPPIST-1 con siete planetas del tamaño de la Tierra en órbitas apretadas y su zona habitable; Próxima Centauri, estrella roja, radiación, sistema con muchos planetas.",
+  poses: ["sola", "trappist"],
+  actions: {
+    llamarada: "Una llamarada sale de la estrella hacia el planeta, una onda de radiación lo barre y el planeta se enciende de rojo: llamarada, radiación, violenta, tormenta estelar.",
+    contar: "Los planetas aparecen uno a uno en sus órbitas: siete planetas, uno tras otro, un sistema entero.",
+    resaltar: "Se enciende en verde la franja habitable y los planetas que caen en ella brillan: zona habitable, donde podría haber agua líquida, tres planetas.",
+  },
+  center: [0, 1.4, 0], radius: 1.2,
+  anchors: { hero: [0, 1.4, 0], top: [0, 2.8, 0], base: [0, 0.2, 0], estrella: [0, 1.4, 0.4], planeta: [-1.45, 0.95, 0.7], zona: [1.6, 1.4, 0.3] },
+  build: (_L, pose) => {
+    const p = poseOf(enana_roja, pose, "enana_roja"), b = bin(), root = new THREE.Group(), g = new THREE.Group(), Y = 1.4;
+    const sola = p === "sola", SR = sola ? 1.0 : 0.42;
+    const star = starBall(b, SR, "#ff4a2a", "#ffa060", "rgba(90,8,8,0.7)"); star.position.y = Y;
+    const glows = [halo(b, "rgba(255,80,40,0.95)", SR * 4.4, 0.85), halo(b, "rgba(255,40,30,0.5)", SR * 6.5, 0.3)];
+    glows.forEach((h) => { h.position.set(0, Y, -0.5); g.add(h); });
+    // bucles magnéticos en el borde (se ven como arcos encendidos)
+    const loops = [0.5, 1.9, 3.4, 4.6].map((a, i) => tube(b, Array.from({ length: 12 }, (_, k) => { const t = k / 11, r = SR * (0.99 + 0.16 * Math.sin(Math.PI * t)), ang = a + (t - 0.5) * 0.22; return [Math.cos(ang) * r, Y + Math.sin(ang) * r, SR * 0.35] as P3; }), SR * 0.035, beam(b, "#ffb070", 1.8, { transparent: true, opacity: 0.85 }), 20));
+    g.add(star, ...loops);
+    const st = { llamarada: 0, contar: 1, resaltar: 0 }; let lf = 0;
+    // pose «sola»: el planeta pegado a la estrella y la llamarada que lo alcanza
+    let planet: ReturnType<typeof litSphere> | null = null; const flare = new THREE.Group(); let wave: THREE.Mesh | null = null;
+    if (sola) {
+      planet = litSphere(b, 0.3, exoTex(b, "roca"), "#ff7a50", [1.45, 0.45, -0.7], 40); planet.m.position.set(-1.45, 0.95, 0.7); g.add(planet.m);
+      const pts = Array.from({ length: 26 }, (_, k) => { const t = k / 25, a = 3.55 + (t - 0.5) * 0.55, r = SR * (1 + 0.8 * Math.sin(Math.PI * t)); return [Math.cos(a) * r, Y + Math.sin(a) * r, 0.2] as P3; });
+      flare.add(tube(b, pts, 0.08, beam(b, "#ffd080", 2.2, { transparent: true, opacity: 0.95 }), 40), tube(b, pts, 0.16, beam(b, "#ff6a30", 1.4, { transparent: true, opacity: 0.4 }), 40));
+      flare.visible = false; g.add(flare);
+      wave = new THREE.Mesh(b.track(new THREE.SphereGeometry(1, 40, 28)), beam(b, "#ff7a50", 1.3, { transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+      wave.position.y = Y; g.add(wave);
+    }
+    // pose «trappist»: órbitas inclinadas, siete planetas y la franja habitable (e, f, g)
+    const orb = new THREE.Group(); orb.position.y = Y; orb.rotation.x = 0.5; orb.rotation.z = -0.12; orb.scale.setScalar(1.22);
+    const worlds: { m: THREE.Mesh; r: number; ph: number; hab: boolean; ring: THREE.Mesh }[] = [];
+    let band: THREE.Mesh | null = null;
+    if (!sola) {
+      const cols = ["#b98a6a", "#a8735a", "#c9a27a", "#3f7fb5", "#4a8a9a", "#5f8fb8", "#9fb4c8"];
+      band = new THREE.Mesh(b.track(new THREE.RingGeometry(1.1, 1.75, 96)), beam(b, TONE.green, 0.9, { transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+      band.rotation.x = -Math.PI / 2; orb.add(band);
+      TRAP.forEach((r, i) => {
+        const line = new THREE.Mesh(b.track(new THREE.TorusGeometry(r, 0.006, 4, 120)), beam(b, "#c9d6ff", 0.9, { transparent: true, opacity: 0.35 })); line.rotation.x = Math.PI / 2; orb.add(line);
+        const m = ball(b, 0.1 + (i % 3) * 0.015, glowMat(b, cols[i], 0.3, { roughness: 0.6 }), 24); orb.add(m);
+        const ring = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.16, 0.012, 6, 32)), beam(b, TONE.green, 2, { transparent: true, opacity: 0 })); orb.add(ring);
+        worlds.push({ m, r, ph: hash1(i + 7) * 6.28, hab: i >= 3 && i <= 5, ring });
+      });
+      g.add(orb);
+    }
+    const stars = scatter(60, 4, (r) => [(r() - 0.5) * 8, 0.2 + r() * 4.5, -3 - r() * 2] as P3).map((q, i) => place(ball(b, 0.012 + (i % 4) * 0.006, beam(b, "#ffffff", 1.3), 6), q));
+    g.add(...stars); root.add(g); shadows(g);
+    const paint = (f: number) => {
+      lf = f; star.rotation.y = f * 0.004; glows.forEach((h, i) => h.scale.setScalar(1 + 0.05 * Math.sin(f * 0.05 + i)));
+      loops.forEach((l, i) => { l.scale.setScalar(1 + 0.03 * Math.sin(f * 0.06 + i)); });
+      if (planet && wave) {
+        const fl = clamp01(st.llamarada), grow = ease(fl / 0.5), hitU = clamp01((fl - 0.35) / 0.3);
+        flare.visible = fl > 0; flare.scale.setScalar(Math.max(0.001, grow)); flare.position.set(0, Y * (1 - grow), 0);
+        wave.scale.setScalar(SR + 2.2 * ease(clamp01((fl - 0.2) / 0.6))); (wave.material as THREE.MeshBasicMaterial).opacity = fl > 0.2 ? 0.22 * (1 - ease(clamp01((fl - 0.2) / 0.8))) + 0.04 : 0;
+        planet.uni.hit.value = hitU * (0.7 + 0.3 * Math.sin(f * 0.4)) * (1 - 0.5 * clamp01((fl - 0.85) / 0.15));
+        planet.uni.spin.value = f * 0.002; planet.m.position.y = 0.95 + 0.02 * Math.sin(f * 0.04);
+      }
+      const hb = ease(st.resaltar);
+      if (band) (band.material as THREE.MeshBasicMaterial).opacity = 0.22 * hb;
+      worlds.forEach((w, i) => {
+        const a = w.ph + f * (0.022 / Math.pow(w.r, 1.5)), show = ease(clamp01(st.contar * 7.5 - i));
+        w.m.position.set(Math.cos(a) * w.r, 0, Math.sin(a) * w.r); w.m.scale.setScalar(Math.max(0.001, show * (w.hab ? 1 + 0.25 * hb : 1)));
+        w.ring.position.copy(w.m.position); w.ring.lookAt(w.ring.position.clone().add(new THREE.Vector3(0, 1, 0))); w.ring.rotation.x = Math.PI / 2;
+        (w.ring.material as THREE.MeshBasicMaterial).opacity = w.hab ? 0.9 * hb * show : 0;
+      });
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name in st) st[name as keyof typeof st] = u; paint(lf); } };
+  },
+};
+
+// mudanza-planeta · dos relojes: el tuyo (viajas casi a la velocidad de la luz, casi parado) y el de la Tierra (corre), con el contador de años
+const clockFace = (b: Bin, ring: string) => screenTex(b.track, 512, 512, (c) => {
+  const gr = c.createRadialGradient(256, 230, 40, 256, 256, 256); gr.addColorStop(0, "#fbf8ef"); gr.addColorStop(1, "#d9d3c2"); c.fillStyle = gr; c.fillRect(0, 0, 512, 512);
+  c.strokeStyle = ring; c.lineWidth = 18; c.beginPath(); c.arc(256, 256, 238, 0, 6.3); c.stroke();
+  for (let i = 0; i < 60; i++) { const a = (i / 60) * Math.PI * 2, big = i % 5 === 0, r0 = big ? 196 : 212; c.strokeStyle = "#2a2f45"; c.lineWidth = big ? 9 : 3; c.beginPath(); c.moveTo(256 + Math.sin(a) * r0, 256 - Math.cos(a) * r0); c.lineTo(256 + Math.sin(a) * 226, 256 - Math.cos(a) * 226); c.stroke(); }
+  c.fillStyle = "#2a2f45"; c.font = "700 54px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle";
+  [12, 3, 6, 9].forEach((n, i) => { const a = (i / 4) * Math.PI * 2; c.fillText(String(n), 256 + Math.sin(a) * 160, 258 - Math.cos(a) * 160); });
+});
+const labelTex = (b: Bin, text: string, color: string) => screenTex(b.track, 512, 160, (c) => {
+  c.fillStyle = "#151a33"; c.beginPath(); c.roundRect(6, 6, 500, 148, 40); c.fill(); c.strokeStyle = color; c.lineWidth = 8; c.stroke();
+  c.fillStyle = color; c.font = "900 92px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(text, 256, 84);
+});
+export const relojes_tiempo: HeroDef = {
+  kind: "primitive",
+  when: "Dos relojes lado a lado: el tuyo, que casi no avanza porque viajas cerca de la velocidad de la luz, y el de la Tierra, que corre y suma años: dilatación del tiempo, paradoja de los gemelos, para ti el tiempo casi no pasa, en la Tierra pasan años.",
+  poses: ["par"],
+  actions: {
+    frenar: "Tu reloj se frena casi hasta parar y se rodea de un brillo cian (se queda así): para ti el tiempo casi no pasa, viajas a esa velocidad.",
+    correr: "Las agujas del reloj de la Tierra giran a toda velocidad y el contador suma años hasta cuarenta: en la Tierra pasan años, mientras viajas.",
+  },
+  center: [0, 1.45, 0], radius: 1.25,
+  anchors: { hero: [0, 1.5, 0], top: [0, 2.6, 0], base: [0, 0.3, 0], tu: [-0.85, 1.55, 0.2], tierra: [0.85, 1.55, 0.2], contador: [0.85, 0.55, 0.2] },
+  build: (_L, pose) => {
+    poseOf(relojes_tiempo, pose, "relojes_tiempo");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group(), Y = 1.55;
+    const dark = mat(b, "#2a2f45", { roughness: 0.4, metalness: 0.4 });
+    const mkClock = (x: number, ringCol: string, label: string) => {
+      const c = new THREE.Group(); c.position.set(x, Y, 0);
+      const rim = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.62, 0.06, 16, 64)), mat(b, ringCol, { roughness: 0.3, metalness: 0.6, emissive: col(ringCol).multiplyScalar(0.25) }));
+      const back = cyl(b, 0.62, 0.62, 0.1, dark, 64); back.rotation.x = Math.PI / 2; back.position.z = -0.06;
+      const faceT = clockFace(b, ringCol);
+      const face = new THREE.Mesh(b.track(new THREE.CircleGeometry(0.6, 64)), b.track(new THREE.MeshStandardMaterial({ map: faceT, roughness: 0.5, emissive: new THREE.Color("#ffffff").multiplyScalar(0.45), emissiveMap: faceT })));
+      face.position.z = 0.0;
+      const hand = (len: number, w: number, z: number, m: THREE.Material) => { const h = new THREE.Group(); const bx = box(b, w, len, 0.02, m); bx.position.y = len / 2 - 0.05; h.add(bx); h.position.z = z; return h; };
+      const hour = hand(0.34, 0.05, 0.02, dark), minute = hand(0.5, 0.032, 0.035, dark), sec = hand(0.52, 0.012, 0.05, mat(b, "#d9444e", { emissive: col("#d9444e").multiplyScalar(0.4) }));
+      const cap = place(cyl(b, 0.045, 0.045, 0.03, mat(b, ringCol, { metalness: 0.6, roughness: 0.3 }), 16), [0, 0, 0.06]); cap.rotation.x = Math.PI / 2;
+      const lt = labelTex(b, label, ringCol), plate = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.72, 0.225)), b.track(new THREE.MeshBasicMaterial({ map: lt, transparent: true })));
+      plate.position.set(0, 0.86, 0.02);
+      const glow = halo(b, rgbaOf(ringCol, 0.9), 2.2, 0); glow.position.z = -0.12;
+      c.add(glow, back, rim, face, hour, minute, sec, cap, plate);
+      // patas de reloj de mesa
+      [-1, 1].forEach((s) => c.add(rod(b, [s * 0.3, -0.55, -0.02], [s * 0.42, -0.8, -0.02], 0.03, dark)));
+      g.add(c); return { c, hour, minute, sec, glow };
+    };
+    const tu = mkClock(-0.85, "#5ad1ff", "TÚ"), tierra = mkClock(0.85, "#ffc04a", "TIERRA");
+    // contador de años bajo el reloj de la Tierra (se repinta solo cuando cambia el número)
+    const cv = document.createElement("canvas"); cv.width = 512; cv.height = 180; const cx = cv.getContext("2d")!;
+    const ctex = b.track(new THREE.CanvasTexture(cv)); ctex.colorSpace = THREE.SRGBColorSpace;
+    const counter = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.9, 0.316)), b.track(new THREE.MeshBasicMaterial({ map: ctex, transparent: true }))); counter.position.set(0.85, 0.5, 0.05);
+    let shown = -1;
+    const drawCount = (n: number) => { if (n === shown) return; shown = n; cx.clearRect(0, 0, 512, 180); cx.fillStyle = "#151a33"; cx.beginPath(); cx.roundRect(6, 6, 500, 168, 36); cx.fill(); cx.strokeStyle = "#ffc04a"; cx.lineWidth = 6; cx.stroke(); cx.fillStyle = "#ffe2a0"; cx.font = "900 96px sans-serif"; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText(`+${n} AÑOS`, 256, 94); ctex.needsUpdate = true; };
+    drawCount(0); g.add(counter);
+    // estela de la nave entre los dos (rayas de velocidad tras el reloj «tú»)
+    const streaks = Array.from({ length: 9 }, (_, i) => { const m = new THREE.Mesh(b.track(new THREE.BoxGeometry(0.5 + hash1(i) * 0.6, 0.012, 0.012)), beam(b, "#8be9ff", 1.6, { transparent: true, opacity: 0 })); m.position.set(-1.6 - hash1(i + 3) * 0.6, 1.0 + hash1(i + 9) * 1.2, -0.3); g.add(m); return m; });
+    root.add(g); shadows(g);
+    const st = { frenar: 0, correr: 0 }; let lf = 0;
+    const paint = (f: number) => {
+      lf = f; const fr = ease(st.frenar), ru = clamp01(st.correr);
+      // el tuyo: ritmo normal que cae casi a cero al frenar
+      const tuT = f * (1 - 0.97 * fr) * 0.02;
+      tu.sec.rotation.z = -tuT * 6; tu.minute.rotation.z = -tuT * 0.5 - 0.6; tu.hour.rotation.z = -tuT * 0.04 - 2.2;
+      (tu.glow.material as THREE.MeshBasicMaterial).opacity = 0.55 * fr;
+      streaks.forEach((s, i) => { s.position.x = -1.2 - ((f * 0.05 + hash1(i) * 3) % 1.4); (s.material as THREE.MeshBasicMaterial).opacity = 0.7 * fr; });
+      // la Tierra: con «correr» las agujas se disparan y el contador sube hasta 40
+      const tiT = f * 0.02 + 120 * ease(ru) * 6.28;
+      tierra.sec.rotation.z = -tiT * 6; tierra.minute.rotation.z = -tiT * 0.5 - 1.4; tierra.hour.rotation.z = -tiT * 0.04 - 0.4;
+      (tierra.glow.material as THREE.MeshBasicMaterial).opacity = 0.5 * Math.sin(Math.PI * Math.min(1, ru * 1.2)) + 0.2 * (ru >= 1 ? 1 : 0);
+      drawCount(Math.round(40 * ease(ru)));
+      tierra.c.position.y = Y + (ru > 0 && ru < 1 ? 0.015 * Math.sin(f * 1.3) : 0);
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name in st) st[name as keyof typeof st] = u; paint(lf); } };
+  },
+};

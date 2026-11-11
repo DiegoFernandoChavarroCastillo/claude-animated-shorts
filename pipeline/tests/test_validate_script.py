@@ -30,6 +30,14 @@ def read(rel: str) -> str:
     return (ROOT / rel).read_text(encoding="utf-8")
 
 
+def nueva(cadena: str) -> str:
+    """atardecer-cadena reescrito con gancho y estructura nuevos (D120)"""
+    return (cadena.replace("hook: reto", "hook: viaje_del_foton").replace("structure: cadena", "structure: diario_luz\nbeats: hook > salida > choque > llegada > twist > cta")
+            .replace("[tension]", "[salida]").replace("[chain] Todo", "[salida] Todo").replace("[chain] Esa", "[choque] Esa").replace("[chain] Pero", "[choque] Pero")
+            .replace("[chain] Por eso", "[llegada] Por eso").replace("[chain] Al", "[llegada] Al").replace("[layer2]", "[llegada]")
+            + "\n## Fórmulas nuevas\n- viaje_del_foton: reta a seguir una partícula de luz\n- diario_luz: el viaje de un fotón en tres paradas\n")
+
+
 def variants() -> dict[str, tuple[str, str]]:
     """guiones rotos a partir de los buenos: nombre -> (texto, fragmento del ÚNICO error esperado)"""
     lista, cadena, hist = read("templates/examples/agua-rara-lista/02_SCRIPT.md"), read("templates/examples/atardecer-cadena/02_SCRIPT.md"), read("templates/examples/dedos-historia/02_SCRIPT.md")
@@ -49,6 +57,16 @@ def variants() -> dict[str, tuple[str, str]]:
         "gancho coste sin forma": (cadena.replace("hook: reto", "hook: coste"), "no tiene la forma de 'coste'"),
         "cierre envia sin enviar": (lista.replace("Envíaselo a quien todavía deja una botella cerrada en el congelador.", "¿Qué otra rareza quieres?"), "no tiene la forma de 'envia'"),
         "cierre sin cta": (hist.replace("Pruébalo esta noche en la ducha y cuéntame qué notas.", "Y así termina la historia de los dedos."), "no tiene la forma de 'reto_casa'"),
+        # fórmulas nuevas (D120)
+        "estructura nueva sin describir": (nueva(cadena).replace("- diario_luz: el viaje de un fotón en tres paradas\n", ""), "estructura desconocida 'diario_luz'"),
+        "gancho nuevo sin describir": (nueva(cadena).replace("- viaje_del_foton: reta a seguir una partícula de luz\n", ""), "tipo de gancho desconocido 'viaje_del_foton'"),
+        "estructura nueva sin beats": (nueva(cadena).replace("beats: hook > salida > choque > llegada > twist > cta\n", "").replace("[salida]", "[tension]").replace("[choque]", "[chain]").replace("[llegada]", "[chain]"), "necesita `beats:`"),
+        "beats sin twist": (nueva(cadena).replace("> twist >", ">").replace("[twist]", "[llegada]"), "llevar twist"),
+        "beats cortos": (nueva(cadena).replace("hook > salida > choque > llegada", "hook > salida").replace("[choque]", "[salida]").replace("[llegada]", "[salida]"), "al menos 5"),
+        "rol nuevo sin declarar": (nueva(cadena).replace("[choque] Esa", "[rebote] Esa"), "rol desconocido [rebote]"),
+        "rol declarado sin usar": (nueva(cadena).replace("[choque]", "[salida]"), "falta el beat de choque"),
+        "orden de beats nuevo roto": (nueva(cadena).replace("[salida] Todo", "[llegada] Todo"), "los beats no siguen el orden hook → salida"),
+        "beats con estructura del catálogo": (cadena.replace("structure: cadena", "structure: cadena\nbeats: hook > a > b > twist > cta"), "solo va con una estructura nueva"),
         "orden roto": (cadena.replace("[twist] El cielo rojo no es otro cielo: es el mismo, visto a través de más aire.\n", "").replace("[layer2]", "[twist] El cielo rojo no es otro cielo: es el mismo, visto a través de más aire.\n[layer2]"), "los beats no siguen el orden"),
     }
 
@@ -69,6 +87,10 @@ def main() -> int:
     fails += not ok
     print(f"{'OK ' if ok else 'MAL'} pasa   ejemplo vigente bluetooth-wifi con el rango real ({st.get('words')} palabras, 175–300)" + ("" if ok else f"  {errs}"))
     validate_script.WORDS_MIN, validate_script.WORDS_MAX = 100, 400
+    errs, st = validate(nueva(read("templates/examples/atardecer-cadena/02_SCRIPT.md")))
+    ok = not errs and st["beats"][1] == "salida" and set(st["new"]) == {"viaje_del_foton", "diario_luz"}
+    fails += not ok
+    print(f"{'OK ' if ok else 'MAL'} pasa   gancho y estructura nuevos descritos en '## Fórmulas nuevas' (D120)" + ("" if ok else f"  {errs}"))
     for p in GOOD:
         errs, st = validate(p.read_text(encoding="utf-8"))
         ok = not errs

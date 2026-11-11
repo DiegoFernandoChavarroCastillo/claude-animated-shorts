@@ -43,6 +43,25 @@ cumplen las reglas fijas de siempre: ≤12 palabras, 2.ª persona, nada inventad
 **Conclusión honesta:** son patrones establecidos y razonables, no «el gancho que más retiene». Por eso Claude recomienda
 con un motivo concreto para el tema (no con un porcentaje) y el usuario decide.
 
+## Fórmulas nuevas: el catálogo no es un menú cerrado (D120, 10 nov)
+
+Con 10 ganchos, 5 estructuras del explainer (2 en story-short) y 5 cierres, los videos salían de pocas combinaciones y se
+parecían entre sí (los dos últimos de story-short: `escena` + `drama` + `bucle`). Desde D120:
+
+- **Se pueden inventar** un tipo de gancho, una estructura o un cierre para un tema. Se describen en `## Fórmulas nuevas`
+  (`- nombre: patrón`); una estructura nueva declara `beats: hook > … > twist > cta` (≥5 roles, en snake_case).
+- **Comodín:** al proponer, al menos uno de los tres ganchos y (en el explainer) una de las tres estructuras son nuevos. En
+  story-short la estructura la elige Claude y no debe repetir la de los dos últimos videos sin motivo.
+- **Formatos** (`formulas.json` → `formatos`): 12 premisas para el video entero (¿qué pasaría si…?, cuenta atrás, eres la cosa,
+  cambio de escala, juicio, misterio, diario…), como inspiración, combinables con cualquier estructura.
+- **Qué sigue comprobando el validador:** a lo nuevo no se le comprueba la forma (no hay patrón), pero sí todo lo común:
+  longitud, gancho ≤12 palabras en 2.ª persona, números con fuente, frases cortas, cierre sin despedida, perfil viral y
+  dramatización; y en una estructura nueva, que el guion siga su `beats:` y que exista `twist` (la pausa larga y el riser
+  del pipeline cuelgan de él). El crítico de guion recibe las fórmulas nuevas y las juzga por su propia promesa.
+- **Del comodín al catálogo:** `tools/recent_formulas.py --nuevas` lista las fórmulas nuevas usadas y en cuántos videos;
+  `tools/ingest_stats.py` las cruza con las estadísticas. Si una se repite y rinde, pasa a `formulas.json` con su patrón (y,
+  si es un gancho, sus marcas en `validate_script.py`). Una fórmula nueva no está probada: se presenta así, sin venderla como mejor.
+
 ## Cómo comprobarlo con tus propios datos
 
 1. Anota en la cabecera de cada `02_SCRIPT.md` el `hook:`, el `structure:` y el `closing:` (el skill ya lo hace).

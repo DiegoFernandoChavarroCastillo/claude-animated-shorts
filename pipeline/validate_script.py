@@ -7,8 +7,9 @@ Formato del guion:
     # Título
     lang: es                      (es | en)
     hook: pregunta                (opcional: tipo de gancho; ver templates/formulas.json)
-    structure: mito               (opcional, por defecto "mito": mito | lista | versus | historia | cadena)
+    structure: mito               (opcional, por defecto "mito": mito | lista | versus | historia | cadena | alegoria | drama)
     closing: pregunta             (opcional: pregunta | envia | sigue | bucle | reto_casa)
+    beats: hook > escenario > consecuencia > twist > cta   (solo con una estructura nueva: sus roles en orden)
     ficcion: dramatizada          (opcional, historias 2D: fiel | dramatizada | libre; ver templates/dramatizacion.json)
     pov: tu                       (opcional, con ficcion: tu | yo | testigo | cercano)
 
@@ -25,6 +26,14 @@ Formato del guion:
 
     ## Ficción                    (obligatoria con ficcion: dramatizada | libre)
     - ancla: lo que no se toca (verificado)   /   - inventado: lo que se dramatiza
+
+    ## Fórmulas nuevas            (obligatoria si hook, structure o closing no están en templates/formulas.json)
+    - paradoja_temporal: patrón en una frase (por qué encaja con este tema)
+
+Fórmulas nuevas (D120): el catálogo es una caja de herramientas, no un menú cerrado. Un tipo de gancho, de cierre o una
+estructura que no está en formulas.json vale si se describe en "## Fórmulas nuevas"; a esos no se les comprueba la forma
+(no hay patrón que comprobar), pero sí todas las reglas comunes. Una estructura nueva declara `beats:` y debe empezar en
+hook, acabar en cta y llevar twist (la pausa larga y el riser del pipeline cuelgan de ese rol).
 
 Comprueba: 175–300 palabras (el video debe durar entre 60 y 120 s para monetizar); gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
 tipo); los roles, su orden y cuántas líneas lleva cada uno según la estructura; la última línea es el cierre (y, si se
@@ -49,6 +58,7 @@ FORMULAS = json.loads((ROOT / "templates" / "formulas.json").read_text(encoding=
 STRUCTURES = FORMULAS["structures"]
 ROLES = tuple(dict.fromkeys(r for st in STRUCTURES.values() for r in st["orden"]))   # unión de todas las estructuras
 HOOKS, CLOSINGS = tuple(FORMULAS["hooks"]), tuple(FORMULAS["closings"])
+FREE_BEATS_MIN, FREE_ROLE_MAX = 5, 8   # estructura nueva: ≥5 roles declarados (hook, 2 propios, twist, cta); ≤8 líneas por rol
 # Kokoro (es) alarga la palabra y mete una pausa cuando una termina en sílaba ll/y + vocal y la siguiente empieza por
 # ll/y + vocal: "botella llena" suena "botella, llena" (2 nov, tras F8). "y" sola (conjunción), "muy" u "hoy" no cuentan.
 LL_END = re.compile(r"(ll|y)[aeiouáéíóú]$", re.I)
@@ -184,9 +194,16 @@ class Script:
     ficcion: str = ""
     pov: str = ""
     fiction: list[str] = field(default_factory=list)   # sección "## Ficción": anclas y lo inventado
+    beats: list[str] = field(default_factory=list)     # `beats:` de una estructura nueva
+    new: dict[str, str] = field(default_factory=dict)  # sección "## Fórmulas nuevas": nombre -> patrón
     lines: list[tuple[str, str]] = field(default_factory=list)  # (rol, texto)
     sources: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
+
+
+def beats_of(value: str) -> list[str]:
+    """`hook > escenario → consecuencia, twist > cta` -> ['hook', 'escenario', 'consecuencia', 'twist', 'cta']"""
+    return [r.strip().strip("[]`").lower() for r in re.split(r"\s*(?:>|→|,)\s*", value.strip()) if r.strip()]
 
 
 def parse(md: str) -> Script:
@@ -200,23 +217,31 @@ def parse(md: str) -> Script:
             key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing", "ficción": "ficcion"}.get(m.group(1).lower(), m.group(1).lower())
             setattr(s, key, m.group(2).lower())
             continue
+        m = re.fullmatch(r"beats:\s*(.+)", line, re.I)
+        if m and section is None:
+            s.beats = beats_of(m.group(1))
+            continue
         if line.startswith("## "):
             name = fold(line[3:]).strip()
             section = ("guion" if name.startswith(("guion", "script")) else "fuentes" if name.startswith(("fuentes", "sources"))
-                       else "ficcion" if name.startswith(("ficcion", "fiction")) else "otra")
+                       else "ficcion" if name.startswith(("ficcion", "fiction"))
+                       else "nuevas" if name.startswith(("formulas nuevas", "new formulas")) else "otra")
             continue
         if section == "guion":
             m = re.fullmatch(r"\[(\w+)\]\s*(.+)", line)
             if not m:
                 s.errors.append(f"línea del guion sin rol entre corchetes: {line[:60]!r}")
-            elif m.group(1) not in ROLES:
-                s.errors.append(f"rol desconocido [{m.group(1)}] (válidos: {', '.join(ROLES)})")
+            elif m.group(1) not in ROLES and m.group(1) not in s.beats:
+                s.errors.append(f"rol desconocido [{m.group(1)}] (válidos: {', '.join(ROLES)}; o decláralo en `beats:` con una estructura nueva)")
             else:
                 s.lines.append((m.group(1), m.group(2).strip()))
         elif section == "fuentes" and line.startswith(("-", "*")):
             s.sources.append(line.lstrip("-* ").strip())
         elif section == "ficcion" and line.startswith(("-", "*")):
             s.fiction.append(line.lstrip("-* ").strip())
+        elif section == "nuevas" and (m := re.fullmatch(r"[-*]\s*`?(\w+)`?\s*:\s*(.+)", line)):
+            s.new[m.group(1).lower()] = m.group(2).strip()
+    s.errors = list(dict.fromkeys(s.errors))   # un rol desconocido repetido se avisa una vez
     if s.lang not in ("es", "en"):
         s.errors.append("falta 'lang: es' o 'lang: en' antes de las secciones")
     if not s.lines:
@@ -334,6 +359,23 @@ def fiction_errors(s: Script) -> list[str]:
     return errs
 
 
+def free_structure(name: str, beats: list[str]) -> tuple[dict, list[str]]:
+    """estructura nueva: la forma la declara `beats:`; aquí solo las reglas que necesita el pipeline"""
+    if not beats:
+        return {}, [f"la estructura nueva '{name}' necesita `beats:` en la cabecera con sus roles en orden (p. ej. hook > escenario > consecuencia > twist > cta)"]
+    errs = []
+    bad = [r for r in beats if not re.fullmatch(r"[a-z][a-z0-9_]*", r)]
+    if bad:
+        errs.append(f"roles de `beats:` con caracteres no válidos: {', '.join(bad)} (minúsculas, cifras y _)")
+    if len(set(beats)) != len(beats):
+        errs.append("`beats:` repite un rol: cada rol va una vez (en el guion puede ocupar varias líneas seguidas)")
+    if beats[0] != "hook" or beats[-1] != "cta" or "twist" not in beats:
+        errs.append("`beats:` debe empezar en hook, acabar en cta y llevar twist")
+    if len(beats) < FREE_BEATS_MIN:
+        errs.append(f"`beats:` con {len(beats)} roles: una estructura nueva necesita al menos {FREE_BEATS_MIN} (hook, dos propios, twist y cta)")
+    return {"orden": beats, "requeridos": beats, "min": {}, "max": {r: FREE_ROLE_MAX for r in beats if r not in ("hook", "cta")}}, errs
+
+
 def validate(md: str) -> tuple[list[str], dict]:
     s = parse(md)
     errs = list(s.errors)
@@ -352,11 +394,20 @@ def validate(md: str) -> tuple[list[str], dict]:
     roles = [r for r, _ in s.lines]
     structure = s.structure or "mito"
     if structure not in STRUCTURES:
-        return [f"estructura desconocida '{structure}' (válidas: {', '.join(STRUCTURES)})"], {}
-    spec = STRUCTURES[structure]
+        if structure not in s.new:
+            return [f"estructura desconocida '{structure}' (del catálogo: {', '.join(STRUCTURES)}; si es nueva, "
+                    f"descríbela en '## Fórmulas nuevas' con '- {structure}: …' y declara `beats:`)"], {}
+        spec, e = free_structure(structure, s.beats)
+        if e:
+            return e, {}
+    else:
+        spec = STRUCTURES[structure]
+        if s.beats:
+            errs.append(f"`beats:` solo va con una estructura nueva; '{structure}' ya tiene su orden ({' → '.join(spec['orden'])})")
     for kind, what, kinds in ((s.hook, "gancho", HOOKS), (s.closing, "cierre", CLOSINGS)):
-        if kind and kind not in kinds:
-            errs.append(f"tipo de {what} desconocido '{kind}' (válidos: {', '.join(kinds)})")
+        if kind and kind not in kinds and kind not in s.new:
+            errs.append(f"tipo de {what} desconocido '{kind}' (del catálogo: {', '.join(kinds)}; si es nuevo, descríbelo en "
+                        f"'## Fórmulas nuevas' con '- {kind}: …')")
     if roles[0] != "hook":
         errs.append("la primera línea debe ser el gancho [hook]")
     hook = " ".join(t for r, t in s.lines if r == "hook")
@@ -366,7 +417,7 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(f"el gancho no está en 2.ª persona: {hook!r}")
     if s.hook in HOOKS and (e := hook_error(s.hook, hook, lang)):
         errs.append(e)
-    names = {"tension": "tensión", "twist": "giro"}
+    names = {"tension": "tensión", "twist": "giro"}   # en una estructura nueva, todos los roles de `beats:` son requeridos
     for need in spec["requeridos"]:
         if need not in roles:
             errs.append(f"falta el beat de {names.get(need, need)} [{need}]")
@@ -380,7 +431,7 @@ def validate(md: str) -> tuple[list[str], dict]:
         if roles.count(r) > n:
             errs.append(f"la estructura '{structure}' admite como mucho {n} líneas [{r}] (hay {roles.count(r)})")
     last = s.lines[-1][1]
-    free = s.closing in ("bucle", "reto_casa")   # estos cierres no tienen por qué pedir un comentario
+    free = s.closing in ("bucle", "reto_casa") or s.closing in s.new   # estos cierres no tienen por qué pedir un comentario
     if roles[-1] != "cta" or not (free or is_cta(last, lang)):
         errs.append(f"la última línea no es una llamada a la acción [cta]: {last!r}")
     elif s.closing in CLOSINGS and (e := closing_error(s.closing, last, hook, lang)):
@@ -415,7 +466,7 @@ def validate(md: str) -> tuple[list[str], dict]:
                 errs.append(f"'{pair}': dos sonidos ll/y seguidos; la voz hace una pausa como si hubiera una coma. "
                             f"Reescribe para separarlos ([{r}] {t[:50]}…)")
     stats = {"lang": lang, "structure": structure, "hook": s.hook, "closing": s.closing, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources),
-             "ficcion": s.ficcion, "pov": s.pov}
+             "ficcion": s.ficcion, "pov": s.pov, "beats": s.beats, "new": s.new}
     return errs, stats
 
 

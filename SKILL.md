@@ -42,27 +42,37 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 ### 1b. Elegir gancho, estructura y cierre (pregunta siempre antes de cada video)
 
 Cuando ya hay hechos con fuente y **antes de escribir el guion**, Claude propone y el usuario elige. El catálogo está en
-`templates/formulas.json` (10 tipos de gancho, 5 estructuras, 5 cierres); el criterio de elección, en su apartado `elegir`.
+`templates/formulas.json` (10 tipos de gancho, 5 estructuras, 5 cierres y 12 `formatos` de inspiración); el criterio de
+elección, en su apartado `elegir`. **El catálogo es una caja de herramientas, no un menú cerrado (D120):** puedes inventar
+un tipo de gancho, una estructura o un cierre para este tema si cuenta mejor la idea.
 
 1. Mira qué usaron los últimos videos: `PY tools/recent_formulas.py 5`. No repitas el mismo tipo de gancho ni la misma
-   estructura que el video anterior, salvo que el tema lo pida de verdad.
+   estructura que el video anterior, salvo que el tema lo pida de verdad. Antes de elegir, piensa qué **formato** (premisa
+   del video entero: ¿qué pasaría si…?, cuenta atrás, eres la cosa, cambio de escala, juicio…) sacaría lo mejor del tema.
 2. Según los hechos de `01_research.md`, elige **tres candidatos de cada cosa** y decide cuál es el mejor:
    - **Gancho:** tres tipos distintos, cada uno ya redactado para este tema (≤12 palabras, 2.ª persona, concreto). **Puntúa** antes
      de proponer (0–2 cada criterio): concreto (nombra la cosa), conflicto (choca con algo que cree o hace), 2.ª persona, promesa que el
      video cumple, se dice en ≤3 s (8–9 palabras). Propón los tres de mayor suma y recomienda el primero.
    - **Estructura:** tres, cada una con su esquema en una línea ("gancho → tres datos → giro → cierre").
    - **Cierre:** tres, con la frase ya redactada.
+   - **Comodín (D120):** entre los tres ganchos, al menos uno es un **tipo nuevo**, y entre las tres estructuras, al menos
+     una es **nueva**, diseñada para este tema (con su esquema de roles). No vale renombrar algo del catálogo: tiene que cambiar
+     cómo se cuenta. Se puntúa igual que los demás; si el comodín gana, recomiéndalo.
    **Cierre (F16): recomienda `bucle` salvo que el tema pida otra cosa.** `envia`, `pregunta` y `sigue` son despedidas predecibles que
    invitan a deslizar: ofrécelas solo si el usuario las pide. Con `bucle`, el story lleva `meta.tailS: 0.2` (el validador lo exige).
 3. Pregunta con `AskUserQuestion`, **las tres preguntas en una sola llamada**: "¿Qué gancho quieres?", "¿Qué estructura?",
    "¿Qué cierre?". La primera opción es tu recomendación, con "(Recomendado)" en la etiqueta y, en la descripción, una frase
-   de por qué encaja con **este** tema. Etiquetas tipo `A · pregunta: "¿Te has preguntado…?"`.
+   de por qué encaja con **este** tema. Etiquetas tipo `A · pregunta: "¿Te has preguntado…?"`; el comodín, tipo
+   `C · nuevo · cuenta_atras: "Te quedan 8 minutos…"`.
 4. Si el usuario ya eligió en su mensaje ("con gancho de mito"), no preguntes esa parte. Si contesta "tú decide" (o
    no hay forma de preguntar), usa lo recomendado y dilo en la entrega.
 5. Anota lo elegido en la cabecera de `02_SCRIPT.md` (`hook:`, `structure:`, `closing:`); el validador comprueba que el
-   guion tenga la forma de cada uno.
+   guion tenga la forma de cada uno. Si alguno es nuevo, descríbelo en la sección `## Fórmulas nuevas`
+   (`- nombre: patrón en una frase`); una estructura nueva declara además `beats: hook > … > twist > cta` (≥5 roles
+   en snake_case: empieza en `hook`, acaba en `cta` y lleva `twist`). Formato y ejemplo: `script_es.md` → «Fórmulas nuevas».
 6. **Sé honesto con la recomendación:** son patrones establecidos (curiosidad concreta, primeros segundos, lenguaje directo),
-   no resultados medidos en este canal. No prometas que un gancho "rinde más" con cifras. Detalle y fuentes: `docs/FORMULAS.md`.
+   no resultados medidos en este canal. No prometas que un gancho "rinde más" con cifras. Detalle y fuentes: `docs/FORMULAS.md`. Una fórmula
+   nueva tampoco está probada: dilo así, sin venderla como mejor.
 
 ### 2. Guion (`02_SCRIPT.md`)
 
@@ -190,7 +200,7 @@ Entrega:
 | Qué | Dónde |
 |---|---|
 | Prompts (guion es/en, story, verificador) | `templates/prompts/` |
-| Ganchos, estructuras y cierres (catálogo y criterio de elección) | `templates/formulas.json`, `docs/FORMULAS.md`, `tools/recent_formulas.py` |
+| Ganchos, estructuras y cierres (catálogo y criterio de elección) | `templates/formulas.json` (con `formatos`), `docs/FORMULAS.md`, `tools/recent_formulas.py` (`--nuevas`: fórmulas nuevas usadas y candidatas al catálogo) |
 | Catálogo cerrado para el story | `templates/catalog.json` (cruzado con el código en `studio/src/explainer/catalog.ts`) |
 | Ejemplos | `templates/examples/` (`bluetooth-wifi` completo y vigente, `hielo-flota` el original; solo guion: `cielo-azul`, `dedos-arrugados` y uno por estructura: `agua-rara-lista`, `agua-contra-hielo`, `dedos-historia`, `atardecer-cadena`) |
 | Look del video (paleta, subtítulos, cámara, luces) | `studio/src/explainer/style.ts` y `world/grade.ts` |
