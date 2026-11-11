@@ -55,11 +55,42 @@ const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keywo
   );
 };
 
-export const Captions: React.FC<{ words: Word[]; keywords: Keyword[]; cap?: CaptionCfg }> = ({ words, keywords, cap = CAP }) => {
+/** frame en que termina el beat del gancho (última palabra del primer beat): ahí se apaga el titular del gancho */
+export const hookEndFrame = (words: Word[], firstBeat: string, fps: number) =>
+  Math.round(Math.max(0, ...words.filter((w) => w.beat === firstBeat).map((w) => w.end)) * fps) + 4;
+
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}]/gu, "");
+
+/** Titular del gancho (YouTube Shorts: el espectador decide en el primer segundo, muchas veces sin sonido). Un texto corto
+ *  (`meta.hookTitle`) visible y completo desde el frame 0 hasta el final del gancho, en la franja de los subtítulos y sobre una
+ *  placa oscura; la palabra clave del gancho va en el color de acento. Mientras está, los subtítulos no se pintan (no se repite texto). */
+export const HookTitle: React.FC<{ text: string; endF: number; accent?: string; cap?: CaptionCfg }> = ({ text, endF, accent, cap = CAP }) => {
+  const f = useCurrentFrame();
+  const { width, height } = useVideoConfig();
+  if (f >= endF) return null;
+  const fs = cap.fontSizeK * width * 1.12, lh = fs * 1.18, key = accent ? norm(accent) : "";
+  const out = interpolate(f, [endF - 6, endF], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const settle = 1 + 0.05 * Math.max(0, 1 - f / 8) ** 2;   // entra ya visible, con un asentamiento mínimo
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: cap.centerYK * height - lh * 0.62, display: "flex", justifyContent: "center", opacity: out }}>
+        <div style={{ maxWidth: cap.maxWidthK * width, padding: `${fs * 0.22}px ${fs * 0.42}px`, borderRadius: fs * 0.32, background: "rgba(8,9,24,0.62)",
+          display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: fs * 0.28, transform: `scale(${settle})` }}>
+          {text.split(/\s+/).filter(Boolean).map((w, i) => (
+            <span key={i} style={{ fontFamily: CAPTION_FAMILY, fontSize: fs, lineHeight: `${lh}px`, fontWeight: 800, whiteSpace: "nowrap",
+              color: key && norm(w) === key ? cap.accentColor : cap.activeColor, textShadow: cap.shadow }}>{w}</span>
+          ))}
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+export const Captions: React.FC<{ words: Word[]; keywords: Keyword[]; cap?: CaptionCfg; fromF?: number }> = ({ words, keywords, cap = CAP, fromF = 0 }) => {
   const f = useCurrentFrame();
   const blocks = useCaptionBlocks(words, keywords, cap);
   const kw = useMemo(() => new Map(keywords.map((k) => [k.index, k.variant])), [keywords]);
-  if (!blocks) return null;
+  if (!blocks || f < fromF) return null;
   const b = blocks.find((x) => f >= x.startF && f < x.endF);
   return <AbsoluteFill style={{ pointerEvents: "none" }}>{b ? <BlockView b={b} words={words} keywords={kw} cap={cap} /> : null}</AbsoluteFill>;
 };

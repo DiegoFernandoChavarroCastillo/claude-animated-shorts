@@ -80,6 +80,14 @@
       "ejemplo_es": "Lo que te enseñaron del frío está al revés.",
       "ejemplo_en": "What you were taught about cold is backwards.",
       "por_que": "Choca con una certeza del espectador y deja claro que el video la desmonta."
+    },
+    "revelacion": {
+      "nombre": "Revelación primero",
+      "patron": "Muestra y dice primero el resultado o el final sorprendente (lo que pasó, en qué acabó), en 2.ª persona, y el video cuenta cómo se llegó ahí.",
+      "mejor_para": "Temas con un desenlace visual fuerte: algo que explota, se congela, desaparece; historias con un final que nadie espera.",
+      "ejemplo_es": "Tu familia leerá tu mensaje ochenta años después de enviarlo.",
+      "ejemplo_en": "Your family will read your text eighty years after you send it.",
+      "por_que": "El feed decide en un segundo: enseñar el resultado primero da la imagen más fuerte al principio y deja abierta la pregunta de cómo."
     }
   },
   "structures": {
@@ -360,7 +368,7 @@
     }
   },
   "elegir": {
-    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés. Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py). Comodín (D120): de los 3 candidatos, al menos uno es un tipo nuevo, inventado para este tema (descríbelo en '## Fórmulas nuevas').",
+    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés; revelacion si el desenlace es visual y sorprendente (se enseña primero y se explica después). Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py). Comodín (D120): de los 3 candidatos, al menos uno es un tipo nuevo, inventado para este tema (descríbelo en '## Fórmulas nuevas').",
     "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro. Comodín (D120): de las 3 propuestas, al menos una es nueva: una forma diseñada para este tema (declara `beats:` y descríbela en '## Fórmulas nuevas'). Piensa también en un formato de 'formatos' que cambie la premisa entera.",
     "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar.",
     "nuevas": "Una fórmula nueva no es un nombre distinto para algo del catálogo: tiene que cambiar cómo se cuenta (otro orden, otro punto de vista, otra promesa). Se juzga con los mismos criterios (gancho concreto, conflicto, 2.ª persona, promesa que el video cumple, ≤3 s; estructura con giro y un cambio en pantalla por beat). Nombre corto en snake_case. Si una fórmula nueva se repite y funciona (tools/recent_formulas.py --nuevas, tools/ingest_stats.py), pásala al catálogo."

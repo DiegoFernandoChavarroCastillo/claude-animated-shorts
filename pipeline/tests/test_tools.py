@@ -33,6 +33,8 @@ check("hashtags: entre 3 y 5, con # y sin acentos ni espacios", 3 <= len(tags) <
 check("hashtags: incluyen los dos genéricos del idioma", {"#sabiasque", "#ciencia"} <= set(tags))
 check("hashtags en inglés usan los genéricos en inglés", {"#didyouknow", "#science"} <= set(publish_pack.hashtags(story, "en")))
 md = "## Guion\n[hook] x\n\n## Fuentes\n- uno: https://a\n- dos: https://b\n\n## Fórmulas nuevas\n- tour: patrón\n"
+check("publish: título con la palabra clave del tema delante del gancho", publish_pack.yt_title("Exoplanetas habitables", "¿Y si te mudaras?") == "Exoplanetas habitables: ¿Y si te mudaras?")
+check("publish: sin tema, el título es el gancho; nunca pasa de 100 caracteres", publish_pack.yt_title(None, "Hola") == "Hola" and len(publish_pack.yt_title("x" * 30, "palabra " * 20)) <= 101)
 check("publish: las fuentes paran en la sección siguiente (no cuelan Fórmulas nuevas)", publish_pack.script_sources(md) == "- uno: https://a\n- dos: https://b", publish_pack.script_sources(md))
 m = publish_pack.meta(d)
 check("meta.json: gancho, estructura y cierre del guion", (m["hook"], m["structure"], m["closing"]) == ("mito", "versus", "bucle"), m)

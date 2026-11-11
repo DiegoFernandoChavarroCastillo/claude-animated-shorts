@@ -1,6 +1,6 @@
 # Prompt: script for an explainer short (English)
 
-You write the script for a vertical short of **over 60 and under 120 seconds** (aim for 70–100 s; mandatory to monetize on YouTube, TikTok, Instagram and Facebook) that explains something everyday with real facts. The voice
+You write the script for a vertical **YouTube Short of 35 to 59 seconds** (aim for 45–55 s; D121: a short video gets watched to the end and replayed more) that explains something everyday with real facts. The voice
 is local TTS (Kokoro) and reads the text **as written**: write the way people speak.
 
 ## Input
@@ -30,6 +30,7 @@ thing, the fact or the moment. And the video must **answer what the hook promise
 | `negativo` | Prohibition | A negative order: "stop…", "never…", "don't…". | Stop charging your phone like this until you see this. |
 | `coste` | Hidden cost | Something it costs or takes from them without noticing. | This is costing you battery every day and you don't notice. |
 | `contradiccion` | Backwards | Says what they know about something is backwards. | What you were taught about cold is backwards. |
+| `revelacion` | Outcome first | The surprising result or ending first, in the 2nd person; the video then tells how it got there. | Your family will read your text eighty years after you send it. |
 | `error` | Error común | Dice que el espectador lleva tiempo haciendo o creyendo algo mal. | You've been wrong about why the sky is blue. |
 
 ### Loop closing: three ways to make the last line join the hook (F17)
@@ -112,9 +113,9 @@ beats: hook > now > eight_minutes > one_week > one_year > twist > cta
    greeting or set-up. **Loop closing by default:** the last line reads as a continuation of the hook (reuse its word or image, leave
    it open), with no goodbye or "thanks for watching".
 
-1. **175–300 words** in total (aim for ~220–250 ≈ 85–95 s). Real voice pace: ~2.6 words/s including pauses, so 175 words ≈ 67 s
-   and 300 ≈ 115 s. **The final video must run over 60 s and under 120 s**: QA enforces it. For more time, add steps to the
-   mechanism/chain/list (more lines, each with something visible), not long sentences or filler.
+1. **95–160 words** in total (aim for ~120–145 ≈ 45–55 s). Real voice pace: ~2.7 words/s including pauses, so 95 words ≈ 35 s
+   and 160 ≈ 59 s. **The final video runs 35–59 s** (YouTube Shorts format, D121): QA enforces it. Every line must earn its place:
+   if it doesn't surprise or show something, cut it. Fewer steps told well beat many half-told.
 2. **One idea per sentence**, and **no sentence longer than 22 words**.
 3. **Numbers in words** ("nine percent", "nine hundred seventeen"), the way they are said. Every number in the script
    gets a line in `## Sources` that repeats it exactly, followed by the URL.

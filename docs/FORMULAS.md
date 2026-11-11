@@ -62,6 +62,8 @@ parecían entre sí (los dos últimos de story-short: `escena` + `drama` + `bucl
   `tools/ingest_stats.py` las cruza con las estadísticas. Si una se repite y rinde, pasa a `formulas.json` con su patrón (y,
   si es un gancho, sus marcas en `validate_script.py`). Una fórmula nueva no está probada: se presenta así, sin venderla como mejor.
 
+**Gancho `revelacion` (D121):** el resultado o el final sorprendente primero y el cómo después; en el feed se decide en un segundo, así que la imagen más fuerte va al principio.
+
 ## Cómo comprobarlo con tus propios datos
 
 1. Anota en la cabecera de cada `02_SCRIPT.md` el `hook:`, el `structure:` y el `closing:` (el skill ya lo hace).

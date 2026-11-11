@@ -52,6 +52,15 @@ def cover(d: Path, words: list[dict]) -> str:
     return out.name
 
 
+def yt_title(topic: str | None, hook: str) -> str:
+    """título de YouTube (D121): los Shorts también salen en la búsqueda, así que la palabra clave del tema (`meta.topic`) va primero,
+    y detrás el gancho; sin tema, el gancho tal cual. Tope de 100 caracteres sin cortar palabras."""
+    t = f"{topic.strip()}: {hook}" if topic and topic.strip() else hook
+    if len(t) <= 100:
+        return t
+    return t[:100].rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
+
 def script_sources(md: str) -> str:
     """las líneas de «## Fuentes» del guion, hasta la sección siguiente (Ficción, Fórmulas nuevas)"""
     m = re.search(r"^## Fuentes\s*(.*?)(?=^## |\Z)", md, re.S | re.M)
@@ -77,7 +86,7 @@ Video: `09_final.mp4` ({dur:.0f} s) · portada: `{cov}` · cierre: `{closing.gro
 Borrador generado por `pipeline/publish_pack.py`: revísalo y afínalo antes de publicar. Los límites de caracteres son orientativos.
 
 ## YouTube Shorts
-- **Título** (≤ 100 caracteres, el gancho primero): {hook}
+- **Título** (≤ 100 caracteres; la palabra clave de búsqueda en los primeros 40, D121): {yt_title(story.get("meta", {}).get("topic"), hook)}
 - **Descripción:** {body} … Fuentes abajo. #Shorts {tags}
 - **Comentario fijado:** {last}
 

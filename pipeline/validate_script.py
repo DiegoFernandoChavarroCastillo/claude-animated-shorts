@@ -35,7 +35,7 @@ estructura que no está en formulas.json vale si se describe en "## Fórmulas nu
 (no hay patrón que comprobar), pero sí todas las reglas comunes. Una estructura nueva declara `beats:` y debe empezar en
 hook, acabar en cta y llevar twist (la pausa larga y el riser del pipeline cuelgan de ese rol).
 
-Comprueba: 175–300 palabras (el video debe durar entre 60 y 120 s para monetizar); gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
+Comprueba: 95–160 palabras (formato YouTube Shorts: el video dura 35–59 s, D121); gancho ≤12 palabras y en 2.ª persona (y, si se declara `hook:`, que tenga la forma de ese
 tipo); los roles, su orden y cuántas líneas lleva cada uno según la estructura; la última línea es el cierre (y, si se
 declara `closing:`, que tenga la forma de ese cierre); cada número del guion tiene una línea en "## Fuentes"; ninguna frase pasa de 22 palabras;
 en español, no hay dos palabras seguidas unidas por el mismo sonido ll/y ("botella llena").
@@ -63,9 +63,11 @@ FREE_BEATS_MIN, FREE_ROLE_MAX = 5, 8   # estructura nueva: ≥5 roles declarados
 # ll/y + vocal: "botella llena" suena "botella, llena" (2 nov, tras F8). "y" sola (conjunción), "muy" u "hoy" no cuentan.
 LL_END = re.compile(r"(ll|y)[aeiouáéíóú]$", re.I)
 LL_START = re.compile(r"^(ll|y[aeiouáéíóú])", re.I)
-# Duración obligatoria del video: más de 60 s y menos de 120 s (monetización en YouTube, TikTok, Instagram y Facebook).
-# La voz real da ~2,6 palabras/s con pausas: 175 palabras ≈ 67 s y 300 ≈ 115 s.
-WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 175, 300, 12, 22
+# Formato YouTube Shorts (D121): 35–59 s. YouTube reparte ingresos con Shorts de cualquier duración (hasta 3 min) y en el feed
+# rinde más un video corto que se ve entero y se repite; TikTok solo se usa para ganar seguidores (su monetización pide > 60 s).
+# La voz real da ~2,7 palabras/s con pausas: 95 palabras ≈ 35 s y 160 ≈ 59 s.
+WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 95, 160, 12, 22
+DURATION_S = (30.0, 59.9)   # lo exige el QA sobre el video final
 VIRAL = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))["script"]   # perfil `pacing: viral`
 DRAMA = json.loads((ROOT / "templates" / "dramatizacion.json").read_text(encoding="utf-8"))   # `ficcion:` y `pov:` (historias 2D)
 
@@ -281,6 +283,8 @@ def hook_error(kind: str, hook: str, lang: str) -> str | None:
         return None if numbers(hook, lang) else "un gancho 'dato' debe llevar una cifra concreta (con su fuente)"
     if kind == "escena":
         return "un gancho 'escena' es una afirmación en presente, no una pregunta" if "?" in hook else None
+    if kind == "revelacion":
+        return "un gancho 'revelacion' afirma el resultado, no lo pregunta (sin '?')" if "?" in hook else None
     pat = HOOK_MARKS.get(kind)
     if pat and not re.search(pat[1 if lang == "en" else 0], t):
         return f"el gancho no tiene la forma de '{kind}' ({FORMULAS['hooks'][kind]['patron']})"

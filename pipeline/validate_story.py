@@ -28,8 +28,9 @@ WPS = 2.8  # para estimar la duración si no hay words.json
 HOOK_MAX_S = 3.2         # el primer beat (gancho) se dice en unos 3 s (margen de 0,2 s)
 HOOK_ACTION_S = 1.0      # y lleva una acción que empieza antes de 1,0 s
 HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer beat
-MAX_EVENT_GAP_S = 3.5    # tiempo máximo sin corte, acción u overlay
+MAX_EVENT_GAP_S = 3.0    # tiempo máximo sin corte, acción u overlay (D121: un cambio cada 2–3 s; objetivo 2,5)
 LOOP_TAIL_MAX_S = 0.3    # con cierre `bucle`, la cola tras la última palabra (meta.tailS)
+HOOK_TITLE_WORDS, HOOK_TITLE_CHARS = (2, 7), 40   # D121: titular del gancho en el fotograma 0 (meta.hookTitle)
 FPS = 30
 FAREWELL_ES = r"gracias|adi[oó]s|hasta (luego|pronto|la pr[oó]xima)|nos vemos|suscr[ií]b|s[ií]gueme|comenta|dale (like|me gusta)|d[eé]jame|deja tu|hasta aqu[ií]"
 MAX_INSERTS = 3          # insertos (cortes de datos de ~1 s) por video (F18)
@@ -100,6 +101,17 @@ def event_gaps(story: dict, words: list, limit: float) -> list[tuple[float, floa
 
 
 BIG_OVERLAYS = {"NoSymbol", "BigWord"}   # iconos y palabras enormes (F19)
+
+
+def hook_title_errors(meta: dict) -> list[str]:
+    """`meta.hookTitle` (D121): el gancho escrito y completo desde el fotograma 0; corto para leerse en un golpe de vista. Lo exige el QA."""
+    t = (meta.get("hookTitle") or "").strip()
+    if not t:
+        return []
+    n = len(t.split())
+    if not HOOK_TITLE_WORDS[0] <= n <= HOOK_TITLE_WORDS[1] or len(t) > HOOK_TITLE_CHARS:
+        return [f"meta.hookTitle «{t}»: {n} palabras y {len(t)} letras (debe tener {HOOK_TITLE_WORDS[0]}–{HOOK_TITLE_WORDS[1]} palabras y ≤ {HOOK_TITLE_CHARS} letras)"]
+    return []
 
 
 def validate(story: dict, words: list | None = None, script_lines: list[str] | None = None, require_actions: bool = False,
@@ -284,6 +296,7 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
     if closing == "bucle" and story["meta"].get("tailS", 1.0) > LOOP_TAIL_MAX_S:
         errs.append(f"el cierre es `bucle` y meta.tailS vale {story['meta'].get('tailS', 1.0)} (por defecto 1.0): pon meta.tailS = 0.2 "
                     f"para que el final empalme con el inicio")
+    errs += hook_title_errors(story["meta"])
     if script_lines is not None:
         texts = [b.get("text", "") for b in beats]
         if texts != script_lines:

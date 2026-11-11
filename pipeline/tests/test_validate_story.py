@@ -74,7 +74,7 @@ fails += not ok
 
 
 # F16: gancho, ritmo y bucle (con words.json)
-def timed(hook_end=2.5, beat_len=2.4, n=6, hook_act=True, cam="push_in", tail=None, ev_each=True):
+def timed(hook_end=2.5, beat_len=2.0, n=6, hook_act=True, cam="push_in", tail=None, ev_each=True):
     st = story(["telefono", "chip", "perro", "persona", "reloj", "telefono"][:n])
     words, t0 = [], 0.1
     for i, b in enumerate(st["beats"]):
@@ -99,6 +99,13 @@ def f16(name, frag, closing=None, **kw):
     fails += not ok
 
 
+from validate_story import hook_title_errors  # noqa: E402
+for name, t, bad in (("titular de 4 palabras pasa", "¿Mudarte a otro planeta?", False), ("titular de 1 palabra falla", "Planetas", True),
+                     ("titular de 9 palabras falla", "Esto es un titular demasiado largo para leerlo de golpe", True), ("sin titular no falla aquí (lo exige el QA)", "", False)):
+    e = hook_title_errors({"hookTitle": t})
+    ok = bool(e) == bad
+    print("OK " if ok else "MAL", f"D121: {name}", "" if ok else e)
+    fails += not ok
 f16("gancho de 2,5 s con acción pasa", None)
 f16("gancho de 4 s falla", "el gancho dura", hook_end=4.0)
 f16("primer beat sin acción falla", "no tiene una acción antes de 1 s", hook_act=False)

@@ -1,6 +1,6 @@
 # Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) o una nueva
 
-Escribes el guion de un short vertical de **más de 60 y menos de 120 s** (objetivo 80–100 s; unas 220–260 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
+Escribes el guion de un short vertical en formato **YouTube Shorts de 35 a 59 s** (D121; sin el perfil viral, unas 95–160 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
 
 ## Entrada
 - El tema y `01_research.md` con los **hechos ancla verificados contra el texto original** (≥2 fuentes cada uno) y una sección **«Huecos»**: lo que las fuentes no cuentan (qué pensaba, qué se dijo en privado, quién miraba, cómo olía el lugar). Los huecos son donde va la ficción.
@@ -89,12 +89,12 @@ Igual que `script_es.md`, con cabecera `hook: mito|…|<nuevo>`, `structure: dra
 ## Perfil `pacing: viral` (por defecto en los videos nuevos)
 Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pacing: "viral"`. Todo lo que cambia está en `templates/pacing_viral.json` (una sola fuente de verdad) y lo comprueban `validate_script.py`, `validate_story2d.py` y el QA. Sin esa cabecera rigen las reglas de arriba.
 
-**System prompt de la etapa de redacción** (adaptado: el original pedía «máximo 55 s», pero YouTube solo monetiza Shorts de más de 60 s; por eso el objetivo es 60–80 s):
-> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es adaptar la idea del usuario en un guion de 60 a 80 segundos (225–290 palabras). Usa frases ultracortas, ritmo picado, alto suspenso filosófico o narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
+**System prompt de la etapa de redacción** (D121: formato YouTube Shorts, 35–59 s; YouTube reparte ingresos con Shorts de cualquier duración):
+> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es adaptar la idea del usuario en un guion de 35 a 59 segundos (130–210 palabras). Usa frases ultracortas, ritmo picado, alto suspenso filosófico o narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
 
 | Regla | Valor |
 |---|---|
-| Duración | 60–80 s hablados (225–290 palabras con la voz `diego` a +13 %); sin relleno ni pausas |
+| Duración | 35–59 s hablados (130–210 palabras con la voz `diego` a +13 %); sin relleno ni pausas |
 | Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase. Prohibido: «¿Alguna vez…?», «Imagina que…», «¿Sabías que…?», «Solo conversación…», empezar por pregunta |
 | Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase |
 | Cierre en bucle | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |

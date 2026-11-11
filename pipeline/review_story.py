@@ -54,7 +54,7 @@ def build_request_script(d: Path) -> str:
     words = sum(len(t.split()) for _, t in sc.lines)
     hook = sc.lines[0][1]
     rows = [f"{i + 1:02d} [{r}] {t}" for i, (r, t) in enumerate(sc.lines)]
-    stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; el video debe durar 60–80 s: no lo acortes por debajo de 60 s)\n"
+    stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; formato YouTube Shorts: el video debe durar 35–59 s; si algo sobra, recórtalo)\n"
              f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
     if sc.beats:
         stats += f"\n- Beats de la estructura nueva: {' → '.join(sc.beats)}"
@@ -85,7 +85,7 @@ def build_request(d: Path) -> str:
     hook = [w for w in words if w["beat"] == story["beats"][0]["id"]]
     stats = (f"- Duración: {dur:.1f} s · palabras: {len(words)} ({len(words) / max(dur, 1):.2f} pal/s)\n"
              f"- Gancho dicho en: {hook[-1]['end']:.1f} s\n- Hueco máximo sin cambio visual: {gap:.1f} s (desde el s {at:.1f})\n"
-             f"- Restricción: el video debe durar 60–80 s (monetización); no lo acortes por debajo de 60 s\n"
+             f"- Restricción: formato YouTube Shorts, el video debe durar 35–59 s (D121)\n"
              f"- Perfil: {meta.get('pacing', 'clásico')} · cierre: {'bucle' if story['beats'][-1]['role'] == 'cta' else '—'}")
     return f"# Story a calificar: {meta.get('title', d.name)}\n\n## Métricas\n{stats}\n\n## Beats\n\n" + "\n\n".join(rows) + "\n"
 

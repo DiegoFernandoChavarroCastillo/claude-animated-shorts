@@ -61,6 +61,10 @@ export const MetaSchema = z.object({
   /** cama sonora sintetizada muy baja bajo la voz (solo con music: true); por defecto tech */
   musicMood: z.enum(["tech", "calm", "warm"]).optional(),
   captionEmphasis: z.enum(["box", "accent"]).default("box"),
+  /** titular del gancho (2–7 palabras) visible desde el frame 0 hasta el final del gancho, en la franja de los subtítulos (YouTube Shorts) */
+  hookTitle: z.string().max(48).optional(),
+  /** palabra clave de búsqueda del tema (va al principio del título de YouTube; publish_pack) */
+  topic: z.string().max(40).optional(),
   /** cola tras la última palabra (s). 1.0 por defecto; 0.2 con cierre `bucle` para que el final empalme con el inicio */
   tailS: z.number().min(0.1).max(2).default(1.0),
 });

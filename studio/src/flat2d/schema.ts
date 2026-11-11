@@ -22,7 +22,7 @@ export const Beat2Schema = z.looseObject({
 });
 export const Story2Schema = z.object({
   meta: z.looseObject({ id: z.string(), lang: z.enum(["es", "en"]), title: z.string(), engine: z.literal("2d"), tailS: z.number().min(0.1).max(2).default(1.0),
-    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional() }),
+    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional(), hookTitle: z.string().max(48).optional() }),
   beats: z.array(Beat2Schema).min(1),
 });
 export const Props2Schema = z.object({ story: Story2Schema, words: z.array(WordSchema).min(1) });

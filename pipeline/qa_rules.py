@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 
 from common import ROOT, engine_of, load_json
+from validate_story2d import CLASSIC_2D_GAP_S
 from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, HOOK_STATIC_CAMERAS, LOOP_TAIL_MAX_S, MAX_EVENT_GAP_S, MAX_SHOTS,
                             at_seconds, event_gap, script_closing)
 
@@ -31,6 +32,8 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
         out.append((name, val, target, bool(ok)))
 
     w1 = [w for w in words if w["beat"] == beats[0]["id"]]
+    title = (story["meta"].get("hookTitle") or "").strip()
+    row("titular del gancho en el fotograma 0 (meta.hookTitle)", title or "falta", "sí", bool(title))
     row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {HOOK_MAX_S}", w1[-1]["end"] <= HOOK_MAX_S)
     acts = [at_seconds(beats[0], w1, a.get("at"), 0.0) for a in beats[0].get("actions", [])]
     first = min(acts) if acts else None
@@ -38,7 +41,8 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
     cam = beats[0]["scene"]["camera"]["preset"]
     row("cámara del gancho", cam, f"no {'/'.join(HOOK_STATIC_CAMERAS)}", cam not in HOOK_STATIC_CAMERAS)
     gap, at = event_gap(story, words)
-    gap_max = VIRAL["cadence"]["eventGapMaxS"] if story["meta"].get("pacing") == "viral" else MAX_EVENT_GAP_S
+    gap_max = (VIRAL["cadence"]["eventGapMaxS"] if story["meta"].get("pacing") == "viral"
+               else CLASSIC_2D_GAP_S if engine_of(story) == "2d" else MAX_EVENT_GAP_S)
     row("hueco máximo sin cambios en pantalla (s)", round(gap, 1), f"≤ {gap_max}", gap <= gap_max)
     if story["meta"].get("pacing") == "viral":
         ev = load_json(d / "08_sfx_plan.json")["events"]

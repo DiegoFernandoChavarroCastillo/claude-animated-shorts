@@ -9,7 +9,7 @@ import { buildTimeline, layersAt } from "./timeline";
 import { Scene } from "./Scene";
 import { FlatScene } from "./flat/FlatScene";
 import { heroDef } from "./heroes";
-import { Captions } from "./captions/Caption";
+import { Captions, HookTitle, hookEndFrame } from "./captions/Caption";
 import { OverlayLayer } from "./overlays/OverlayLayer";
 import { CAMERA, PALETTE } from "./style";
 import { validateStory } from "./catalog";
@@ -28,6 +28,7 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
   const { story, words } = useMemo(() => parse(props), [props]);
   const tl = useMemo(() => buildTimeline(story, words, fps), [story, words, fps]);
   const layers = layersAt(tl, f);
+  const hookF = useMemo(() => hookEndFrame(words, story.beats[0].id, fps), [words, story, fps]);
   return (
     <AbsoluteFill style={{ background: PALETTE.bg.night0 }}>
       {layers.map((l, k) => (
@@ -41,7 +42,8 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
         </AbsoluteFill>
       ))}
       <OverlayLayer tl={tl} words={words} lang={story.meta.lang} />
-      <Captions words={words} keywords={tl.keywords} />
+      {story.meta.hookTitle ? <HookTitle text={story.meta.hookTitle} endF={hookF} accent={story.beats[0].keyword} /> : null}
+      <Captions words={words} keywords={tl.keywords} fromF={story.meta.hookTitle ? hookF : 0} />
     </AbsoluteFill>
   );
 };

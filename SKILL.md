@@ -1,6 +1,6 @@
 ---
 name: explainer-short
-description: Hace un short vertical explicativo de más de 60 s y menos de 120 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, que Claude alterna beat a beat con dioramas 2.5D de láminas pintadas e ilustraciones 2D cuando cuentan mejor la idea, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
+description: Hace un short vertical explicativo en formato YouTube Shorts, de 35 a 59 s (1080x1920) estilo "Explainer 2.5D", en español o en inglés. Escenas 3D estilizadas con un objeto protagonista, que Claude alterna beat a beat con dioramas 2.5D de láminas pintadas e ilustraciones 2D cuando cuentan mejor la idea, subtítulos palabra por palabra con caja de selección, overlays de datos con fuente, voz local (Chatterbox) y efectos de sonido, renderizado con three.js dentro de Remotion en el PC del usuario. Úsalo cuando el usuario pida un "video explicativo", un "short de curiosidad", un video "como los de explicación con subtítulos", un "explainer short", "explain why X in a short video", o diga "usa el skill explainer" / "use the explainer skill". Acepta `es` y `en`.
 ---
 
 # Explainer short (es / en)
@@ -77,9 +77,10 @@ un tipo de gancho, una estructura o un cierre para este tema si cuenta mejor la 
 ### 2. Guion (`02_SCRIPT.md`)
 
 Sigue el prompt del idioma al pie de la letra, con el gancho, la estructura y el cierre elegidos en el paso 1b (la
-estructura `mito` es hook → tension → mechanism → layer2 → twist → cta; las otras están en el prompt). Siempre: 175–300
-palabras (**el video debe durar más de 60 s y menos de 120 s**, requisito para monetizar en YouTube, TikTok, Instagram y
-Facebook; la voz da ~2,6 palabras/s, así que ~220–250 palabras ≈ 85–95 s), gancho ≤12 palabras en 2.ª persona, números en palabras y con fuente, frases de ≤22 palabras.
+estructura `mito` es hook → tension → mechanism → layer2 → twist → cta; las otras están en el prompt). Siempre: 95–160
+palabras (**formato YouTube Shorts, D121: el video dura 35–59 s**; YouTube reparte ingresos con Shorts de cualquier duración y un
+video corto se ve entero y se repite más; el mismo video se sube a TikTok solo para ganar seguidores. La voz da ~2,7 palabras/s, así
+que ~120–145 palabras ≈ 45–55 s), gancho ≤12 palabras en 2.ª persona, números en palabras y con fuente, frases de ≤22 palabras.
 Cosas de la voz que el validador también comprueba o que conviene saber:
 - **(es) No juntes dos sonidos "ll"/"y" seguidos** entre palabras ("una botella llena"): la voz hace una pausa como
   si hubiera una coma. El validador lo marca como error (D60).
@@ -134,13 +135,18 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
   `PY tools/ingest_stats.py stats.csv` cruza tus estadísticas con el gancho, estructura y cierre de cada video.
 - **Calidad como puerta (F18):** `make_short.py` **para con error si el QA final tiene avisos** (`10_qa.md`, filas ❌): un video no está terminado
   hasta que todo está en ✅ (`--allow-qa-warnings` solo si el usuario lo acepta, y se dice en la entrega). El QA ya comprueba, además de lo
-  técnico, las reglas del plan: gancho ≤3,2 s con acción antes de 1 s, hueco ≤3,5 s sin cambios en pantalla, cola y bucle, sub-planos, densidad
+  técnico, las reglas del plan: gancho ≤3,2 s con acción antes de 1 s, hueco ≤3 s sin cambios en pantalla, cola y bucle, sub-planos, densidad
   de sonido y cama sonora. **Toda función nueva lleva su prueba** en `pipeline/tests/` y se corre con `PY tools/run_tests.py` (tiene que dar TODO BIEN antes de comitear).
 - **Insertos y cama (F18):** `Insert` es un corte de ~1 s con icono y cifra o frase grande (B-roll de datos, máx. 3 por video, no en el gancho; ver el prompt del
   story). `meta.music: true` añade una cama sonora sintetizada 24 dB bajo la voz (`musicMood`: tech, calm, warm; por defecto sin música). `meta.voice.pauseScale`
   (0,5–1,5) acorta o alarga las pausas; la voz se guarda **por frase** en `out/.tts_cache`, así que cambiar una línea o las pausas no repite toda la síntesis.
+- **Primer fotograma (D121):** en el feed el espectador decide en un segundo y muchas veces sin sonido. `meta.hookTitle` es el gancho
+  escrito (2–7 palabras, ≤40 letras; puede resumir el gancho hablado) que se ve completo desde el frame 0 hasta el final del gancho, en la
+  franja de los subtítulos (que no se pintan durante ese tramo); la `keyword` del primer beat sale en color. El QA lo exige. Abre además
+  con la imagen más fuerte del video ya en cuadro (no un objeto que todavía está entrando). `meta.topic` es la palabra clave de búsqueda
+  del tema (≤40 letras, p. ej. «Exoplanetas habitables»): `publish_pack` la pone delante del gancho en el título de YouTube.
 - **Gancho y ritmo (F16):** el primer beat se dice en ≤3 s y lleva una **acción antes de 1 s** (cámara que no sea `drift`); en todo el video
-  **algo cambia en pantalla (corte, acción u overlay) al menos cada 3,5 s**; los overlays van por encima del 70 % del alto (debajo están
+  **algo cambia en pantalla (corte, acción u overlay) al menos cada 3 s** (objetivo 2,5 s, D121); los overlays van por encima del 70 % del alto (debajo están
   la descripción y los botones de las apps). El validador lo comprueba con `words.json`.
 - **Dale vida (F13):** ponle **acciones** a la mitad de los beats como mínimo: lo que el objeto hace cuando se dice la palabra (una
   línea roja que rodea la Tierra al decir "ecuador", la persona que sube al decir "despedido", chispas al decir "revienta").
@@ -237,7 +243,7 @@ Entrega:
   `11_cover.png`. Es un borrador deterministico: léelo y afínalo antes de entregarlo.
 - **Voz lenta:** Chatterbox tarda ~13 min por video en CPU. Para pruebas rápidas del plan visual, usa
   `"engine": "kokoro"` en el story y vuelve a Chatterbox para el render final (`--force tts`).
-- **Duración (60–120 s):** el QA marca ❌ si el video dura ≤60 s o ≥120 s. Si sale corto, añade líneas al guion (no relleno) y
+- **Duración (35–59 s, D121):** el QA marca ❌ si el video dura menos de 30 s o 60 s o más. Si sale largo, quita un paso; si sale corto, añade líneas al guion (no relleno) y
   repite desde la voz; si sale largo, quita un paso. Un video de ~65 s tarda ~15 min de voz y ~7 min de render a escala 1;
   uno de 110 s, aprox. 25 min y 12 min (escala lineal con la duración).
 - **Tiempos de referencia** (portátil Intel UHD, video de 52 s a escala 0,5): voz ~13 min con Chatterbox (35 s con Kokoro), alineación ~1 min, stills

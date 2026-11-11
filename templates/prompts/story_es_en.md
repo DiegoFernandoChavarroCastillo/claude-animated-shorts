@@ -89,7 +89,11 @@ Cuenta como `Insert` (máx. 3 entre los dos por video) y no va en el gancho.
   still en la galería (`tools/gallery.py <dir> plano_id:pose:plano:noche:push_in`) y comprueba la luma y la saturación: un plano demasiado oscuro
   o saturado hace fallar el QA igual que un 3D.
 
-Duración: el video final debe durar **más de 60 s y menos de 120 s** (≈175–300 palabras), así que espera **10–20 beats**.
+Duración: formato YouTube Shorts, **35–59 s** (≈95–160 palabras, D121), así que espera **8–14 beats**.
+
+**Primer fotograma y título (D121):** `meta.hookTitle` (2–7 palabras, ≤40 letras) es el gancho escrito que se ve desde el frame 0 en la franja de
+los subtítulos hasta que acaba el gancho (lo exige el QA); el primer beat abre con su protagonista ya en cuadro y lo más vistoso a la vista.
+`meta.topic` es la palabra clave de búsqueda (≤40 letras) que va delante del gancho en el título de YouTube.
 Con un guion largo, reparte objetos y entornos; el límite de cortes sigue siendo 3 por minuto.
 
 ## Acciones: que el video se sienta vivo (F13)

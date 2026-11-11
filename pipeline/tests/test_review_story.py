@@ -67,7 +67,7 @@ check("parse_review sin JSON falla", raises(lambda: rs.parse_review("no hay nada
 # etapa completa en modo manual
 d = sandbox()
 check("sin 06_review.json en modo manual pide la calificación", raises(lambda: rs.evaluate(d, "manual"), "falta la calificación"))
-check("se escribe la petición con la restricción de 60–80 s", "60–80 s" in (d / "06_review_request.md").read_text(encoding="utf-8"))
+check("se escribe la petición con la restricción de 35–59 s (D121)", "35–59 s" in (d / "06_review_request.md").read_text(encoding="utf-8"))
 fp = rs.fingerprint(d)
 (d / "06_review.json").write_text(json.dumps({"scores": scores(gancho=5), "fingerprint": fp, "problems": [{"beat": "b01", "dimension": "gancho", "issue": "flojo", "fix": "otro"}]}), encoding="utf-8")
 check("story devuelto: lanza con las correcciones", raises(lambda: rs.evaluate(d, "manual"), "b01 (gancho)"))

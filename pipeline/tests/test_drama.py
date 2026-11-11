@@ -5,7 +5,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import ROOT  # noqa: E402
+import validate_script  # noqa: E402
 from validate_script import validate  # noqa: E402
+
+validate_script.WORDS_MIN, validate_script.WORDS_MAX = 100, 400   # el ejemplo es de formato (anterior a D121, 242 palabras)
 
 md = (ROOT / "templates" / "examples" / "mito-caverna" / "02_SCRIPT.md").read_text(encoding="utf-8")
 FIC = "\n## Ficción\n- ancla: los prisioneros ven sombras\n- inventado: el frío de la cueva\n"

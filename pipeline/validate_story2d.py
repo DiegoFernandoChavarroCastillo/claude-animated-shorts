@@ -15,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, load_json, run_main, words_of  # noqa: E402
+from validate_story import hook_title_errors  # noqa: E402
 from validate_story import (CUTS_PER_MIN, FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, LOOP_TAIL_MAX_S, MAX_ACTIONS, MAX_EVENT_GAP_S,  # noqa: E402
                             MAX_INSERT_HOLD, MAX_INSERT_TEXT, MAX_INSERTS, MAX_SHOTS, MIN_SHOT_GAP_S, WPS, at_seconds, event_gaps,
                             resolves, script_closing, script_lines)
@@ -23,6 +24,7 @@ MAX_LAYERS = 9           # capas por beat (más y la escena se vuelve ilegible)
 SCALE_RANGE = (0.05, 3.0)
 HOOK_STATIC_CAMERAS = ("hold",)
 STRUCTURE_DEFAULT = "alegoria"
+CLASSIC_2D_GAP_S = 3.5   # historias 2D sin perfil viral: el explainer bajó a 3,0 s (D121); estas conservan su ritmo
 PACING = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: "viral"`
 
 
@@ -48,9 +50,10 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
         errs.append('meta.engine debe ser "2d"')
     if meta.get("lang") not in ("es", "en"):
         errs.append("meta.lang debe ser es o en")
+    errs += hook_title_errors(meta)
     viral = meta.get("pacing") == "viral"
     cap = PACING["captions"]
-    gap_max = PACING["cadence"]["eventGapMaxS"] if viral else MAX_EVENT_GAP_S
+    gap_max = PACING["cadence"]["eventGapMaxS"] if viral else CLASSIC_2D_GAP_S
     if viral and meta.get("captionEmphasis") not in (None, cap["emphasis"]):
         errs.append(f"el perfil viral resalta las palabras clave con color (captionEmphasis '{cap['emphasis']}')")
     inserts = 0

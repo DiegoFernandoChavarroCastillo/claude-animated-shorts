@@ -67,25 +67,24 @@ def variants() -> dict[str, tuple[str, str]]:
         "rol declarado sin usar": (nueva(cadena).replace("[choque]", "[salida]"), "falta el beat de choque"),
         "orden de beats nuevo roto": (nueva(cadena).replace("[salida] Todo", "[llegada] Todo"), "los beats no siguen el orden hook → salida"),
         "beats con estructura del catálogo": (cadena.replace("structure: cadena", "structure: cadena\nbeats: hook > a > b > twist > cta"), "solo va con una estructura nueva"),
+        "gancho revelacion como pregunta": (hist.replace("hook: escena", "hook: revelacion").replace("Estás en la ducha y tus dedos parecen pasas.", "¿Por qué tus dedos parecen pasas en la ducha?"), "afirma el resultado"),
         "orden roto": (cadena.replace("[twist] El cielo rojo no es otro cielo: es el mismo, visto a través de más aire.\n", "").replace("[layer2]", "[twist] El cielo rojo no es otro cielo: es el mismo, visto a través de más aire.\n[layer2]"), "los beats no siguen el orden"),
     }
 
 
 def main() -> int:
     fails = 0
-    # F14: el rango de palabras es de 60–120 s (175–300). Los ejemplos (55–62 s) y los guiones rotos tienen otro largo:
-    # las pruebas de forma lo ajustan y una prueba aparte comprueba el rango real.
+    # D121: formato YouTube Shorts, 95–160 palabras (35–59 s). Los ejemplos de formato y los guiones rotos tienen otro largo:
+    # las pruebas de forma lo ajustan y estas dos comprueban el rango real.
     real = (validate_script.WORDS_MIN, validate_script.WORDS_MAX)
-    short = read("templates/examples/hielo-flota/02_SCRIPT.md")
-    errs, st = validate(short)
-    ok = any("longitud" in e for e in errs)
-    fails += not ok
-    print(f"{'OK ' if ok else 'MAL'} falla  guion de {st.get('words')} palabras (< {real[0]}): {[e for e in errs if 'longitud' in e]}")
-    cur = read("templates/examples/bluetooth-wifi/02_SCRIPT.md")
-    errs, st = validate(cur)
+    errs, st = validate(read("templates/examples/hielo-flota/02_SCRIPT.md"))
     ok = not errs
     fails += not ok
-    print(f"{'OK ' if ok else 'MAL'} pasa   ejemplo vigente bluetooth-wifi con el rango real ({st.get('words')} palabras, 175–300)" + ("" if ok else f"  {errs}"))
+    print(f"{'OK ' if ok else 'MAL'} pasa   hielo-flota con el rango real ({st.get('words')} palabras, {real[0]}–{real[1]})" + ("" if ok else f"  {errs}"))
+    errs, st = validate(read("templates/examples/bluetooth-wifi/02_SCRIPT.md"))
+    ok = any("longitud" in e for e in errs)
+    fails += not ok
+    print(f"{'OK ' if ok else 'MAL'} falla  guion de {st.get('words')} palabras (> {real[1]}): {[e for e in errs if 'longitud' in e]}")
     validate_script.WORDS_MIN, validate_script.WORDS_MAX = 100, 400
     errs, st = validate(nueva(read("templates/examples/atardecer-cadena/02_SCRIPT.md")))
     ok = not errs and st["beats"][1] == "salida" and set(st["new"]) == {"viaje_del_foton", "diario_luz"}

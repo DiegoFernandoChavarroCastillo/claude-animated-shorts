@@ -10,7 +10,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 from sfx_plan import plan  # noqa: E402
+import validate_script  # noqa: E402
 from validate_script import validate  # noqa: E402
+
+validate_script.VIRAL["words"] = [100, 400]   # el ejemplo es de formato (anterior a D121, 231 palabras); el rango real se prueba aparte
 from validate_story2d import validate as validate_story  # noqa: E402
 from voice import viral_voice  # noqa: E402
 

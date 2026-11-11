@@ -2,7 +2,7 @@
 // (se reutilizan tal cual). Todo sale de story.json (engine "2d") + words.json.
 import React, { useMemo } from "react";
 import { AbsoluteFill, CalculateMetadataFunction, useCurrentFrame, useVideoConfig } from "remotion";
-import { Captions } from "../explainer/captions/Caption";
+import { Captions, HookTitle, hookEndFrame } from "../explainer/captions/Caption";
 import { CAPTION } from "../explainer/style";
 import pacingViral from "../../../templates/pacing_viral.json";
 import { OverlayLayer } from "../explainer/overlays/OverlayLayer";
@@ -75,12 +75,14 @@ export const Flat2D: React.FC<Props2> = (props) => {
   const { story, words } = useMemo(() => parse(props), [props]);
   const tl = useMemo(() => buildTimeline2D(story, words, fps), [story, words, fps]);
   const layers = layersAt(tl, f);
+  const hookF = useMemo(() => hookEndFrame(words, story.beats[0].id, fps), [words, story, fps]);
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {layers.map((l, k) => <SceneView key={k ? "over" : "base"} tl={tl} i={l.beat} f={f} alpha={l.alpha} swipe={l.swipe} />)}
       {/* los overlays no anclados del explainer solo necesitan la lista de overlays de la línea de tiempo */}
       <OverlayLayer tl={tl as unknown as Timeline} words={words} lang={story.meta.lang} />
-      <Captions words={words} keywords={tl.keywords} cap={captionCfg(story.meta.pacing === "viral")} />
+      {story.meta.hookTitle ? <HookTitle text={story.meta.hookTitle} endF={hookF} accent={story.beats[0].keyword ?? story.beats[0].keywords?.[0]} cap={captionCfg(story.meta.pacing === "viral")} /> : null}
+      <Captions words={words} keywords={tl.keywords} cap={captionCfg(story.meta.pacing === "viral")} fromF={story.meta.hookTitle ? hookF : 0} />
     </AbsoluteFill>
   );
 };

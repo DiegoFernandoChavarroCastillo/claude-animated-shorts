@@ -28,6 +28,8 @@ check("el ejemplo pasa validate_story con --words, --script y --require-actions"
 d = Path(tempfile.mkdtemp())
 for f in ("05_story.json", "04_words.json", "02_SCRIPT.md"):
     shutil.copy(EX / f, d / f)
+st = json.loads((d / "05_story.json").read_text(encoding="utf-8")); st["meta"]["hookTitle"] = "Bluetooth contra wifi"   # D121: el ejemplo es anterior al titular
+(d / "05_story.json").write_text(json.dumps(st), encoding="utf-8")
 rows = qa_rules.rows(d)
 check("el ejemplo pasa todas las reglas de calidad de qa_rules", all(r[3] for r in rows), [r for r in rows if not r[3]])
 check("el ejemplo dura entre 60 y 120 s", 60 < words[-1]["end"] + story["meta"]["tailS"] < 120)

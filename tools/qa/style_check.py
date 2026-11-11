@@ -172,13 +172,13 @@ def norm(s: str) -> str:
     return "".join(c for c in s if c.isalnum() and not unicodedata.combining(c))
 
 
-def caption_ocr(video: Path, words: list[dict], lang: str) -> dict:
+def caption_ocr(video: Path, words: list[dict], lang: str, skip_beat: str | None = None) -> dict:
     import numpy as np
     import pytesseract
     from PIL import Image
 
     fps = probe(video)["fps"]
-    blocks = caption_blocks(words)
+    blocks = [b for b in caption_blocks(words) if words[b[0]]["beat"] != skip_beat]   # D121: el gancho va en el titular, no en subtítulos
     # frame a mitad de la última palabra: el bloque está completo y esa palabra es la activa (blanco 700)
     frames = [round((words[b[-1]]["start"] + words[b[-1]]["end"]) / 2 * fps) for b in blocks]
     res = []
@@ -246,7 +246,7 @@ def caption_ok(c: dict) -> bool:
 
 
 def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d",
-          pacing: str | None = None) -> tuple[bool, list[str], dict]:
+          pacing: str | None = None, skip_beat: str | None = None) -> tuple[bool, list[str], dict]:
     words = json.loads(words_path.read_text(encoding="utf-8")) if words_path else None
     prof = apply_pacing(pacing)
     m = measure(video, words)
@@ -257,7 +257,7 @@ def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | N
           *table(rows), ""]
     ok = passed / max(1, len(rated)) >= PASS_RATE
     if words:
-        c = caption_ocr(frames_from or video, words, lang)
+        c = caption_ocr(frames_from or video, words, lang, skip_beat)
         md += caption_md(c)
         ok &= caption_ok(c)
         m["captions"] = {k: c[k] for k in ("blocks", "found_pct", "band_pct")}

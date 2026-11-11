@@ -16,7 +16,7 @@ def check(name, ok, extra=""):
     fails += not ok
 
 
-def make(hook_end=2.5, hook_act_at="Te", cam="push_in", closing="bucle", tail=0.2, last_env=None, gap_ok=True, accents=(), beat_len=2.4):
+def make(hook_end=2.5, hook_act_at="Te", cam="push_in", closing="bucle", tail=0.2, last_env=None, gap_ok=True, accents=(), beat_len=2.4, title=True):
     d = Path(tempfile.mkdtemp())
     beats, words, t = [], [], 0.1
     for i in range(6):
@@ -31,7 +31,7 @@ def make(hook_end=2.5, hook_act_at="Te", cam="push_in", closing="bucle", tail=0.
             acts = [{"type": "pulse", "at": hook_act_at}]
         beats.append({"id": ids, "role": "hook" if i == 0 else "chain", "text": " ".join(ws), "scene": {"env": "e1" if i != 5 or not last_env else last_env, "light": "tech",
                       "hero": {"kind": "primitive", "asset": "x"}, "camera": {"preset": cam if i == 0 else "push_in"}}, "overlays": [], "actions": acts})
-    (d / "05_story.json").write_text(json.dumps({"meta": {"tailS": tail}, "beats": beats}), encoding="utf-8")
+    (d / "05_story.json").write_text(json.dumps({"meta": {"tailS": tail, **({"hookTitle": "Te lo cuento"} if title else {})}, "beats": beats}), encoding="utf-8")
     (d / "04_words.json").write_text(json.dumps(words), encoding="utf-8")
     (d / "02_SCRIPT.md").write_text(f"# T\nlang: es\nclosing: {closing}\n", encoding="utf-8")
     ev = [{"type": a[0], "t": a[1], "why": "x"} for a in accents]
@@ -46,6 +46,7 @@ def res(d):
 r = res(make())
 check("un plan correcto pasa todas las reglas", all(r.values()), [k for k, v in r.items() if not v])
 check("gancho largo falla", not res(make(hook_end=4.0))["gancho dicho en (s)"])
+check("sin titular del gancho (meta.hookTitle) falla (D121)", not res(make(title=False))["titular del gancho en el fotograma 0 (meta.hookTitle)"])
 check("gancho sin acción pronto falla", not res(make(hook_act_at=None))["primera acción del gancho (s)"])
 check("cámara drift en el gancho falla", not res(make(cam="drift"))["cámara del gancho"])
 check("hueco largo sin eventos falla", not res(make(gap_ok=False, beat_len=5.0))["hueco máximo sin cambios en pantalla (s)"])

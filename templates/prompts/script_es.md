@@ -1,6 +1,6 @@
 # Prompt: guion de un short explainer (español)
 
-Escribes el guion de un short vertical de **más de 60 y menos de 120 segundos** (objetivo 70–100 s; es obligatorio para monetizar en YouTube, TikTok, Instagram y Facebook) que explica algo cotidiano con datos reales. La voz es
+Escribes el guion de un short vertical en formato **YouTube Shorts de 35 a 59 segundos** (objetivo 45–55 s; D121: un video corto se ve entero y se repite más) que explica algo cotidiano con datos reales. La voz es
 local (Kokoro), así que el texto se lee **tal cual**: escribe como se habla.
 
 ## Entrada
@@ -31,6 +31,7 @@ dato o el momento. Y el video tiene que **contestar lo que el gancho promete** a
 | `negativo` | Prohibición | Una orden en negativo: «no vuelvas a…», «deja de…», «nunca…». | No vuelvas a cargar tu celular así hasta ver esto. |
 | `coste` | Coste oculto | Algo que le cuesta o le quita sin que lo note (batería, dinero, sueño). | Esto te cuesta batería cada día y no lo notas. |
 | `contradiccion` | Al revés de lo que sabes | Dice que lo que sabe de algo está al revés. | Lo que te enseñaron del frío está al revés. |
+| `revelacion` | Revelación primero | Primero el resultado o el final sorprendente, en 2.ª persona; el video cuenta cómo se llegó ahí. | Tu familia leerá tu mensaje ochenta años después de enviarlo. |
 
 ### Cierre en bucle: tres maneras de que la última frase empalme con el gancho (F17)
 
@@ -126,9 +127,9 @@ beats: hook > ahora > ocho_minutos > una_semana > un_año > twist > cta
    saludo ni contexto previo. **Cierre en bucle por defecto:** la última frase se lee como continuación del gancho (retoma su palabra o
    su imagen y deja el final abierto), sin despedida ni «gracias por ver».
 
-1. **175–300 palabras** en total (apunta a ~220–250 ≈ 85–95 s). Ritmo real de la voz: ~2,6 palabras/s contando las pausas, así que
-   175 palabras ≈ 67 s y 300 ≈ 115 s. **El video final debe durar más de 60 s y menos de 120 s**: el QA lo exige. Con más tiempo,
-   añade pasos al mecanismo/cadena/lista (más líneas, cada una con algo que se vea), no frases largas ni relleno.
+1. **95–160 palabras** en total (apunta a ~120–145 ≈ 45–55 s). Ritmo real de la voz: ~2,7 palabras/s contando las pausas, así que
+   95 palabras ≈ 35 s y 160 ≈ 59 s. **El video final dura 35–59 s** (formato YouTube Shorts, D121): el QA lo exige. Cada línea gana su
+   sitio: si algo no sorprende ni se ve, fuera. Menos pasos y mejor contados antes que muchos a medias.
 2. **Una idea por frase** y **ninguna frase de más de 22 palabras**.
 3. **Números en palabras** ("nueve por ciento", "novecientos diecisiete"), como se dicen. Cada número del guion lleva
    una línea en `## Fuentes` que lo repite tal cual, seguido de la URL.

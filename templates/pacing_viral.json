@@ -1,16 +1,93 @@
 {
   "_nota": "Perfil `viral` (header `pacing: viral` en 02_SCRIPT.md, meta.pacing en 05_story.json). Una sola fuente de verdad para validador de guion, TTS, plan de SFX, validador del story, subtítulos y QA. Los videos sin este perfil no cambian.",
   "script": {
-    "words": [225, 290],
+    "words": [
+      130,
+      210
+    ],
     "sentenceMax": 12,
     "hookMax": 11,
-    "durationS": [60, 80],
-    "softOpeners": ["alguna vez", "te has preguntado", "imagina", "solo conversacion", "piensa en", "sabias que", "has pensado"],
-    "loopConnectors": ["que", "porque", "y", "pero", "cuando", "como", "donde", "hasta", "aunque", "si", "o", "a", "de", "con", "sin", "para", "por"]
+    "durationS": [
+      35,
+      59.9
+    ],
+    "softOpeners": [
+      "alguna vez",
+      "te has preguntado",
+      "imagina",
+      "solo conversacion",
+      "piensa en",
+      "sabias que",
+      "has pensado"
+    ],
+    "loopConnectors": [
+      "que",
+      "porque",
+      "y",
+      "pero",
+      "cuando",
+      "como",
+      "donde",
+      "hasta",
+      "aunque",
+      "si",
+      "o",
+      "a",
+      "de",
+      "con",
+      "sin",
+      "para",
+      "por"
+    ]
   },
-  "voice": { "speed": 1.13, "pauseMaxMs": 150, "wps": [3.3, 4.3, 3.7] },
-  "cadence": { "eventTargetS": 2.5, "eventGapMaxS": 3.0, "noHoldCamera": true },
-  "sfx": { "hookImpactAtS": 0.0, "sceneWhoosh": true, "riserRoles": ["rupture", "twist"] },
-  "captions": { "centerYK": 0.70, "fontSizeK": 0.074, "minWords": 1, "maxWords": 3, "emphasis": "accent", "accentColor": "#FFE14D", "shadow": "0 0 3px #000, 0 0 3px #000, 0 3px 0 rgba(0,0,0,0.9), 0 4px 14px rgba(0,0,0,0.7)", "layerFeetMaxY": 0.62, "forbiddenSlots": ["lower", "bottom"] },
-  "qa": { "pct_quiet": [2, 14], "words_per_s": [3.3, 4.3], "captionBand": [0.62, 0.78] }
+  "voice": {
+    "speed": 1.13,
+    "pauseMaxMs": 150,
+    "wps": [
+      3.3,
+      4.3,
+      3.7
+    ]
+  },
+  "cadence": {
+    "eventTargetS": 2.5,
+    "eventGapMaxS": 3.0,
+    "noHoldCamera": true
+  },
+  "sfx": {
+    "hookImpactAtS": 0.0,
+    "sceneWhoosh": true,
+    "riserRoles": [
+      "rupture",
+      "twist"
+    ]
+  },
+  "captions": {
+    "centerYK": 0.7,
+    "fontSizeK": 0.074,
+    "minWords": 1,
+    "maxWords": 3,
+    "emphasis": "accent",
+    "accentColor": "#FFE14D",
+    "shadow": "0 0 3px #000, 0 0 3px #000, 0 3px 0 rgba(0,0,0,0.9), 0 4px 14px rgba(0,0,0,0.7)",
+    "layerFeetMaxY": 0.62,
+    "forbiddenSlots": [
+      "lower",
+      "bottom"
+    ]
+  },
+  "qa": {
+    "pct_quiet": [
+      2,
+      14
+    ],
+    "words_per_s": [
+      3.3,
+      4.3
+    ],
+    "captionBand": [
+      0.62,
+      0.78
+    ]
+  }
 }
