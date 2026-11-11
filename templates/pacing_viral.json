@@ -11,6 +11,17 @@
       35,
       59.9
     ],
+    "story2d": {
+      "_nota": "Historias 2D (structure drama/alegoria o con `ficcion:`): 60–70 s como diogenes-pollo, diogenes-alejandro y cartas-marco-aurelio, que gustaron (11 nov). Con 35–59 s la historia se comprime en frases telegráficas.",
+      "words": [
+        170,
+        240
+      ],
+      "durationS": [
+        58,
+        72
+      ]
+    },
     "softOpeners": [
       "alguna vez",
       "te has preguntado",

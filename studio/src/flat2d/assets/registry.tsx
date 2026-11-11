@@ -77,6 +77,21 @@ import { RelieveEgipto } from "./relieve_egipto";
 import { Excavacion } from "./excavacion";
 import { Homero } from "./homero";
 import { CelularEstano } from "./celular_estano";
+import { Cleopatra } from "./cleopatra";
+import { SacoCesar } from "./saco_cesar";
+import { AlejandriaNoche } from "./alejandria_noche";
+import { CabezaPompeyo } from "./cabeza_pompeyo";
+import { PtolomeoFuria } from "./ptolomeo_furia";
+import { PasilloGuardias } from "./pasillo_guardias";
+import { NiloAhogo } from "./nilo_ahogo";
+import { BanqueteNilo } from "./banquete_nilo";
+import { Foro } from "./foro";
+import { SenadoresOdio } from "./senadores_odio";
+import { TemploVenus } from "./templo_venus";
+import { IdusMarzo } from "./idus_marzo";
+import { HuidaBarco } from "./huida_barco";
+import { OctavioConsejo } from "./octavio_consejo";
+import { Cesarion } from "./cesarion";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -88,6 +103,7 @@ const REAL: Record<string, AssetFC> = {
   banquete: Banquete, esclavos: Esclavos, pierna_torcida: PiernaTorcida, parpados: Parpados, vendaje: Vendaje, escuela_mar: EscuelaMar, marco_lee: MarcoLee, oficina_grito: OficinaGrito, insomnio: Insomnio, circulo_control: CirculoControl,
   ugarit: Ugarit, naves_mar: NavesMar, sala_ugarit: SalaUgarit, dictado: Dictado, tablilla: Tablilla, mapa_bronce: MapaBronce,
   armero: Armero, campo_seco: CampoSeco, hitita: Hitita, hambre: Hambre, relieve_egipto: RelieveEgipto, excavacion: Excavacion, homero: Homero, celular_estano: CelularEstano,
+  cleopatra: Cleopatra, saco_cesar: SacoCesar, alejandria_noche: AlejandriaNoche, cabeza_pompeyo: CabezaPompeyo, ptolomeo_furia: PtolomeoFuria, pasillo_guardias: PasilloGuardias, nilo_ahogo: NiloAhogo, banquete_nilo: BanqueteNilo, foro: Foro, senadores_odio: SenadoresOdio, templo_venus: TemploVenus, idus_marzo: IdusMarzo, huida_barco: HuidaBarco, octavio_consejo: OctavioConsejo, cesarion: Cesarion,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));

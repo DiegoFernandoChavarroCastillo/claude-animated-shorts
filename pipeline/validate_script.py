@@ -70,6 +70,9 @@ WORDS_MIN, WORDS_MAX, HOOK_MAX, SENTENCE_MAX = 95, 160, 12, 22
 DURATION_S = (30.0, 59.9)   # lo exige el QA sobre el video final
 VIRAL = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))["script"]   # perfil `pacing: viral`
 DRAMA = json.loads((ROOT / "templates" / "dramatizacion.json").read_text(encoding="utf-8"))   # `ficcion:` y `pov:` (historias 2D)
+# Historias 2D (11 nov): las que gustaron se contaban en tercera persona, con una sola anécdota, en `drama` o `alegoria` y en
+# 60–70 s. Las que no («Eres el escriba», «Eres Cleopatra», «tres apuestas», 57 s apretados) fallaban justo ahí.
+STORY_STRUCTURES = ("drama", "alegoria")
 
 
 def fold(s: str) -> str:
@@ -391,7 +394,8 @@ def validate(md: str) -> tuple[list[str], dict]:
     viral = s.pacing == "viral"
     if s.pacing and not viral:
         errs.append(f"ritmo desconocido '{s.pacing}' (válido: viral)")
-    w_min, w_max = VIRAL["words"] if viral else (WORDS_MIN, WORDS_MAX)
+    story = bool(s.ficcion) or (s.structure or "") in STORY_STRUCTURES
+    w_min, w_max = (VIRAL["story2d"]["words"] if story else VIRAL["words"]) if viral else (WORDS_MIN, WORDS_MAX)
     hook_max, sentence_max = (VIRAL["hookMax"], VIRAL["sentenceMax"]) if viral else (HOOK_MAX, SENTENCE_MAX)
     if not w_min <= nwords <= w_max:
         errs.append(f"longitud: {nwords} palabras (debe estar entre {w_min} y {w_max})")
@@ -444,6 +448,12 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs += viral_errors(s, hook, last)
     if s.ficcion:
         errs += fiction_errors(s)
+        if structure not in STORY_STRUCTURES:
+            errs.append(f"una historia usa `structure: drama` o `alegoria`, no '{structure}': una estructura conceptual "
+                        "(«tres apuestas») obliga a descifrar la historia en vez de seguirla")
+        if s.pov == "tu" and s.ficcion != "libre":
+            errs.append("`pov: tu` («Eres Cleopatra») en una historia real saca al espectador: cuenta en tercera persona "
+                        "(`pov: cercano` o `testigo`); el «tú» va solo en el gancho y el cierre")
     elif structure == "drama":
         errs.append("la estructura 'drama' pide `ficcion:` (" + ", ".join(DRAMA["niveles"]) + ") y `pov:`")
     order = [spec["orden"].index(r) for r in roles if r in spec["orden"]]

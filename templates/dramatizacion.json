@@ -6,10 +6,10 @@
     "libre": "Inspirado en el hecho real: un «¿y si…?», un final alternativo, un personaje inventado como protagonista o un mito/alegoría sin hechos que proteger. El cierre o la descripción dicen que es ficción."
   },
   "pov": {
-    "tu": "El espectador ES un personaje («Eres el general. Te llega un rumor.»). Máxima inmersión; ideal cuando la historia es una decisión.",
+    "tu": "El espectador ES un personaje («Eres el general.»). Solo en mitos, alegorías o experimentos mentales (`ficcion: libre`): en historias reales lo prohíbe el validador (11 nov: «el \"eres Cleopatra\" mata todo»).",
     "yo": "El protagonista lo cuenta en primera persona, como confesión. Ideal para personajes con voz propia y frases célebres.",
     "testigo": "Alguien que estaba allí (un alumno, un soldado, un sirviente; puede ser inventado, o el propio espectador como testigo). Ideal para anécdotas con remate: ve la escena desde la grada.",
-    "cercano": "Narrador en tercera persona pegado al personaje, en presente y con sus sensaciones. Para historias con varios protagonistas."
+    "cercano": "Por defecto en historias reales. Narrador en tercera persona, como quien le cuenta algo a un amigo: «Su hermano le quitó el trono. Entonces llegó César…». Pasado o presente; sujeto claro en cada frase."
   },
   "muletillas": {
     "_nota": "Marcas de crónica que sacan al espectador de la escena. Se cuentan sobre el texto sin tildes ni mayúsculas.",

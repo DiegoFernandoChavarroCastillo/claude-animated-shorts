@@ -1,9 +1,17 @@
 # Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) o una nueva
 
-Escribes el guion de un short vertical en formato **YouTube Shorts de 35 a 59 s** (D121; sin el perfil viral, unas 95–160 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
+Escribes el guion de un short vertical de **60 a 70 s** (historia 2D; con el perfil viral, 170–240 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
 
 ## Entrada
 - El tema y `01_research.md` con los **hechos ancla verificados contra el texto original** (≥2 fuentes cada uno) y una sección **«Huecos»**: lo que las fuentes no cuentan (qué pensaba, qué se dijo en privado, quién miraba, cómo olía el lugar). Los huecos son donde va la ficción.
+
+## Lo primero: una anécdota, contada en orden y en tercera persona (11 nov)
+Los videos que gustaron (diogenes-pollo, diogenes-alejandro, cartas-marco-aurelio) y los que no (colapso-bronce, cleopatra-saco) se diferencian en esto:
+- **Una sola anécdota con remate**, no una vida ni una época. Si el texto del usuario cubre años (Cleopatra: el saco, César, Roma, los idus, la huida), elige **el mejor momento** (la noche del saco) y vívelo; el resto cabe en 1–3 frases de contexto o de consecuencia.
+- **Tercera persona, como se le cuenta algo a un amigo**: «Su hermano le quitó el trono. Entonces llegó César. Cleopatra necesitaba verlo…». Cada frase con sujeto claro; pasado o presente, los dos valen. **Nunca «Eres X»**: el «tú» va solo en el gancho y en el cierre, o como testigo en la sala (el validador rechaza `pov: tu` en historias reales).
+- **El remate es concreto**: un acto o una frase que se entiende al instante («Apártate, me tapas el sol», el pollo desplumado, las cartas quemadas sin leer). Nada de metáforas de estructura («la última apuesta», «no la mataron siete barcos») ni rótulos conceptuales en pantalla.
+- **Solo `drama` o `alegoria`**: las estructuras inventadas obligan a descifrar la historia (el validador las rechaza con `ficcion:`).
+- **Con aire**: 60–70 s, frases completas. Si no cabe, quita hechos, no palabras de cada frase.
 
 ## Dramatización (la eliges tú; no se le pregunta al usuario)
 Un short de historia que suena a documental se desliza: «Según Dion…», «Cuentan que…», crónica en pasado, una lista de hechos y la moraleja al final. Lo que retiene es **vivir la escena**. Regla de oro: **los hechos ancla no se tocan; el cómo se inventa.**
@@ -14,16 +22,16 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 
 | Si el tema es… | `ficcion` | `pov` | Por qué |
 |---|---|---|---|
-| Una anécdota con remate (una frase o un gesto que humilla a alguien) | `dramatizada` | `testigo` (el espectador o alguien que estaba en la sala) | El remate pega más visto desde la grada: primero la tensión del público, luego la risa |
-| Una decisión moral de un personaje (perdonar, quemar, traicionar) | `dramatizada` | `tu` («Eres Marco Aurelio. Tienes los cofres delante.») | El espectador decide con él; el giro es lo que eligió |
+| La mayoría de historias reales (un personaje, una anécdota) | `dramatizada` | `cercano` (tercera persona: «Marco Aurelio tiene los cofres delante.») | Se sigue sin esfuerzo; así se hicieron diogenes-alejandro y cartas-marco-aurelio |
+| Una anécdota con remate (una frase o un gesto que humilla a alguien) | `dramatizada` | `testigo` (alguien que estaba en la sala; el protagonista sigue en tercera persona) | El remate pega más visto desde la grada: primero la tensión del público, luego la risa |
 | Un personaje con voz y frases propias (Diógenes, Séneca) contando su vida | `dramatizada` | `yo` | Confesión: intimidad y humor |
-| Varios protagonistas o una batalla | `dramatizada` | `cercano` (tercera persona en presente, pegado a uno) | Claridad sin perder el cuerpo |
-| Un mito, una alegoría o un experimento mental | `libre` | `tu` o `cercano` | No hay hechos que proteger: se puede inventar casi todo |
+| Varios protagonistas o una batalla | `dramatizada` | `cercano` (pegado a uno) | Claridad sin perder el cuerpo |
+| Un mito, una alegoría o un experimento mental | `libre` | `cercano` (o `tu` solo si es un experimento mental sobre el espectador) | No hay hechos que proteger: se puede inventar casi todo |
 | Un «¿y si…?» sobre un hecho real (final alternativo) | `libre` | cualquiera | Dilo en el cierre o en la descripción: «esto no pasó… ¿o sí?» |
 | Hechos disputados, víctimas reales o temas delicados | `fiel` | — | La ficción aquí desinforma o hiere |
 
 **Cómo se escribe una historia dramatizada:**
-- **Presente y desde dentro.** «Entras en la Academia. Huele a aceite de lámpara.» y no «Platón enseñaba en la Academia».
+- **Escena, no resumen.** «Diógenes cruza la sala con algo bajo el manto. Platón deja de sonreír.» y no «Diógenes criticaba a Platón». Tercera persona.
 - **Empieza en el momento más tenso** (in medias res) y rebobina solo lo justo. El contexto se da en una frase y dentro de la acción, nunca en un bloque.
 - **Algo en juego en las primeras 3 líneas**: una humillación, un trono, una vida, la reputación. Si no hay nada que perder, no hay historia.
 - **Un detalle físico por escena** (la piel de gallina del pollo, el sello de cera, el polvo en los pies) y **2–3 frases de diálogo cortas** en estilo directo. La frase célebre real es el diálogo estrella: guárdala para el clímax.
@@ -37,7 +45,7 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 
 | Rol | Qué hace | Imagen que necesita |
 |---|---|---|
-| `hook` | El momento más tenso o la consecuencia más absurda, en 2.ª persona y presente | El personaje o el objeto clave en plano cerrado, ya en movimiento |
+| `hook` | El momento más tenso o la consecuencia más absurda (el validador pide un «tú» o «te», p. ej. «Alejandro Magno te ofrece todo y le pides que se aparte») | El personaje o el objeto clave en plano cerrado, ya en movimiento |
 | `scene` | Dentro de la escena: dónde estás, quién manda, qué está en juego (un detalle físico por línea) | El lugar con sus personajes reaccionando |
 | `rupture` | Entra el conflicto: alguien desafía, aparece, rompe la regla. Abre la brecha de información | La entrada o el gesto, en una acción |
 | `ascent` | Escalada: cada línea sube la tensión (miradas, silencio, un paso más cerca); el diálogo vive aquí | Planos cada vez más cerrados |
@@ -58,8 +66,8 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 | `twist` | Lo que el relato revela, mostrado como un acto o una imagen que reencuadra todo (no una clase: «Para Platón…» como mucho una vez; la moraleja nunca se dice) | Vuelve a la imagen del principio, cargada de sentido |
 | `cta` | **Cierre en bucle**: la última frase no se despide, termina abierta (dos puntos o pregunta) y comparte una palabra de ≥5 letras con el gancho | La misma escena del gancho |
 
-## Estructuras nuevas (D120)
-`drama` y `alegoria` son puntos de partida, no las únicas formas. Si el tema se cuenta mejor de otra manera, diséñala: un
+## Estructuras nuevas (D120) — no en historias
+Desde el 11 nov las historias (`ficcion:` declarada) usan solo `drama` o `alegoria`: lo de abajo queda para piezas sin historia real (reflexiones, experimentos mentales). Referencia: un
 **juicio** (`hook > acusacion > prueba > defensa > twist > cta`), una **carta o diario** (`hook > fecha > entrada > ultima_entrada > twist > cta`),
 una **cuenta atrás** (`hook > aviso > dias > ultima_hora > twist > cta`), un **¿y si…?** sobre un hecho real (`hook > hecho > desvio > mundo_nuevo > twist > cta`),
 un **dilema** que el espectador decide (`hook > situacion > opcion_a > opcion_b > twist > cta`)… Más premisas en `formulas.json` → `formatos`.
@@ -76,7 +84,7 @@ un **dilema** que el espectador decide (`hook > situacion > opcion_a > opcion_b 
 - Evita como palabra central una abstracción («conversación», «conciencia», «realidad», «sentido»): no pinta nada. Usa una **consecuencia concreta para el espectador** (tú + verbo + descubrimiento) o una imagen que se vea: «Cuando mueres, descubres que todos fueron tú.»
 - Con la voz `diego` (Chatterbox) el gancho debe tener unas 7 palabras para entrar en ≤3,2 s. Como afirmación en presente en 2.ª persona valida como `hook: escena`; `mito` y `contradiccion` exigen una forma más rígida.
 - El cierre en bucle retoma una palabra **clave y concreta** del gancho (p. ej. «todos»: «…¿y si todos fueran tú?»), no una abstracción repetida.
-- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta) y deja que elija. **Comodín (D120):** al menos uno de los tres es de un tipo nuevo, inventado para este tema (descrito en `## Fórmulas nuevas`); se juzga con la misma prueba de los 3 s.
+- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta) y deja que elija. Los tres hablan del **momento** de la anécdota, con su protagonista por el nombre («Alejandro Magno te ofrece todo y le pides que se aparte»). Un gancho de tipo nuevo es opcional.
 
 ## Tono
 - Cercano, de tú a tú, como quien cuenta un chisme histórico que no se puede creer; suspenso en `rupture` y `ascent`, humor si el material lo da. Ni solemne ni de clase.
@@ -89,14 +97,14 @@ Igual que `script_es.md`, con cabecera `hook: mito|…|<nuevo>`, `structure: dra
 ## Perfil `pacing: viral` (por defecto en los videos nuevos)
 Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pacing: "viral"`. Todo lo que cambia está en `templates/pacing_viral.json` (una sola fuente de verdad) y lo comprueban `validate_script.py`, `validate_story2d.py` y el QA. Sin esa cabecera rigen las reglas de arriba.
 
-**System prompt de la etapa de redacción** (D121: formato YouTube Shorts, 35–59 s; YouTube reparte ingresos con Shorts de cualquier duración):
-> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es adaptar la idea del usuario en un guion de 35 a 59 segundos (130–210 palabras). Usa frases ultracortas, ritmo picado, alto suspenso filosófico o narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
+**System prompt de la etapa de redacción** (historias 2D: 60–70 s; el explainer sigue en 35–59 s, D121):
+> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es contar la idea del usuario como **una anécdota**, en tercera persona y en orden, en un guion de 60 a 70 segundos (170–240 palabras). Frases cortas y claras con sujeto, ritmo ágil, suspenso narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
 
 | Regla | Valor |
 |---|---|
-| Duración | 35–59 s hablados (130–210 palabras con la voz `diego` a +13 %); sin relleno ni pausas |
+| Duración | 60–70 s hablados (170–240 palabras con la voz `diego`); sin relleno ni pausas |
 | Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase. Prohibido: «¿Alguna vez…?», «Imagina que…», «¿Sabías que…?», «Solo conversación…», empezar por pregunta |
-| Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase |
+| Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase; frases completas con sujeto, no telegramas |
 | Cierre en bucle | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |
 
 Ejemplo vigente (con story, `templates/examples/solipsismo-viral/`): gancho «Solo tú eres real. Los demás, decorado.». El gancho debe pasar igualmente la prueba de los 3 s: si una frase tan larga como la de un ejemplo de dos oraciones no cabe en 3 s hablados, deja la primera frase como gancho y mueve la segunda a la primera línea `[scene]`.

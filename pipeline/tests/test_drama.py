@@ -27,8 +27,12 @@ def header(text, extra):
 
 assert "closing: bucle" in md
 check("sin `ficcion` no cambia nada", not validate(md)[0], validate(md)[0])
-dram = header(md, "ficcion: dramatizada\npov: tu") + FIC
+dram = header(md, "ficcion: dramatizada\npov: cercano") + FIC
 check("dramatizada con pov y sección Ficción pasa", not validate(dram)[0], validate(dram)[0])
+# 11 nov: «Eres Cleopatra» y las estructuras conceptuales no gustaron; en historias reales se rechazan
+errs = validate(header(md, "ficcion: dramatizada\npov: tu") + FIC)[0]
+check("pov tu en una historia real falla", any("`pov: tu`" in e for e in errs), errs)
+check("pov tu con ficcion libre pasa", not validate(header(md, "ficcion: libre\npov: tu") + FIC)[0])
 errs = validate(header(md, "ficcion: dramatizada"))[0]
 check("dramatizada sin pov ni Ficción falla", any("pov" in e for e in errs) and any("## Ficción" in e for e in errs), errs)
 check("nivel desconocido falla", any("nivel de ficción" in e for e in validate(header(md, "ficcion: novela\npov: tu") + FIC)[0]))

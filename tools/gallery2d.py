@@ -68,7 +68,9 @@ def main():
             ends.append(int(t * 30) + int(x.get("dur", 30)) + 6)
         if ends:
             frames.append(min(max(ends), int(s1 * 30) + 10))
-    frames = sorted(set(frames))
+    # con un cierre en bucle (meta.tailS ≤ 0,3) el último beat acaba casi con la voz: no pedir frames fuera del video
+    last = int((words[-1]["end"] + story["meta"].get("tailS", 1.0)) * 30) - 2
+    frames = sorted({min(f, last) for f in frames})
     props = out / "props.json"
     props.write_text(json.dumps({"story": story, "words": words}, ensure_ascii=False), encoding="utf-8")
     shutil_rm = out / "stills"

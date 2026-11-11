@@ -216,7 +216,7 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     if closing == "bucle" and len(beats) > 1:
         a0, a1 = beats[0].get("scene", {}), beats[-1].get("scene", {})
         set0, set1 = {ly.get("asset") for ly in a0.get("layers", [])}, {ly.get("asset") for ly in a1.get("layers", [])}
-        if a0.get("palette") != a1.get("palette") or set0 != set1:
+        if a0.get("palette") != a1.get("palette") or not set0 <= set1:   # puede sumar capas (un personaje), no quitar las del gancho
             errs.append(f"el cierre es `bucle`: el último beat debe volver a la paleta ({a0.get('palette')}) y a los assets del primero ({', '.join(sorted(set0))})")
         if meta.get("tailS", 1.0) > LOOP_TAIL_MAX_S:
             errs.append(f"el cierre es `bucle` y meta.tailS vale {meta.get('tailS', 1.0)} (por defecto 1.0): pon meta.tailS = 0.2")

@@ -17,7 +17,8 @@ from common import ROOT, load_json
 sys.path.insert(0, str(ROOT / "tools/qa"))
 from style_check import check  # noqa: E402
 from validate_script import DURATION_S  # noqa: E402
-VIRAL_DUR = load_json(ROOT / "templates" / "pacing_viral.json")["script"]["durationS"]
+VIRAL_SCRIPT = load_json(ROOT / "templates" / "pacing_viral.json")["script"]
+VIRAL_DUR, STORY_DUR = VIRAL_SCRIPT["durationS"], VIRAL_SCRIPT["story2d"]["durationS"]
 
 DESIGN_STATIC_MAX = 45   # regla de F2 (D31): todos nuestros planos llevan empuje
 
@@ -50,8 +51,9 @@ def report(d: Path) -> tuple[bool, str]:
         rows.append(f"| {name} | {val}{unit} | {'' if rng is None else f'{rng[0]}–{rng[1]}'} | {'✅' if good else '❌'} |")
 
     v, a, f = probe_dur(d / "07_video.mp4"), probe_dur(d / "08_mix.wav"), probe_dur(d / "09_final.mp4")
-    dur_rng = tuple(VIRAL_DUR) if story_pacing(d) == "viral" else DURATION_S
-    row("duración video (s): formato YouTube Shorts, menos de 60 (D121)", round(v, 2), dur_rng)
+    is_2d = load_json(d / "05_story.json")["meta"].get("engine") == "2d"
+    dur_rng = (tuple(STORY_DUR) if is_2d else tuple(VIRAL_DUR)) if story_pacing(d) == "viral" else DURATION_S
+    row("duración video (s): " + ("historia 2D, 60–70 s" if is_2d else "formato YouTube Shorts, menos de 60 (D121)"), round(v, 2), dur_rng)
     row("duración mezcla (s)", round(a, 2))
     row("diferencia video − audio (s)", round(abs(v - a), 3), (0, 0.1))
     _, P = ebur(d / "09_final.mp4")

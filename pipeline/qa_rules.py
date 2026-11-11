@@ -57,7 +57,7 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
         row("cola tras la última palabra con bucle (s)", tail, f"≤ {LOOP_TAIL_MAX_S}", tail <= LOOP_TAIL_MAX_S)
         s0, s1 = beats[0]["scene"], beats[-1]["scene"]
         if engine_of(story) == "2d":   # motor 2D: misma paleta y los mismos assets
-            same = s0["palette"] == s1["palette"] and {x["asset"] for x in s0["layers"]} == {x["asset"] for x in s1["layers"]}
+            same = s0["palette"] == s1["palette"] and {x["asset"] for x in s0["layers"]} <= {x["asset"] for x in s1["layers"]}   # puede sumar capas
             row("el último beat vuelve a la paleta y a los assets del primero", "sí" if same else "no", "sí", same)
         else:
             same = s0["env"] == s1["env"] and s0["hero"]["asset"] == s1["hero"]["asset"]
