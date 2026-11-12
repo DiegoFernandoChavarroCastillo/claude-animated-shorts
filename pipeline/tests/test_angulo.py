@@ -23,7 +23,7 @@ pacing: viral
 - compartir: orgullo de lugar y asombro; se le manda a quien ama el mar
 
 ## Guion
-[hook] ¿Por qué una ballena nada ocho mil kilómetros sin comer?
+[hook] ¿Nadarías ocho mil kilómetros sin comer? Una ballena sí.
 [conflicto] La ballena jorobada vive en la Antártida. Allí el agua helada rebosa de comida.
 [conflicto] Pasa el verano entero tragando krill. Engorda sin parar, capa sobre capa.
 [conflicto] Y entonces hace algo absurdo. Deja el banquete atrás y nada hacia el norte.
@@ -43,6 +43,7 @@ pacing: viral
 - ocho mil kilómetros de migración de la ballena jorobada entre la Antártida y el Pacífico colombiano: https://example.org/migracion y https://example.org/jorobadas
 """
 fails = 0
+NEW_HOOK = "[hook] ¿Nadarías ocho mil kilómetros sin comer? Una ballena sí."
 
 
 def check(name, ok, extra=""):
@@ -60,10 +61,26 @@ check("pregunta con cifra es concreta", concrete_question("¿Por qué una ballen
 check("pregunta con nombre propio es concreta", concrete_question("¿Sabías que la ciclovía se inventó en Colombia?", "es"))
 check("pregunta con contraste es concreta", concrete_question("¿Sabías que un equipo pidió que su rival fuera campeón sin jugar?", "es"))
 check("pregunta vacía no es concreta", not concrete_question("¿Qué hacen las ballenas durante el invierno?", "es"))
-errs = validate(MD.replace("[hook] ¿Por qué una ballena nada ocho mil kilómetros sin comer?", "[hook] ¿Qué hacen las ballenas durante el invierno?"))[0]
+errs = validate(MD.replace("[hook] ¿Nadarías ocho mil kilómetros sin comer? Una ballena sí.", "[hook] ¿Qué harías tú durante el invierno?"))[0]
 check("gancho en pregunta sin nada concreto falla", any("nada concreto" in e for e in errs), errs)
-errs = validate(MD.replace("[hook] ¿Por qué una ballena", "[hook] ¿Alguna vez te has preguntado por qué una ballena"))[0]
+errs = validate(MD.replace("[hook] ¿Nadarías", "[hook] ¿Alguna vez te has preguntado si nadarías"))[0]
 check("la apertura suave sigue prohibida aunque sea pregunta", any("introducción suave" in e for e in errs), errs)
+
+# D124: protagonista inmediato (el espectador en la primera frase)
+errs = validate(MD.replace(NEW_HOOK, "[hook] ¿Por qué una ballena nada ocho mil kilómetros sin comer?"))[0]
+check("pregunta-paradoja con un tercero vale (D124)", not errs, errs)
+errs = validate(MD.replace(NEW_HOOK, "[hook] Una ballena jorobada nada ocho mil kilómetros sin comer."))[0]
+check("afirmación que abre con un tercero falla (D124)", any("no mete al espectador" in e for e in errs), errs)
+errs = validate(MD.replace(NEW_HOOK, "[hook] Una ballena nada ocho mil kilómetros. ¿Lo harías tú?"))[0]
+check("el «tú» en la segunda frase falla (D124)", any("no mete al espectador" in e for e in errs), errs)
+errs = validate(MD.replace(NEW_HOOK, "[hook] Imagina que nadas ocho mil kilómetros sin comer."))[0]
+check("«Imagina que nadas…» vale (D124)", not any("espectador" in e or "Imagina" in e or "suave" in e for e in errs), errs)
+errs = validate(MD.replace(NEW_HOOK, "[hook] Imagina una ballena que nada ocho mil kilómetros."))[0]
+check("«Imagina una ballena…» falla (D124)", any("Imagina" in e for e in errs), errs)
+errs = validate(MD.replace(NEW_HOOK, "[hook] Hola, hoy te cuento por qué nadas tanto."))[0]
+check("un saludo es apertura suave (D124)", any("introducción suave" in e for e in errs), errs)
+errs = validate(MD.replace("pacing: viral", "pacing: viral\nhook_autor: usuario").replace(NEW_HOOK, "[hook] Imagina una ballena que nada ocho mil kilómetros."))[0]
+check("con `hook_autor: usuario` el gancho del usuario pasa (D124)", not errs, errs)
 
 # ángulo
 no_angle = MD[:MD.index("## Ángulo")] + MD[MD.index("## Guion"):]

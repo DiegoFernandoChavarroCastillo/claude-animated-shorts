@@ -25,10 +25,15 @@
     "softOpeners": [
       "alguna vez",
       "te has preguntado",
-      "imagina",
       "solo conversacion",
       "piensa en",
-      "has pensado"
+      "has pensado",
+      "hola",
+      "hoy vamos a",
+      "hoy veremos",
+      "en este video",
+      "bienvenid",
+      "soy "
     ],
     "loopConnectors": [
       "que",
@@ -49,7 +54,7 @@
       "para",
       "por"
     ],
-    "_notaGancho": "D123: una pregunta vale como gancho si lleva algo concreto dentro (cifra, nombre propio o contraste); «¿Sabías que…?» ya no es apertura suave por sí sola, pero sigue esa regla. Cierres del perfil: bucle o remate_cta."
+    "_notaGancho": "D123: una pregunta vale como gancho si lleva algo concreto dentro (cifra, nombre propio o contraste); «¿Sabías que…?» ya no es apertura suave por sí sola, pero sigue esa regla. Cierres del perfil: bucle o remate_cta. D124: «imagina» sale de softOpeners (vale «Imagina que estás…», no «Imagina un…», lo comprueba validate_script.py); se suman saludos y presentaciones; la primera frase del gancho mete al espectador (tú/te/tu/ti) o es una pregunta con la paradoja dentro; una afirmación sobre un tercero desconocido no vale."
   },
   "voice": {
     "speed": 1.13,

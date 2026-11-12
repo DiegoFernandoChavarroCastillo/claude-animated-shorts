@@ -111,6 +111,12 @@ import { Volcan } from "./volcan";
 import { Cabana } from "./cabana";
 import { CampoMaiz } from "./campo_maiz";
 import { Criatura } from "./criatura";
+import { GaleraTeseo } from "./galera_teseo";
+import { PuertoAtenas } from "./puerto_atenas";
+import { Carpintero } from "./carpintero";
+import { Celda } from "./celda";
+import { VasijaMinotauro } from "./vasija_minotauro";
+import { CuerpoBarco } from "./cuerpo_barco";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -125,6 +131,7 @@ const REAL: Record<string, AssetFC> = {
   // kit de look (D123): ambiente, personaje y escenarios componibles
   particulas: Particulas, rayos_luz: RayosLuz, estrellas: Estrellas, nubes: Nubes, niebla: Niebla, bokeh: Bokeh, figura: Figura, cielo: Cielo, mar: Mar, colinas: Colinas, calle: Calle, sala_arcos: SalaArcos, vela: Vela, ballena: Ballena, mapa_mundo: MapaMundo,
   volcan: Volcan, cabana: Cabana, campo_maiz: CampoMaiz, criatura: Criatura,
+  galera_teseo: GaleraTeseo, puerto_atenas: PuertoAtenas, carpintero: Carpintero, celda: Celda, vasija_minotauro: VasijaMinotauro, cuerpo_barco: CuerpoBarco,
   cleopatra: Cleopatra, saco_cesar: SacoCesar, alejandria_noche: AlejandriaNoche, cabeza_pompeyo: CabezaPompeyo, ptolomeo_furia: PtolomeoFuria, pasillo_guardias: PasilloGuardias, nilo_ahogo: NiloAhogo, banquete_nilo: BanqueteNilo, foro: Foro, senadores_odio: SenadoresOdio, templo_venus: TemploVenus, idus_marzo: IdusMarzo, huida_barco: HuidaBarco, octavio_consejo: OctavioConsejo, cesarion: Cesarion,
 };
 

@@ -94,7 +94,11 @@ def tokens(s: str) -> list[str]:
 # ---------------------------------------------------------------- 2.ª persona
 SECOND_ES = {"tu", "tus", "te", "ti", "contigo", "usted", "ustedes", "os", "vosotros", "vosotras", "vuestro", "vuestra"}
 SECOND_ES_VERBS = {"llevas", "sabias", "sabes", "has", "eres", "estas", "puedes", "crees", "imaginas", "quieres", "tienes", "haces",
-                   "ves", "duermes", "usas", "piensas", "notas", "vives", "comes", "bebes", "miras", "preguntaste", "dormiste"}
+                   "ves", "duermes", "usas", "piensas", "notas", "vives", "comes", "bebes", "miras", "preguntaste", "dormiste",
+                   "cambias", "despiertas", "abres", "pisas", "tocas", "construyes", "compras", "caminas", "entras", "sales", "naces",
+                   "mueres", "pierdes", "ganas", "encuentras", "nadas", "subes", "bajas", "lees", "escuchas", "oyes", "sientes",
+                   "respiras", "cierras", "vas", "das", "dices", "sabrias", "harias", "nadarias", "aguantarias", "elegirias", "seguirias",
+                   "estabas", "tenias", "eras", "ibas", "naciste", "mira", "mirate", "fijate", "toca", "escucha"}
 SECOND_EN = {"you", "your", "you're", "yours", "yourself", "you've", "you'll", "you'd", "ya"}
 
 
@@ -205,6 +209,7 @@ class Script:
     pacing: str = ""
     ficcion: str = ""
     pov: str = ""
+    hook_autor: str = ""   # `hook_autor: usuario`: el usuario escribió el gancho; no se le aplican las reglas de forma (2.ª persona, apertura suave)
     fiction: list[str] = field(default_factory=list)   # sección "## Ficción": anclas y lo inventado
     angle: dict[str, str] = field(default_factory=dict)  # sección "## Ángulo": pregunta, en_juego, cifras, climax, remate, compartir
     beats: list[str] = field(default_factory=list)     # `beats:` de una estructura nueva
@@ -225,7 +230,7 @@ def parse(md: str) -> Script:
         line = raw.strip()
         if not line:
             continue
-        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|ficcion|pov|gancho|estructura|cierre|ritmo|ficción):\s*(\w+)", line, re.I)
+        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|ficcion|pov|hook_autor|gancho|estructura|cierre|ritmo|ficción):\s*(\w+)", line, re.I)
         if m and section is None:
             key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing", "ficción": "ficcion"}.get(m.group(1).lower(), m.group(1).lower())
             setattr(s, key, m.group(2).lower())
@@ -353,7 +358,11 @@ def viral_errors(s: Script, hook: str, last: str) -> list[str]:
     Marcas mínimas comprobables; que el gancho sea de verdad chocante lo juzgan el crítico de guion y el usuario al elegirlo."""
     errs = []
     h = fold(hook)
-    if any(h.lstrip("¿ ").startswith(o) or f" {o}" in f" {h[:40]}" for o in VIRAL["softOpeners"]):
+    if s.hook_autor == "usuario":
+        pass
+    elif h.lstrip("¿ ").startswith("imagina") and not re.match(r"imagina(te)? (que|si|como|tu|te) ", h.lstrip("¿ ")):   # D124: «Imagina que estás…» sí; «Imagina un barco» no
+        errs.append(f"«Imagina…» sin el espectador dentro: {hook!r}. Vale «Imagina que estás…» / «Imagina que tu…»; no «Imagina un…»")
+    elif any(h.lstrip("¿ ").startswith(o) or f" {o}" in f" {h[:40]}" for o in VIRAL["softOpeners"]):
         errs.append(f"gancho con introducción suave: {hook!r}. Abre con una afirmación chocante, una paradoja o algo contraintuitivo")
     elif "?" in hook and not concrete_question(hook, s.lang):
         errs.append(f"gancho en pregunta sin nada concreto dentro: {hook!r}. Una pregunta vale si lleva la paradoja: una cifra, "
@@ -464,7 +473,16 @@ def validate(md: str) -> tuple[list[str], dict]:
     hook = " ".join(t for r, t in s.lines if r == "hook")
     if len(hook.split()) > hook_max:
         errs.append(f"gancho de {len(hook.split())} palabras (máximo {hook_max}): {hook!r}")
-    if not second_person(hook, lang) and not (viral and "?" in hook) and structure != "enigma":   # la pregunta ya interpela (D123)
+    if s.hook_autor and s.hook_autor != "usuario":
+        errs.append(f"hook_autor desconocido '{s.hook_autor}' (válido: usuario)")
+    first = re.split(r"(?<=[.!?…])\s+", hook.strip())[0]
+    if viral and s.hook_autor != "usuario":   # D124: vale el espectador en la PRIMERA frase o una pregunta con la paradoja dentro
+        if not second_person(first, lang) and not ("?" in first and concrete_question(first, lang)):
+            errs.append(f"la primera frase del gancho no mete al espectador: {first!r}. Vale «tú/te/tu/ti» y una acción "
+                        "(«Si te duermes agarrando…», «Imagina que estás…») o una pregunta con la paradoja dentro "
+                        "(«¿Por qué una ballena nada ocho mil kilómetros sin comer?»); no abras afirmando algo de un tercero "
+                        "desconocido («Un herrero le vendió…», «Hace años…»): la historia en tercera persona va después")
+    elif not second_person(hook, lang) and not (viral and "?" in hook) and structure != "enigma" and s.hook_autor != "usuario":   # la pregunta ya interpela (D123)
         errs.append(f"el gancho no está en 2.ª persona: {hook!r}")
     if s.hook in HOOKS and (e := hook_error(s.hook, hook, lang)):
         errs.append(e)

@@ -108,12 +108,19 @@ un **dilema** que el espectador decide (`hook > situacion > opcion_a > opcion_b 
   y por qué cuenta mejor este tema que `drama`.
 
 ## Gancho (el que más pesa)
+**Hay varios tipos que funcionan y valen lo mismo (D124)**; elige el que mejor le sienta a cada tema y varíalos entre videos:
+1. **Protagonista inmediato:** el espectador dentro desde la primera frase, con «tú/te/tu/ti» y una acción («Si te duermes agarrando dos bolas de acero…», «Imagina que estás…»).
+2. **Pregunta con la paradoja dentro** (`hook: paradoja`): «¿Por qué una ballena nada ocho mil kilómetros sin comer?». Puede hablar de un tercero.
+3. **Afirmación chocante sobre algo que todos conocen** (un lugar, un objeto, el cuerpo): «En Japón es imposible que te despidan».
+4. **Escena límite o revelación** de la anécdota, con algo en juego: «Alejandro Magno te ofrece todo y le pides que se aparte».
+
+Lo que pierde gente (y el validador rechaza en el perfil viral): abrir **afirmando algo de un tercero desconocido** sin paradoja («Un herrero le vendió a un rey…», «Hace años, un científico…»), el «tú» que llega en la segunda frase, saludos y presentaciones («hola», «hoy vamos a ver»), la pregunta vacía y «Imagina un X» sin el espectador dentro («Imagina que estás…» sí vale). Después del gancho, la historia sigue en tercera persona (D122).
 - **Prueba de los 3 s:** alguien que no conoce el tema, ¿entiende qué le prometes al oírlo una sola vez? Si no, reescríbelo.
 - Evita como palabra central una abstracción («conversación», «conciencia», «realidad», «sentido»): no pinta nada. Usa una **consecuencia concreta para el espectador** (tú + verbo + descubrimiento) o una imagen que se vea: «Cuando mueres, descubres que todos fueron tú.»
 - Con la voz `diego` (Chatterbox) el gancho debe tener unas 7 palabras para entrar en ≤3,2 s. Como afirmación en presente en 2.ª persona valida como `hook: escena`; `mito` y `contradiccion` exigen una forma más rígida.
 - El cierre en bucle retoma una palabra **clave y concreta** del gancho (p. ej. «todos»: «…¿y si todos fueran tú?»), no una abstracción repetida.
 - **Pregunta con paradoja** (`hook: paradoja`, D123): una pregunta vale si lleva dentro lo que no cuadra: una cifra, un nombre propio o un contraste («¿Por qué una ballena nada ocho mil kilómetros sin comer?», «¿Sabías que un equipo pidió que su rival fuera campeón sin jugar?»). Sigue prohibida la pregunta vacía («¿Alguna vez te has preguntado…?», «¿Qué hacen las ballenas en invierno?»). En pregunta no hace falta el «tú».
-- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta con paradoja) y deja que elija. Los tres hablan del **momento** de la anécdota, con su protagonista por el nombre («Alejandro Magno te ofrece todo y le pides que se aparte»). Un gancho de tipo nuevo es opcional.
+- Antes de escribir, propón al usuario 3 ganchos **de tipos distintos** (de los cuatro de arriba) y deja que elija. Si el usuario escribe o elige un gancho propio, pon `hook_autor: usuario` en la cabecera: el validador no le aplica las reglas de forma y el crítico no lo sustituye. Los tres hablan del **momento** de la anécdota, con su protagonista por el nombre («Alejandro Magno te ofrece todo y le pides que se aparte»). Un gancho de tipo nuevo es opcional.
 
 ## Tono
 - Cercano, de tú a tú, como quien cuenta un chisme histórico que no se puede creer; suspenso en `rupture` y `ascent`, humor si el material lo da. Ni solemne ni de clase.
@@ -140,7 +147,7 @@ Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pac
 | Regla | Valor |
 |---|---|
 | Duración | 60–70 s hablados (170–240 palabras con la voz `diego`); sin relleno ni pausas |
-| Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase, o una pregunta con la paradoja dentro (cifra, nombre propio o contraste). Prohibido: «¿Alguna vez…?», «Imagina que…», «Solo conversación…» y la pregunta vacía |
+| Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase, o una pregunta con la paradoja dentro (cifra, nombre propio o contraste). Uno de los cuatro tipos de «Gancho» (D124). Prohibido: «¿Alguna vez…?», «Imagina un X» sin el espectador dentro, saludos, «Solo conversación…», la pregunta vacía y abrir afirmando algo de un tercero desconocido |
 | Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase; frases completas con sujeto, no telegramas |
 | Cierre en bucle (`closing: bucle`; la alternativa es `remate_cta`, arriba) | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |
 

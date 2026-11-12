@@ -45,6 +45,21 @@ def fingerprint(d: Path, kind: str = "story") -> str:
     return h.hexdigest()[:16]
 
 
+def previous_round(d: Path, kind: str) -> str:
+    """D124: la ronda anterior (notas, lo que pidió y lo que dijo que funcionaba), para que el crítico sea coherente entre rondas"""
+    rp = d / f"{KINDS[kind]['pre']}.json"
+    if not rp.exists():
+        return ""
+    prev = load_json(rp)
+    if prev.get("fingerprint") == fingerprint(d, kind) or "scores" not in prev:
+        return ""
+    sc = ", ".join(f"{k} {v}" for k, v in prev["scores"].items())
+    keep = "\n".join(f"- {k}" for k in prev.get("keep", [])) or "—"
+    asked = "\n".join(f"- {p.get('beat', '?')} ({p.get('dimension', '')}): {p.get('fix', '')}" for p in prev.get("problems", [])) or "—"
+    return (f"\n## Tu ronda anterior (ronda {prev.get('round', '?')}; el autor ha cambiado el texto desde entonces)\n- Notas: {sc}\n"
+            f"### Dijiste que funcionaba (no lo quites)\n{keep}\n### Pediste\n{asked}\n")
+
+
 def build_request_script(d: Path) -> str:
     """lo único que ve el crítico de guion: cabecera, líneas con su rol y las fuentes; sin tiempos ni plan visual"""
     from validate_script import parse
@@ -55,7 +70,7 @@ def build_request_script(d: Path) -> str:
     hook = sc.lines[0][1]
     rows = [f"{i + 1:02d} [{r}] {t}" for i, (r, t) in enumerate(sc.lines)]
     stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; historia 2D: el video debe durar 60–70 s; si algo sobra, recórtalo)\n"
-             f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
+             f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'}{' · hook_autor: usuario (lo eligió el dueño del canal: no lo sustituyas)' if sc.hook_autor == 'usuario' else ''} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
     if sc.beats:
         stats += f"\n- Beats de la estructura nueva: {' → '.join(sc.beats)}"
     if sc.ficcion:
@@ -68,7 +83,7 @@ def build_request_script(d: Path) -> str:
     ang = "\n".join(f"- {k}: {v}" for k, v in sc.angle.items())
     fic += f"\n## Ángulo que declara el autor (lo que promete el video: comprueba que el guion lo cumple)\n{ang}\n" if ang else ""
     return (f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows)
-            + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}")
+            + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}" + previous_round(d, "script"))
 
 
 def build_request(d: Path) -> str:
@@ -126,7 +141,7 @@ def verdict(review: dict, kind: str = "story") -> dict:
     why = []
     if total < cfg["minTotal"]:
         why.append(f"total {total} < {cfg['minTotal']}")
-    if sc["gancho"] < cfg["minGancho"]:
+    if sc["gancho"] < cfg["minGancho"] and not review.get("hook_autor") == "usuario":   # D124: el gancho elegido por el usuario no bloquea
         why.append(f"gancho {sc['gancho']} < {cfg['minGancho']}")
     why += [f"{k} {sc[k]} < {cfg['minDimension']}" for k in DIMS if sc[k] < cfg["minDimension"] and k != "gancho"]
     return {"total": total, "pass": not why, "why": why}
@@ -151,6 +166,8 @@ def md_report(rev: dict, kind: str = "story") -> str:
            "| dimensión | peso | nota |", "|---|---|---|", *[f"| {k} | {cfg['weights'][k]} | {sc.get(k, '—')} |" for k in DIMS], ""]   # una calificación anterior a D123 no trae las dimensiones nuevas
     if rev.get("summary"):
         out += [rev["summary"], ""]
+    if rev.get("keep"):
+        out += ["## Lo que funciona (no se toca)", *[f"- {k}" for k in rev["keep"]], ""]
     if rev.get("drop_off"):
         out += [f"Un espectador se iría hacia el s {rev['drop_off'].get('second')}: {rev['drop_off'].get('why')}", ""]
     if rev.get("problems"):
@@ -179,7 +196,7 @@ def evaluate(d: Path, reviewer: str = "claude", kind: str = "story") -> dict:
             raise PipelineError(f"falta la calificación vigente: lanza un agente independiente con templates/prompts/{K['prompt']} sobre "
                                 f"{req_p} y guarda su JSON en {rp} (campo `fingerprint` = {fp}), o usa --reviewer claude")
         raw = ask_claude(request, kind)
-        cur = {**raw, "fingerprint": fp, "round": len(hist) + 1}
+        cur = {**raw, "fingerprint": fp, "round": len(hist) + 1, **({"hook_autor": "usuario"} if "hook_autor: usuario" in request else {})}
         cur["verdict"] = verdict(cur, kind)
         write_json(rp, cur)
         hist.append({"round": cur["round"], "fingerprint": fp, "scores": cur["scores"], "verdict": cur["verdict"]})

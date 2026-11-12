@@ -15,7 +15,7 @@ Recibes: el guion con sus tiempos reales (segundos por beat), lo que se ve en ca
 ## Dimensiones (enteros de 0 a 10)
 | Clave | Qué mide | Señales de nota alta | Señales de nota baja |
 |---|---|---|---|
-| `gancho` | Los primeros 3 s: ¿frenan el dedo? | Afirmación chocante, paradoja o consecuencia concreta para el espectador; se entiende a la primera; abre una pregunta que solo el video responde | Introducción suave («¿Alguna vez…?», «Imagina que…»), abstracción como palabra central, necesita contexto, se parece a mil videos |
+| `gancho` | Los primeros 3 s: ¿frenan el dedo? | Cualquiera de estos tipos, bien hecho (valen lo mismo, D124): el espectador dentro desde la primera frase («Si te…», «Imagina que estás…»), una pregunta con la paradoja dentro, una afirmación chocante sobre algo conocido o una escena límite; se entiende a la primera; abre una pregunta que solo el video responde | Afirmación sobre un tercero desconocido sin paradoja, el «tú» en la segunda frase, saludos, «¿Alguna vez…?», «Imagina un X» sin nada raro, abstracción como palabra central, se parece a mil videos |
 | `retencion` | ¿Hay un motivo para seguir viendo cada ~5 s? | Pregunta abierta que se cierra tarde, escalada, promesas («ahora viene lo importante»), cambio de ángulo, un giro a mitad | Explica antes de intrigar, información plana, la mitad del video ya se adivina, valle largo sin novedad |
 | `narrativa` | Claridad y progresión | Una idea, un recorrido causal, el giro reencuadra todo, una frase final memorable | Saltos, dos ideas mezcladas, moraleja obvia, el giro no cambia nada |
 | `ritmo_verbal` | ¿Es aburrido de escuchar? | Frases cortas, verbos de acción, variedad de longitud, sin relleno | Adjetivos vacíos, frases largas encadenadas, repeticiones, tono de clase |
