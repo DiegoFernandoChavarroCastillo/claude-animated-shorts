@@ -26,6 +26,9 @@ HOOK_STATIC_CAMERAS = ("hold",)
 STRUCTURE_DEFAULT = "alegoria"
 CLASSIC_2D_GAP_S = 3.5   # historias 2D sin perfil viral: el explainer bajó a 3,0 s (D121); estas conservan su ritmo
 PACING = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: "viral"`
+THEMES = load_json(ROOT / "templates" / "themes2d.json")       # temas visuales (`meta.theme`, D123)
+CTA_OVERLAYS = ("ShareCTA", "ChatMock")                        # CTA animado del cierre `remate_cta`
+PILL_SHARE_MAX = 0.6
 
 
 def _num(v) -> bool:
@@ -56,6 +59,20 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     gap_max = PACING["cadence"]["eventGapMaxS"] if viral else CLASSIC_2D_GAP_S
     if viral and meta.get("captionEmphasis") not in (None, cap["emphasis"]):
         errs.append(f"el perfil viral resalta las palabras clave con color (captionEmphasis '{cap['emphasis']}')")
+    # tema visual (D123): paletas y luces del tema, tres planos de profundidad y una capa de ambiente por beat
+    theme = meta.get("theme")
+    th_pal: set = set()
+    th_light: set = set()
+    if theme:
+        names_t = [theme] + ([meta["themeAlt"]] if meta.get("themeAlt") else [])
+        for t in names_t:
+            if t not in THEMES["themes"]:
+                errs.append(f"meta.theme '{t}' no existe en templates/themes2d.json ({', '.join(THEMES['themes'])})")
+            else:
+                th_pal |= set(THEMES["themes"][t]["palettes"])
+                th_light |= set(THEMES["themes"][t]["lights"]) | {"ninguna"}
+    elif "theme" in meta:
+        errs.append("meta.theme vacío: elige un tema de templates/themes2d.json con sus criterios (`elegir`)")
     inserts = 0
     for b in beats:
         bid, s, text = b.get("id", "?"), b.get("scene", {}), b.get("text", "")
@@ -66,10 +83,26 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
         if s.get("light") not in cat["lights"]:
             errs.append(f"{bid}: light '{s.get('light')}' no existe ({', '.join(cat['lights'])})")
         layers = s.get("layers", [])
+        if theme and th_pal:
+            shift = [x.get("to") for x in b.get("actions", []) if x.get("type") == "palette_shift"]
+            for pal_name in [s.get("palette")] + shift:
+                if pal_name in cat["palettes"] and pal_name not in th_pal:
+                    errs.append(f"{bid}: la paleta '{pal_name}' no es del tema '{theme}' ({', '.join(sorted(th_pal))}); cambia de paleta o declara un segundo tema en meta.themeAlt")
+            if s.get("light") in cat["lights"] and s.get("light") not in th_light:
+                errs.append(f"{bid}: la luz '{s.get('light')}' no es del tema '{theme}' ({', '.join(sorted(th_light))})")
+            kinds = [cat["assets"].get(ly.get("asset"), {}).get("kind") for ly in layers]
+            if "ambiente" not in kinds:
+                errs.append(f"{bid}: sin capa de ambiente (particulas, rayos_luz, estrellas, nubes, niebla, bokeh): con tema, cada plano lleva atmósfera")
+            if len(layers) < THEMES["reglas"]["minPlanos"]:
+                errs.append(f"{bid}: {len(layers)} capas; con tema hacen falta al menos {THEMES['reglas']['minPlanos']} planos (fondo, sujeto y ambiente)")
+        for k, lg in enumerate(s.get("lights", [])):
+            if not _vec(lg.get("at"), 2) or not (_num(lg.get("r", 0.2)) and 0.01 <= lg.get("r", 0.2) <= 2):
+                errs.append(f"{bid}: lights[{k}] necesita at [x, y] y r entre 0.01 y 2 (fracción del ancho)")
         if not layers:
             errs.append(f"{bid}: el beat no tiene capas (scene.layers)")
-        if len(layers) > MAX_LAYERS:
-            errs.append(f"{bid}: {len(layers)} capas (máximo {MAX_LAYERS})")
+        max_layers = MAX_LAYERS + (3 if theme else 0)   # con tema, cielo y capas de ambiente se suman a la escena
+        if len(layers) > max_layers:
+            errs.append(f"{bid}: {len(layers)} capas (máximo {max_layers})")
         names: dict[str, dict] = {}
         for k, ly in enumerate(layers):
             a = ly.get("asset")
@@ -77,7 +110,12 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: layers[{k}].asset '{a}' no existe en catalog2d.json (tools/catalog_search2d.py <palabras>)")
                 continue
             names.setdefault(ly.get("id", a), ly)
-            if viral and cat["assets"][a].get("kind") != "fondo" and ly.get("at", [0.5, 1.0])[1] > cap["layerFeetMaxY"]:
+            rp = ly.get("repeat")
+            if rp is not None and not (isinstance(rp, dict) and isinstance(rp.get("n"), int) and 1 <= rp["n"] <= THEMES["reglas"]["maxRepeat"]):
+                errs.append(f"{bid}: layers[{k}].repeat necesita n entre 1 y {THEMES['reglas']['maxRepeat']} (más copias y el render se vuelve lento)")
+            if "opts" in ly and not isinstance(ly["opts"], dict):
+                errs.append(f"{bid}: layers[{k}].opts debe ser un objeto (opciones del asset; ver su `when` en catalog2d.json)")
+            if viral and cat["assets"][a].get("kind") not in ("fondo", "ambiente") and ly.get("at", [0.5, 1.0])[1] > cap["layerFeetMaxY"] + (0.02 if cat["assets"][a].get("kind") == "prop" else 0):
                 errs.append(f"{bid}: layers[{k}] ({a}) tiene los pies en y={ly.get('at', [0.5, 1.0])[1]} y los subtítulos virales ocupan "
                             f"{PACING['qa']['captionBand'][0]:.2f}–{PACING['qa']['captionBand'][1]:.2f}: sube la capa (y ≤ {cap['layerFeetMaxY']})")
             if "at" in ly and (not _vec(ly["at"], 2) or not all(-0.5 <= v <= 1.5 for v in ly["at"])):
@@ -156,6 +194,19 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: sub-plano con cámara '{sh.get('camera', {}).get('preset')}' que no existe")
             if not resolves(sh.get("at"), text):
                 errs.append(f"{bid}: sub-plano at '{sh.get('at')}' no es una palabra del beat")
+    # D123: cada cifra se ve (overlay o acción en ese beat) y los rótulos no son el único recurso
+    if viral and theme:   # los videos anteriores a los temas no cambian
+        from validate_script import numbers
+        for b in beats:
+            if numbers(b.get("text", ""), meta.get("lang", "es")) and not b.get("overlays") and not b.get("actions") and not b.get("shots"):
+                errs.append(f"{b.get('id')}: el beat dice una cifra y no la muestra: añade un overlay (StatCallout, Equivalence, Calendar, ClockChip, Thermometer…) "
+                            "o una acción que la haga visible (route en un mapa, light en velas con repeat)")
+        ovs = [o.get("type") for b in beats for o in b.get("overlays", [])]
+        if theme and len(ovs) >= 5 and ovs.count("Pill") / len(ovs) > PILL_SHARE_MAX:
+            errs.append(f"{ovs.count('Pill')} de {len(ovs)} overlays son Pill (máximo {PILL_SHARE_MAX:.0%}): un rótulo nombra, no muestra. Cambia algunos por datos que se vean "
+                        "(tabla «qué recurso para qué frase» de story-short/SKILL.md)")
+    if closing == "remate_cta" and not any(o.get("type") in CTA_OVERLAYS for o in beats[-1].get("overlays", [])):
+        errs.append(f"el cierre es `remate_cta`: el último beat lleva el CTA animado (overlay {' o '.join(CTA_OVERLAYS)}) sobre la escena")
     if sum(len(b.get("sfx", [])) for b in beats) > 3:
         errs.append("más de 3 sfx a mano en el video (el director de acentos ya pone los de las acciones)")
     if inserts > MAX_INSERTS:

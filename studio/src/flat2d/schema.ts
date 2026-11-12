@@ -9,12 +9,19 @@ const Cam = z.tuple([z.number(), z.number(), z.number()]);   // [cx, cy, zoom]
 export const LayerSchema = z.looseObject({
   asset: z.string(), id: z.string().optional(), z: z.number().default(0),
   at: z.tuple([z.number(), z.number()]).optional(), scale: z.number().optional(), flip: z.boolean().optional(),
-  par: z.number().optional(), opacity: z.number().optional(),
+  par: z.number().optional(), opacity: z.number().optional(), blur: z.number().min(0).max(40).optional(),
+  // D123: opciones fijas del asset (p. ej. `figura`: ropa, pose; `particulas`: kind) y repetición de la capa (multitudes, velas)
+  opts: z.record(z.string(), z.unknown()).optional(),
+  repeat: z.looseObject({ n: z.number().int().min(1).max(200), cols: z.number().int().min(1).optional(), dx: z.number().optional(), dy: z.number().optional(),
+    jitter: z.number().optional(), stagger: z.number().optional(), depth: z.number().optional() }).optional(),
 });
+/** luz puntual del beat (D123): halo cálido en un punto del cuadro (una vela, una ventana, la luna); se mueve con la cámara */
+export const Light2Schema = z.looseObject({ at: z.tuple([z.number(), z.number()]), r: z.number().min(0.01).max(2).default(0.2), color: z.string().optional(),
+  a: z.number().min(0).max(1).optional(), flicker: z.boolean().optional() });
 export const Camera2Schema = z.looseObject({ preset: z.string(), from: Cam.optional(), to: Cam.optional() });
 export const Beat2Schema = z.looseObject({
   id: z.string(), role: z.string(), text: z.string().min(1), keyword: z.string().optional(), keywords: z.array(z.string()).optional(), shows: z.string().optional(),
-  scene: z.looseObject({ palette: z.string(), light: z.string(), layers: z.array(LayerSchema).min(1), camera: Camera2Schema }),
+  scene: z.looseObject({ palette: z.string(), light: z.string(), layers: z.array(LayerSchema).min(1), camera: Camera2Schema, lights: z.array(Light2Schema).optional() }),
   overlays: z.array(z.looseObject({ type: z.string(), at: At.optional() })).default([]),
   actions: z.array(z.looseObject({ type: z.string(), at: At.optional(), target: z.string().optional(), dur: z.number().int().min(1).max(600).optional() })).default([]),
   shots: z.array(z.object({ at: At, camera: Camera2Schema })).default([]),
@@ -22,7 +29,8 @@ export const Beat2Schema = z.looseObject({
 });
 export const Story2Schema = z.object({
   meta: z.looseObject({ id: z.string(), lang: z.enum(["es", "en"]), title: z.string(), engine: z.literal("2d"), tailS: z.number().min(0.1).max(2).default(1.0),
-    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional(), hookTitle: z.string().max(48).optional() }),
+    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional(), hookTitle: z.string().max(48).optional(),
+    theme: z.string().optional(), themeAlt: z.string().optional() }),
   beats: z.array(Beat2Schema).min(1),
 });
 export const Props2Schema = z.object({ story: Story2Schema, words: z.array(WordSchema).min(1) });

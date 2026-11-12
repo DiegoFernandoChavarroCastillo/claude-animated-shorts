@@ -68,8 +68,11 @@ def main() -> None:
         print("(sin videos anteriores en out/)")
     for p in scripts[:n]:
         h = header(p.read_text(encoding="utf-8"))
+        sp = p.parent / "05_story.json"   # tema visual de las historias 2D (D123): no repetir el mismo tres veces seguidas
+        theme = json.loads(sp.read_text(encoding="utf-8")).get("meta", {}).get("theme") if sp.exists() else None
         print(f"{p.parent.name:<28} gancho={label('hook', h.get('hook'), '(sin declarar)'):<16} "
-              f"estructura={label('structure', h.get('structure'), 'mito (por defecto)'):<16} cierre={label('closing', h.get('closing'), '(sin declarar)')}")
+              f"estructura={label('structure', h.get('structure'), 'mito (por defecto)'):<16} cierre={label('closing', h.get('closing'), '(sin declarar)')}"
+              + (f" tema={theme}" if theme else ""))
     print("(* = fórmula nueva, fuera del catálogo; detalle con --nuevas)")
 
 

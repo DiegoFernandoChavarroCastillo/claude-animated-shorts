@@ -1,5 +1,11 @@
 {
   "_nota": "Rangos de style_check para el motor 2D (plan story-2d F6). Provisionales: calibrados con UN video (mito-caverna: luma p5 0,072, mediana 0,195, saturación 0,317, 3,29 cortes/min, 100 % frames únicos, silencio 29,8 %, 2,65 pal/s). Se afinan con cada video 2D. Solo se listan las métricas que difieren del 3D.",
+  "themed": {
+    "_nota": "Videos con `meta.theme` (D123): look luminoso y saturado como las referencias de docs/framesClave. Provisionales, sin calibrar con un video real: se afinan con el piloto. El suelo de saturación (0,3) es lo que rechaza un video apagado.",
+    "luma_p5": [0.0, 0.6],
+    "luma_med": [0.1, 0.85],
+    "sat_med": [0.3, 0.9]
+  },
   "ranges": {
     "luma_p5": [
       0.0,

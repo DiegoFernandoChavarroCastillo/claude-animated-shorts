@@ -5,6 +5,14 @@ structure: alegoria
 closing: bucle
 pacing: viral
 
+## Ángulo
+- pregunta: ¿cómo sabes que los demás sienten algo, si nunca has estado dentro de otra cabeza?
+- en_juego: que todos los que quieres sean decorado y no puedas saberlo
+- cifras: ninguna
+- climax: la multitud entera a tu alrededor, y tú en el centro sin poder comprobar a nadie
+- remate: Trátalos bien aunque no puedas probarlo.
+- compartir: a quien le gustan las ideas que no dejan dormir; da ganas de discutirla
+
 ## Guion
 [hook] Nadie a tu alrededor puede probar que siente algo.
 [scene] Una dama, un campesino, un hombre de traje, una niña. Ríen, se quejan y te responden. Parecen tan reales como tú.

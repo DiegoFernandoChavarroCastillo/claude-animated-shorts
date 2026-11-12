@@ -89,3 +89,16 @@ Funcionan muy bien en short, pero piden escenas propias (casa, pasillo, puerta) 
 Implementar las estructuras `dilema` (escenario en 2.ª persona → decisión → obstáculo que la complica → qué respondieron
 los filósofos → giro que reencuadra → pregunta abierta) y `y_si`, con sus roles en `catalog2d.json`, el validador de guion y
 una plantilla en `templates/prompts/`. Con eso las ideas 1–15 y 23–28 dejan de forzar la estructura `alegoria`.
+
+
+## Curiosidades contadas como misterio (`enigma`, D123)
+Formato de los videos virales de `docs/AnalisisVideosIA.md`: pregunta que no cuadra, pistas con cifras que se ven, clímax panorámico y remate. Investiga cada dato con ≥2 fuentes antes de escribir.
+
+| Tema | Gancho posible (pregunta con paradoja) | Clímax | Tema visual | Kit |
+|---|---|---|---|---|
+| Migración de la ballena jorobada | «¿Por qué una ballena nada ocho mil kilómetros sin comer?» | Globo con la ruta de la Antártida al Pacífico | `submarino` → `cosmos` | `ballena`, `mapa_mundo`, `rayos_luz` |
+| El día de las velitas (7 de diciembre) | «¿Por qué Colombia enciende millones de velas la misma noche?» | Calles enteras encendiéndose | `noche_calida` (+ `pergamino` para el pasado) | `calle`, `vela` con `repeat`, `Calendar` |
+| La ciclovía de Bogotá | «¿Sabías que la ciclovía nació en Colombia?» | Ciudades del mundo encendiéndose | `ciudad` | `calle`, `figura` con `repeat`, `launch`, `mapa_mundo` |
+| Por qué las pirámides no tienen esclavos | «¿Quién construyó las pirámides, si no fueron esclavos?» | La obra entera con miles de obreros | `pergamino` / `vivo` | `figura` con `repeat` |
+| El año sin verano (1816) | «¿Cómo nevó en julio en medio mundo?» | El mapa del frío extendiéndose | `drama_oscuro` | `mapa_mundo`, `particulas` nieve, `Thermometer` |
+| La tregua de Navidad de 1914 | «¿Por qué dos ejércitos jugaron fútbol en plena guerra?» | La tierra de nadie llena de soldados | `noche_calida` | `figura` armadura/actual con `repeat`, `velas` |

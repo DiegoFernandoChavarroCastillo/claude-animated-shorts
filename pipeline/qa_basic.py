@@ -60,7 +60,7 @@ def report(d: Path) -> tuple[bool, str]:
     row("true peak final (dBTP)", P, (-99, -1.0))
     story = load_json(d / "05_story.json")
     lang = story["meta"]["lang"]
-    style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4", engine=story["meta"].get("engine", "3d"), pacing=story["meta"].get("pacing"),
+    style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4", engine=story["meta"].get("engine", "3d"), pacing=story["meta"].get("pacing"), theme=story["meta"].get("theme"),
                                   skip_beat=story["beats"][0]["id"] if story["meta"].get("hookTitle") else None)
     row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, DESIGN_STATIC_MAX))
     ok &= style_ok

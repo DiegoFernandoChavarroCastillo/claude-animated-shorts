@@ -4,12 +4,12 @@ import { OVERLAY, PALETTE } from "../style";
 import { DISPLAY_FAMILY } from "../fonts";
 import { BaseProps, Label, Place, fmt, tok, useAnim, W } from "./common";
 
-export type StatCalloutProps = BaseProps & { value: number; label: string; prefix?: string; suffix?: string; decimals?: number };
+export type StatCalloutProps = BaseProps & { value: number; label: string; prefix?: string; suffix?: string; decimals?: number; from?: number };
 
-export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, prefix = "", suffix = "", decimals = 0, color: c, lang = "es", slot = "bottom" }) => {
+export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, prefix = "", suffix = "", decimals = 0, from = 0, color: c, lang = "es", slot = "bottom" }) => {
   const { enter, exit, prog } = useAnim(dur);
   const k = enter(0), k2 = enter(2);
-  const shown = value * prog(0, 24);
+  const shown = from + (value - from) * prog(0, 24);   // `from` (D123): cuenta desde otro número (una distancia que crece, un año que avanza)
   const col = tok(c, PALETTE.warm.gold);
   return (
     <Place slot={slot} style={{ opacity: exit, textAlign: "center" }}>

@@ -30,7 +30,9 @@ def hashtags(story: dict, lang: str) -> list[str]:
     two_d = story.get("meta", {}).get("engine") == "2d"
     cat = load_json(ROOT / "templates" / ("catalog2d.json" if two_d else "catalog.json"))
     if two_d:   # motor 2D: los assets más usados por capa
-        assets = [ly["asset"] for b in story["beats"] for ly in b["scene"]["layers"] if cat["assets"].get(ly["asset"], {}).get("kind") != "fondo"]
+        # D123: ni fondos ni capas de ambiente ni el personaje genérico del kit dicen de qué trata el video
+        assets = [ly["asset"] for b in story["beats"] for ly in b["scene"]["layers"]
+                  if cat["assets"].get(ly["asset"], {}).get("kind") not in ("fondo", "ambiente") and ly["asset"] not in ("figura", "vela")]
     else:
         assets = [b.get("scene", {}).get("hero", {}).get("asset") for b in story["beats"]]
     top = sorted(set(assets), key=lambda x: -assets.count(x))[:2]
@@ -125,7 +127,7 @@ def meta(d: Path) -> dict:
             "duration_s": round(words[-1]["end"] + story["meta"].get("tailS", 1.0), 1), "words": len(words),
             "hook_spoken_s": round(max(w["end"] for w in words if w["beat"] == story["beats"][0]["id"]), 1),
             "beats": len(story["beats"]), "max_event_gap_s": round(gap, 1),
-            "engine": story["meta"].get("engine", "3d"),
+            "engine": story["meta"].get("engine", "3d"), "theme": story["meta"].get("theme"),
             "heroes": sorted({b["scene"]["hero"]["asset"] for b in story["beats"]} if story["meta"].get("engine") != "2d" else {ly["asset"] for b in story["beats"] for ly in b["scene"]["layers"]}),
             "shots": sum(len(b.get("shots", [])) for b in story["beats"])}
 

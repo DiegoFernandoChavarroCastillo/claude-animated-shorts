@@ -72,7 +72,14 @@ VIRAL = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding
 DRAMA = json.loads((ROOT / "templates" / "dramatizacion.json").read_text(encoding="utf-8"))   # `ficcion:` y `pov:` (historias 2D)
 # Historias 2D (11 nov): las que gustaron se contaban en tercera persona, con una sola anécdota, en `drama` o `alegoria` y en
 # 60–70 s. Las que no («Eres el escriba», «Eres Cleopatra», «tres apuestas», 57 s apretados) fallaban justo ahí.
-STORY_STRUCTURES = ("drama", "alegoria")
+# `enigma` (D123): curiosidades e historia sin protagonista único, contadas como un misterio que se resuelve en el remate.
+STORY_STRUCTURES = ("drama", "alegoria", "enigma")
+# `## Ángulo` (D123): lo que convierte una idea simple en un video que se ve entero y se comparte. Se decide antes de escribir.
+ANGLE_KEYS = ("pregunta", "en_juego", "cifras", "climax", "remate", "compartir")
+VIRAL_CLOSINGS = ("bucle", "remate_cta")
+REMATE_CTA_MAX = 12
+# una pregunta vale como gancho viral si lleva algo concreto dentro: una cifra, un nombre propio o un contraste («sin jugar»)
+CONTRAST = (r"\b(sin|pero|aunque|nunca|jamas|no|ni|si|solo|unico|unica|menos|mas)\b", r"\b(without|but|although|never|no|not|only|if|yet|less|more)\b")
 
 
 def fold(s: str) -> str:
@@ -199,6 +206,7 @@ class Script:
     ficcion: str = ""
     pov: str = ""
     fiction: list[str] = field(default_factory=list)   # sección "## Ficción": anclas y lo inventado
+    angle: dict[str, str] = field(default_factory=dict)  # sección "## Ángulo": pregunta, en_juego, cifras, climax, remate, compartir
     beats: list[str] = field(default_factory=list)     # `beats:` de una estructura nueva
     new: dict[str, str] = field(default_factory=dict)  # sección "## Fórmulas nuevas": nombre -> patrón
     lines: list[tuple[str, str]] = field(default_factory=list)  # (rol, texto)
@@ -230,6 +238,7 @@ def parse(md: str) -> Script:
             name = fold(line[3:]).strip()
             section = ("guion" if name.startswith(("guion", "script")) else "fuentes" if name.startswith(("fuentes", "sources"))
                        else "ficcion" if name.startswith(("ficcion", "fiction"))
+                       else "angulo" if name.startswith(("angulo", "angle"))
                        else "nuevas" if name.startswith(("formulas nuevas", "new formulas")) else "otra")
             continue
         if section == "guion":
@@ -244,6 +253,8 @@ def parse(md: str) -> Script:
             s.sources.append(line.lstrip("-* ").strip())
         elif section == "ficcion" and line.startswith(("-", "*")):
             s.fiction.append(line.lstrip("-* ").strip())
+        elif section == "angulo" and (m := re.fullmatch(r"[-*]\s*`?([\w ]+?)`?\s*:\s*(.+)", line)):
+            s.angle[fold(m.group(1)).strip().replace(" ", "_")] = m.group(2).strip()
         elif section == "nuevas" and (m := re.fullmatch(r"[-*]\s*`?(\w+)`?\s*:\s*(.+)", line)):
             s.new[m.group(1).lower()] = m.group(2).strip()
     s.errors = list(dict.fromkeys(s.errors))   # un rol desconocido repetido se avisa una vez
@@ -303,6 +314,11 @@ def closing_error(kind: str, cta: str, hook: str, lang: str) -> str | None:
     t = fold(cta) + " "
     if kind == "pregunta":
         return None if "?" in cta else "un cierre 'pregunta' debe ser una pregunta (llevar '?')"
+    if kind == "remate_cta":
+        if len(cta.split()) > REMATE_CTA_MAX:
+            return f"la invitación de un cierre 'remate_cta' es corta ({len(cta.split())} palabras; máximo {REMATE_CTA_MAX}): el remate ya se dijo en [twist]"
+        return None if re.search(CTA_EN if lang == "en" else CTA_ES, t) else \
+            "un cierre 'remate_cta' acaba pidiendo algo ligado al tema (envíaselo a…, sígueme y…, comenta…)"
     if kind == "bucle":
         if re.search(FAREWELL[1 if lang == "en" else 0], t):
             return "un cierre 'bucle' no puede despedirse (gracias, adiós, suscríbete…): la última frase debe leerse como continuación del gancho"
@@ -324,15 +340,28 @@ def sentences(text: str) -> list[str]:
     return [p for p in re.split(r"(?<=[.?!…:;])\s+", text) if p.strip()]
 
 
+def concrete_question(hook: str, lang: str) -> bool:
+    """una pregunta con algo concreto dentro (D123): una cifra, un nombre propio (mayúscula que no abre la frase) o un contraste"""
+    inner = [w.strip("¿?¡!.,;:«»\"'") for w in hook.split()][1:]
+    proper = any(w[:1].isupper() for w in inner if w)
+    return bool(numbers(hook, lang)) or proper or bool(re.search(CONTRAST[1 if lang == "en" else 0], fold(hook)))
+
+
 def viral_errors(s: Script, hook: str, last: str) -> list[str]:
-    """perfil `pacing: viral`: gancho chocante sin introducción suave y cierre que se engancha con la primera palabra del gancho.
-    Marcas mínimas comprobables; que el gancho sea de verdad chocante lo juzga quien escribe (y el usuario al elegirlo)."""
+    """perfil `pacing: viral`: gancho chocante sin introducción suave y cierre que se engancha con la primera palabra del gancho
+    (`bucle`) o que remata y pide algo (`remate_cta`). Una pregunta vale si lleva la paradoja dentro (D123).
+    Marcas mínimas comprobables; que el gancho sea de verdad chocante lo juzgan el crítico de guion y el usuario al elegirlo."""
     errs = []
     h = fold(hook)
-    if hook.lstrip().startswith("¿") or any(h.startswith(o) or f" {o}" in f" {h[:40]}" for o in VIRAL["softOpeners"]):
+    if any(h.lstrip("¿ ").startswith(o) or f" {o}" in f" {h[:40]}" for o in VIRAL["softOpeners"]):
         errs.append(f"gancho con introducción suave: {hook!r}. Abre con una afirmación chocante, una paradoja o algo contraintuitivo")
+    elif "?" in hook and not concrete_question(hook, s.lang):
+        errs.append(f"gancho en pregunta sin nada concreto dentro: {hook!r}. Una pregunta vale si lleva la paradoja: una cifra, "
+                    "un nombre propio o un contraste («¿Por qué una ballena nada ocho mil kilómetros sin comer?»)")
+    if s.closing not in VIRAL_CLOSINGS:
+        errs.append("el perfil viral exige `closing: bucle` o `closing: remate_cta`")
     if s.closing != "bucle":
-        errs.append("el perfil viral exige `closing: bucle`")
+        return errs
     tail = last.rstrip()
     words_ = fold(re.sub(r"[^\w\s]", "", tail)).split()
     ends_open = tail.endswith((":", "…", "—", "...")) or (not tail.endswith((".", "?", "!")) and bool(words_) and words_[-1] in VIRAL["loopConnectors"])
@@ -363,6 +392,20 @@ def fiction_errors(s: Script) -> list[str]:
     if n > lim:
         errs.append(f"suena a documental: {n} muletillas de crónica ({', '.join(hits)}; máximo {lim} con `ficcion: {s.ficcion}`). "
                     "No cites al historiador ni a la tradición en la voz: vive la escena (las fuentes van en la descripción)")
+    return errs
+
+
+def angle_errors(s: Script) -> list[str]:
+    """`## Ángulo` de las historias virales: las seis decisiones que se toman antes de escribir, y el remate dicho en el giro"""
+    if not s.angle:
+        return ["falta la sección '## Ángulo' con las líneas " + ", ".join(f"'- {k}: …'" for k in ANGLE_KEYS) +
+                " (templates/prompts/story2d_script_es.md → «Ángulo»)"]
+    errs = [f"'## Ángulo' sin la línea '- {k}: …'" for k in ANGLE_KEYS if not s.angle.get(k)]
+    remate = s.angle.get("remate", "")
+    sig = lambda x: {w for w in tokens(x) if len(w) >= 4}  # noqa: E731
+    late = " ".join(t for r, t in s.lines if r in ("twist", "return", "cta"))
+    if remate and len(sig(remate) & sig(late)) < min(2, len(sig(remate))):
+        errs.append(f"el remate del ángulo no se dice en el giro: {remate!r} debe oírse (casi literal) en una línea [twist]")
     return errs
 
 
@@ -421,7 +464,7 @@ def validate(md: str) -> tuple[list[str], dict]:
     hook = " ".join(t for r, t in s.lines if r == "hook")
     if len(hook.split()) > hook_max:
         errs.append(f"gancho de {len(hook.split())} palabras (máximo {hook_max}): {hook!r}")
-    if not second_person(hook, lang):
+    if not second_person(hook, lang) and not (viral and "?" in hook) and structure != "enigma":   # la pregunta ya interpela (D123)
         errs.append(f"el gancho no está en 2.ª persona: {hook!r}")
     if s.hook in HOOKS and (e := hook_error(s.hook, hook, lang)):
         errs.append(e)
@@ -446,10 +489,12 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(e)
     if viral:
         errs += viral_errors(s, hook, last)
+    if viral and story:
+        errs += angle_errors(s)
     if s.ficcion:
         errs += fiction_errors(s)
         if structure not in STORY_STRUCTURES:
-            errs.append(f"una historia usa `structure: drama` o `alegoria`, no '{structure}': una estructura conceptual "
+            errs.append(f"una historia usa `structure: drama`, `alegoria` o `enigma`, no '{structure}': una estructura conceptual "
                         "(«tres apuestas») obliga a descifrar la historia en vez de seguirla")
         if s.pov == "tu" and s.ficcion != "libre":
             errs.append("`pov: tu` («Eres Cleopatra») en una historia real saca al espectador: cuenta en tercera persona "
@@ -480,7 +525,7 @@ def validate(md: str) -> tuple[list[str], dict]:
                 errs.append(f"'{pair}': dos sonidos ll/y seguidos; la voz hace una pausa como si hubiera una coma. "
                             f"Reescribe para separarlos ([{r}] {t[:50]}…)")
     stats = {"lang": lang, "structure": structure, "hook": s.hook, "closing": s.closing, "words": nwords, "hook_words": len(hook.split()), "roles": roles, "numbers": found, "sources": len(s.sources),
-             "ficcion": s.ficcion, "pov": s.pov, "beats": s.beats, "new": s.new}
+             "ficcion": s.ficcion, "pov": s.pov, "beats": s.beats, "new": s.new, "angle": s.angle}
     return errs, stats
 
 

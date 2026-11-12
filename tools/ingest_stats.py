@@ -63,7 +63,7 @@ def meta_of(vid: str) -> dict:
 
 def summary(rows: list[dict]) -> str:
     out = []
-    for field in ("hook", "structure", "closing"):
+    for field in ("hook", "structure", "closing", "theme"):   # `theme`: tema visual de las historias 2D (D123)
         g = defaultdict(list)
         for r in rows:
             m = meta_of(r["id"])

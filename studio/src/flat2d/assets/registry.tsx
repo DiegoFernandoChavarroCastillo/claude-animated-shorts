@@ -92,6 +92,25 @@ import { IdusMarzo } from "./idus_marzo";
 import { HuidaBarco } from "./huida_barco";
 import { OctavioConsejo } from "./octavio_consejo";
 import { Cesarion } from "./cesarion";
+import { Particulas } from "./particulas";
+import { RayosLuz } from "./rayos_luz";
+import { Estrellas } from "./estrellas";
+import { Nubes } from "./nubes";
+import { Niebla } from "./niebla";
+import { Bokeh } from "./bokeh";
+import { Figura } from "./figura";
+import { Cielo } from "./cielo";
+import { Mar } from "./mar";
+import { Colinas } from "./colinas";
+import { Calle } from "./calle";
+import { SalaArcos } from "./sala_arcos";
+import { Vela } from "./vela";
+import { Ballena } from "./ballena";
+import { MapaMundo } from "./mapa_mundo";
+import { Volcan } from "./volcan";
+import { Cabana } from "./cabana";
+import { CampoMaiz } from "./campo_maiz";
+import { Criatura } from "./criatura";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -103,6 +122,9 @@ const REAL: Record<string, AssetFC> = {
   banquete: Banquete, esclavos: Esclavos, pierna_torcida: PiernaTorcida, parpados: Parpados, vendaje: Vendaje, escuela_mar: EscuelaMar, marco_lee: MarcoLee, oficina_grito: OficinaGrito, insomnio: Insomnio, circulo_control: CirculoControl,
   ugarit: Ugarit, naves_mar: NavesMar, sala_ugarit: SalaUgarit, dictado: Dictado, tablilla: Tablilla, mapa_bronce: MapaBronce,
   armero: Armero, campo_seco: CampoSeco, hitita: Hitita, hambre: Hambre, relieve_egipto: RelieveEgipto, excavacion: Excavacion, homero: Homero, celular_estano: CelularEstano,
+  // kit de look (D123): ambiente, personaje y escenarios componibles
+  particulas: Particulas, rayos_luz: RayosLuz, estrellas: Estrellas, nubes: Nubes, niebla: Niebla, bokeh: Bokeh, figura: Figura, cielo: Cielo, mar: Mar, colinas: Colinas, calle: Calle, sala_arcos: SalaArcos, vela: Vela, ballena: Ballena, mapa_mundo: MapaMundo,
+  volcan: Volcan, cabana: Cabana, campo_maiz: CampoMaiz, criatura: Criatura,
   cleopatra: Cleopatra, saco_cesar: SacoCesar, alejandria_noche: AlejandriaNoche, cabeza_pompeyo: CabezaPompeyo, ptolomeo_furia: PtolomeoFuria, pasillo_guardias: PasilloGuardias, nilo_ahogo: NiloAhogo, banquete_nilo: BanqueteNilo, foro: Foro, senadores_odio: SenadoresOdio, templo_venus: TemploVenus, idus_marzo: IdusMarzo, huida_barco: HuidaBarco, octavio_consejo: OctavioConsejo, cesarion: Cesarion,
 };
 

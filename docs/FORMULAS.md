@@ -80,3 +80,9 @@ parecían entre sí (los dos últimos de story-short: `escena` + `drama` + `bucl
 | Pruebas | `pipeline/tests/test_validate_script.py` |
 | Un guion de ejemplo por estructura | `templates/examples/{agua-rara-lista,agua-contra-hielo,dedos-historia,atardecer-cadena}/` |
 | Qué usaron los últimos videos | `tools/recent_formulas.py` |
+
+## Historias 2D (D123)
+- Gancho `paradoja`: pregunta con una cifra, un nombre propio o un contraste dentro.
+- Estructura `enigma`: `hook > conflicto > pista > climax > twist > cta`, para curiosidades y sucesos colectivos.
+- Cierre `remate_cta`: remate en `[twist]` + invitación corta en `[cta]` con CTA animado (`ShareCTA`, `ChatMock`).
+- Sección `## Ángulo` obligatoria en historias virales; guía en `templates/prompts/story2d_script_es.md`. Pruebas: `pipeline/tests/test_angulo.py`.

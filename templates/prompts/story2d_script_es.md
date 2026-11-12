@@ -1,16 +1,30 @@
-# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) o una nueva
+# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) y `enigma` (curiosidades)
 
 Escribes el guion de un short vertical de **60 a 70 s** (historia 2D; con el perfil viral, 170–240 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
 
 ## Entrada
 - El tema y `01_research.md` con los **hechos ancla verificados contra el texto original** (≥2 fuentes cada uno) y una sección **«Huecos»**: lo que las fuentes no cuentan (qué pensaba, qué se dijo en privado, quién miraba, cómo olía el lugar). Los huecos son donde va la ficción.
 
+## Ángulo: de una idea simple a un video que se ve entero y se envía (D123)
+Antes de proponer ganchos, decide estas seis cosas y escríbelas en `02_SCRIPT.md` (sección `## Ángulo`, la exige el validador). Salen de comparar cuatro videos muy virales (`docs/AnalisisVideosIA.md`) con los nuestros: todos abren una pregunta que no cuadra, la sostienen con datos que **se ven**, se abren a una imagen grande y rematan con una frase que se puede citar.
+
+| Línea | Qué es | Ejemplos |
+|---|---|---|
+| `- pregunta:` | La paradoja del tema dicha como pregunta: algo que no debería pasar y pasa. Es el bucle que el video abre en el segundo 0 y **no cierra hasta el remate** | «¿Por qué una ballena cruza medio planeta hacia un mar sin comida?» · «¿Cómo se le gana una discusión a Platón sin decir casi nada?» |
+| `- en_juego:` | Qué se pierde si sale mal (una vida, un trono, el prestigio, meses de hambre) | La vida de la cría · la definición de Platón delante de toda la Academia |
+| `- cifras:` | De 2 a 4 cifras del tema, **cada una con la imagen que la hace visible** (`cifra = imagen`). Sin cifras: `ninguna` | «ocho mil kilómetros = una ruta que cruza el mapa» · «once mil kilos = dos elefantes» · «setenta y un muertos = setenta y una velas» |
+| `- climax:` | La imagen grande a la que se abre el video hacia el 70 %: un mapa, una multitud, una ciudad entera, la sala completa reaccionando | El estadio lleno de velas · la sala estallando de risa ante el pollo |
+| `- remate:` | La frase (o el acto) que responde la pregunta y la reencuadra. Mejor de contraste: «no es X, es Y». Debe oírse casi literal en una línea `[twist]` | «Colombia no es su comedor. Es su sala de partos.» · «¡He aquí el hombre de Platón!» |
+| `- compartir:` | A quién se lo enviaría alguien y por qué: asombro, orgullo de lugar o de grupo, ternura, risa, «esto le pasó a…» | Orgullo: «se inventó aquí» · risa: un chiste de hace dos mil años |
+
+Si no encuentras la pregunta, el clímax o el remate, el tema todavía no tiene video: busca otro momento de la historia o otro dato. Las cifras se quedan en pocas y redondas; cada una debe poder dibujarse (ver la tabla «qué recurso para qué frase» de `story-short/SKILL.md`).
+
 ## Lo primero: una anécdota, contada en orden y en tercera persona (11 nov)
 Los videos que gustaron (diogenes-pollo, diogenes-alejandro, cartas-marco-aurelio) y los que no (colapso-bronce, cleopatra-saco) se diferencian en esto:
 - **Una sola anécdota con remate**, no una vida ni una época. Si el texto del usuario cubre años (Cleopatra: el saco, César, Roma, los idus, la huida), elige **el mejor momento** (la noche del saco) y vívelo; el resto cabe en 1–3 frases de contexto o de consecuencia.
 - **Tercera persona, como se le cuenta algo a un amigo**: «Su hermano le quitó el trono. Entonces llegó César. Cleopatra necesitaba verlo…». Cada frase con sujeto claro; pasado o presente, los dos valen. **Nunca «Eres X»**: el «tú» va solo en el gancho y en el cierre, o como testigo en la sala (el validador rechaza `pov: tu` en historias reales).
 - **El remate es concreto**: un acto o una frase que se entiende al instante («Apártate, me tapas el sol», el pollo desplumado, las cartas quemadas sin leer). Nada de metáforas de estructura («la última apuesta», «no la mataron siete barcos») ni rótulos conceptuales en pantalla.
-- **Solo `drama` o `alegoria`**: las estructuras inventadas obligan a descifrar la historia (el validador las rechaza con `ficcion:`).
+- **Solo `drama`, `alegoria` o `enigma`**: las estructuras inventadas obligan a descifrar la historia (el validador las rechaza con `ficcion:`).
 - **Con aire**: 60–70 s, frases completas. Si no cabe, quita hechos, no palabras de cada frase.
 
 ## Dramatización (la eliges tú; no se le pregunta al usuario)
@@ -66,6 +80,20 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 | `twist` | Lo que el relato revela, mostrado como un acto o una imagen que reencuadra todo (no una clase: «Para Platón…» como mucho una vez; la moraleja nunca se dice) | Vuelve a la imagen del principio, cargada de sentido |
 | `cta` | **Cierre en bucle**: la última frase no se despide, termina abierta (dos puntos o pregunta) y comparte una palabra de ≥5 letras con el gancho | La misma escena del gancho |
 
+## Estructura `enigma` (`structure: enigma`, para curiosidades y sucesos colectivos; D123)
+`[hook] → [conflicto]+ → [pista]+ → [climax] → [twist] → [cta]` (≥1 `conflicto`, ≥2 `pista`, `climax` obligatorio). Para temas sin un protagonista único con anécdota: por qué migra un animal, de dónde sale una fiesta, cómo nació un invento, qué hizo una ciudad entera. Se cuenta en tercera persona y en orden, como un misterio; no lleva `ficcion:` salvo que dramatices una escena.
+
+| Rol | Qué hace | Imagen que necesita |
+|---|---|---|
+| `hook` | La pregunta del ángulo, con la paradoja dentro (tipo `paradoja`), o la afirmación chocante equivalente | El protagonista del tema grande y ya en movimiento |
+| `conflicto` | El escenario que no cuadra: primero lo normal, luego lo absurdo («Y entonces hace algo absurdo.») | El lugar de partida con vida; el contraste entre dos mundos |
+| `pista` | Un dato por línea que acerca la respuesta sin darla. **Cada cifra con su imagen**; a mitad, una pista que lo cambia todo («Pero mira quién nada a su lado.») | Contador, mapa con ruta, calendario, reloj, equivalencia, comparación de tamaños |
+| `climax` | El video se abre: la escala completa del fenómeno | Plano que se aleja (`reveal`): mapa entero, multitud, ciudad |
+| `twist` | El remate: responde la pregunta del gancho y la reencuadra | La imagen más fuerte, cerca |
+| `cta` | `remate_cta`: invitación corta ligada al tema. `bucle`: frase abierta que el gancho continúa | La escena del remate (con el CTA animado) o la del gancho |
+
+Reglas propias: la pregunta del gancho **no se responde antes del `twist`** (si una pista la contesta, ya no hay motivo para seguir); una pista de cada dos trae algo que se ve moverse; nada de listas de datos sin hilo: cada pista responde a «¿y entonces por qué…?».
+
 ## Estructuras nuevas (D120) — no en historias
 Desde el 11 nov las historias (`ficcion:` declarada) usan solo `drama` o `alegoria`: lo de abajo queda para piezas sin historia real (reflexiones, experimentos mentales). Referencia: un
 **juicio** (`hook > acusacion > prueba > defensa > twist > cta`), una **carta o diario** (`hook > fecha > entrada > ultima_entrada > twist > cta`),
@@ -84,15 +112,24 @@ un **dilema** que el espectador decide (`hook > situacion > opcion_a > opcion_b 
 - Evita como palabra central una abstracción («conversación», «conciencia», «realidad», «sentido»): no pinta nada. Usa una **consecuencia concreta para el espectador** (tú + verbo + descubrimiento) o una imagen que se vea: «Cuando mueres, descubres que todos fueron tú.»
 - Con la voz `diego` (Chatterbox) el gancho debe tener unas 7 palabras para entrar en ≤3,2 s. Como afirmación en presente en 2.ª persona valida como `hook: escena`; `mito` y `contradiccion` exigen una forma más rígida.
 - El cierre en bucle retoma una palabra **clave y concreta** del gancho (p. ej. «todos»: «…¿y si todos fueran tú?»), no una abstracción repetida.
-- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta) y deja que elija. Los tres hablan del **momento** de la anécdota, con su protagonista por el nombre («Alejandro Magno te ofrece todo y le pides que se aparte»). Un gancho de tipo nuevo es opcional.
+- **Pregunta con paradoja** (`hook: paradoja`, D123): una pregunta vale si lleva dentro lo que no cuadra: una cifra, un nombre propio o un contraste («¿Por qué una ballena nada ocho mil kilómetros sin comer?», «¿Sabías que un equipo pidió que su rival fuera campeón sin jugar?»). Sigue prohibida la pregunta vacía («¿Alguna vez te has preguntado…?», «¿Qué hacen las ballenas en invierno?»). En pregunta no hace falta el «tú».
+- Antes de escribir, propón al usuario 3 ganchos distintos (uno concreto, uno de consecuencia, uno de pregunta con paradoja) y deja que elija. Los tres hablan del **momento** de la anécdota, con su protagonista por el nombre («Alejandro Magno te ofrece todo y le pides que se aparte»). Un gancho de tipo nuevo es opcional.
 
 ## Tono
 - Cercano, de tú a tú, como quien cuenta un chisme histórico que no se puede creer; suspenso en `rupture` y `ascent`, humor si el material lo da. Ni solemne ni de clase.
 - Una imagen por frase: cada línea del guion tiene que poder dibujarse con los assets del catálogo 2D (`python tools/catalog_search2d.py <palabras>`). Si un concepto central no tiene asset, créalo antes (ver el plan story-2d) o cambia la frase.
-- Cierra con una pregunta al espectador que lo haga volver al principio, no con moraleja cerrada.
+- Cierra con una pregunta al espectador que lo haga volver al principio, no con moraleja cerrada (`bucle`), o con el remate y una invitación corta (`remate_cta`).
+
+## Cierre: `bucle` o `remate_cta` (lo eliges tú, D123)
+| Cierre | Cómo es | Cuándo |
+|---|---|---|
+| `bucle` | La última frase queda abierta y el gancho la continúa; el video termina sin cola y se repite solo | El gancho es una afirmación que admite ser continuación; temas de filosofía o de «¿y si…?»; cuando el remate es un gesto y no una frase |
+| `remate_cta` | El último `[twist]` es la frase-remate; la `[cta]` es una invitación de ≤12 palabras que sale del tema («Envíaselo a quien todavía cree que vienen a comer.») y en pantalla lleva un CTA animado (`ShareCTA` o `ChatMock`) sobre la escena, 3–5 s | El remate es una frase redonda que pide cerrar; el tema se comparte por orgullo, ternura o asombro; `enigma` casi siempre |
+
+No hay datos fiables de cuál rinde más: por eso se elige por video y se compara en el canal con `tools/ingest_stats.py`. Nunca «sígueme para más» a secas.
 
 ## Formato de salida
-Igual que `script_es.md`, con cabecera `hook: mito|…|<nuevo>`, `structure: drama|alegoria|<nueva>` (con `beats:` si es nueva), `closing: bucle`, `ficcion:` y `pov:` (si es `drama`), la sección `## Fuentes` y, con ficción, `## Ficción` (`- ancla: …` / `- inventado: …`). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (con `01_research.md`). Después, `python pipeline/validate_script.py out/<id>/02_SCRIPT.md` hasta **PASA**.
+Igual que `script_es.md`, con cabecera `hook: mito|paradoja|…|<nuevo>`, `structure: drama|alegoria|enigma`, `closing: bucle|remate_cta`, `ficcion:` y `pov:` (si es `drama`), la sección `## Ángulo` (seis líneas), la sección `## Fuentes` y, con ficción, `## Ficción` (`- ancla: …` / `- inventado: …`). Ejemplo completo y vigente: `templates/examples/mito-caverna/` (con `01_research.md`). Después, `python pipeline/validate_script.py out/<id>/02_SCRIPT.md` hasta **PASA**.
 
 ## Perfil `pacing: viral` (por defecto en los videos nuevos)
 Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pacing: "viral"`. Todo lo que cambia está en `templates/pacing_viral.json` (una sola fuente de verdad) y lo comprueban `validate_script.py`, `validate_story2d.py` y el QA. Sin esa cabecera rigen las reglas de arriba.
@@ -103,15 +140,15 @@ Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pac
 | Regla | Valor |
 |---|---|
 | Duración | 60–70 s hablados (170–240 palabras con la voz `diego`); sin relleno ni pausas |
-| Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase. Prohibido: «¿Alguna vez…?», «Imagina que…», «¿Sabías que…?», «Solo conversación…», empezar por pregunta |
+| Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase, o una pregunta con la paradoja dentro (cifra, nombre propio o contraste). Prohibido: «¿Alguna vez…?», «Imagina que…», «Solo conversación…» y la pregunta vacía |
 | Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase; frases completas con sujeto, no telegramas |
-| Cierre en bucle | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |
+| Cierre en bucle (`closing: bucle`; la alternativa es `remate_cta`, arriba) | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |
 
 Ejemplo vigente (con story, `templates/examples/solipsismo-viral/`): gancho «Solo tú eres real. Los demás, decorado.». El gancho debe pasar igualmente la prueba de los 3 s: si una frase tan larga como la de un ejemplo de dos oraciones no cabe en 3 s hablados, deja la primera frase como gancho y mueve la segunda a la primera línea `[scene]`.
 
 ### Audio y tiempos (los aplica el pipeline)
 - Voz: `meta.voice.speed` ≥ 1,13 (+13 %, rango pedido +12–15 %) y pausas entre frases ≤150 ms (`pauseMaxMs`); el silencio de cada frase se recorta siempre. La velocidad y las pausas del perfil no se reajustan al medir (solo avisa si salen de 3,3–4,3 pal/s).
-- SFX: golpe grave (`impact`) en el segundo 0, barrido (`whoosh_soft`) en cada cambio de escena y `riser` 0,8 s antes de `rupture` y `twist`.
+- SFX: golpe grave (`impact`) en el segundo 0, barrido (`whoosh_soft`) en cada cambio de escena y `riser` 0,8 s antes de `rupture`, `climax` y `twist`.
 
 ### Visual y subtítulos del story
 - Un cambio (acción, overlay o sub-plano) cada 2,0–2,5 s; nunca más de 3 s sin cambios; ninguna cámara `hold`.

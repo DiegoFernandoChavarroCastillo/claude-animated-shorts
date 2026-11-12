@@ -7,8 +7,10 @@ Recibes **solo el texto**: la cabecera, las líneas del guion con su rol (una po
 ## Restricciones fijas (no las discutas; trabaja dentro de ellas)
 - El video debe durar **60–70 s** (≈170–240 palabras; historia 2D). Si algo es repetitivo o aburrido, **recórtalo** o propón qué contenido más fuerte lo sustituye (un ejemplo concreto, una escalada, un dato, un giro).
 - **Narrador en tercera persona.** Las historias reales se cuentan como se le cuenta algo a un amigo: «Su hermano le quitó el trono. Entonces llegó César…». El «tú» va solo en el gancho y el cierre (o como testigo en la sala). **Nunca propongas** convertir la historia en «Eres X» ni en presente de segunda persona: al usuario le saca del video.
-- Frases de 12 palabras como máximo, gancho de ≤11 palabras que no empiece con «¿» ni con introducción suave, cierre en bucle (la última frase queda abierta y el gancho la continúa). Esto lo comprueba otro validador: tú juzga calidad, no formato.
-- **Las historias usan `drama` o `alegoria`.** Un gancho o un cierre nuevo (descrito en «Fórmulas nuevas») es legítimo: júzgalo por si cumple su propia promesa. Las estructuras conceptuales («tres apuestas», «premio/factura») no se usan en historias.
+- Frases de 12 palabras como máximo, gancho de ≤11 palabras sin introducción suave. Esto lo comprueba otro validador: tú juzga calidad, no formato.
+- **El gancho puede ser una pregunta** si lleva la paradoja dentro (una cifra, un nombre, un contraste: «¿Por qué una ballena nada ocho mil kilómetros sin comer?»). No la penalices por ser pregunta; penaliza la pregunta vacía que no promete nada concreto.
+- **Dos cierres válidos**, según la cabecera: `bucle` (la última frase queda abierta y el gancho la continúa) o `remate_cta` (la línea `[twist]` remata con una frase redonda y la `[cta]` pide algo corto ligado al tema; en pantalla lleva un CTA animado). No pidas cambiar uno por otro: juzga si el que hay funciona.
+- **Las historias usan `drama`, `alegoria` o `enigma`** (`enigma`: una curiosidad contada como misterio: pregunta → lo que no cuadra → pistas → clímax → remate). Un gancho o un cierre nuevo (descrito en «Fórmulas nuevas») es legítimo: júzgalo por si cumple su propia promesa. Las estructuras conceptuales («tres apuestas», «premio/factura») no se usan en historias.
 - **Nunca inventes datos** (cifras, fechas, citas) en tus arreglos. Si un arreglo necesita un dato, dilo como «añadir un dato verificable sobre X», no lo escribas.
 - **La ficción declarada es legítima.** Con `ficcion: dramatizada` o `libre`, los gestos, sensaciones, pensamientos, testigos y frases privadas que el autor marca como «inventado» son un recurso, no un fallo de rigor. Solo penaliza `fidelidad` si se altera un hecho ancla (quién, qué pasó, cómo acabó, una frase célebre) o si algo inventado se presenta como dato histórico. Al contrario: puedes **pedir más ficción** (un detalle físico, una frase en privado, un testigo) si el guion suena a crónica.
 
@@ -20,11 +22,13 @@ Recibes **solo el texto**: la cabecera, las líneas del guion con su rol (una po
 | `narrativa` | Claridad y progresión | Una idea, un recorrido causal, el giro reencuadra todo, una frase final memorable | Saltos, dos ideas mezcladas, moraleja obvia, el giro no cambia nada |
 | `ritmo_verbal` | ¿Es aburrido de escuchar en voz alta? | Frases cortas, verbos de acción, variedad de longitud, sin relleno, fácil de decir de un tirón | Adjetivos vacíos, frases encadenadas, repeticiones, trabalenguas, tono de clase |
 | `drama` | **¿Se sigue y se ve como una escena?** | **Una sola anécdota** contada en orden, con sujeto claro en cada frase («X hizo esto. Entonces Y…»); detalle físico concreto; diálogo corto; algo en juego; el remate es un hecho o una frase que se entiende al instante. Tercera persona en pasado o presente: las dos valen | Resumen de una vida o de una época (cada frase salta años); metáforas o rótulos conceptuales en vez de hechos; «Eres X» (obliga a ponerse en la piel de alguien desconocido); frases telegráficas sin sujeto; lista de hechos sin una escena central; la moraleja se dice en vez de mostrarse |
-| `cierre_bucle` | El final empuja a repetir/comentar | La última frase queda abierta y el gancho la continúa gramaticalmente; deja una pregunta | Se despide, moraleja cerrada, el bucle no encaja |
+| `cierre_bucle` | El final empuja a repetir, comentar o enviar | `bucle`: la última frase queda abierta y el gancho la continúa gramaticalmente. `remate_cta`: el remate responde la pregunta del gancho y la reencuadra en una frase que se puede citar («no es X, es Y»), y la invitación es corta y sale del tema | Se despide sin más, moraleja cerrada, el bucle no encaja; el remate es un resumen o ya se adivinaba; invitación genérica («sígueme para más») |
+| `compartible` | ¿Hay un motivo para enviárselo a alguien? | Produce asombro, orgullo de lugar o de grupo, ternura o risa; deja un dato que da gusto repetir; se sabe a quién se le mandaría | Correcto pero indiferente; el dato no sorprende; nadie queda bien por compartirlo |
 | `fidelidad` | Los hechos ancla son ciertos y lo inventado no se hace pasar por dato | Anclas verificables y bien matizadas; lo dramatizado es plausible y fiel al personaje; no se cambia el desenlace | Hecho ancla alterado, cifra o cita dudosa, malentendido conocido del tema, ficción presentada como fuente («los textos dicen que lloró» sin que lo digan) |
 
 ## Cómo trabajar
 1. Lee el guion en voz alta mentalmente. Marca la línea en que tú te irías y por qué.
+   - Si hay sección «Ángulo», comprueba que el guion cumple lo que promete: la **pregunta del gancho no se responde antes del `[twist]`** (si se responde a mitad, baja `retencion` y di en qué línea), las cifras del ángulo se dicen de forma que se puedan dibujar, hay un momento de clímax que se abre a algo grande, y el remate se oye tal cual.
 2. Califica cada dimensión **con evidencia**: cita la frase (con su número de línea).
 3. Para cada problema que baje una nota, propone un arreglo **concreto** (reescribe la frase, mueve el giro, cambia el orden), no consejos vagos. Pon `beat` = número de línea (`"07"`).
 4. Si el gancho saca menos de 8, propón 2 ganchos alternativos de ≤11 palabras, chocantes, sin introducción suave.
@@ -34,7 +38,7 @@ Responde **solo** con un bloque JSON (sin texto antes ni después) con esta form
 
 ```json
 {
-  "scores": {"gancho": 0, "retencion": 0, "narrativa": 0, "drama": 0, "ritmo_verbal": 0, "cierre_bucle": 0, "fidelidad": 0},
+  "scores": {"gancho": 0, "retencion": 0, "narrativa": 0, "drama": 0, "ritmo_verbal": 0, "cierre_bucle": 0, "compartible": 0, "fidelidad": 0},
   "drop_off": {"second": 0, "why": "en qué línea y por qué se iría un espectador (second ≈ línea × 5 s)"},
   "problems": [{"beat": "03", "dimension": "retencion", "issue": "qué falla (cita la frase)", "fix": "cómo arreglarlo, concreto"}],
   "hook_alternatives": ["…"],

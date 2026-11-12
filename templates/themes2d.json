@@ -1,0 +1,321 @@
+{
+  "_nota": "Temas visuales del motor 2D (D123). Un tema es la dirección de arte completa de un video: paletas, luces, capas de ambiente, cama sonora y acabado (saturación, contraste, viñeta, velo superior). Va en `meta.theme` (y, si el video cambia de mundo, un segundo en `meta.themeAlt`). Lo elige Claude con los criterios de `elegir` y lo declara en una línea; no se le pregunta al usuario. Lo leen el motor (studio/src/flat2d/look.ts), pipeline/validate_story2d.py y la skill. `probado: false` = paletas definidas pero sin lámina de prueba aprobada: al usarlo por primera vez, saca la lámina (tools/gallery2d.py) y ajusta antes de renderizar. `skies` = degradado del cielo por paleta [arriba, medio, horizonte]; una paleta sin cielo usa uno derivado de sus colores.",
+  "themes": {
+    "vivo": {
+      "look": "Día o atardecer luminoso, colores saturados, personajes simpáticos.",
+      "when": "Curiosidades, naturaleza, costumbres, historias con humor. Por defecto si nada más encaja.",
+      "palettes": [
+        "dia",
+        "atardecer"
+      ],
+      "lights": [
+        "dia",
+        "atardecer",
+        "sol"
+      ],
+      "ambient": [
+        "nubes",
+        "particulas"
+      ],
+      "musicMood": "warm",
+      "sat": 1.1,
+      "contrast": 1.03,
+      "vignette": 0.14,
+      "veil": 0.1,
+      "probado": true
+    },
+    "noche_calida": {
+      "look": "Noche azul con luces cálidas: velas, farolillos, ventanas encendidas, estrellas.",
+      "when": "Tradiciones, fiestas, homenajes, historias emotivas.",
+      "palettes": [
+        "noche_luces",
+        "velas"
+      ],
+      "lights": [
+        "velas",
+        "luna",
+        "fuego"
+      ],
+      "ambient": [
+        "estrellas",
+        "particulas",
+        "bokeh"
+      ],
+      "musicMood": "warm",
+      "sat": 1.12,
+      "contrast": 1.04,
+      "vignette": 0.22,
+      "veil": 0.08,
+      "probado": true
+    },
+    "marmol": {
+      "look": "Piedra clara, sol mediterráneo, azul y oro.",
+      "when": "Grecia y Roma, filosofía con anécdota (Diógenes, Marco Aurelio).",
+      "palettes": [
+        "marmol",
+        "marmol_tarde"
+      ],
+      "lights": [
+        "dia",
+        "atardecer",
+        "sol"
+      ],
+      "ambient": [
+        "nubes",
+        "particulas",
+        "rayos_luz"
+      ],
+      "musicMood": "warm",
+      "sat": 1.08,
+      "contrast": 1.03,
+      "vignette": 0.14,
+      "veil": 0.1,
+      "probado": true
+    },
+    "drama_oscuro": {
+      "look": "Claroscuro: fondo profundo, un foco de luz fuerte, acento rojo.",
+      "when": "Traiciones, muertes, guerras, tragedias, misterio.",
+      "palettes": [
+        "claroscuro",
+        "sangre",
+        "idus",
+        "alejandria",
+        "cueva",
+        "noche",
+        "ugarit"
+      ],
+      "lights": [
+        "foco",
+        "fuego",
+        "velas",
+        "luna"
+      ],
+      "ambient": [
+        "particulas",
+        "niebla",
+        "rayos_luz"
+      ],
+      "musicMood": "tense",
+      "sat": 1.1,
+      "contrast": 1.08,
+      "vignette": 0.34,
+      "veil": 0.12,
+      "probado": true
+    },
+    "submarino": {
+      "look": "Turquesa con rayos de luz que bajan y partículas en suspensión.",
+      "when": "Mar, animales marinos, exploración.",
+      "palettes": [
+        "submarino"
+      ],
+      "lights": [
+        "submarino"
+      ],
+      "ambient": [
+        "rayos_luz",
+        "particulas"
+      ],
+      "musicMood": "warm",
+      "sat": 1.1,
+      "contrast": 1.03,
+      "vignette": 0.18,
+      "veil": 0.06,
+      "probado": true
+    },
+    "pergamino": {
+      "look": "Papel antiguo claro, tinta, sellos, mapas dibujados.",
+      "when": "Historia antigua con viajes, imperios, rutas, cartas.",
+      "palettes": [
+        "pergamino"
+      ],
+      "lights": [
+        "dia",
+        "ninguna"
+      ],
+      "ambient": [
+        "particulas"
+      ],
+      "musicMood": "warm",
+      "sat": 1.05,
+      "contrast": 1.04,
+      "vignette": 0.2,
+      "veil": 0.06,
+      "probado": true
+    },
+    "sueno": {
+      "look": "Degradados violeta y turquesa, formas flotantes, niebla y brillo.",
+      "when": "Alegorías, mitos, experimentos mentales, «¿y si…?».",
+      "palettes": [
+        "sueno",
+        "vacio"
+      ],
+      "lights": [
+        "luna",
+        "ninguna"
+      ],
+      "ambient": [
+        "estrellas",
+        "niebla",
+        "bokeh"
+      ],
+      "musicMood": "tense",
+      "sat": 1.12,
+      "contrast": 1.03,
+      "vignette": 0.22,
+      "veil": 0.08,
+      "probado": false
+    },
+    "cosmos": {
+      "look": "Negro azulado, estrellas, planetas, halos.",
+      "when": "Espacio, tiempo, escalas enormes, temas existenciales.",
+      "palettes": [
+        "cosmos"
+      ],
+      "lights": [
+        "luna",
+        "ninguna"
+      ],
+      "ambient": [
+        "estrellas",
+        "particulas"
+      ],
+      "musicMood": "tense",
+      "sat": 1.1,
+      "contrast": 1.06,
+      "vignette": 0.26,
+      "veil": 0.06,
+      "probado": false
+    },
+    "ciudad": {
+      "look": "Calle en perspectiva, fachadas, cielo claro, tráfico y gente.",
+      "when": "Historia moderna, inventos, sociedad, siglos XX y XXI.",
+      "palettes": [
+        "ciudad",
+        "atardecer",
+        "noche_luces"
+      ],
+      "lights": [
+        "dia",
+        "atardecer",
+        "velas"
+      ],
+      "ambient": [
+        "nubes",
+        "particulas"
+      ],
+      "musicMood": "warm",
+      "sat": 1.1,
+      "contrast": 1.03,
+      "vignette": 0.14,
+      "veil": 0.1,
+      "probado": false
+    },
+    "tinta": {
+      "look": "Dos tintas y siluetas sobre papel, textura de grabado.",
+      "when": "Leyendas, terror, ficción oscura, relatos «de reglas».",
+      "palettes": [
+        "tinta",
+        "claroscuro"
+      ],
+      "lights": [
+        "ninguna",
+        "foco"
+      ],
+      "ambient": [
+        "niebla",
+        "particulas"
+      ],
+      "musicMood": "tense",
+      "sat": 0.95,
+      "contrast": 1.08,
+      "vignette": 0.3,
+      "veil": 0.05,
+      "probado": false
+    }
+  },
+  "skies": {
+    "dia": [
+      "#2F8FE0",
+      "#7CC6F2",
+      "#D6F0FA"
+    ],
+    "atardecer": [
+      "#3A2A7A",
+      "#E0527A",
+      "#FFC46B"
+    ],
+    "noche_luces": [
+      "#070B2E",
+      "#1A2A7A",
+      "#4A3A8C"
+    ],
+    "velas": [
+      "#1A0A24",
+      "#4A1C3A",
+      "#8A4030"
+    ],
+    "marmol": [
+      "#3F9BE0",
+      "#A6DCF5",
+      "#F5F0E0"
+    ],
+    "marmol_tarde": [
+      "#5A6AC2",
+      "#F2A07A",
+      "#FFE0A8"
+    ],
+    "claroscuro": [
+      "#050308",
+      "#160C1C",
+      "#3A1C24"
+    ],
+    "sangre": [
+      "#100408",
+      "#3A0C14",
+      "#7A2018"
+    ],
+    "submarino": [
+      "#7CE8D0",
+      "#1FA8A0",
+      "#0A5C78"
+    ],
+    "pergamino": [
+      "#F3E4BC",
+      "#E8D5A8",
+      "#D4B67C"
+    ],
+    "sueno": [
+      "#1C1470",
+      "#6A3AC2",
+      "#F28AC8"
+    ],
+    "cosmos": [
+      "#02040F",
+      "#0A1240",
+      "#2A1C6C"
+    ],
+    "ciudad": [
+      "#3F9FE8",
+      "#9AD4F5",
+      "#E8F3F5"
+    ],
+    "tinta": [
+      "#F3EAD6",
+      "#EDE3CF",
+      "#D8C8A8"
+    ]
+  },
+  "elegir": [
+    "1. Emoción dominante del `## Ángulo`: asombro → vivo o cosmos; ternura u orgullo → noche_calida; tensión o tragedia → drama_oscuro; extrañeza → sueno o tinta.",
+    "2. Época y lugar: antigüedad → marmol o pergamino; moderno → ciudad; naturaleza → vivo o submarino.",
+    "3. Dónde ocurre el clímax: mapa o ruta → pergamino o cosmos; multitud o luces → noche_calida o ciudad.",
+    "4. Contraste con los subtítulos y con el gancho escrito: descarta el tema donde el texto blanco y amarillo no se lea sobre la franja 0,62–0,78.",
+    "5. Variedad del canal (tools/recent_formulas.py): no repetir el mismo tema tres videos seguidos salvo que sea claramente el mejor.",
+    "Cambio de tema dentro de un video: solo con sentido narrativo (salto al pasado, el giro), con `palette_shift`, y como mucho 2 temas (`meta.theme` y `meta.themeAlt`)."
+  ],
+  "reglas": {
+    "minPlanos": 3,
+    "minAmbiente": 1,
+    "maxRepeat": 80
+  }
+}

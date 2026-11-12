@@ -55,11 +55,12 @@ def apply_pacing(pacing: str | None) -> dict | None:
     return prof
 
 
-def metrics_for(engine: str = "3d", prof: dict | None = None) -> list:
+def metrics_for(engine: str = "3d", prof: dict | None = None, theme: str | None = None) -> list:
     """rangos de las métricas: los del 3D vienen de las referencias; los del 2D, de templates/qa2d_ranges.json (calibración propia, plan story-2d F6)"""
     if engine != "2d":
         return METRICS
-    ov = json.loads((ROOT / "templates" / "qa2d_ranges.json").read_text(encoding="utf-8"))["ranges"]
+    cfg = json.loads((ROOT / "templates" / "qa2d_ranges.json").read_text(encoding="utf-8"))
+    ov = {**cfg["ranges"], **(cfg.get("themed", {}) if theme else {})}   # con tema visual (D123) la imagen es luminosa y saturada
     if prof:   # perfil viral: casi sin pausas y locución más rápida
         ov = {**ov, "pct_quiet": prof["qa"]["pct_quiet"], "words_per_s": prof["qa"]["words_per_s"]}
     return [(n, k, tuple(ov.get(k, rng))) for n, k, rng in METRICS]
@@ -246,11 +247,11 @@ def caption_ok(c: dict) -> bool:
 
 
 def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d",
-          pacing: str | None = None, skip_beat: str | None = None) -> tuple[bool, list[str], dict]:
+          pacing: str | None = None, skip_beat: str | None = None, theme: str | None = None) -> tuple[bool, list[str], dict]:
     words = json.loads(words_path.read_text(encoding="utf-8")) if words_path else None
     prof = apply_pacing(pacing)
     m = measure(video, words)
-    rows = grade(m, metrics_for(engine, prof))
+    rows = grade(m, metrics_for(engine, prof, theme))
     rated = [r for r in rows if r[4] is not None]
     passed = sum(r[4] for r in rated)
     md = [f"**Estilo**: {passed}/{len(rated)} métricas en rango ({passed / max(1, len(rated)):.0%}; objetivo ≥{PASS_RATE:.0%}).", "",

@@ -65,6 +65,8 @@ def build_request_script(d: Path) -> str:
     fic = f"\n## Ficción que declara el autor (anclas = verificadas; inventado = dramatizado a propósito)\n{fic}\n" if fic else ""
     new = "\n".join(f"- {k}: {v}" for k, v in sc.new.items())
     fic += f"\n## Fórmulas nuevas que declara el autor (fuera del catálogo; júzgalas por su propia promesa)\n{new}\n" if new else ""
+    ang = "\n".join(f"- {k}: {v}" for k, v in sc.angle.items())
+    fic += f"\n## Ángulo que declara el autor (lo que promete el video: comprueba que el guion lo cumple)\n{ang}\n" if ang else ""
     return (f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows)
             + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}")
 
@@ -81,12 +83,24 @@ def build_request(d: Path) -> str:
         rows.append(f"### {b['id']} [{b['role']}] {t0:.1f}–{t1:.1f} s\n- Voz: {b['text']}\n- Se ve: {b.get('shows', '—')}\n"
                     f"- Cámara: {b['scene']['camera']['preset']} · sub-planos: {len(b.get('shots', []))} · acciones: {acts} · overlays: {ovs}")
     dur = words[-1]["end"] if words else 0
+    # D123: lo que el crítico necesita para puntuar `visualizacion` sin ver el video
+    from collections import Counter
+    from validate_script import numbers
+    from validate_story import script_closing
+    kinds = Counter(o["type"] for b in story["beats"] for o in b.get("overlays", []))
+    bare = [b["id"] for b in story["beats"] if numbers(b["text"], meta.get("lang", "es")) and not b.get("overlays") and not b.get("actions")]
+    wide = [b["id"] for b in story["beats"] if b["scene"]["camera"]["preset"] in ("pull_out", "reveal")
+            or any(s["camera"]["preset"] in ("pull_out", "reveal") for s in b.get("shots", []))]
+    sp = d / "02_SCRIPT.md"
+    closing = (script_closing(sp.read_text(encoding="utf-8")) if sp.exists() else None) or "—"
+    visual = (f"- Tema visual: {meta.get('theme', '—')} · overlays por tipo: {', '.join(f'{k} ×{n}' for k, n in kinds.most_common()) or 'ninguno'}\n"
+              f"- Beats con cifra y sin overlay ni acción: {', '.join(bare) or 'ninguno'} · planos que se abren (pull_out/reveal): {', '.join(wide) or 'ninguno'}\n")
     gap, at = event_gap(story, words)
     hook = [w for w in words if w["beat"] == story["beats"][0]["id"]]
     stats = (f"- Duración: {dur:.1f} s · palabras: {len(words)} ({len(words) / max(dur, 1):.2f} pal/s)\n"
              f"- Gancho dicho en: {hook[-1]['end']:.1f} s\n- Hueco máximo sin cambio visual: {gap:.1f} s (desde el s {at:.1f})\n"
              f"- Restricción: historia 2D, el video debe durar 60–70 s (35–59 s en el explainer)\n"
-             f"- Perfil: {meta.get('pacing', 'clásico')} · cierre: {'bucle' if story['beats'][-1]['role'] == 'cta' else '—'}")
+             f"{visual}- Perfil: {meta.get('pacing', 'clásico')} · cierre: {closing}")
     return f"# Story a calificar: {meta.get('title', d.name)}\n\n## Métricas\n{stats}\n\n## Beats\n\n" + "\n\n".join(rows) + "\n"
 
 
@@ -134,7 +148,7 @@ def md_report(rev: dict, kind: str = "story") -> str:
     v, sc, cfg, DIMS = rev["verdict"], rev["scores"], KINDS[kind]["cfg"], KINDS[kind]["dims"]
     out = [f"# Calificación del {KINDS[kind]['label']} · ronda {rev['round']}/{cfg['maxRounds']}", "",
            f"**{'APROBADO' if v['pass'] else 'DEVUELTO'}**: total {v['total']} (mínimo {cfg['minTotal']}), gancho {sc['gancho']} (mínimo {cfg['minGancho']}).", "",
-           "| dimensión | peso | nota |", "|---|---|---|", *[f"| {k} | {cfg['weights'][k]} | {sc[k]} |" for k in DIMS], ""]
+           "| dimensión | peso | nota |", "|---|---|---|", *[f"| {k} | {cfg['weights'][k]} | {sc.get(k, '—')} |" for k in DIMS], ""]   # una calificación anterior a D123 no trae las dimensiones nuevas
     if rev.get("summary"):
         out += [rev["summary"], ""]
     if rev.get("drop_off"):

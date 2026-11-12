@@ -275,7 +275,7 @@
     "cut": "Corte duro. Solo al cambiar de lugar; como mucho 3 por minuto."
   },
   "overlays": {
-    "StatCallout": { "fields": { "value": "número", "label": "texto en versalitas", "prefix": "opcional", "suffix": "opcional (\" %\", \" °C\")", "decimals": "opcional" }, "anchored": false, "numeric": true, "when": "Un número grande que cuenta desde 0. El dato más importante del beat." },
+    "StatCallout": { "fields": { "value": "número", "label": "texto en versalitas", "prefix": "opcional", "suffix": "opcional (\" %\", \" °C\")", "decimals": "opcional", "from": "opcional: número desde el que cuenta" }, "anchored": false, "numeric": true, "when": "Un número grande que cuenta desde 0 (o desde `from`). El dato más importante del beat." },
     "BarCompare": { "fields": { "items": "2–3 { label, value, color? }", "unit": "opcional", "max": "opcional", "decimals": "opcional" }, "anchored": false, "numeric": true, "when": "Comparar 2–3 cantidades." },
     "Gauge": { "fields": { "value": "0..1", "label": "texto", "low": "opcional", "high": "opcional" }, "anchored": false, "when": "Un nivel entre bajo y alto (relajado/estrés, poco/mucho)." },
     "Waveform": { "fields": { "kind": "pulse | sine | noise | spike (un solo pico que no se repite)", "labels": "opcional, lista de píldoras" }, "anchored": false, "when": "Una señal en el tiempo: pulso, movimiento, sonido." },
@@ -292,7 +292,11 @@
     "Callout3D": { "fields": { "text": "texto corto", "side": "left | right" }, "anchored": true, "when": "Etiqueta que señala una parte del objeto 3D." },
     "NoSymbol": { "fields": { "icon": "opcional", "label": "opcional" }, "anchored": false, "when": "Algo que NO pasa o no se puede: icono tachado." },
     "TitlePlaque": { "fields": { "title": "texto", "subtitle": "opcional" }, "anchored": false, "when": "Placa para citas históricas o nombres de obras." },
-    "ClockChip": { "fields": { "time": "\"02:47\"", "icon": "opcional" }, "anchored": false, "when": "Píldora con una hora." },
+    "ClockChip": { "fields": { "time": "\"02:47\"", "icon": "opcional", "from": "opcional: hora desde la que corre el reloj (\"11:57\")" }, "anchored": false, "when": "Píldora con una hora; con `from`, el reloj corre hasta `time`: pasan las horas, tres minutos después." },
+    "Calendar": { "fields": { "month": "\"DICIEMBRE\"", "day": "número", "from": "opcional: día desde el que pasan las hojas", "year": "opcional" }, "anchored": false, "when": "Hoja de calendario cuyas hojas pasan hasta el día: una fecha, un salto en el tiempo, 'el siete de diciembre'." },
+    "Equivalence": { "fields": { "count": "1–12 iconos", "icon": "ver icons", "label": "\"2 elefantes\"", "text": "opcional: la cifra original (\"11.000 kg\")" }, "anchored": false, "when": "Una cantidad convertida en cosas que se cuentan: los iconos entran uno a uno y debajo '= 2 elefantes'. Para que una cifra abstracta se vea." },
+    "ChatMock": { "fields": { "messages": "[{from: yo|otro, text}] (2–4)", "title": "opcional" }, "anchored": false, "when": "Chat genérico que se escribe solo, con burbujas que suben: CTA del cierre remate_cta ('escribe GRUPO'), un mensaje que llega." },
+    "ShareCTA": { "fields": { "text": "la invitación en pantalla", "follow": "Seguir", "share": "Compartir", "avatars": "2–7" }, "anchored": false, "when": "CTA animado del cierre remate_cta: avatares que se unen, botones Seguir y Compartir, un cursor que pulsa y confeti; sobre la escena del remate." },
     "Arrow3D": { "fields": { "from": "up | down | left | right (de dónde llega la flecha; por defecto up)", "text": "opcional", "len": "opcional (px)" }, "anchored": true, "when": "Flecha que señala una parte del objeto: 'mira aquí', por dónde entra o sale algo." },
     "Highlight": { "fields": { "shape": "circle | box", "r": "opcional (radio en px)" }, "anchored": true, "when": "Aro o marco que late alrededor de una parte del objeto: zona afectada, pieza clave." },
     "ZoomLens": { "fields": { "icon": "opcional (ver icons)", "text": "opcional", "side": "left | right" }, "anchored": true, "when": "Lupa con un icono: 'visto de cerca', lo que hay dentro de esa parte (virus, célula, átomo)." },

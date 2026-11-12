@@ -7,6 +7,14 @@ pacing: viral
 ficcion: dramatizada
 pov: testigo
 
+## Ángulo
+- pregunta: ¿cómo se le gana una discusión al filósofo más famoso de Atenas sin decir casi nada?
+- en_juego: la definición de Platón y su prestigio, delante de toda la Academia
+- cifras: ninguna
+- climax: el pollo desplumado en el mármol y la sala entera estallando de risa
+- remate: ¡He aquí el hombre de Platón!
+- compartir: a quien disfruta ver caer a un sabelotodo; es un chiste de hace dos mil años que aún funciona
+
 ## Guion
 [hook] Para Platón, tú y un pollo desplumado son lo mismo.
 [scene] Estás en Atenas, sentado en la Academia. Aquí enseña Aristocles. Todos lo llaman Platón: el Ancho.

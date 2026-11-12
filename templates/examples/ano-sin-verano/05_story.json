@@ -1,0 +1,2042 @@
+{
+ "meta": {
+  "id": "ano-sin-verano",
+  "lang": "es",
+  "title": "El año sin verano: de la nieve en junio a Frankenstein",
+  "topic": "1816",
+  "hookTitle": "1816: nieve en junio",
+  "engine": "2d",
+  "pacing": "viral",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "voice": {
+   "engine": "chatterbox",
+   "voice": "diego",
+   "speed": 1.2
+  },
+  "music": true,
+  "musicMood": "tense",
+  "captionEmphasis": "accent",
+  "tailS": 0.3,
+  "theme": "drama_oscuro",
+  "themeAlt": "vivo"
+ },
+ "beats": [
+  {
+   "id": "b01",
+   "role": "hook",
+   "text": "En mil ochocientos dieciséis nevó en junio, ¿quién apagó el verano?",
+   "shows": "una granja de madera de Nueva Inglaterra cubierta de nieve en plena noche mientras sigue nevando; el humo sale de la chimenea",
+   "keywords": [
+    "junio,",
+    "nevó",
+    "verano?"
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "luna",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "luna",
+       "x": 74,
+       "y": 30,
+       "r": 5
+      }
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 1,
+      "opts": {
+       "y": 0.55,
+       "a": 0.35
+      }
+     },
+     {
+      "asset": "cabana",
+      "id": "casa",
+      "z": 3,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 0.95,
+      "opts": {
+       "nieve": true
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "nieve_fondo",
+      "z": 2,
+      "opts": {
+       "kind": "nieve",
+       "n": 40
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "nieve",
+      "z": 8,
+      "opts": {
+       "kind": "nieve",
+       "n": 60
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.48,
+      1.05
+     ],
+     "to": [
+      0.5,
+      0.46,
+      1.22
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "pop",
+     "at": "En",
+     "target": "casa",
+     "dur": 14,
+     "scale": 1.04
+    },
+    {
+     "type": "tremble",
+     "at": "apagó",
+     "target": "casa",
+     "dur": 18,
+     "amp": 3
+    }
+   ],
+   "overlays": [],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b02",
+   "role": "conflicto",
+   "text": "Es junio, en Nueva Inglaterra. El maíz ya asoma en los campos.",
+   "shows": "campos verdes de Nueva Inglaterra a pleno sol con brotes de maíz recién nacidos en los surcos",
+   "keywords": [
+    "junio,",
+    "Inglaterra.",
+    "maíz"
+   ],
+   "scene": {
+    "palette": "dia",
+    "light": "dia",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "sol",
+       "x": 74,
+       "y": 36,
+       "r": 7
+      }
+     },
+     {
+      "asset": "nubes",
+      "id": "nubes",
+      "z": 1
+     },
+     {
+      "asset": "colinas",
+      "id": "colinas",
+      "z": 2
+     },
+     {
+      "asset": "campo_maiz",
+      "id": "campo",
+      "z": 3,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 1.15
+     },
+     {
+      "asset": "figura",
+      "id": "granjero",
+      "z": 5,
+      "at": [
+       0.12,
+       0.6
+      ],
+      "scale": 0.2,
+      "opts": {
+       "ropa": "actual",
+       "color": "#7A4A2A",
+       "color2": "#3A3A4A",
+       "tocado": "sombrero",
+       "barba": true,
+       "mira": 0.6
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polen",
+      "z": 8,
+      "opts": {
+       "kind": "polvo",
+       "n": 30
+      }
+     }
+    ],
+    "camera": {
+     "preset": "pan_slow",
+     "from": [
+      0.5,
+      0.4,
+      1.1
+     ],
+     "to": [
+      0.5,
+      0.52,
+      1.18
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "appear",
+     "at": "maíz",
+     "target": "campo",
+     "dur": 18
+    },
+    {
+     "type": "walk",
+     "at": "Es",
+     "target": "granjero",
+     "dur": 70
+    },
+    {
+     "type": "slide",
+     "at": "Es",
+     "target": "granjero",
+     "dur": 70,
+     "dx": 0.22
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Inglaterra.",
+     "text": "NUEVA INGLATERRA",
+     "slot": "top"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b03",
+   "role": "conflicto",
+   "text": "Una mañana, un granjero abre la puerta y se queda helado. Pisa nieve hasta los tobillos.",
+   "shows": "por la mañana un granjero abre la puerta de su granja y se lleva las manos a la cara al ver todo nevado",
+   "keywords": [
+    "granjero",
+    "puerta",
+    "helado."
+   ],
+   "scene": {
+    "palette": "dia",
+    "light": "dia",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "ninguno"
+      }
+     },
+     {
+      "asset": "cabana",
+      "id": "casa",
+      "z": 2,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 0.95,
+      "opts": {
+       "nieve": true
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "granjero",
+      "z": 5,
+      "at": [
+       0.62,
+       0.62
+      ],
+      "scale": 0.22,
+      "opts": {
+       "ropa": "actual",
+       "color": "#7A4A2A",
+       "color2": "#3A3A4A",
+       "tocado": "sombrero",
+       "barba": true,
+       "mira": -0.4
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "nieve",
+      "z": 8,
+      "opts": {
+       "kind": "nieve",
+       "n": 45
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.52,
+      0.5,
+      1.1
+     ],
+     "to": [
+      0.58,
+      0.5,
+      1.45
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "open",
+     "at": "abre",
+     "target": "casa",
+     "dur": 18
+    },
+    {
+     "type": "appear",
+     "at": "granjero",
+     "target": "granjero",
+     "dur": 12
+    },
+    {
+     "type": "fear",
+     "at": "helado.",
+     "target": "granjero",
+     "dur": 14
+    }
+   ],
+   "shots": [
+    {
+     "at": "Pisa",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.62,
+       0.46,
+       1.7
+      ],
+      "to": [
+       0.62,
+       0.6,
+       2.1
+      ]
+     }
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b04",
+   "role": "conflicto",
+   "text": "Todo está blanco. Está nevando en pleno verano.",
+   "shows": "el campo de maíz se cubre de escarcha y nieve en pleno verano; una hoja de calendario marca junio",
+   "keywords": [
+    "blanco.",
+    "nevando",
+    "verano."
+   ],
+   "scene": {
+    "palette": "dia",
+    "light": "dia",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "sol",
+       "x": 70,
+       "y": 40,
+       "r": 5
+      }
+     },
+     {
+      "asset": "colinas",
+      "id": "colinas",
+      "z": 1,
+      "opts": {
+       "verde": false
+      }
+     },
+     {
+      "asset": "campo_maiz",
+      "id": "campo",
+      "z": 3,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 1.15
+     },
+     {
+      "asset": "particulas",
+      "id": "nieve",
+      "z": 8,
+      "opts": {
+       "kind": "nieve",
+       "n": 80
+      }
+     }
+    ],
+    "camera": {
+     "preset": "pull_out",
+     "from": [
+      0.5,
+      0.56,
+      1.3
+     ],
+     "to": [
+      0.5,
+      0.5,
+      1.08
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "freeze",
+     "at": "blanco.",
+     "target": "campo",
+     "dur": 40
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Calendar",
+     "at": "nevando",
+     "month": "JUNIO",
+     "day": 6,
+     "from": 1,
+     "year": "1816",
+     "slot": "top"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b05",
+   "role": "conflicto",
+   "text": "La helada quema los brotes. Y vuelve al mes siguiente. Y al otro.",
+   "shows": "de noche la helada quema los brotes de maíz; las hojas del calendario pasan a julio",
+   "keywords": [
+    "helada",
+    "brotes.",
+    "siguiente."
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "luna",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "luna",
+       "x": 30,
+       "y": 34,
+       "r": 5
+      }
+     },
+     {
+      "asset": "estrellas",
+      "id": "estrellas",
+      "z": 1,
+      "opts": {
+       "hasta": 0.35
+      }
+     },
+     {
+      "asset": "campo_maiz",
+      "id": "campo",
+      "z": 3,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 1.15
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 6,
+      "opts": {
+       "y": 0.6,
+       "a": 0.4
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.56,
+      1.1
+     ],
+     "to": [
+      0.5,
+      0.6,
+      1.4
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "freeze",
+     "at": "quema",
+     "target": "campo",
+     "dur": 30
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Calendar",
+     "at": "siguiente.",
+     "month": "JULIO",
+     "day": 8,
+     "from": 1,
+     "year": "1816",
+     "slot": "top"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b06",
+   "role": "pista",
+   "text": "En Europa no nieva, pero llueve sin parar durante semanas. El trigo se pudre en el campo.",
+   "shows": "un pueblo europeo de piedra bajo una lluvia que no para; charcos y niebla en la calle",
+   "keywords": [
+    "Europa",
+    "llueve",
+    "semanas.",
+    "pudre"
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "luna",
+    "layers": [
+     {
+      "asset": "calle",
+      "id": "pueblo",
+      "z": 1,
+      "opts": {
+       "epoca": "antigua",
+       "luces": 0.25
+      }
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 2,
+      "opts": {
+       "y": 0.6,
+       "a": 0.4
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "lluvia_lejos",
+      "z": 0,
+      "opts": {
+       "kind": "lluvia",
+       "n": 60
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "lluvia",
+      "z": 8,
+      "opts": {
+       "kind": "lluvia",
+       "n": 110
+      }
+     }
+    ],
+    "camera": {
+     "preset": "pan_slow",
+     "from": [
+      0.4,
+      0.48,
+      1.15
+     ],
+     "to": [
+      0.6,
+      0.5,
+      1.2
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "lights_on",
+     "at": "semanas.",
+     "target": "pueblo",
+     "dur": 30
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Europa",
+     "text": "EUROPA, 1816",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "pudre",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.5,
+       0.56,
+       1.3
+      ],
+      "to": [
+       0.5,
+       0.6,
+       1.45
+      ]
+     }
+    }
+   ],
+   "transition": "cut"
+  },
+  {
+   "id": "b07",
+   "role": "pista",
+   "text": "Frente a una panadería vacía, una multitud grita: ¡pan o sangre!",
+   "shows": "frente a una panadería vacía una multitud enfadada levanta los brazos y grita pan o sangre",
+   "keywords": [
+    "panadería",
+    "multitud",
+    "sangre!"
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "calle",
+      "id": "pueblo",
+      "z": 1,
+      "opts": {
+       "epoca": "antigua",
+       "luces": 0.4
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "multitud",
+      "z": 4,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 0.16,
+      "opts": {
+       "vario": true,
+       "ropa": "tunica",
+       "gesto": "enojado",
+       "pose": "senala"
+      },
+      "repeat": {
+       "n": 14,
+       "cols": 7,
+       "dx": 0.13,
+       "dy": 0.035,
+       "depth": 0.86,
+       "stagger": 2
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "chispas",
+      "z": 8,
+      "opts": {
+       "kind": "chispas",
+       "n": 20
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.52,
+      1.1
+     ],
+     "to": [
+      0.5,
+      0.5,
+      1.3
+     ]
+    },
+    "lights": [
+     {
+      "at": [
+       0.2,
+       0.5
+      ],
+      "r": 0.25,
+      "a": 0.5,
+      "flicker": true
+     },
+     {
+      "at": [
+       0.82,
+       0.48
+      ],
+      "r": 0.25,
+      "a": 0.5,
+      "flicker": true
+     }
+    ]
+   },
+   "actions": [
+    {
+     "type": "appear",
+     "at": "multitud",
+     "target": "multitud",
+     "dur": 16
+    },
+    {
+     "type": "cheer",
+     "at": "grita",
+     "target": "multitud",
+     "dur": 30
+    },
+    {
+     "type": "camshake",
+     "at": "sangre!",
+     "amp": 8
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "sangre!",
+     "text": "¡PAN O SANGRE!",
+     "slot": "top"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b08",
+   "role": "pista",
+   "text": "Nadie sabe la causa. Pero el cielo da una pista: atardeceres rojos como brasas.",
+   "shows": "un atardecer rojo intenso sobre las colinas, con nubes en bandas; el sol baja como una brasa",
+   "keywords": [
+    "causa.",
+    "cielo",
+    "rojos",
+    "brasas."
+   ],
+   "scene": {
+    "palette": "atardecer",
+    "light": "atardecer",
+    "layers": [
+     {
+      "asset": "cielo",
+      "id": "cielo",
+      "z": 0,
+      "opts": {
+       "astro": "sol",
+       "x": 50,
+       "y": 70,
+       "r": 10
+      }
+     },
+     {
+      "asset": "nubes",
+      "id": "nubes",
+      "z": 1,
+      "opts": {
+       "tipo": "franja",
+       "n": 7,
+       "hasta": 0.55
+      }
+     },
+     {
+      "asset": "colinas",
+      "id": "colinas",
+      "z": 2,
+      "opts": {
+       "verde": false,
+       "arboles": 4
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "mira",
+      "z": 5,
+      "at": [
+       0.36,
+       0.61
+      ],
+      "scale": 0.2,
+      "opts": {
+       "ropa": "actual",
+       "color": "#3A2A3A",
+       "mira": 0.6,
+       "gesto": "sorpresa",
+       "tocado": "sombrero"
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 8,
+      "opts": {
+       "kind": "polvo",
+       "n": 30
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.36,
+      0.47,
+      1.9
+     ],
+     "to": [
+      0.36,
+      0.47,
+      2.1
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "set",
+     "at": "brasas.",
+     "target": "cielo",
+     "dur": 40
+    },
+    {
+     "type": "turn",
+     "at": "cielo",
+     "target": "mira",
+     "dur": 14
+    }
+   ],
+   "shots": [
+    {
+     "at": "cielo",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.4,
+       0.42,
+       1.6
+      ],
+      "to": [
+       0.5,
+       0.36,
+       1.4
+      ]
+     }
+    },
+    {
+     "at": "como",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.5,
+       0.38,
+       1.4
+      ],
+      "to": [
+       0.5,
+       0.45,
+       1.05
+      ]
+     }
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b09",
+   "role": "pista",
+   "text": "Un año antes, en Indonesia, reventó el volcán Tambora. La mayor erupción registrada.",
+   "shows": "en Indonesia el volcán Tambora revienta de noche: una columna de ceniza con rayos y lava por las laderas",
+   "keywords": [
+    "Indonesia,",
+    "Tambora.",
+    "erupción"
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "estrellas",
+      "id": "estrellas",
+      "z": 0,
+      "opts": {
+       "hasta": 0.5
+      }
+     },
+     {
+      "asset": "volcan",
+      "id": "volcan",
+      "z": 1
+     },
+     {
+      "asset": "particulas",
+      "id": "ceniza",
+      "z": 8,
+      "opts": {
+       "kind": "chispas",
+       "n": 30
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.52,
+      0.5,
+      1.05
+     ],
+     "to": [
+      0.52,
+      0.44,
+      1.25
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "erupt",
+     "at": "reventó",
+     "target": "volcan",
+     "dur": 60
+    },
+    {
+     "type": "camshake",
+     "at": "Tambora.",
+     "amp": 12
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Indonesia,",
+     "text": "TAMBORA, ABRIL 1815",
+     "slot": "top"
+    }
+   ],
+   "shots": [],
+   "transition": "swipe"
+  },
+  {
+   "id": "b10",
+   "role": "climax",
+   "text": "Su columna subió cuarenta y tres kilómetros, más alto que las nubes.",
+   "shows": "la columna de ceniza del Tambora sube más alta que las nubes; un contador marca cuarenta y tres kilómetros",
+   "keywords": [
+    "columna",
+    "cuarenta",
+    "nubes."
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "fuego",
+    "layers": [
+     {
+      "asset": "estrellas",
+      "id": "estrellas",
+      "z": 0,
+      "opts": {
+       "hasta": 0.6
+      }
+     },
+     {
+      "asset": "volcan",
+      "id": "volcan",
+      "z": 1,
+      "init": {
+       "erupt": 1
+      }
+     },
+     {
+      "asset": "nubes",
+      "id": "nubes",
+      "z": 3,
+      "opts": {
+       "n": 4,
+       "hasta": 0.55
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "ceniza",
+      "z": 8,
+      "opts": {
+       "kind": "chispas",
+       "n": 30
+      }
+     }
+    ],
+    "camera": {
+     "preset": "reveal",
+     "from": [
+      0.52,
+      0.18,
+      2.0
+     ],
+     "to": [
+      0.52,
+      0.45,
+      1.0
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "type": "Equivalence",
+     "at": "cuarenta",
+     "count": 5,
+     "icon": "mountain",
+     "label": "casi 5 Everest",
+     "text": "43 km de altura",
+     "slot": "center"
+    }
+   ],
+   "actions": [
+    {
+     "type": "tremble",
+     "at": "subió",
+     "target": "volcan",
+     "dur": 20,
+     "amp": 2
+    }
+   ],
+   "shots": [
+    {
+     "at": "kilómetros,",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.52,
+       0.45,
+       1.1
+      ],
+      "to": [
+       0.52,
+       0.26,
+       1.35
+      ]
+     }
+    },
+    {
+     "at": "nubes.",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.52,
+       0.3,
+       1.3
+      ],
+      "to": [
+       0.52,
+       0.45,
+       1.0
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b11",
+   "role": "climax",
+   "text": "Un velo de azufre dio la vuelta al mundo. Y tapó el sol durante meses.",
+   "shows": "la Tierra vista desde el espacio: un velo de azufre nace en Indonesia, se extiende alrededor del planeta y lo oscurece",
+   "keywords": [
+    "velo",
+    "azufre",
+    "mundo.",
+    "meses."
+   ],
+   "scene": {
+    "palette": "noche",
+    "light": "ninguna",
+    "layers": [
+     {
+      "asset": "estrellas",
+      "id": "estrellas",
+      "z": 0,
+      "opts": {
+       "hasta": 1,
+       "n": 120
+      }
+     },
+     {
+      "asset": "mapa_mundo",
+      "id": "globo",
+      "z": 2,
+      "scale": 1.3,
+      "opts": {
+       "vista": "globo",
+       "centro": [
+        62,
+        22
+       ],
+       "origen": [
+        118,
+        -8.2
+       ],
+       "puntos": [
+        [
+         118,
+         -8.2
+        ],
+        [
+         6.1,
+         46.2
+        ],
+        [
+         -1.5,
+         52.5
+        ],
+        [
+         2.3,
+         48.9
+        ]
+       ]
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 8,
+      "opts": {
+       "kind": "polvo",
+       "n": 18
+      }
+     }
+    ],
+    "camera": {
+     "preset": "reveal",
+     "from": [
+      0.5,
+      0.55,
+      1.8
+     ],
+     "to": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "light_points",
+     "at": "Un",
+     "target": "globo",
+     "dur": 12
+    },
+    {
+     "type": "veil",
+     "at": "velo",
+     "target": "globo",
+     "dur": 70
+    }
+   ],
+   "shots": [
+    {
+     "at": "mundo.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.5,
+       0.5,
+       1.0
+      ],
+      "to": [
+       0.48,
+       0.42,
+       1.25
+      ]
+     }
+    }
+   ],
+   "overlays": [],
+   "transition": "swipe"
+  },
+  {
+   "id": "b12",
+   "role": "twist",
+   "text": "La lluvia llega hasta Suiza. Lord Byron y sus amigos quedan encerrados junto al lago.",
+   "shows": "en una villa de piedra junto al lago de Ginebra, de noche y con lluvia tras los arcos, Lord Byron y sus amigos encerrados a la luz de las velas",
+   "keywords": [
+    "lluvia",
+    "Suiza.",
+    "Byron",
+    "lago."
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "velas",
+    "layers": [
+     {
+      "asset": "sala_arcos",
+      "id": "sala",
+      "z": 1,
+      "opts": {
+       "estilo": "piedra",
+       "cortinas": true
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "lluvia_fuera",
+      "z": 0,
+      "opts": {
+       "kind": "lluvia",
+       "n": 80
+      },
+      "par": 0.3
+     },
+     {
+      "asset": "vela",
+      "id": "velas",
+      "z": 6,
+      "at": [
+       0.5,
+       0.635
+      ],
+      "scale": 0.06,
+      "repeat": {
+       "n": 5,
+       "cols": 5,
+       "dx": 0.2,
+       "jitter": 0.3
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "percy",
+      "z": 5,
+      "at": [
+       0.3,
+       0.6
+      ],
+      "scale": 0.18,
+      "opts": {
+       "ropa": "actual",
+       "color": "#2A3A5A",
+       "color2": "#1A1A2A",
+       "pelo": "rizado",
+       "mira": 0.5
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "mary",
+      "z": 5,
+      "at": [
+       0.46,
+       0.6
+      ],
+      "scale": 0.17,
+      "opts": {
+       "ropa": "vestido",
+       "color": "#4A3A6A",
+       "pelo": "largo",
+       "mira": 0.6
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "polidori",
+      "z": 5,
+      "at": [
+       0.58,
+       0.6
+      ],
+      "scale": 0.17,
+      "opts": {
+       "ropa": "actual",
+       "color": "#3A2A2A",
+       "color2": "#1A1A1A",
+       "mira": 0.6
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "byron",
+      "z": 5,
+      "at": [
+       0.78,
+       0.6
+      ],
+      "scale": 0.2,
+      "opts": {
+       "ropa": "actual",
+       "color": "#1A1A2A",
+       "color2": "#7A1A1A",
+       "pelo": "rizado",
+       "mira": -0.7,
+       "gesto": "serio"
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 9,
+      "opts": {
+       "kind": "polvo",
+       "n": 24
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.5,
+      1.05
+     ],
+     "to": [
+      0.52,
+      0.48,
+      1.25
+     ]
+    },
+    "lights": [
+     {
+      "at": [
+       0.5,
+       0.56
+      ],
+      "r": 0.55,
+      "a": 0.6,
+      "color": "#FFB060",
+      "flicker": true
+     },
+     {
+      "at": [
+       0.15,
+       0.6
+      ],
+      "r": 0.25,
+      "a": 0.5,
+      "color": "#FFB060",
+      "flicker": true
+     }
+    ]
+   },
+   "shots": [
+    {
+     "at": "Suiza.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.5,
+       0.3,
+       1.6
+      ],
+      "to": [
+       0.5,
+       0.3,
+       1.75
+      ]
+     }
+    },
+    {
+     "at": "encerrados",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.62,
+       0.46,
+       1.35
+      ],
+      "to": [
+       0.66,
+       0.44,
+       1.5
+      ]
+     }
+    }
+   ],
+   "actions": [
+    {
+     "type": "appear",
+     "at": "Byron",
+     "target": "byron",
+     "dur": 12
+    },
+    {
+     "type": "appear",
+     "at": "amigos",
+     "target": "percy",
+     "dur": 12
+    },
+    {
+     "type": "sit",
+     "at": "encerrados",
+     "target": "polidori",
+     "dur": 16
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Suiza.",
+     "text": "VILLA DIODATI, 1816",
+     "slot": "top"
+    }
+   ],
+   "transition": "cut"
+  },
+  {
+   "id": "b13",
+   "role": "twist",
+   "text": "Aburrido, Byron los reta: cada uno escribirá una historia de fantasmas.",
+   "shows": "Byron, aburrido, señala a sus amigos a la luz de las velas y los reta a escribir una historia de fantasmas",
+   "keywords": [
+    "Aburrido,",
+    "reta:",
+    "fantasmas."
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "velas",
+    "layers": [
+     {
+      "asset": "sala_arcos",
+      "id": "sala",
+      "z": 1,
+      "opts": {
+       "estilo": "piedra",
+       "cortinas": true
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "lluvia_fuera",
+      "z": 0,
+      "opts": {
+       "kind": "lluvia",
+       "n": 80
+      },
+      "par": 0.3
+     },
+     {
+      "asset": "vela",
+      "id": "velas",
+      "z": 6,
+      "at": [
+       0.5,
+       0.635
+      ],
+      "scale": 0.06,
+      "repeat": {
+       "n": 5,
+       "cols": 5,
+       "dx": 0.2,
+       "jitter": 0.3
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "percy",
+      "z": 5,
+      "at": [
+       0.3,
+       0.6
+      ],
+      "scale": 0.18,
+      "opts": {
+       "ropa": "actual",
+       "color": "#2A3A5A",
+       "color2": "#1A1A2A",
+       "pelo": "rizado",
+       "mira": 0.5
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "mary",
+      "z": 5,
+      "at": [
+       0.46,
+       0.6
+      ],
+      "scale": 0.17,
+      "opts": {
+       "ropa": "vestido",
+       "color": "#4A3A6A",
+       "pelo": "largo",
+       "mira": 0.6
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "polidori",
+      "z": 5,
+      "at": [
+       0.58,
+       0.6
+      ],
+      "scale": 0.17,
+      "opts": {
+       "ropa": "actual",
+       "color": "#3A2A2A",
+       "color2": "#1A1A1A",
+       "mira": 0.6
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "byron",
+      "z": 5,
+      "at": [
+       0.78,
+       0.6
+      ],
+      "scale": 0.2,
+      "opts": {
+       "ropa": "actual",
+       "color": "#1A1A2A",
+       "color2": "#7A1A1A",
+       "pelo": "rizado",
+       "mira": -0.7,
+       "gesto": "serio"
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 9,
+      "opts": {
+       "kind": "polvo",
+       "n": 24
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.5,
+      1.05
+     ],
+     "to": [
+      0.5,
+      0.5,
+      1.15
+     ]
+    },
+    "lights": [
+     {
+      "at": [
+       0.5,
+       0.56
+      ],
+      "r": 0.55,
+      "a": 0.6,
+      "color": "#FFB060",
+      "flicker": true
+     },
+     {
+      "at": [
+       0.15,
+       0.6
+      ],
+      "r": 0.25,
+      "a": 0.5,
+      "color": "#FFB060",
+      "flicker": true
+     }
+    ]
+   },
+   "actions": [
+    {
+     "type": "point",
+     "at": "reta:",
+     "target": "byron",
+     "dur": 16
+    },
+    {
+     "type": "talk",
+     "at": "escribirá",
+     "target": "byron",
+     "dur": 50
+    },
+    {
+     "type": "nod",
+     "at": "fantasmas.",
+     "target": "mary",
+     "dur": 20
+    }
+   ],
+   "shots": [
+    {
+     "at": "Aburrido,",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.66,
+       0.46,
+       1.4
+      ],
+      "to": [
+       0.7,
+       0.44,
+       1.55
+      ]
+     }
+    },
+    {
+     "at": "cada",
+     "camera": {
+      "preset": "pan_slow",
+      "from": [
+       0.7,
+       0.44,
+       1.5
+      ],
+      "to": [
+       0.4,
+       0.46,
+       1.35
+      ]
+     }
+    }
+   ],
+   "overlays": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b14",
+   "role": "twist",
+   "text": "Mary Shelley, de dieciocho años, pasa días sin una idea. Una noche, desvelada, lo ve. Un estudiante arrodillado junto a un cadáver que se mueve.",
+   "shows": "Mary Shelley, de dieciocho años, piensa a la luz de una vela; una noche ve en la oscuridad a un estudiante arrodillado junto a un cadáver que empieza a moverse",
+   "keywords": [
+    "Mary",
+    "idea.",
+    "desvelada,",
+    "cadáver"
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "velas",
+    "layers": [
+     {
+      "asset": "sala_arcos",
+      "id": "sala",
+      "z": 1,
+      "opts": {
+       "estilo": "piedra",
+       "cortinas": true
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "lluvia_fuera",
+      "z": 0,
+      "opts": {
+       "kind": "lluvia",
+       "n": 80
+      },
+      "par": 0.3
+     },
+     {
+      "asset": "criatura",
+      "id": "criatura",
+      "z": 3,
+      "at": [
+       0.76,
+       0.6
+      ],
+      "scale": 0.36
+     },
+     {
+      "asset": "figura",
+      "id": "mary",
+      "z": 5,
+      "at": [
+       0.3,
+       0.61
+      ],
+      "scale": 0.26,
+      "opts": {
+       "ropa": "vestido",
+       "color": "#4A3A6A",
+       "pelo": "largo",
+       "pose": "piensa",
+       "mira": 0.3,
+       "gesto": "serio"
+      }
+     },
+     {
+      "asset": "figura",
+      "id": "estudiante",
+      "z": 4,
+      "at": [
+       0.56,
+       0.62
+      ],
+      "scale": 0.24,
+      "opts": {
+       "ropa": "actual",
+       "color": "#2A2A3A",
+       "pelo": "corto",
+       "mira": 0.7,
+       "gesto": "sorpresa"
+      },
+      "init": {
+       "sit": 1,
+       "bow": 0.6
+      }
+     },
+     {
+      "asset": "vela",
+      "id": "vela",
+      "z": 6,
+      "at": [
+       0.2,
+       0.625
+      ],
+      "scale": 0.09
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 7,
+      "opts": {
+       "y": 0.62,
+       "a": 0.3
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.4,
+      0.46,
+      1.25
+     ],
+     "to": [
+      0.38,
+      0.44,
+      1.45
+     ]
+    },
+    "lights": [
+     {
+      "at": [
+       0.2,
+       0.5
+      ],
+      "r": 0.35,
+      "a": 0.55,
+      "flicker": true
+     }
+    ]
+   },
+   "actions": [
+    {
+     "type": "appear",
+     "at": "estudiante",
+     "target": "estudiante",
+     "dur": 14
+    },
+    {
+     "type": "appear",
+     "at": "cadáver",
+     "target": "criatura",
+     "dur": 20
+    },
+    {
+     "type": "wake",
+     "at": "mueve.",
+     "target": "criatura",
+     "dur": 30
+    }
+   ],
+   "overlays": [
+    {
+     "type": "Pill",
+     "at": "Shelley,",
+     "text": "MARY SHELLEY, 18 AÑOS",
+     "slot": "top"
+    }
+   ],
+   "shots": [
+    {
+     "at": "idea.",
+     "camera": {
+      "preset": "push_in",
+      "from": [
+       0.3,
+       0.4,
+       1.9
+      ],
+      "to": [
+       0.3,
+       0.38,
+       2.2
+      ]
+     }
+    },
+    {
+     "at": "estudiante",
+     "camera": {
+      "preset": "pull_out",
+      "from": [
+       0.6,
+       0.45,
+       1.7
+      ],
+      "to": [
+       0.56,
+       0.48,
+       1.15
+      ]
+     }
+    }
+   ],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b15",
+   "role": "twist",
+   "text": "Ese verano no hubo cosecha. Hubo Frankenstein.",
+   "shows": "la criatura de Frankenstein despierta en la oscuridad: le brillan los ojos, levanta la mano y un relámpago la recorta; el título FRANKENSTEIN",
+   "keywords": [
+    "cosecha.",
+    "Frankenstein."
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "foco",
+    "layers": [
+     {
+      "asset": "sala_arcos",
+      "id": "sala",
+      "z": 1,
+      "opts": {
+       "estilo": "piedra"
+      }
+     },
+     {
+      "asset": "criatura",
+      "id": "criatura",
+      "z": 3,
+      "at": [
+       0.5,
+       0.61
+      ],
+      "scale": 0.5
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 5,
+      "opts": {
+       "y": 0.62,
+       "a": 0.45
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 8,
+      "opts": {
+       "kind": "polvo",
+       "n": 24
+      }
+     }
+    ],
+    "camera": {
+     "preset": "push_in",
+     "from": [
+      0.5,
+      0.45,
+      1.1
+     ],
+     "to": [
+      0.5,
+      0.36,
+      1.4
+     ]
+    },
+    "lights": [
+     {
+      "at": [
+       0.5,
+       0.35
+      ],
+      "r": 0.4,
+      "a": 0.4
+     }
+    ]
+   },
+   "actions": [
+    {
+     "type": "wake",
+     "at": "Hubo",
+     "target": "criatura",
+     "dur": 40
+    },
+    {
+     "type": "flash",
+     "at": "Frankenstein."
+    },
+    {
+     "type": "camshake",
+     "at": "Frankenstein.",
+     "amp": 8
+    }
+   ],
+   "overlays": [
+    {
+     "type": "TitlePlaque",
+     "at": "Frankenstein.",
+     "title": "FRANKENSTEIN",
+     "subtitle": "Mary Shelley · 1818",
+     "slot": "center"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  },
+  {
+   "id": "b16",
+   "role": "cta",
+   "text": "Envíaselo a quien ame las historias de terror.",
+   "shows": "la criatura sigue en pie entre la niebla mientras aparece la invitación a compartir con avatares, botones Seguir y Compartir y confeti",
+   "keywords": [
+    "Envíaselo",
+    "terror."
+   ],
+   "scene": {
+    "palette": "claroscuro",
+    "light": "foco",
+    "layers": [
+     {
+      "asset": "sala_arcos",
+      "id": "sala",
+      "z": 1,
+      "opts": {
+       "estilo": "piedra"
+      }
+     },
+     {
+      "asset": "criatura",
+      "id": "criatura",
+      "z": 3,
+      "at": [
+       0.5,
+       0.6
+      ],
+      "scale": 0.36,
+      "init": {
+       "wake": 1
+      }
+     },
+     {
+      "asset": "niebla",
+      "id": "niebla",
+      "z": 5,
+      "opts": {
+       "y": 0.62,
+       "a": 0.45
+      }
+     },
+     {
+      "asset": "particulas",
+      "id": "polvo",
+      "z": 8,
+      "opts": {
+       "kind": "polvo",
+       "n": 24
+      }
+     }
+    ],
+    "camera": {
+     "preset": "pull_out",
+     "from": [
+      0.5,
+      0.4,
+      1.35
+     ],
+     "to": [
+      0.5,
+      0.48,
+      1.1
+     ]
+    }
+   },
+   "actions": [
+    {
+     "type": "tremble",
+     "at": "terror.",
+     "target": "criatura",
+     "dur": 14,
+     "amp": 2
+    }
+   ],
+   "overlays": [
+    {
+     "type": "ShareCTA",
+     "at": "Envíaselo",
+     "text": "¿Sabías de dónde salió Frankenstein?",
+     "slot": "center"
+    }
+   ],
+   "shots": [],
+   "transition": "crossfade"
+  }
+ ]
+}
