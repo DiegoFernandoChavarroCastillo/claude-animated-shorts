@@ -175,43 +175,49 @@ class Run:
             return f"{res['stats']['words']} palabras"
         self.stage("validate-script", out, [self.p("02_SCRIPT.md")], run)
 
-    def script_review_applies(self) -> str:
-        """'' si la etapa no aplica; si aplica, el motivo de omitirla ('--no-story-review') o 'si'. Aplica al motor 2D, o al perfil viral si aún no hay story"""
+    def script_kind(self) -> str:
+        """qué crítico de guion toca: 'script' (historias, motor 2D o perfil viral) o 'explainer' (D125)"""
         if self.p("05_story.json").exists():
             two_d = engine_of(load_json(self.p("05_story.json"))) == "2d"
         else:
             from validate_script import parse
             two_d = parse(self.p("02_SCRIPT.md").read_text(encoding="utf-8")).pacing == "viral"
-        if not two_d:
-            return ""
+        return "script" if two_d else "explainer"
+
+    def script_review_applies(self) -> str:
+        """el motivo de omitir la etapa ('--no-story-review') o 'si'. Aplica a los dos motores: historias (D124) y explainer (D125)"""
         return "--no-story-review" if getattr(self.a, "no_story_review", False) else "si"
 
     def review_script(self):
         """un agente independiente califica solo el TEXTO del guion antes de generar la voz (iterar texto es barato; la voz no)"""
         t0, ap = time.time(), self.script_review_applies()
         if ap != "si":
-            self.log_rows.append(("review-script", f"omitida ({ap or 'solo el motor 2D / perfil viral'})", 0.0, "—"))
-            print(f"[review-script] omitida ({ap or 'solo el motor 2D / perfil viral'})")
+            self.log_rows.append(("review-script", f"omitida ({ap})", 0.0, "—"))
+            print(f"[review-script] omitida ({ap})")
             return
         print("[review-script] …")
         from review_story import evaluate
         try:
-            cur = evaluate(self.d, self.a.reviewer, "script")
+            cur = evaluate(self.d, self.a.reviewer, self.script_kind())
         except Exception as e:
             self.log_rows.append(("review-script", "DEVUELTO" if "DEVUELTO" in str(e) else "FALLÓ", time.time() - t0, str(e).splitlines()[0][:160]))
             raise
         detail = f"total {cur['verdict']['total']}, gancho {cur['scores']['gancho']} (ronda {cur['round']})"
+        if cur.get("advisory"):   # D127: guion del usuario aprobado por él; las notas se le mencionan, no bloquean
+            self.log_rows.append(("review-script", "orientativa (guion del usuario)", time.time() - t0, detail))
+            print(f"[review-script] orientativa (guion del usuario, D127): {detail}; notas en {self.p('06a_script_review.md')}")
+            return
         self.log_rows.append(("review-script", "aprobada", time.time() - t0, detail))
         print(f"[review-script] aprobada: {detail}")
 
     def tts(self):
         out = self.p("03_voice.wav")
-        if self.script_review_applies() == "si" and ("tts" in self.force or not self.fresh(out, [self.p("02_SCRIPT.md")])):   # solo si la voz se va a generar
-            from review_story import script_gate
-            ok, why = script_gate(self.d)
+        if "tts" in self.force or not self.fresh(out, [self.p("02_SCRIPT.md")]):   # solo si la voz se va a generar
+            from review_story import script_gate, user_gate
+            ok, why = script_gate(self.d) if self.script_review_applies() == "si" else user_gate(self.d)   # D127: el visto bueno del usuario siempre
             if not ok:
                 self.log_rows.append(("tts", "FALLÓ", 0.0, why))
-                raise PipelineError(f"[tts] no se genera la voz: {why}. Lanza `make_short.py review-script --id {self.id}` (o --no-story-review y dilo en la entrega).")
+                raise PipelineError(f"[tts] no se genera la voz: {why}. Si falta la calificación: `make_short.py review-script --id {self.id}`.")
         self.stage("tts", out, [self.p("02_SCRIPT.md")], lambda: self.sh(
             [PY, "pipeline/voice.py", "--story", str(self.voice_story()), "--out", str(self.d), "--force"], tag="tts").splitlines()[-1])
 
@@ -254,6 +260,10 @@ class Run:
             self.log_rows.append(("review", "DEVUELTO" if "DEVUELTO" in str(e) else "FALLÓ", time.time() - t0, str(e).splitlines()[0][:160]))
             raise
         detail = f"total {cur['verdict']['total']}, gancho {cur['scores']['gancho']} (ronda {cur['round']})"
+        if cur.get("advisory"):   # D127: guion del usuario; el crítico del story no bloquea por el texto
+            self.log_rows.append(("review", "orientativa (guion del usuario)", time.time() - t0, detail))
+            print(f"[review] orientativa (guion del usuario, D127): {detail}; aplica solo sus notas visuales: {self.p('06_review.md')}")
+            return
         self.log_rows.append(("review", "aprobada", time.time() - t0, detail))
         print(f"[review] aprobada: {detail}")
 
@@ -362,7 +372,7 @@ def init(a):
 
 def main():
     ap = argparse.ArgumentParser(description="Orquestador del explainer")
-    ap.add_argument("cmd", choices=["init", "all"] + STAGES)
+    ap.add_argument("cmd", choices=["init", "all", "approve-script"] + STAGES)
     ap.add_argument("--id", required=True)
     ap.add_argument("--from", dest="from_dir", default=None, help="init: carpeta con 02_SCRIPT.md y 05_story.json")
     ap.add_argument("--force", default=None, help="etapas a rehacer separadas por comas, o 'all'")
@@ -379,6 +389,11 @@ def main():
         if not a.from_dir:
             raise PipelineError("init necesita --from <carpeta>")
         return init(a)
+    if a.cmd == "approve-script":   # D127: solo tras enseñarle al usuario el guion escena por escena y recibir su visto bueno
+        from review_story import approve_script
+        cur = approve_script(ROOT / "out" / a.id)
+        print(f"[approve-script] guion aprobado por el usuario ({cur['fingerprint']}); crítico: {cur.get('critico', 'sin calificación vigente')}")
+        return
     r = Run(a.id, a)
     ok = False
     try:

@@ -117,6 +117,41 @@ import { Carpintero } from "./carpintero";
 import { Celda } from "./celda";
 import { VasijaMinotauro } from "./vasija_minotauro";
 import { CuerpoBarco } from "./cuerpo_barco";
+import { Piramide } from "./piramide";
+import { GuizaCrecida } from "./guiza_crecida";
+import { BarcoPiedra } from "./barco_piedra";
+import { PuertoFuego } from "./puerto_fuego";
+import { AlmacenRollos } from "./almacen_rollos";
+import { BibliotecaAlejandria } from "./biblioteca_alejandria";
+import { GaleriaPapiros } from "./galeria_papiros";
+import { PapiroMerer } from "./papiro_merer";
+import { Merer } from "./merer";
+import { CanteraTura } from "./cantera_tura";
+import { AldeaObreros } from "./aldea_obreros";
+import { Ovni } from "./ovni";
+import { Tutankamon } from "./tutankamon";
+import { MascaraTut } from "./mascara_tut";
+import { ImagenIa } from "./imagen_ia";
+import { Medalla } from "./medalla";
+import { Formulas } from "./formulas";
+import { PantallaPc } from "./pantalla_pc";
+import { FabricaRobot } from "./fabrica_robot";
+import { Proteina } from "./proteina";
+import { RelojAgujas } from "./reloj_agujas";
+import { Frontera } from "./frontera";
+import { TumbaTesoro } from "./tumba_tesoro";
+import { ValleReyes } from "./valle_reyes";
+import { TemploAmon } from "./templo_amon";
+import { MuroNombres } from "./muro_nombres";
+import { Baston } from "./baston";
+import { AtaudesHijas } from "./ataudes_hijas";
+import { TronoOro } from "./trono_oro";
+import { SisifoRoca } from "./sisifo_roca";
+import { MontanaSisifo } from "./montana_sisifo";
+import { Tanatos } from "./tanatos";
+import { CamusEscribe } from "./camus_escribe";
+import { Rutina } from "./rutina";
+import { CafeRisa } from "./cafe_risa";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -133,6 +168,10 @@ const REAL: Record<string, AssetFC> = {
   volcan: Volcan, cabana: Cabana, campo_maiz: CampoMaiz, criatura: Criatura,
   galera_teseo: GaleraTeseo, puerto_atenas: PuertoAtenas, carpintero: Carpintero, celda: Celda, vasija_minotauro: VasijaMinotauro, cuerpo_barco: CuerpoBarco,
   cleopatra: Cleopatra, saco_cesar: SacoCesar, alejandria_noche: AlejandriaNoche, cabeza_pompeyo: CabezaPompeyo, ptolomeo_furia: PtolomeoFuria, pasillo_guardias: PasilloGuardias, nilo_ahogo: NiloAhogo, banquete_nilo: BanqueteNilo, foro: Foro, senadores_odio: SenadoresOdio, templo_venus: TemploVenus, idus_marzo: IdusMarzo, huida_barco: HuidaBarco, octavio_consejo: OctavioConsejo, cesarion: Cesarion,
+  piramide: Piramide, guiza_crecida: GuizaCrecida, barco_piedra: BarcoPiedra, puerto_fuego: PuertoFuego, almacen_rollos: AlmacenRollos, biblioteca_alejandria: BibliotecaAlejandria, galeria_papiros: GaleriaPapiros, papiro_merer: PapiroMerer, merer: Merer, cantera_tura: CanteraTura, aldea_obreros: AldeaObreros, ovni: Ovni,
+  tutankamon: Tutankamon, mascara_tut: MascaraTut, tumba_tesoro: TumbaTesoro, valle_reyes: ValleReyes, templo_amon: TemploAmon, muro_nombres: MuroNombres, baston: Baston, ataudes_hijas: AtaudesHijas, trono_oro: TronoOro,
+  imagen_ia: ImagenIa, medalla: Medalla, formulas: Formulas, pantalla_pc: PantallaPc, fabrica_robot: FabricaRobot, proteina: Proteina, reloj_agujas: RelojAgujas, frontera: Frontera,
+  sisifo_roca: SisifoRoca, montana_sisifo: MontanaSisifo, tanatos: Tanatos, camus_escribe: CamusEscribe, rutina: Rutina, cafe_risa: CafeRisa,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));

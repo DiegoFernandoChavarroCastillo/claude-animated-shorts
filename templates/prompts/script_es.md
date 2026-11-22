@@ -17,6 +17,24 @@ límites, en `docs/FORMULAS.md`. Si el usuario no eligió, usa `hook: mito`, `st
 **Regla de oro del gancho: concreto y con pago.** Un gancho vago ("esto te va a sorprender") no vale: nombra la cosa, el
 dato o el momento. Y el video tiene que **contestar lo que el gancho promete** antes del giro, sin trampas.
 
+### Columna vertebral del guion (D125: obligatoria en todas las estructuras)
+
+Un explainer que se ve entero no es una lista de datos correctos: es **una pregunta que tira del video hasta el final**. Antes de
+escribir, apunta en la cabecera `pregunta:` esa pregunta en una frase («¿Por qué el móvil se recarga y una pila no?»). Luego:
+
+1. **Gancho = el objeto + algo que el espectador tiene o vive + el hueco.** El objeto se ve desde el fotograma 0 y la frase toca al
+   espectador («Todos tenemos una de estas en casa y casi nadie sabe cómo funciona»). Una tesis técnica («guarda litio, no
+   electricidad») no frena el dedo: todavía no sabe por qué le importa. Pregúntate: **¿yo me detendría con el sonido apagado?**
+2. **El problema antes que el mecanismo**: por qué no es obvio (la intuición que falla, la pregunta que cualquiera se haría).
+3. **El mecanismo con actores y caminos**: en cada paso, *quién* se mueve, *por dónde* y *qué hace al llegar*. Nunca un verbo vago
+   («viaja», «cambia») sin sujeto ni camino: el espectador se queda con una idea falsa. Si hay dos cosas que se mueven (iones y
+   electrones), nómbralas las dos y di el camino de cada una. Una **analogía cotidiana** fiel ayuda (mecedora, ascensor, cola).
+4. **Re-gancho a mitad** («y aquí está el truco», «pero hay un problema»): una mini-revelación cada ~10–15 s.
+5. **El giro responde la pregunta** con una frase que se recuerda y que cambia cómo ves el objeto.
+
+El crítico del explainer (`critico_explainer.md`, etapa `review-script`) califica justo esto antes de la voz: `pregunta_central`,
+`claridad` (≥7) y `fidelidad` (≥7) bloquean.
+
 ### Tipos de gancho (≤12 palabras y en 2.ª persona, siempre)
 
 | `hook:` | Nombre | Forma | Ejemplo |
@@ -31,6 +49,7 @@ dato o el momento. Y el video tiene que **contestar lo que el gancho promete** a
 | `negativo` | Prohibición | Una orden en negativo: «no vuelvas a…», «deja de…», «nunca…». | No vuelvas a cargar tu celular así hasta ver esto. |
 | `coste` | Coste oculto | Algo que le cuesta o le quita sin que lo note (batería, dinero, sueño). | Esto te cuesta batería cada día y no lo notas. |
 | `contradiccion` | Al revés de lo que sabes | Dice que lo que sabe de algo está al revés. | Lo que te enseñaron del frío está al revés. |
+| `objeto_comun` | Objeto común (D125, por defecto en «cómo funciona X») | El objeto que todos tienen, ya en pantalla, y lo que casi nadie sabe de él. | Todos tenemos una de estas en casa y casi nadie sabe cómo funciona. |
 | `revelacion` | Revelación primero | Primero el resultado o el final sorprendente, en 2.ª persona; el video cuenta cómo se llegó ahí. | Tu familia leerá tu mensaje ochenta años después de enviarlo. |
 
 ### Cierre en bucle: tres maneras de que la última frase empalme con el gancho (F17)

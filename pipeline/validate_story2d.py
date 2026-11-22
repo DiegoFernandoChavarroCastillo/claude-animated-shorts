@@ -54,6 +54,8 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     if meta.get("lang") not in ("es", "en"):
         errs.append("meta.lang debe ser es o en")
     errs += hook_title_errors(meta)
+    if (structure == "escalada") != (meta.get("structure") == "escalada"):   # D126: el QA mide la duración con el rango de la escalada
+        errs.append('con `structure: escalada` en el guion, pon `meta.structure: "escalada"` en el story (y solo entonces)')
     viral = meta.get("pacing") == "viral"
     cap = PACING["captions"]
     gap_max = PACING["cadence"]["eventGapMaxS"] if viral else CLASSIC_2D_GAP_S

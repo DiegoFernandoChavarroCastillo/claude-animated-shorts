@@ -231,6 +231,29 @@
       "vignette": 0.3,
       "veil": 0.05,
       "probado": false
+    },
+    "digital": {
+      "look": "Noche azul eléctrica: rejilla de luz, cian y violeta, brillo de pantallas y partículas como datos.",
+      "when": "Tecnología, inteligencia artificial, internet, ciencia de hoy, récords y avances (escalada de hitos).",
+      "palettes": [
+        "digital"
+      ],
+      "lights": [
+        "foco",
+        "luna",
+        "ninguna"
+      ],
+      "ambient": [
+        "particulas",
+        "bokeh",
+        "estrellas"
+      ],
+      "musicMood": "tense",
+      "sat": 1.08,
+      "contrast": 1.06,
+      "vignette": 0.24,
+      "veil": 0.05,
+      "probado": false
     }
   },
   "skies": {
@@ -303,6 +326,11 @@
       "#F3EAD6",
       "#EDE3CF",
       "#D8C8A8"
+    ],
+    "digital": [
+      "#02050E",
+      "#0A1638",
+      "#1C2F6E"
     ]
   },
   "elegir": [

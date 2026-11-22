@@ -32,9 +32,11 @@ SCRIPT_CFG = {**{k: CFG[k] for k in ("model",)}, **CFG["script"]}   # umbrales p
 DIMS = tuple(CFG["weights"])
 TXT = " [cambia el texto: obliga a regenerar esas frases de voz]"
 SCRIPT_DIMS = tuple(SCRIPT_CFG["weights"])
+EXPL_CFG = {**{k: CFG[k] for k in ("model",)}, **CFG["explainer"]}   # D125: crítico de guion del explainer
 KINDS = {   # qué se califica, con qué prompt y dónde se guarda
     "story": dict(cfg=CFG, dims=DIMS, prompt="critico_story.md", pre="06_review", label="story", files=("02_SCRIPT.md", "05_story.json")),
     "script": dict(cfg=SCRIPT_CFG, dims=SCRIPT_DIMS, prompt="critico_guion.md", pre="06a_script_review", label="guion", files=("02_SCRIPT.md",)),
+    "explainer": dict(cfg=EXPL_CFG, dims=tuple(EXPL_CFG["weights"]), prompt="critico_explainer.md", pre="06a_script_review", label="guion", files=("02_SCRIPT.md",)),
 }
 
 
@@ -60,7 +62,7 @@ def previous_round(d: Path, kind: str) -> str:
             f"### Dijiste que funcionaba (no lo quites)\n{keep}\n### Pediste\n{asked}\n")
 
 
-def build_request_script(d: Path) -> str:
+def build_request_script(d: Path, kind: str = "script") -> str:
     """lo único que ve el crítico de guion: cabecera, líneas con su rol y las fuentes; sin tiempos ni plan visual"""
     from validate_script import parse
     sc = parse((d / "02_SCRIPT.md").read_text(encoding="utf-8"))
@@ -69,8 +71,13 @@ def build_request_script(d: Path) -> str:
     words = sum(len(t.split()) for _, t in sc.lines)
     hook = sc.lines[0][1]
     rows = [f"{i + 1:02d} [{r}] {t}" for i, (r, t) in enumerate(sc.lines)]
-    stats = (f"- Palabras: {words} (≈{words / 3.4:.0f} s a ritmo viral; historia 2D: el video debe durar 60–70 s; si algo sobra, recórtalo)\n"
-             f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'}{' · hook_autor: usuario (lo eligió el dueño del canal: no lo sustituyas)' if sc.hook_autor == 'usuario' else ''} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
+    dur = (f"≈{words / 2.8:.0f} s; explainer: el video debe durar 35–59 s (≈95–160 palabras)" if kind == "explainer"
+           else f"≈{words / 3.4:.0f} s a ritmo viral; escalada 2D (D126): el video debe durar 45–59 s; si algo sobra, recórtalo" if sc.structure == "escalada"
+           else f"≈{words / 3.4:.0f} s a ritmo viral; historia 2D: el video debe durar 60–70 s; si algo sobra, recórtalo")
+    stats = (f"- Palabras: {words} ({dur})\n"
+             f"- Gancho: {len(hook.split())} palabras · tipo declarado: {sc.hook or '—'}{' · hook_autor: usuario (lo eligió el dueño del canal: no lo sustituyas)' if sc.hook_autor == 'usuario' else ''}{' · guion_autor: usuario (el guion lo escribió el dueño del canal: no reescribas su redacción ni su tono; señala solo datos falsos, saltos de lógica o frases que no se entienden al oírlas)' if sc.guion_autor == 'usuario' else ''} · cierre declarado: {sc.closing or '—'} · estructura: {sc.structure or '—'} · perfil: {sc.pacing or 'clásico'}")
+    if sc.question:
+        stats += f"\n- Pregunta central que declara el autor: {sc.question}"
     if sc.beats:
         stats += f"\n- Beats de la estructura nueva: {' → '.join(sc.beats)}"
     if sc.ficcion:
@@ -83,7 +90,14 @@ def build_request_script(d: Path) -> str:
     ang = "\n".join(f"- {k}: {v}" for k, v in sc.angle.items())
     fic += f"\n## Ángulo que declara el autor (lo que promete el video: comprueba que el guion lo cumple)\n{ang}\n" if ang else ""
     return (f"# Guion a calificar: {d.name}\n\n## Datos\n{stats}\n\n## Guion (una línea por beat)\n" + "\n".join(rows)
-            + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}" + previous_round(d, "script"))
+            + f"\n\n## Fuentes que declara el autor\n{src}\n{fic}" + previous_round(d, kind))
+
+
+def user_script(d: Path) -> bool:
+    """D127: ¿el guion lo trajo el usuario (`guion_autor: usuario`)?"""
+    from validate_script import parse
+    sp = d / "02_SCRIPT.md"
+    return sp.exists() and parse(sp.read_text(encoding="utf-8")).guion_autor == "usuario"
 
 
 def build_request(d: Path) -> str:
@@ -114,8 +128,11 @@ def build_request(d: Path) -> str:
     hook = [w for w in words if w["beat"] == story["beats"][0]["id"]]
     stats = (f"- Duración: {dur:.1f} s · palabras: {len(words)} ({len(words) / max(dur, 1):.2f} pal/s)\n"
              f"- Gancho dicho en: {hook[-1]['end']:.1f} s\n- Hueco máximo sin cambio visual: {gap:.1f} s (desde el s {at:.1f})\n"
-             f"- Restricción: historia 2D, el video debe durar 60–70 s (35–59 s en el explainer)\n"
+             f"- Restricción: {'escalada 2D, el video debe durar 45–59 s (D126)' if meta.get('structure') == 'escalada' else 'historia 2D, el video debe durar 60–70 s (35–59 s en el explainer)'}\n"
              f"{visual}- Perfil: {meta.get('pacing', 'clásico')} · cierre: {closing}")
+    if user_script(d):
+        stats += ("\n- guion_autor: usuario (D127): el texto lo escribió y aprobó el dueño del canal; no propongas cambios de texto "
+                  "(gancho, frases, cierre ni quitar hitos). Tus arreglos van a lo que se ve y al ritmo visual")
     return f"# Story a calificar: {meta.get('title', d.name)}\n\n## Métricas\n{stats}\n\n## Beats\n\n" + "\n\n".join(rows) + "\n"
 
 
@@ -144,6 +161,7 @@ def verdict(review: dict, kind: str = "story") -> dict:
     if sc["gancho"] < cfg["minGancho"] and not review.get("hook_autor") == "usuario":   # D124: el gancho elegido por el usuario no bloquea
         why.append(f"gancho {sc['gancho']} < {cfg['minGancho']}")
     why += [f"{k} {sc[k]} < {cfg['minDimension']}" for k in DIMS if sc[k] < cfg["minDimension"] and k != "gancho"]
+    why += [f"{k} {sc[k]} < {m}" for k, m in cfg.get("minKeys", {}).items() if sc[k] < m and sc[k] >= cfg["minDimension"]]   # D125: claridad y fidelidad del explainer
     return {"total": total, "pass": not why, "why": why}
 
 
@@ -186,9 +204,9 @@ def evaluate(d: Path, reviewer: str = "claude", kind: str = "story") -> dict:
     hist = load_json(hist_p) if hist_p.exists() else []
     cur = load_json(rp) if rp.exists() else None
     if not cur or cur.get("fingerprint") != fp:   # sin calificación, o caducada porque lo calificado cambió
-        if len([h for h in hist if h["verdict"]["pass"] is False]) >= cfg["maxRounds"]:
+        if len([h for h in hist if h["verdict"]["pass"] is False]) >= cfg["maxRounds"] and not (user_script(d) and user_gate(d)[0]):
             raise PipelineError(f"el {label} ya fue devuelto {cfg['maxRounds']} veces ({hist_p.name}): para y consulta con el usuario antes de seguir")
-        request = build_request_script(d) if kind == "script" else build_request(d)
+        request = build_request_script(d, kind) if kind in ("script", "explainer") else build_request(d)
         req_p.write_text(request, encoding="utf-8")
         if reviewer == "manual":
             if cur and cur.get("fingerprint") != fp:
@@ -207,24 +225,59 @@ def evaluate(d: Path, reviewer: str = "claude", kind: str = "story") -> dict:
         hist.append({"round": cur["round"], "fingerprint": fp, "scores": cur["scores"], "verdict": cur["verdict"]})
         write_json(hist_p, hist)
     (d / f"{pre}.md").write_text(md_report(cur, kind), encoding="utf-8")
+    if not cur["verdict"]["pass"] and user_script(d) and user_gate(d)[0]:
+        # D127: con el guion del usuario (aprobado por él) el texto no se toca; el crítico del story es orientativo:
+        # se aplican sus notas visuales y de ritmo, y las de texto se le mencionan al usuario
+        cur["advisory"] = True
+        return cur
     if not cur["verdict"]["pass"]:
         fixes = "\n".join(f"  - {p.get('beat', '?')} ({p.get('dimension', '')}): {p.get('issue', '')} -> {p.get('fix', '')}" for p in cur.get("problems", []))
-        nxt = "Corrige 02_SCRIPT.md, valídalo y relanza la etapa (la voz aún no se ha generado)." if kind == "script" else "Corrige el guion/story, vuelve a validar y relanza la etapa."
+        nxt = "Corrige 02_SCRIPT.md, valídalo y relanza la etapa (la voz aún no se ha generado)." if kind in ("script", "explainer") else "Corrige el guion/story, vuelve a validar y relanza la etapa."
         raise PipelineError(f"{label} DEVUELTO por el crítico (ronda {cur['round']}/{cfg['maxRounds']}; {'; '.join(cur['verdict']['why'])}).\n"
                             f"{nxt} Detalle en {d / (pre + '.md')}:\n{fixes}")
     return cur
 
 
+APPROVAL = "02b_user_approval.json"
+
+
+def approve_script(d: Path) -> dict:
+    """D127: el usuario vio el guion escena por escena y dio el visto bueno; vale solo para esta versión exacta de 02_SCRIPT.md"""
+    import datetime
+    cur = {"fingerprint": fingerprint(d, "script"), "at": datetime.datetime.now().isoformat(timespec="seconds")}
+    rp = d / f"{KINDS['script']['pre']}.json"
+    if rp.exists():
+        crit = load_json(rp)
+        if crit.get("fingerprint") == cur["fingerprint"] and "verdict" in crit:
+            cur["critico"] = {"total": crit["verdict"]["total"], "pass": crit["verdict"]["pass"], "round": crit.get("round")}
+    (d / APPROVAL).write_text(json.dumps(cur, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return cur
+
+
+def user_gate(d: Path) -> tuple[bool, str]:
+    """D127: ¿aprobó el usuario ESTA versión del guion? Sin eso no se crea nada (voz, story, assets, render)"""
+    ap = d / APPROVAL
+    if not ap.exists():
+        return False, "el usuario no ha aprobado el guion: enséñale la narración escena por escena y espera su visto bueno (`make_short.py approve-script`)"
+    if load_json(ap).get("fingerprint") != fingerprint(d, "script"):
+        return False, "el guion cambió después del visto bueno del usuario: enséñaselo otra vez y vuelve a lanzar `approve-script`"
+    return True, "aprobado por el usuario"
+
+
 def script_gate(d: Path) -> tuple[bool, str]:
-    """¿puede arrancar la voz? Solo con una calificación de guion vigente (misma huella) y aprobada"""
+    """¿puede arrancar la voz? Siempre con el visto bueno del usuario (D127); y con una calificación de guion vigente y aprobada,
+    salvo que el usuario lo haya aprobado aunque el crítico lo devolviera (él decide tras las rondas del crítico)"""
+    ok, why = user_gate(d)
+    if not ok:
+        return False, why
     rp = d / f"{KINDS['script']['pre']}.json"
     if not rp.exists():
         return False, "el guion no tiene calificación (etapa review-script)"
     cur = load_json(rp)
-    if cur.get("fingerprint") != fingerprint(d, "script"):
-        return False, "el guion cambió después de calificarlo: relanza review-script"
+    if cur.get("fingerprint") != fingerprint(d, "script"):   # D127: el usuario aprobó esta versión, posterior a la del crítico
+        return True, "aprobado por el usuario (cambió después de la última ronda del crítico)"
     if "verdict" not in cur or not cur["verdict"]["pass"]:
-        return False, "el guion está devuelto por el crítico"
+        return True, f"devuelto por el crítico ({cur.get('verdict', {}).get('total', '?')}) pero aprobado por el usuario"
     return True, f"total {cur['verdict']['total']}, gancho {cur['scores']['gancho']}"
 
 

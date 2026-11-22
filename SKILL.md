@@ -13,6 +13,10 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 
 > **¿Historia, mito, alegoría o reflexión en lugar de divulgación?** Usa el skill `story-short` (motor 2D, mismo pipeline; ver `story-short/SKILL.md`). Antes de comitear cambios en archivos compartidos, corre `tools/regression_check.py`.
 
+## Dos reglas del usuario que mandan sobre todo lo demás (D127, 16 nov)
+1. **Visto bueno del guion antes de crear nada.** En cada video, después del crítico de guion y **antes de la voz, el story, los assets o cualquier render**, enséñale al usuario el guion completo en una tabla **escena por escena** (rol, tiempo aproximado, narración literal y qué se ve) y **espera su visto bueno**. Con su sí: `make_short.py approve-script --id <id>`; `tts` no arranca sin esa aprobación de la versión exacta de `02_SCRIPT.md` (si cambias una coma, hay que volver a enseñarlo). Si el crítico lo devuelve 3 veces, se lo enseñas igual con sus notas y decide él.
+2. **Si el usuario trae su propio guion, se conserva su redacción, sin preguntar.** Cabecera `guion_autor: usuario` (incluye `hook_autor: usuario`). Solo se toca: (a) los **datos falsos** (verifícalos todos: se corrige la cifra o el hecho con la menor cantidad de palabras posible, y se le dice qué cambió y por qué); (b) lo que exige el validador (frases ≤12 palabras, gancho ≤11, números en palabras), partiendo frases por donde él las partiría. Nada de reescribir en forma de crónica o telegrama («Dos mil veinticuatro: una IA gana…» → mal; «En dos mil veinticuatro, la IA rozaba el oro…» → bien), ni añadir cifras en la voz, frases-semilla o cierres que él no escribió. Las notas del crítico que cambiarían el tono no se aplican: se le mencionan en una línea. Su guion manda también en la estructura: si no encaja en ninguna, se usa la más cercana o se crea una (como `escalada`, D126).
+
 ## Antes de empezar
 
 1. Idioma: el que pida el usuario (`es` o `en`). Si no lo dice, el del prompt.
@@ -28,6 +32,8 @@ hace todo lo determinista (voz, alineación, validaciones, render, mezcla y QA).
 | 1b | **Elegir gancho, estructura y cierre**: Claude propone 3 de cada uno y recomienda; el usuario elige | Claude + usuario | cabecera de `02_SCRIPT.md` |
 | 2 | Guion con `templates/prompts/script_es.md` o `script_en.md` y lo elegido en 1b | Claude | `02_SCRIPT.md` |
 | 3 | Validar el guion: `PY pipeline/make_short.py validate-script --id <id>` | pipeline | pasa o falla con motivos |
+| 3b | **Crítico de guion (D125)**: `PY pipeline/make_short.py review-script --id <id>` (un agente independiente con `critico_explainer.md`; sin aprobarlo no hay voz) | pipeline + agente | `06a_script_review.md` |
+| 3c | **Visto bueno del usuario (D127)**: tabla escena por escena (rol, tiempo, narración literal, qué se ve) → esperar su sí → `PY pipeline/make_short.py approve-script --id <id>`. Sin esto `tts` no arranca, y no se hace story ni render | usuario | `02b_user_approval.json` |
 | 4 | Plan visual con `templates/prompts/story_es_en.md` y `templates/catalog.json` | Claude | `05_story.json` |
 | 5 | Todo lo demás: `PY pipeline/make_short.py all --id <id> --scale 0.5` | pipeline | `03`–`10` |
 | 6 | Revisión visual (look-match) con un agente verificador **distinto** | Claude + agente | notas y arreglos |
@@ -50,6 +56,9 @@ un tipo de gancho, una estructura o un cierre para este tema si cuenta mejor la 
    estructura que el video anterior, salvo que el tema lo pida de verdad. Antes de elegir, piensa qué **formato** (premisa
    del video entero: ¿qué pasaría si…?, cuenta atrás, eres la cosa, cambio de escala, juicio…) sacaría lo mejor del tema.
 2. Según los hechos de `01_research.md`, elige **tres candidatos de cada cosa** y decide cuál es el mejor:
+   - **Gancho (D125):** el filtro es **«¿me detendría con el sonido apagado?»**: el objeto se ve desde el fotograma 0 y la frase toca algo que el
+     espectador tiene o vive. En «cómo funciona X», uno de los tres es `objeto_comun` («Todos tenemos una de estas en casa y casi nadie sabe cómo
+     funciona»). Una tesis técnica o abstracta («guarda litio, no electricidad») no es un gancho: puede ir en la segunda línea o en el giro.
    - **Gancho:** tres tipos distintos, cada uno ya redactado para este tema (≤12 palabras, 2.ª persona, concreto). **Puntúa** antes
      de proponer (0–2 cada criterio): concreto (nombra la cosa), conflicto (choca con algo que cree o hace), 2.ª persona, promesa que el
      video cumple, se dice en ≤3 s (8–9 palabras). Propón los tres de mayor suma y recomienda el primero.
@@ -87,9 +96,19 @@ Cosas de la voz que el validador también comprueba o que conviene saber:
 - Las preguntas de sí/no ("¿Te has preguntado…?") salen con el final ascendente automáticamente (D61). Las que
   empiezan por un interrogativo ("¿Qué…?", "What…?") terminan bajando, que es lo natural.
 
+### 2b. Columna vertebral (D125)
+
+Antes de redactar, escribe la **pregunta central** (`pregunta:` en la cabecera) y arma el guion como en `script_es.md` → «Columna vertebral»:
+gancho con el objeto → por qué no es obvio → mecanismo con actor + camino + resultado en cada paso (si se mueven dos cosas, las dos) →
+re-gancho a mitad → giro que responde la pregunta. Contrasta el mecanismo con las fuentes frase a frase: una simplificación que se
+entiende mal («el litio viaja» sin decir que el electrón va por el cable y el ion por dentro) es un fallo de `claridad`.
+
 ### 3. Validar el guion
 
 `PY pipeline/make_short.py validate-script --id <id>`. Si falla, corrige **solo** lo que dice el motivo y repite.
+Luego `PY pipeline/make_short.py review-script --id <id>` (D125): un agente independiente (`claude -p`, `critico_explainer.md`) califica el texto;
+si lo devuelve, aplica sus arreglos (sin quitar lo que marca en `keep`) y repite (máx. 3 rondas). La voz no arranca sin la aprobación.
+**Enseña al usuario el guion aprobado** (con la nota) antes de generar la voz: rehacer la voz cuesta ~15 min, el texto no.
 
 ### 4. Plan visual (`05_story.json`)
 

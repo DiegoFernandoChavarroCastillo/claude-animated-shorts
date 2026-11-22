@@ -96,6 +96,14 @@
       "ejemplo_es": "¿Por qué una ballena nada ocho mil kilómetros sin comer?",
       "ejemplo_en": "Why does a whale swim five thousand miles without eating?",
       "por_que": "Abre un bucle de curiosidad concreto en la primera frase; los cuatro videos de referencia de docs/AnalisisVideosIA.md abren así."
+    },
+    "objeto_comun": {
+      "nombre": "Objeto común",
+      "patron": "El objeto que todos tienen o usan, ya en pantalla, y la pregunta o el contraste que casi nadie sabe responder sobre él.",
+      "mejor_para": "Explainers de cómo funciona algo cotidiano (pilas, móvil, nevera, microondas, wifi): el objeto se reconoce al instante y el espectador se siente aludido.",
+      "ejemplo_es": "Todos tenemos una de estas en casa y casi nadie sabe cómo funciona.",
+      "ejemplo_en": "Everyone has one of these at home, and almost nobody knows how it works.",
+      "por_que": "Une reconocimiento instantáneo (lo tengo) con un hueco de curiosidad concreto (no sé cómo funciona); en el feed se decide en un segundo y muchas veces sin sonido, así que el objeto en cuadro hace la mitad del trabajo (D125)."
     }
   },
   "structures": {
@@ -301,6 +309,33 @@
         "twist": 4
       },
       "ejemplo": "templates/examples/ano-sin-verano/02_SCRIPT.md"
+    },
+    "escalada": {
+      "nombre": "Escalada de hitos",
+      "resumen": "Un contraste antes/ahora en el gancho y una racha de récords que suben de escala (de la pantalla al mundo físico, de lo pequeño a lo enorme), un hito por línea con su cifra hecha imagen; un giro rompe la racha con algo absurdo que todavía falla, y el remate reencuadra todo («no es X, es Y»). Tercera persona sobre el fenómeno, ritmo de golpes y un final que respira. 45–59 s.",
+      "mejor_para": "Avances de tecnología y ciencia, récords, «cómo cambió X en diez años», cualquier tema con 3–5 hitos verificables y una excepción que sorprende (la IA que gana olimpiadas y no lee un reloj).",
+      "orden": [
+        "hook",
+        "hito",
+        "giro",
+        "twist",
+        "cta"
+      ],
+      "requeridos": [
+        "hito",
+        "giro",
+        "twist"
+      ],
+      "min": {
+        "hito": 3,
+        "giro": 1
+      },
+      "max": {
+        "hito": 5,
+        "giro": 2,
+        "twist": 2
+      },
+      "ejemplo": "templates/examples/ia-frontera/02_SCRIPT.md"
     }
   },
   "closings": {
@@ -411,7 +446,7 @@
     }
   },
   "elegir": {
-    "gancho": "Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés; revelacion si el desenlace es visual y sorprendente (se enseña primero y se explica después). Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py). Comodín (D120): de los 3 candidatos, al menos uno es un tipo nuevo, inventado para este tema (descríbelo en '## Fórmulas nuevas'). En historias 2D (D123): paradoja si el tema encierra algo ilógico que cabe en una pregunta con una cifra, un nombre o un «sin»; la afirmación chocante (escena, revelacion) sigue valiendo.",
+    "gancho": "objeto_comun si el tema es cómo funciona un objeto cotidiano (es el punto de partida por defecto del explainer, D125); Mito si hay una creencia errónea muy extendida; dato si hay una cifra llamativa bien fuente; escena si el tema es una experiencia del cuerpo; pregunta si es un fenómeno cotidiano sin mito; y_si para física, espacio o contrafactuales; reto si la respuesta cabe en una frase que casi nadie sabe; error si corrige un hábito; negativo si hay un hábito concreto que evitar; coste si hay un gasto invisible (batería, dinero, sueño); contradiccion si la intuición del espectador va al revés; revelacion si el desenlace es visual y sorprendente (se enseña primero y se explica después). Evita repetir el tipo de los últimos 3 videos (tools/recent_formulas.py). Comodín (D120): de los 3 candidatos, al menos uno es un tipo nuevo, inventado para este tema (descríbelo en '## Fórmulas nuevas'). En historias 2D (D123): paradoja si el tema encierra algo ilógico que cabe en una pregunta con una cifra, un nombre o un «sin»; la afirmación chocante (escena, revelacion) sigue valiendo.",
     "estructura": "mito si hay creencia + mecanismo; lista si hay 3-6 datos sueltos; versus si el tema es 'A o B' o se confunden dos cosas; historia si hay un experimento o una persona real que dé el hilo; cadena si el proceso tiene pasos que se provocan uno a otro. Comodín (D120): de las 3 propuestas, al menos una es nueva: una forma diseñada para este tema (declara `beats:` y descríbela en '## Fórmulas nuevas'). Piensa también en un formato de 'formatos' que cambie la premisa entera. Historias 2D (D123): drama si hay un personaje y una anécdota con remate; alegoria si es un mito o un experimento mental; enigma si es una curiosidad o un suceso colectivo sin protagonista único.",
     "cierre": "bucle por defecto (F16): la última frase se lee como continuación del gancho y el video termina sin cola, para que se repita solo; reto_casa si se puede comprobar en casa y el bucle no sale natural; envia, pregunta y sigue solo si el usuario los pide: son despedidas predecibles que invitan a deslizar. Historias 2D (D123): bucle si la última frase puede quedar abierta y el gancho la continúa con naturalidad; remate_cta si el remate es una frase redonda que pide cerrar, o si el tema se comparte por orgullo, ternura o asombro. Mira en tools/ingest_stats.py cuál rinde más en el canal.",
     "nuevas": "Una fórmula nueva no es un nombre distinto para algo del catálogo: tiene que cambiar cómo se cuenta (otro orden, otro punto de vista, otra promesa). Se juzga con los mismos criterios (gancho concreto, conflicto, 2.ª persona, promesa que el video cumple, ≤3 s; estructura con giro y un cambio en pantalla por beat). Nombre corto en snake_case. Si una fórmula nueva se repite y funciona (tools/recent_formulas.py --nuevas, tools/ingest_stats.py), pásala al catálogo."

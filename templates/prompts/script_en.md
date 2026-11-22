@@ -17,6 +17,15 @@ of each one. Catalog with examples and why each works: `templates/formulas.json`
 **Golden rule of the hook: concrete, and it pays off.** A vague hook ("this will surprise you") doesn't count: name the
 thing, the fact or the moment. And the video must **answer what the hook promises** before the twist, no tricks.
 
+### Script backbone (D125: required in every structure)
+
+Write the central question in the header (`pregunta:` one sentence) and build the script around it: (1) hook = the object on screen +
+something the viewer owns or lives + the gap («Everyone has one of these at home, and almost nobody knows how it works»); a technical
+thesis does not stop the thumb; (2) the problem before the mechanism (why it isn't obvious); (3) the mechanism with actors and paths
+(*who* moves, *where* it goes, *what* it does when it arrives; name both movers if there are two, e.g. ions and electrons); a faithful
+everyday analogy helps; (4) a re-hook mid-video every ~10–15 s; (5) the twist answers the question. The explainer critic
+(`critico_explainer.md`, `review-script` stage) scores exactly this before the voice; `claridad` and `fidelidad` (≥7) block.
+
 ### Hook types (≤12 words and in the 2nd person, always)
 
 | `hook:` | Name | Shape | Example |

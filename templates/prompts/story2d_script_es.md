@@ -1,4 +1,4 @@
-# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos) y `enigma` (curiosidades)
+# Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos), `enigma` (curiosidades) y `escalada` (rachas de récords, D126)
 
 Escribes el guion de un short vertical de **60 a 70 s** (historia 2D; con el perfil viral, 170–240 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
 
@@ -93,6 +93,19 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 | `cta` | `remate_cta`: invitación corta ligada al tema. `bucle`: frase abierta que el gancho continúa | La escena del remate (con el CTA animado) o la del gancho |
 
 Reglas propias: la pregunta del gancho **no se responde antes del `twist`** (si una pista la contesta, ya no hay motivo para seguir); una pista de cada dos trae algo que se ve moverse; nada de listas de datos sin hilo: cada pista responde a «¿y entonces por qué…?».
+
+## Estructura `escalada` (`structure: escalada`, para rachas de récords con un giro; D126)
+`[hook] → [hito]+ → [giro]+ → [twist]+ → [cta]` (3–5 `hito`, 1–2 `giro`, 1–2 `twist`). **No es una historia**: no lleva `ficcion:` ni protagonista; todo es dato verificado. Para «cómo cambió X en diez años», avances de tecnología o ciencia, récords deportivos: un tema con 3–5 hitos que suben de escala y **una excepción absurda** que todavía falla. Dura **45–59 s** (150–215 palabras; perfil `escalada` de `pacing_viral.json`), no 60–70: los golpes de datos cansan pasado el minuto. Lleva `## Ángulo` como las historias. Ejemplo: `templates/examples/ia-frontera/`.
+
+| Rol | Qué hace | Imagen que necesita |
+|---|---|---|
+| `hook` | Contraste antes/ahora con fecha, o la afirmación chocante del tema. La imagen hace la mitad del trabajo (pantalla partida) | `VersusCard` o dos assets lado a lado, el «antes» ya en cuadro en el fotograma 0 |
+| `hito` | Un récord por línea, **cada uno un dominio más grande que el anterior** (de la pantalla al mundo físico, a la ciencia). Cifra = imagen; un golpe visual (`pop`, `camshake`, `flash`) por hito. El último hito siembra el giro sin decirlo («Todo sube. Casi todo.») | Medalla, contador que sube (`StatCallout from`, `Gauge`), `DotGrid`, el objeto del récord en acción |
+| `giro` | El ritmo se frena: la excepción absurda, con un detalle que se vea, y su cifra contra la humana. La ironía explícita («Las IA de oro…») | Plano largo y oscuro (`palette_shift` a `themeAlt`), `BarCompare`; sin cortes |
+| `twist` | El remate que reencuadra la racha («no es X, es Y») y una consecuencia concreta | La línea de hitos entera, con su hueco (`reveal`) |
+| `cta` | `remate_cta`: una pregunta que obliga a tomar partido, ligada al tema | `ChatMock` o `ShareCTA` sobre el remate |
+
+Reglas propias: la racha no se explica, se acumula (una línea = un hito); el giro se oye después del último hito, nunca antes; nada de «puntuación perfecta» ni redondeos que inflen: cada récord con su cifra exacta en `## Fuentes`. Ritmo visual: un golpe por hito y un plano largo en el giro (que respire).
 
 ## Estructuras nuevas (D120) — no en historias
 Desde el 11 nov las historias (`ficcion:` declarada) usan solo `drama` o `alegoria`: lo de abajo queda para piezas sin historia real (reflexiones, experimentos mentales). Referencia: un

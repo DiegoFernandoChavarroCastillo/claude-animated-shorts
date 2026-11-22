@@ -1,0 +1,1087 @@
+{
+  "meta": {
+    "id": "ia-frontera",
+    "lang": "es",
+    "title": "La IA gana el oro en matemáticas… y no sabe leer un reloj",
+    "topic": "IA",
+    "hookTitle": "IA: 2015 vs hoy",
+    "engine": "2d",
+    "pacing": "viral",
+    "structure": "escalada",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "voice": {
+      "engine": "chatterbox",
+      "voice": "diego",
+      "speed": 1.25
+    },
+    "music": true,
+    "musicMood": "tense",
+    "captionEmphasis": "accent",
+    "tailS": 0.6,
+    "theme": "digital",
+    "themeAlt": "drama_oscuro"
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "role": "hook",
+      "text": "Esto era una IA en dos mil quince. Y esto, hoy.",
+      "shows": "pantalla partida: a la izquierda la imagen de IA de 2015, una mancha roja borrosa y pixelada; a la derecha la misma señal de stop de hoy, nítida en un cielo azul perfecto; glitch seco",
+      "keywords": [
+        "quince.",
+        "hoy."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 20
+            }
+          },
+          {
+            "asset": "imagen_ia",
+            "id": "ia2015",
+            "z": 3,
+            "at": [
+              0.27,
+              0.33
+            ],
+            "scale": 0.43,
+            "opts": {
+              "era": "2015"
+            }
+          },
+          {
+            "asset": "imagen_ia",
+            "id": "iahoy",
+            "z": 3,
+            "at": [
+              0.73,
+              0.33
+            ],
+            "scale": 0.43,
+            "opts": {
+              "era": "hoy"
+            },
+            "init": {
+              "generate": 0
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.36,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.34,
+            1.24
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "glitch",
+          "at": "Esto",
+          "target": "ia2015",
+          "dur": 12
+        },
+        {
+          "type": "generate",
+          "at": "esto,",
+          "target": "iahoy",
+          "dur": 16
+        },
+        {
+          "type": "camshake",
+          "at": "hoy.",
+          "amp": 6
+        }
+      ],
+      "overlays": [],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b02",
+      "role": "hito",
+      "text": "Y lo que viene, no lo vas a creer. En dos mil veinticuatro, la IA rozaba el oro en matemáticas. En dos mil veinticinco, se lo llevó: medalla de oro en la Olimpiada.",
+      "shows": "fórmulas matemáticas flotando; una medalla de plata gira y, al decir dos mil veinticinco, se convierte en oro con un destello",
+      "keywords": [
+        "creer.",
+        "rozaba",
+        "oro",
+        "Olimpiada."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "formulas",
+            "id": "formulas",
+            "z": 0,
+            "opts": {
+              "n": 16,
+              "a": 0.55
+            }
+          },
+          {
+            "asset": "medalla",
+            "id": "medalla",
+            "z": 3,
+            "at": [
+              0.5,
+              0.22
+            ],
+            "scale": 0.42,
+            "opts": {
+              "metal": "plata"
+            }
+          },
+          {
+            "asset": "particulas",
+            "id": "chispas",
+            "z": 8,
+            "opts": {
+              "kind": "chispas",
+              "n": 18
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.38,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.34,
+            1.2
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "pop",
+          "at": "rozaba",
+          "target": "medalla",
+          "dur": 12,
+          "scale": 1.06
+        },
+        {
+          "type": "gold",
+          "at": "llevó:",
+          "target": "medalla",
+          "dur": 18
+        },
+        {
+          "type": "camshake",
+          "at": "oro",
+          "amp": 6
+        }
+      ],
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "veinticuatro,",
+          "text": "2024 · PLATA",
+          "slot": "upper"
+        },
+        {
+          "type": "Pill",
+          "at": "veinticinco,",
+          "text": "2025 · ORO",
+          "slot": "center"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b03",
+      "role": "hito",
+      "text": "Pero lo de hablar ya es viejo. Ahora los agentes de IA usan computadoras como tú. Abren ventanas, mueven archivos, llenan formularios. Solos.",
+      "shows": "un monitor donde el cursor se mueve solo: abre una ventana, arrastra un archivo a una carpeta y llena un formulario, sin manos",
+      "keywords": [
+        "agentes",
+        "computadoras",
+        "Solos."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 26
+            }
+          },
+          {
+            "asset": "pantalla_pc",
+            "id": "pc",
+            "z": 3,
+            "at": [
+              0.5,
+              0.24
+            ],
+            "scale": 0.84
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.4,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.38,
+            1.18
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "pop",
+          "at": "viejo.",
+          "target": "pc",
+          "dur": 12,
+          "scale": 1.04
+        },
+        {
+          "type": "work",
+          "at": "Ahora",
+          "target": "pc",
+          "dur": 150
+        },
+        {
+          "type": "camshake",
+          "at": "Solos.",
+          "amp": 4
+        }
+      ],
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "agentes",
+          "text": "AGENTES DE IA",
+          "slot": "center"
+        }
+      ],
+      "shots": [
+        {
+          "at": "computadoras",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.42,
+              0.22,
+              1.25
+            ],
+            "to": [
+              0.45,
+              0.22,
+              1.4
+            ]
+          }
+        },
+        {
+          "at": "mueven",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.48,
+              0.22,
+              1.3
+            ],
+            "to": [
+              0.5,
+              0.24,
+              1.45
+            ]
+          }
+        }
+      ],
+      "transition": "swipe"
+    },
+    {
+      "id": "b04",
+      "role": "hito",
+      "text": "En un año, pasaron de fallar casi siempre a casi igualarnos.",
+      "shows": "la pantalla se aleja y un contador sube del doce al sesenta y seis por ciento de tareas resueltas, junto a la marca humana del setenta y dos",
+      "keywords": [
+        "fallar",
+        "igualarnos."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 26
+            }
+          },
+          {
+            "asset": "pantalla_pc",
+            "id": "pc",
+            "z": 3,
+            "at": [
+              0.5,
+              0.15
+            ],
+            "scale": 0.48,
+            "init": {
+              "work": 1
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.3,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.28,
+            1.08
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "tremble",
+          "at": "fallar",
+          "target": "pc",
+          "dur": 14,
+          "amp": 2
+        }
+      ],
+      "overlays": [
+        {
+          "type": "StatCallout",
+          "at": "año,",
+          "value": 66,
+          "from": 12,
+          "suffix": " %",
+          "label": "TAREAS REALES RESUELTAS",
+          "slot": "top"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b05",
+      "role": "hito",
+      "text": "Y no se quedan en la pantalla. Hoy, robots con IA ya trabajan en fábricas de Mercedes-Benz. Ordenan piezas con un noventa y seis por ciento de acierto.",
+      "shows": "línea de montaje de autos: un robot humanoide con IA coge soportes de un contenedor y los deja ordenados; una cuadrícula con noventa y seis de cien piezas bien puestas",
+      "keywords": [
+        "pantalla.",
+        "robots",
+        "Mercedes-Benz.",
+        "noventa"
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "fabrica_robot",
+            "id": "fabrica",
+            "z": 2,
+            "at": [
+              0.5,
+              0.62
+            ],
+            "scale": 1.0
+          },
+          {
+            "asset": "particulas",
+            "id": "polvo",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 22
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.42,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.45,
+            1.25
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "sort",
+          "at": "Ordenan",
+          "target": "fabrica",
+          "dur": 40
+        },
+        {
+          "type": "camshake",
+          "at": "noventa",
+          "amp": 5
+        },
+        {
+          "type": "pop",
+          "at": "robots",
+          "target": "fabrica",
+          "dur": 12,
+          "scale": 1.03
+        }
+      ],
+      "overlays": [
+        {
+          "type": "StatCallout",
+          "at": "noventa",
+          "value": 96,
+          "suffix": " %",
+          "label": "DE ACIERTO",
+          "slot": "center"
+        }
+      ],
+      "shots": [
+        {
+          "at": "robots",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.6,
+              0.4,
+              1.55
+            ],
+            "to": [
+              0.58,
+              0.4,
+              1.7
+            ]
+          }
+        },
+        {
+          "at": "noventa",
+          "camera": {
+            "preset": "pull_out",
+            "from": [
+              0.5,
+              0.38,
+              1.3
+            ],
+            "to": [
+              0.5,
+              0.4,
+              1.0
+            ]
+          }
+        }
+      ],
+      "transition": "swipe"
+    },
+    {
+      "id": "b06",
+      "role": "hito",
+      "text": "¿Y la ciencia? Una IA que predice proteínas le valió el Nobel a sus creadores. Lo que nos tomaba años, a ella le toma horas.",
+      "shows": "una doble hélice de ADN gira y una proteína se pliega a toda velocidad; años contra horas; aparece la medalla del Nobel",
+      "keywords": [
+        "ciencia?",
+        "proteínas",
+        "Nobel",
+        "horas."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 18
+            }
+          },
+          {
+            "asset": "proteina",
+            "id": "prot",
+            "z": 3,
+            "at": [
+              0.4,
+              0.18
+            ],
+            "scale": 0.48
+          },
+          {
+            "asset": "medalla",
+            "id": "nobel",
+            "z": 4,
+            "at": [
+              0.8,
+              0.2
+            ],
+            "scale": 0.22,
+            "opts": {
+              "metal": "nobel"
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.3,
+            1.0
+          ],
+          "to": [
+            0.46,
+            0.26,
+            1.32
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "fold",
+          "at": "predice",
+          "target": "prot",
+          "dur": 40
+        },
+        {
+          "type": "appear",
+          "at": "Nobel",
+          "target": "nobel",
+          "dur": 14
+        },
+        {
+          "type": "glow",
+          "at": "años,",
+          "target": "prot",
+          "dur": 20
+        }
+      ],
+      "overlays": [
+        {
+          "type": "VersusCard",
+          "at": "años,",
+          "a": {
+            "title": "AÑOS",
+            "sub": "en el laboratorio"
+          },
+          "b": {
+            "title": "HORAS",
+            "sub": "con IA"
+          },
+          "slot": "top"
+        }
+      ],
+      "shots": [],
+      "transition": "cut"
+    },
+    {
+      "id": "b07",
+      "role": "giro",
+      "text": "Pero hay algo extraño. Esta misma IA que gana olimpiadas y trabaja en fábricas… todavía falla la mitad de las veces leyendo un reloj de agujas.",
+      "shows": "el ritmo se frena y todo se oscurece; un reloj de cocina de agujas; la IA intenta leerlo y las agujas giran sin sentido y la esfera se deforma",
+      "keywords": [
+        "extraño.",
+        "olimpiadas",
+        "mitad",
+        "reloj"
+      ],
+      "scene": {
+        "palette": "noche",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "niebla",
+            "id": "niebla",
+            "z": 1,
+            "opts": {
+              "y": 0.6,
+              "a": 0.3
+            }
+          },
+          {
+            "asset": "reloj_agujas",
+            "id": "reloj",
+            "z": 3,
+            "at": [
+              0.5,
+              0.22
+            ],
+            "scale": 0.55
+          },
+          {
+            "asset": "particulas",
+            "id": "polvo",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 14
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.38,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.36,
+            1.22
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "pop",
+          "at": "extraño.",
+          "target": "reloj",
+          "dur": 14,
+          "scale": 1.05
+        },
+        {
+          "type": "glitch",
+          "at": "falla",
+          "target": "reloj",
+          "dur": 60
+        },
+        {
+          "type": "camshake",
+          "at": "mitad",
+          "amp": 4
+        }
+      ],
+      "overlays": [
+        {
+          "type": "Pill",
+          "at": "mitad",
+          "text": "LA IA: 50 %",
+          "slot": "center"
+        }
+      ],
+      "shots": [
+        {
+          "at": "olimpiadas",
+          "camera": {
+            "preset": "push_in",
+            "from": [
+              0.5,
+              0.22,
+              1.45
+            ],
+            "to": [
+              0.5,
+              0.22,
+              1.7
+            ]
+          }
+        }
+      ],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b08",
+      "role": "giro",
+      "text": "Una persona lo lee bien nueve de cada diez veces.",
+      "shows": "una persona mira el mismo reloj y lo lee sin esfuerzo: un aro verde lo rodea; barras: IA 50,6 % contra persona 90,1 %",
+      "keywords": [
+        "persona",
+        "nueve",
+        "diez"
+      ],
+      "scene": {
+        "palette": "noche",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "niebla",
+            "id": "niebla",
+            "z": 1,
+            "opts": {
+              "y": 0.6,
+              "a": 0.3
+            }
+          },
+          {
+            "asset": "reloj_agujas",
+            "id": "reloj",
+            "z": 3,
+            "at": [
+              0.66,
+              0.22
+            ],
+            "scale": 0.38
+          },
+          {
+            "asset": "figura",
+            "id": "persona",
+            "z": 4,
+            "at": [
+              0.28,
+              0.44
+            ],
+            "scale": 0.4,
+            "opts": {
+              "ropa": "actual",
+              "color": "#3A6AD8",
+              "color2": "#2A2E3A",
+              "pelo": "corto",
+              "gesto": "feliz",
+              "pose": "pie",
+              "mira": 0.8
+            }
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.42,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.12
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "nod",
+          "at": "persona",
+          "target": "persona",
+          "dur": 20
+        },
+        {
+          "type": "read",
+          "at": "bien",
+          "target": "reloj",
+          "dur": 24
+        }
+      ],
+      "overlays": [
+        {
+          "type": "BarCompare",
+          "at": "Una",
+          "items": [
+            {
+              "label": "IA",
+              "value": 50.6,
+              "color": "ui.red"
+            },
+            {
+              "label": "Persona",
+              "value": 90.1,
+              "color": "ui.green"
+            }
+          ],
+          "unit": " %",
+          "max": 100,
+          "decimals": 1,
+          "slot": "center"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b09",
+      "role": "twist",
+      "text": "La capacidad de la IA no es una línea recta. Es una frontera irregular.",
+      "shows": "se abre el plano y aparece la frontera irregular: una línea dentada con picos en la medalla, la pantalla, el robot y la proteína, y un pozo hondo en el reloj, bajo el nivel humano; la palabra IRREGULAR",
+      "keywords": [
+        "línea",
+        "recta.",
+        "irregular."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 18
+            }
+          },
+          {
+            "asset": "frontera",
+            "id": "frontera",
+            "z": 3,
+            "at": [
+              0.5,
+              0.36
+            ],
+            "scale": 0.86,
+            "init": {
+              "draw": 0
+            }
+          }
+        ],
+        "camera": {
+          "preset": "reveal",
+          "from": [
+            0.5,
+            0.42,
+            1.6
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.0
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "draw",
+          "at": "capacidad",
+          "target": "frontera",
+          "dur": 50
+        },
+        {
+          "type": "camshake",
+          "at": "irregular.",
+          "amp": 5
+        }
+      ],
+      "overlays": [
+        {
+          "type": "TitlePlaque",
+          "at": "irregular.",
+          "title": "IRREGULAR",
+          "slot": "top"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b10",
+      "role": "twist",
+      "text": "Y esa frontera se mueve más rápido de lo que podemos entender.",
+      "shows": "toda la frontera sube y avanza deprisa; luego la palabra se deshace en partículas",
+      "keywords": [
+        "frontera",
+        "rápido",
+        "entender."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 18
+            }
+          },
+          {
+            "asset": "frontera",
+            "id": "frontera",
+            "z": 3,
+            "at": [
+              0.5,
+              0.36
+            ],
+            "scale": 0.86
+          }
+        ],
+        "camera": {
+          "preset": "pull_out",
+          "from": [
+            0.5,
+            0.38,
+            1.3
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.0
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "advance",
+          "at": "mueve",
+          "target": "frontera",
+          "dur": 40
+        },
+        {
+          "type": "crumble",
+          "at": "entender.",
+          "target": "frontera",
+          "dur": 30
+        }
+      ],
+      "overlays": [
+        {
+          "type": "TitlePlaque",
+          "at": "Y",
+          "title": "IRREGULAR",
+          "slot": "top"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    },
+    {
+      "id": "b11",
+      "role": "cta",
+      "text": "¿Y tú, ya estás listo? Te leo en comentarios.",
+      "shows": "de las partículas se forma la pregunta ¿Y TÚ, YA ESTÁS LISTO?, con avatares y botones de seguir y compartir",
+      "keywords": [
+        "listo?",
+        "comentarios."
+      ],
+      "scene": {
+        "palette": "digital",
+        "light": "foco",
+        "layers": [
+          {
+            "asset": "bokeh",
+            "id": "bokeh",
+            "z": 0
+          },
+          {
+            "asset": "particulas",
+            "id": "datos",
+            "z": 8,
+            "opts": {
+              "kind": "polvo",
+              "n": 40
+            }
+          },
+          {
+            "asset": "frontera",
+            "id": "frontera",
+            "z": 3,
+            "at": [
+              0.5,
+              0.36
+            ],
+            "scale": 0.86,
+            "init": {
+              "advance": 1
+            }
+          },
+          {
+            "asset": "estrellas",
+            "id": "estrellas",
+            "z": 0
+          }
+        ],
+        "camera": {
+          "preset": "push_in",
+          "from": [
+            0.5,
+            0.42,
+            1.0
+          ],
+          "to": [
+            0.5,
+            0.42,
+            1.1
+          ]
+        }
+      },
+      "actions": [
+        {
+          "type": "flash",
+          "at": "tú,"
+        }
+      ],
+      "overlays": [
+        {
+          "type": "ShareCTA",
+          "at": "tú,",
+          "text": "¿Y TÚ, YA ESTÁS LISTO?",
+          "slot": "center"
+        }
+      ],
+      "shots": [],
+      "transition": "crossfade"
+    }
+  ]
+}

@@ -54,9 +54,9 @@ for name, (t3_repo, t3, s3_repo) in SETS.items():
 '''
 
 
-def run(cmd: list[str]) -> None:
+def run(cmd: list[str], env: dict | None = None) -> None:
     print("$", " ".join(cmd), flush=True)
-    if subprocess.run(cmd).returncode != 0:
+    if subprocess.run(cmd, env=env).returncode != 0:
         sys.exit(f"FALTA: falló {cmd[0]} (revisa la conexión a internet y el mensaje de arriba)")
 
 
@@ -71,7 +71,8 @@ def main() -> None:
     else:
         run([str(PY), "-m", "pip", "install", "-q", PKG, *index])
     print(f"OK   entorno: {VENV}")
-    run([str(PY), "-W", "ignore", "-c", ASSEMBLE, str(MODELS)])
+    # caché propia dentro de pipeline/models (ignorada por git): si se limpia ~/.cache, los enlaces de los modelos no se rompen (16 nov)
+    run([str(PY), "-W", "ignore", "-c", ASSEMBLE, str(MODELS)], env=dict(os.environ, HF_HUB_CACHE=str(MODELS.parent / "hf-cache")))
     print("Listo. Prueba: el story con \"voice\": {\"engine\": \"chatterbox\", \"voice\": \"default\"}")
 
 

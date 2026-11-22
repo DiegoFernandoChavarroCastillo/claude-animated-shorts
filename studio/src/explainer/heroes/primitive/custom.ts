@@ -1657,7 +1657,7 @@ export const atomo_cesio: HeroDef = {
     pulso: "El electrón exterior gira su espín, el núcleo destella y sale un pulso (se queda así): miramos al átomo, el cesio, transición, salto, se activa.",
     vibrar: "Una onda electromagnética (campo eléctrico cian y magnético dorado) sale del átomo y oscila muy rápido (se queda así): vibraciones, oscila, frecuencia, nueve mil millones de veces, cuenta el tiempo.",
   },
-  center: [0, 1.3, 0], radius: 1.0,
+  center: [0, 1.3, 0], radius: 1.35,
   anchors: { hero: [0, 1.25, 0], top: [0, 2.6, 0], base: [0, 0.1, 0], nucleo: [0, 1.25, 0], electron: [1.25, 1.25, 0], onda: [1.2, 1.25, 0], etiqueta: [0, 2.55, 0] },
   build: (_L, pose) => {
     const p = poseOf(atomo_cesio, pose, "atomo_cesio"), onda = p === "onda", b = bin(), root = new THREE.Group(), atom = new THREE.Group();
@@ -2655,4 +2655,423 @@ export const relojes_tiempo: HeroDef = {
     };
     return { ...done(root, b, paint), act: (name, u) => { if (name in st) st[name as keyof typeof st] = u; paint(lf); } };
   },
+};
+
+// baterias-recargables · corte de una celda de litio-ion: cátodo de óxido metálico (octaedros en capas) sobre lámina de aluminio, separador con
+// poros, ánodo de grafito (láminas apiladas con su trama hexagonal) sobre lámina de cobre, electrolito, carcasa, lengüetas + y − y, por fuera,
+// un cable con una bombilla. Dieciocho iones de litio (bolitas doradas con «+») viven entre las capas. `descargar`: cruzan del grafito al cátodo
+// y los electrones recorren el cable (se enciende la bombilla); `cargar`: el cargador los devuelve al grafito (cable naranja); `atrapar`: cuatro
+// iones se quedan pegados en una costra gris sobre el grafito.
+export const celda_litio: HeroDef = {
+  kind: "primitive",
+  when: "Una batería de litio-ion en corte: cátodo, separador, ánodo de grafito en capas, iones de litio que van y vienen, electrones por el cable; cómo se carga y se descarga una batería recargable, el móvil, dónde se guarda la energía, el litio atrapado que hace perder capacidad con los ciclos.",
+  poses: ["cargada", "descargada"],
+  actions: {
+    descargar: "Los iones de litio salen del grafito, cruzan el separador hasta el cátodo y los electrones corren por el cable encendiendo la bombilla (se queda así): usar el móvil, descargar, el litio sale, viaja al otro lado.",
+    cargar: "El cable se pone naranja y los iones vuelven del cátodo a meterse entre las capas del grafito (se queda así): cargar, enchufar, el cargador empuja, devolver el litio.",
+    atrapar: "Cuatro iones se quedan pegados en una costra gris sobre el grafito y se apagan (se queda así): litio atrapado, desgaste, pierde capacidad, ciclos, envejece.",
+  },
+  center: [0, 1.3, 0], radius: 1.35,
+  anchors: { hero: [0, 1.2, 0.3], top: [0, 2.85, 0], base: [0, 0.05, 0], catodo: [-0.7, 1.2, 0.35], anodo: [0.72, 1.2, 0.35], separador: [0, 1.2, 0.35], litio: [0.72, 0.9, 0.35], costra: [0.3, 1.2, 0.35], cable: [0.6, 2.6, 0], bombilla: [0, 2.72, 0], positivo: [-0.85, 2.4, 0.1], negativo: [0.85, 2.4, 0.1] },
+  build: (_L, pose) => {
+    const p = poseOf(celda_litio, pose, "celda_litio");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group(), D = 0.6;
+    const alu = mat(b, "#c9cfdf", { roughness: 0.3, metalness: 0.85 }), cu = mat(b, "#d0814a", { roughness: 0.3, metalness: 0.8 }), shell = mat(b, "#39426a", { roughness: 0.45, metalness: 0.5 });
+    // carcasa cortada por delante: fondo, base, techo y laterales
+    g.add(place(rbox(b, 2.8, 2.1, 0.06, 0.02, shell), [0, 1.2, -D / 2 - 0.04]));
+    [0.15, 2.25].forEach((y) => g.add(place(rbox(b, 2.8, 0.1, D + 0.1, 0.03, shell), [0, y, 0])));
+    [-1, 1].forEach((s) => g.add(place(rbox(b, 0.1, 2.2, D + 0.1, 0.03, shell), [s * 1.37, 1.2, 0])));
+    g.add(place(box(b, 0.04, 1.96, D, alu), [-1.25, 1.2, 0]), place(box(b, 0.04, 1.96, D, cu), [1.25, 1.2, 0]));
+    g.add(place(box(b, 2.44, 1.96, D * 0.98, ghostMat(b, "#7fe8ff", 0.08)), [0, 1.2, 0]));
+    // separador con poros
+    g.add(place(box(b, 0.05, 1.96, D, ghostMat(b, "#f2f4ff", 0.5)), [0, 1.2, 0]));
+    const pore = mat(b, "#1b2040");
+    for (let r = 0; r < 10; r++) for (let c = 0; c < 3; c++) g.add(place(ball(b, 0.014, pore, 6), [0, 0.33 + r * 0.19, D / 2 - 0.05 - c * 0.22]));
+    // grafito (ánodo) y óxido metálico (cátodo) en capas
+    const Y = (k: number) => 0.36 + k * 0.27, gr = mat(b, "#3f4458", { roughness: 0.35, metalness: 0.45 }), hexM = beam(b, "#8a93b8", 0.9);
+    const ox = glowMat(b, "#5266d0", 0.3, { roughness: 0.35, metalness: 0.3 }), oxy = glowMat(b, "#e0566a", 0.35);
+    for (let k = 0; k < 7; k++) {
+      g.add(place(box(b, 0.86, 0.06, D * 0.94, gr), [0.72, Y(k), 0]));
+      for (let j = 0; j < 6; j++) { const h = new THREE.Mesh(b.track(new THREE.RingGeometry(0.028, 0.044, 6)), hexM); h.position.set(0.37 + j * 0.14, Y(k), D * 0.47 + 0.002); g.add(h); }
+      for (let j = 0; j < 5; j++) {
+        const o = new THREE.Mesh(b.track(new THREE.OctahedronGeometry(0.085)), ox); o.position.set(-1.08 + j * 0.2, Y(k), 0.12); o.rotation.y = 0.6; g.add(o);
+        g.add(place(ball(b, 0.026, oxy, 8), [-1.08 + j * 0.2, Y(k) + 0.09, 0.2]));
+      }
+    }
+    // costra gris que crece sobre la cara del grafito (atrapar)
+    const crustM = mat(b, "#b8ab8e", { roughness: 0.9, transparent: true, opacity: 0, emissive: new THREE.Color("#5a5040") }), crust = place(box(b, 0.1, 1.9, D * 0.94, crustM), [0.28, 1.2, 0]); g.add(crust);
+    for (let k = 0; k < 7; k++) g.add(place(rbox(b, 0.3, 0.07, D * 0.9, 0.03, crustM), [0.45, Y(k) + 0.05, 0]));
+    // lengüetas, signos, cable y bombilla
+    g.add(place(box(b, 0.24, 0.32, 0.07, alu), [-0.85, 2.42, 0]), place(box(b, 0.24, 0.32, 0.07, mat(b, "#b9bcc4", { roughness: 0.3, metalness: 0.9 })), [0.85, 2.42, 0]));
+    const red = beam(b, TONE.glowRed, 1.4), blu = beam(b, "#5aa0ff", 1.4);
+    g.add(place(box(b, 0.14, 0.035, 0.02, red), [-0.85, 2.42, 0.05]), place(box(b, 0.035, 0.14, 0.02, red), [-0.85, 2.42, 0.05]), place(box(b, 0.14, 0.035, 0.02, blu), [0.85, 2.42, 0.05]));
+    const curve = new THREE.CatmullRomCurve3(([[0.85, 2.55, 0], [0.95, 2.6, 0], [0.5, 2.6, 0], [0, 2.6, 0], [-0.5, 2.6, 0], [-0.95, 2.6, 0], [-0.85, 2.55, 0]] as P3[]).map((q) => new THREE.Vector3(...q)));
+    g.add(new THREE.Mesh(b.track(new THREE.TubeGeometry(curve, 60, 0.03, 8, false)), mat(b, "#20263f", { roughness: 0.6 })));
+    const wireGlowM = beam(b, "#ff9a3c", 1.8, { transparent: true, opacity: 0 }); g.add(new THREE.Mesh(b.track(new THREE.TubeGeometry(curve, 60, 0.045, 8, false)), wireGlowM));
+    g.add(place(cyl(b, 0.06, 0.07, 0.08, alu, 16), [0, 2.63, 0]));
+    const bulbM = ghostMat(b, "#fff2c4", 0.35, { emissive: new THREE.Color("#ffcf6a"), emissiveIntensity: 0 }), bulb = place(ball(b, 0.11, bulbM, 20), [0, 2.75, 0]); g.add(bulb);
+    g.add(place(new THREE.Mesh(b.track(new THREE.TorusGeometry(0.045, 0.008, 6, 16)), beam(b, "#ffb347", 1.2)), [0, 2.74, 0]));
+    const bulbHalo = halo(b, "rgba(255,210,120,0.95)", 0.9, 0); bulbHalo.position.set(0, 2.75, 0.05); g.add(bulbHalo);
+    const elM = beam(b, "#6aa8ff", 2.4, { transparent: true, opacity: 0 }), elec = Array.from({ length: 12 }, () => { const m = ball(b, 0.06, elM, 10); const h = halo(b, "rgba(110,170,255,0.9)", 0.3, 0.8); m.add(h); g.add(m); return m; });
+    // iones de litio: 3 por hueco entre capas, en el grafito (A) o en el cátodo (C)
+    const ionM = glowMat(b, "#ffd36b", 1.1), plus = beam(b, "#ffffff", 1.2), STUCK = [2, 7, 11, 15];
+    const ions = Array.from({ length: 18 }, (_, i) => {
+      const gap = Math.floor(i / 3), c = i % 3, y = Y(gap) + 0.135, z = (hash1(i + 4) - 0.5) * 0.3, o = new THREE.Group();
+      const st = STUCK.indexOf(i), m = st >= 0 ? glowMat(b, "#ffd36b", 1.1) : ionM;
+      o.add(ball(b, 0.055, m, 12), place(box(b, 0.07, 0.016, 0.016, plus), [0, 0, 0.056]), place(box(b, 0.016, 0.07, 0.016, plus), [0, 0, 0.056]));
+      const hl = halo(b, "rgba(255,215,120,0.9)", 0.36, 0.7); hl.position.z = 0.03; o.add(hl); g.add(o);
+      const deco = o.children.slice(1);
+      return { o, m, st, deco, A: [0.45 + c * 0.27, y, z] as P3, C: [-0.98 + c * 0.3, y, z] as P3, S: [0.3, y + (c - 1) * 0.06, D * 0.42] as P3, lag: hash1(i + 30) };
+    });
+    g.position.y = 0.05; root.add(g); shadows(g);
+    let q = p === "cargada" ? 1 : 0, ds = 0, ch = 0, tr = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      ions.forEach(({ o, m, st, deco, A, C, S, lag }, i) => {
+        const k = ease(clamp01(q * 1.6 - lag * 0.6)), mid = Math.sin(Math.PI * k), j = 0.01 + 0.03 * mid;
+        let x = C[0] + (A[0] - C[0]) * k, y = C[1] + (A[1] - C[1]) * k + 0.08 * mid * Math.sin(i * 1.3), z = C[2] + (A[2] - C[2]) * k;
+        if (st >= 0 && tr > 0) { const s = ease(clamp01(tr * 1.5 - st * 0.15)); x += (S[0] - x) * s; y += (S[1] - y) * s; z += (S[2] - z) * s; (m as THREE.MeshStandardMaterial).color.set(new THREE.Color("#ffd36b").lerp(new THREE.Color("#8a8580"), s)); (m as THREE.MeshStandardMaterial).emissiveIntensity = 1 - 0.9 * s; o.scale.setScalar(1 + 0.4 * s); deco.forEach((d) => { d.visible = s < 0.6; }); }
+        o.position.set(x + Math.sin(f * 0.21 + i) * j, y + Math.cos(f * 0.17 + i * 2) * j, z);
+      });
+      crustM.opacity = 0.95 * ease(tr);
+      const flow = ds > 0 ? 1 : ch > 0 ? 1 : 0, dir = ch > 0 ? -1 : 1;
+      elM.opacity = 0.95 * flow; elec.forEach((e) => { e.visible = flow > 0; });
+      elec.forEach((e, j) => { const t = (((j / elec.length + dir * f * 0.014) % 1) + 1) % 1; e.position.copy(curve.getPoint(t)); });
+      bulbM.emissiveIntensity = 1.8 * clamp01(ds * 3); (bulbHalo.material as THREE.MeshBasicMaterial).opacity = 0.9 * clamp01(ds * 3) * (0.9 + 0.1 * Math.sin(f * 0.5));
+      wireGlowM.opacity = 0.55 * clamp01(ch * 3) * (0.8 + 0.2 * Math.sin(f * 0.3));
+      g.rotation.y = -0.32 + 0.08 * Math.sin(f * 0.012);
+    };
+    return {
+      ...done(root, b, paint),
+      act: (name, u) => {
+        if (name === "descargar") { ds = clamp01(u); q = 1 - ease(u); }
+        if (name === "cargar") { ch = clamp01(u); q = ease(u); }
+        if (name === "atrapar") tr = clamp01(u);
+        paint(lf);
+      },
+    };
+  },
+};
+
+// baterias-recargables · pila alcalina AA genérica. «entera»: camisa con etiqueta azul y dorada, botón + y base −. «corte»: media pila abierta
+// con la cara del corte pintada (lata de acero, anillo de dióxido de manganeso, separador, núcleo de zinc en gel y el clavo de latón).
+// `oxidar`: los granos de zinc pasan de gris metálico a polvo blanco (óxido de zinc) y el anillo de manganeso se vuelve pardo y se agrieta.
+export const pila_alcalina: HeroDef = {
+  kind: "primitive",
+  when: "Una pila alcalina AA desechable (entera o en corte): zinc, dióxido de manganeso, separador, clavo de latón; pilas normales que no se recargan, el zinc que se convierte en óxido de zinc, reacción de un solo sentido, pila gastada.",
+  poses: ["entera", "corte"],
+  actions: {
+    descargar: "Aparece un cable del polo − al +, con una bombilla que se enciende, y los electrones corren por él desde abajo (se queda así): suelta electrones, da energía, enciende tu aparato, la corriente sale.",
+    oxidar: "Los granos de zinc se vuelven polvo blanco uno tras otro y el anillo oscuro se vuelve pardo y se agrieta (se queda así; pose «corte»): se gasta, se convierte en óxido, ya no vuelve, reacción sin vuelta atrás.",
+  },
+  center: [0, 1.3, 0], radius: 1.35,
+  anchors: { hero: [0, 1.3, 0.2], top: [0, 2.6, 0], base: [0, 0.05, 0], positivo: [0, 2.55, 0], negativo: [0, 0.1, 0], zinc: [0, 1.2, 0.05], manganeso: [0.27, 1.4, 0.05], clavo: [0, 0.8, 0.05], cable: [0.75, 2.1, 0], bombilla: [0.75, 1.35, 0] },
+  build: (_L, pose) => {
+    const p = poseOf(pila_alcalina, pose, "pila_alcalina"), cut = p === "corte";
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group(), R = 0.36, H = 2.3, Y0 = 0.14;
+    const steel = mat(b, "#c3c9d8", { roughness: 0.25, metalness: 0.9 });
+    const label = screenTex(b.track, 512, 256, (c) => {
+      c.fillStyle = "#1c2658"; c.fillRect(0, 0, 512, 256); c.fillStyle = "#e0a93e"; c.fillRect(0, 0, 512, 78);
+      c.fillStyle = "#f4e6c0"; c.fillRect(0, 78, 512, 6); c.fillStyle = "#2c3a86"; for (let i = 0; i < 8; i++) c.fillRect(i * 64 + 6, 120, 30, 120);
+      c.fillStyle = "#1c2658"; c.font = "bold 56px sans-serif"; for (let i = 0; i < 4; i++) c.fillText("+", 22 + i * 128, 60);
+    });
+    const jacketM = b.track(new THREE.MeshStandardMaterial({ map: label, roughness: 0.35, metalness: 0.3, side: THREE.DoubleSide }));
+    const th0 = cut ? Math.PI / 2 : 0, thL = cut ? Math.PI : Math.PI * 2;
+    const jacket = new THREE.Mesh(b.track(new THREE.CylinderGeometry(R, R, H, 48, 1, true, th0, thL)), jacketM); jacket.position.y = Y0 + H / 2; g.add(jacket);
+    const capT = new THREE.Mesh(b.track(new THREE.CylinderGeometry(R * 0.98, R, 0.06, 48, 1, false, th0, thL)), steel); capT.position.y = Y0 + H + 0.03;
+    const nub = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.12, 0.13, 0.12, 32, 1, false, th0, thL)), steel); nub.position.y = Y0 + H + 0.12;
+    const capB = new THREE.Mesh(b.track(new THREE.CylinderGeometry(R, R * 0.97, 0.06, 48, 1, false, th0, thL)), steel); capB.position.y = Y0 - 0.03;
+    g.add(capT, nub, capB);
+    let zinc: THREE.InstancedMesh | null = null, mnM: THREE.MeshStandardMaterial | null = null; const cracks: THREE.Mesh[] = [];
+    if (cut) {
+      const face = screenTex(b.track, 256, 1024, (c) => {
+        const W = 256, px = (x: number) => (x / (2 * R) + 0.5) * W;
+        c.fillStyle = "#cfd5e2"; c.fillRect(0, 0, W, 1024);
+        c.fillStyle = "#2b2c33"; c.fillRect(px(-R * 0.94), 24, px(R * 0.94) - px(-R * 0.94), 960);
+        c.fillStyle = "#eef0f6"; c.fillRect(px(-R * 0.5), 60, px(R * 0.5) - px(-R * 0.5), 900);
+        c.fillStyle = "#8e959f"; c.fillRect(px(-R * 0.45), 70, px(R * 0.45) - px(-R * 0.45), 880);
+        for (let i = 0; i < 900; i++) { c.fillStyle = i % 2 ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.25)"; c.fillRect(hash1(i) * W, hash1(i + 7) * 1024, 3, 3); }
+        c.fillStyle = "#d8a945"; c.fillRect(px(-0.035), 300, px(0.035) - px(-0.035), 700);
+        c.fillStyle = "#14161f"; c.fillRect(px(-R * 0.94), 960, px(R * 0.94) - px(-R * 0.94), 40);
+      });
+      const faceM = b.track(new THREE.MeshStandardMaterial({ map: face, roughness: 0.6 }));
+      const fm = new THREE.Mesh(b.track(new THREE.PlaneGeometry(2 * R, H)), faceM); fm.position.set(0, Y0 + H / 2, 0.001); g.add(fm);
+      mnM = mat(b, "#2b2c33", { roughness: 0.85, transparent: true, opacity: 0 });
+      [-1, 1].forEach((s) => { const m = new THREE.Mesh(b.track(new THREE.PlaneGeometry(R * 0.44, H * 0.9)), mnM!); m.position.set(s * R * 0.7, Y0 + H / 2, 0.004); g.add(m); });
+      for (let i = 0; i < 10; i++) { const m = new THREE.Mesh(b.track(new THREE.PlaneGeometry(0.012, 0.16)), beam(b, "#e8c48a", 1.1, { transparent: true, opacity: 0 })); m.position.set((i % 2 ? 1 : -1) * R * (0.62 + hash1(i) * 0.16), Y0 + 0.2 + i * 0.2, 0.006); m.rotation.z = (hash1(i + 3) - 0.5) * 1.2; g.add(m); cracks.push(m); }
+      const N = 80, dm = new THREE.Matrix4(); zinc = new THREE.InstancedMesh(b.track(new THREE.SphereGeometry(1, 8, 6)), mat(b, "#ffffff", { roughness: 0.4, metalness: 0.5 }), N);
+      for (let i = 0; i < N; i++) { const s = 0.03 + hash1(i + 50) * 0.02; dm.makeScale(s, s, s * 0.5).setPosition((hash1(i + 11) - 0.5) * R * 0.82, Y0 + 0.2 + hash1(i + 23) * (H - 0.45), 0.012); zinc.setMatrixAt(i, dm); }
+      g.add(zinc); b.track({ dispose: () => zinc!.dispose() });
+    }
+    // circuito (descargar): cable del − (abajo) al + (arriba) por la derecha, bombilla y electrones que suben por él
+    const wire = new THREE.Group(); wire.visible = false; root.add(wire);
+    const curve = new THREE.CatmullRomCurve3(([[0.12, 0.06, 0], [0.55, 0.08, 0], [0.75, 0.3, 0], [0.75, 2.2, 0], [0.6, 2.72, 0], [0.15, 2.75, 0], [0, 2.62, 0]] as P3[]).map((q) => new THREE.Vector3(...q)));
+    wire.add(new THREE.Mesh(b.track(new THREE.TubeGeometry(curve, 60, 0.028, 8, false)), mat(b, "#c0583a", { roughness: 0.5 })));
+    const bulbM = ghostMat(b, "#fff2c4", 0.4, { emissive: new THREE.Color("#ffcf6a"), emissiveIntensity: 0 });
+    wire.add(place(cyl(b, 0.07, 0.08, 0.12, steel, 16), [0.75, 1.2, 0]), place(ball(b, 0.15, bulbM, 20), [0.75, 1.38, 0]), place(new THREE.Mesh(b.track(new THREE.TorusGeometry(0.05, 0.009, 6, 16)), beam(b, "#ffb347", 1.2)), [0.75, 1.37, 0]));
+    const bHalo = halo(b, "rgba(255,210,120,0.95)", 1.1, 0); bHalo.position.set(0.75, 1.38, 0.05); wire.add(bHalo);
+    const eM = beam(b, "#6aa8ff", 2.4), elec = Array.from({ length: 10 }, () => { const m = ball(b, 0.05, eM, 10); m.add(halo(b, "rgba(110,170,255,0.9)", 0.26, 0.8)); wire.add(m); return m; });
+    g.rotation.y = cut ? -0.12 : 0.35; root.add(g); shadows(g);
+    let ox = 0, ds = 0, lf = 0; const cc = new THREE.Color();
+    const paint = (f: number) => {
+      lf = f;
+      if (zinc) {
+        for (let i = 0; i < 80; i++) { const s = ease(clamp01(ox * 1.8 - hash1(i + 90) * 0.8)); cc.set("#9aa3b0").lerp(new THREE.Color("#ffffff"), s); zinc.setColorAt(i, cc); }
+        if (zinc.instanceColor) zinc.instanceColor.needsUpdate = true;
+        (zinc.material as THREE.MeshStandardMaterial).metalness = 0.5 * (1 - ox);
+      }
+      if (mnM) { mnM.opacity = 0.9 * ease(ox); mnM.color.set("#6e4a2c"); }
+      cracks.forEach((m, i) => { (m.material as THREE.MeshBasicMaterial).opacity = clamp01(ox * 1.6 - i * 0.06); });
+      g.rotation.y = (cut ? -0.12 : 0.35) + 0.12 * Math.sin(f * 0.012);
+      wire.visible = ds > 0; wire.scale.setScalar(0.6 + 0.4 * ease(ds * 2));
+      bulbM.emissiveIntensity = 1.8 * clamp01(ds * 2); (bHalo.material as THREE.MeshBasicMaterial).opacity = 0.9 * clamp01(ds * 2) * (0.9 + 0.1 * Math.sin(f * 0.5));
+      elec.forEach((e, j) => e.position.copy(curve.getPoint((j / elec.length + f * 0.012) % 1)));
+    };
+    return { ...done(root, b, paint), act: (name, u) => { if (name === "oxidar") ox = clamp01(u); if (name === "descargar") ds = clamp01(u); paint(lf); } };
+  },
+};
+
+// baterias-recargables · gancho y cierre: un móvil genérico (cuerpo redondeado, pantalla con el icono de batería, cámara y cable de carga) y, a su
+// lado, la pila AA de `pila_alcalina`. `cargar`: la barra del móvil se llena de verde y el rayo brilla; `descartar`: la pila se inclina, se hunde un
+// poco y se apaga (se tira a la basura).
+export const movil_pila: HeroDef = {
+  kind: "primitive",
+  when: "Un móvil cargándose junto a una pila AA: batería recargable frente a pila desechable, el móvil se recarga y la pila no, comparar los dos objetos que todos tienen en casa, la pila a la basura.",
+  poses: ["juntos", "cargado"],
+  actions: {
+    cargar: "La barra de batería del móvil se llena de verde y el rayo brilla (se queda así): se recarga, enchufas el móvil, cargando.",
+    descartar: "La pila se inclina, se hunde un poco y se apaga (se queda así): la pila se tira, va a la basura, ya no sirve.",
+  },
+  center: [0, 1.2, 0], radius: 1.45,
+  anchors: { hero: [0, 1.2, 0.2], top: [0, 2.4, 0], base: [0, 0.05, 0], movil: [-0.7, 1.3, 0.1], pantalla: [-0.7, 1.3, 0.1], pila: [0.85, 1.2, 0.2], centro: [0.1, 1.9, 0.2] },
+  build: (L, pose) => {
+    const full = poseOf(movil_pila, pose, "movil_pila") === "cargado";
+    const b = bin(), root = new THREE.Group(), ph = new THREE.Group();
+    const body = mat(b, "#1b2036", { roughness: 0.3, metalness: 0.6 }), W = 1.05, H = 2.1;
+    ph.add(place(rbox(b, W, H, 0.12, 0.12, body), [0, 0, 0]));
+    const scr = mat(b, "#0b1028", { roughness: 0.2, emissive: new THREE.Color("#18245a"), emissiveIntensity: 0.6 });
+    ph.add(place(rbox(b, W - 0.1, H - 0.14, 0.02, 0.08, scr), [0, 0, 0.06]));
+    ph.add(place(cyl(b, 0.035, 0.035, 0.02, mat(b, "#05060f"), 16), [0, H / 2 - 0.13, 0.075]).rotateX(Math.PI / 2));
+    // icono de batería: marco, borne y barra de carga que crece desde abajo
+    const frameM = beam(b, "#cfd6f2", 1.0), BW = 0.42, BH = 0.86, y0 = -0.08;
+    [[0, y0 + BH / 2, BW, 0.04], [0, y0 - BH / 2, BW, 0.04]].forEach(([x, y, w, h]) => ph.add(place(box(b, w, h, 0.01, frameM), [x, y, 0.08])));
+    [-1, 1].forEach((sx) => ph.add(place(box(b, 0.04, BH, 0.01, frameM), [sx * BW / 2, y0, 0.08])));
+    ph.add(place(box(b, 0.16, 0.06, 0.01, frameM), [0, y0 + BH / 2 + 0.05, 0.08]));
+    const fillM = beam(b, TONE.green, 1.3), fill = place(box(b, BW - 0.1, BH - 0.1, 0.01, fillM), [0, y0, 0.085]); ph.add(fill);
+    const bolt = new THREE.Shape([[0.05, 0.22], [-0.09, -0.02], [0.0, -0.02], [-0.05, -0.22], [0.1, 0.04], [0.01, 0.04]].map(([x, y]) => new THREE.Vector2(x, y)));
+    const boltM = beam(b, "#ffe27a", 1.2, { transparent: true, opacity: 0.5 }), boltMesh = new THREE.Mesh(b.track(new THREE.ShapeGeometry(bolt)), boltM);
+    boltMesh.position.set(0, y0, 0.09); ph.add(boltMesh);
+    // cable de carga que sale por abajo hasta el suelo
+    ph.add(new THREE.Mesh(b.track(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(([[0, -H / 2, 0], [0, -H / 2 - 0.2, 0.05], [-0.3, -H / 2 - 0.4, 0.2], [-0.9, -H / 2 - 0.42, 0.3]] as P3[]).map((q) => new THREE.Vector3(...q))), 30, 0.03, 8, false)), mat(b, "#e8ebf4", { roughness: 0.4 })));
+    ph.position.set(-0.7, 1.35, 0); ph.rotation.y = 0.25; root.add(ph); shadows(ph);
+    // la pila de pila_alcalina, a la derecha y un poco más pequeña
+    const pila = pila_alcalina.build(L, "entera"), pg = new THREE.Group(); pg.add(pila.root); pg.position.set(0.85, 0, 0.1); pg.scale.setScalar(0.85); root.add(pg);
+    let ch = full ? 1 : 0, dc = 0, lf = 0, lc: THREE.Camera = new THREE.PerspectiveCamera();
+    const paint = (f: number, cam?: THREE.Camera) => {
+      lf = f; if (cam) lc = cam; pila.update(f, lc);
+      const lvl = 0.15 + 0.85 * ease(ch); fill.scale.y = lvl; fill.position.y = y0 - (BH - 0.1) * (1 - lvl) / 2;
+      fillM.color.set(new THREE.Color(lvl < 0.3 ? TONE.glowRed : TONE.green).multiplyScalar(1.3));
+      boltM.opacity = ch > 0 && !full ? 0.6 + 0.4 * Math.sin(f * 0.3) : 0.35;
+      (scr as THREE.MeshStandardMaterial).emissiveIntensity = 0.6 + 0.6 * ease(ch);
+      const d = ease(dc); pg.rotation.z = -0.3 * d; pg.position.set(0.85 + 0.05 * d, -0.3 * d, 0.1);
+      pg.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined; if (m && "color" in m && m.userData.base === undefined) m.userData.base = m.color.getHex(); if (m && m.userData.base !== undefined) m.color.setHex(m.userData.base).lerp(new THREE.Color("#3a3d48"), 0.6 * d); });
+      ph.rotation.y = 0.25 + 0.08 * Math.sin(f * 0.012);
+    };
+    return { root, update: paint, dispose: () => { pila.dispose(); b.dispose(); }, act: (name, u) => { if (name === "cargar") ch = clamp01(u); if (name === "descartar") dc = clamp01(u); paint(lf); } };
+  },
+};
+
+// pantalla-tactil · dedo de piel con uña (tip en el origen, apunta a `d`)
+const dedoPiel = (b: Bin, r = 0.11, len = 1.1) => {
+  const g = new THREE.Group(), skin = glowMat(b, "#e8a07c", 0.18, { roughness: 0.6 });
+  const finger = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(r, len, 10, 20)), skin); finger.position.y = -(len / 2 + r); g.add(finger);
+  const nail = ball(b, r, mat(b, "#f3d9c8", { roughness: 0.25 }), 16); nail.scale.set(0.66, 0.9, 0.16); nail.position.set(0, -r * 1.5, r * 0.88); g.add(nail);
+  const knuckle = ball(b, r * 1.02, skin, 14); knuckle.scale.set(1, 0.38, 1); knuckle.position.set(0, -len * 0.55, 0); g.add(knuckle);
+  return g;
+};
+
+// pantalla-tactil · móvil abierto en capas: vidrio, hilos que envían (dorado) y que escuchan (cian), pantalla y chip; un dedo debilita el cruce que toca
+export const pantalla_tactil: HeroDef = {
+  kind: "primitive",
+  when: "Pantalla táctil de móvil por dentro: vidrio, rejilla de hilos transparentes que se cruzan, campo eléctrico en cada cruce, el dedo que lo debilita, el chip que revisa los cruces, multitoque con dos dedos, cómo detecta el dedo una pantalla capacitiva.",
+  poses: ["telefono", "capas", "tocando"],
+  actions: {
+    abrir: "El móvil se abre en capas: el vidrio sube y se separan los hilos, la pantalla y el chip (se queda así): bajo el vidrio, por dentro, capas, rejilla.",
+    senal: "Un pulso recorre los hilos dorados (envían) y los cian los escuchan; en cada cruce brilla el campo (se queda así): envían una señal, la escuchan, campo en cada cruce.",
+    tocar: "El dedo baja hasta un cruce y el campo de ese cruce se apaga (se queda así): tu dedo, se lleva el campo, lo roza, llega menos señal.",
+    barrer: "El chip se enciende y barre todos los cruces; al final marca el más débil con un aro (se queda así): un chip revisa, encuentra el cruce, el único más débil.",
+    dos_dedos: "Aparece un segundo dedo y se apaga un segundo cruce (se queda así): con dos dedos, multitoque, zoom.",
+  },
+  center: [0, 1.3, 0.1], radius: 0.8,
+  anchors: { hero: [0, 1.3, 0.1], top: [0, 2.6, 0], base: [0, 0.05, 0], vidrio: [0, 1.3, 0.6], cruce: [0.14, 1.48, 0.25], dedo: [0.14, 1.48, 0.9], chip: [0, 0.2, 0.1], hilos: [-0.3, 2.0, 0.2], pantalla: [0, 1.3, -0.3] },
+  build: (_L, pose) => {
+    const p = poseOf(pantalla_tactil, pose, "pantalla_tactil");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const NX = 6, NY = 11, PX = 0.16, PY = 0.16, X0 = -((NX - 1) * PX) / 2, Y0 = -((NY - 1) * PY) / 2;
+    const goldC = new THREE.Color("#ffb24a"), cyanC = new THREE.Color("#59e6ff"), weakC = new THREE.Color("#ff4f6d");
+    const mk = (c: THREE.Color, k: number) => beam(b, c, k, { transparent: true, opacity: 1 });
+    // capas (cada una en su grupo; paint les da la z según lo abierto que esté)
+    const glass = new THREE.Group(), txL = new THREE.Group(), rxL = new THREE.Group(), lcdL = new THREE.Group(), bodyL = new THREE.Group();
+    g.add(glass, txL, rxL, lcdL, bodyL);
+    glass.add(new THREE.Mesh(b.track(new RoundedBoxGeometry(1.06, 2.2, 0.045, 3, 0.02)), ghostMat(b, "#bfe6ff", 0.2, { metalness: 0.2 })));
+    glass.add(place(box(b, 0.05, 1.9, 0.01, beam(b, "#ffffff", 0.9, { transparent: true, opacity: 0.2 })), [-0.38, 0.05, 0.026]));
+    glass.add(place(box(b, 1.06, 0.01, 0.047, mat(b, "#cfe9ff", { metalness: 0.6, roughness: 0.2 })), [0, 1.1, 0]), place(box(b, 1.06, 0.01, 0.047, mat(b, "#cfe9ff", { metalness: 0.6, roughness: 0.2 })), [0, -1.1, 0]));
+    const txM = Array.from({ length: NY }, () => mk(goldC, 1.1)), rxM = Array.from({ length: NX }, () => mk(cyanC, 1.1));
+    for (let j = 0; j < NY; j++) txL.add(place(box(b, 0.86, 0.018, 0.018, txM[j]), [0, Y0 + j * PY, 0]));
+    for (let i = 0; i < NX; i++) rxL.add(place(box(b, 0.018, 1.66, 0.018, rxM[i]), [X0 + i * PX, 0, 0]));
+    // cinta plana que lleva los hilos al chip, y el chip con su die y patillas
+    const flex = box(b, 0.9, 0.2, 0.012, mat(b, "#b8793a", { roughness: 0.5, metalness: 0.3 })); flex.position.set(0, -0.93, 0); rxL.add(flex);
+    for (let k = 0; k < 9; k++) rxL.add(place(box(b, 0.012, 0.18, 0.004, mat(b, "#f0c070", { metalness: 0.8, roughness: 0.3 })), [-0.36 + k * 0.09, -0.93, 0.008]));
+    const chip = new THREE.Group(); chip.position.set(0, -1.13, 0.01); rxL.add(chip);
+    chip.add(box(b, 0.5, 0.2, 0.05, mat(b, "#17192b", { roughness: 0.35, metalness: 0.4 })));
+    const dieM = glowMat(b, "#59e6ff", 0.3, { roughness: 0.3 }), die = box(b, 0.2, 0.1, 0.012, dieM); die.position.z = 0.03; chip.add(die);
+    for (let k = 0; k < 7; k++) { chip.add(place(box(b, 0.02, 0.05, 0.02, mat(b, "#dfe3ee", { metalness: 0.8, roughness: 0.3 })), [-0.21 + k * 0.07, 0.12, 0]), place(box(b, 0.02, 0.05, 0.02, mat(b, "#dfe3ee", { metalness: 0.8, roughness: 0.3 })), [-0.21 + k * 0.07, -0.12, 0])); }
+    const chipHalo = halo(b, "rgba(89,230,255,0.9)", 0.9, 0); chipHalo.position.z = 0.06; chip.add(chipHalo);
+    // pantalla (LCD) con iconos y el cuerpo del móvil
+    const tex = screenTex(b.track, 256, 512, (c) => {
+      const gr = c.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, "#1c2a5a"); gr.addColorStop(1, "#4a2a62"); c.fillStyle = gr; c.fillRect(0, 0, 256, 512);
+      c.fillStyle = "#e8f2ff"; c.font = "bold 40px sans-serif"; c.fillText("9:41", 78, 74);
+      const cs = ["#59e6ff", "#ffb24a", "#7cf59b", "#ff7a9a", "#b58cff", "#ffd36b"];
+      for (let r = 0; r < 5; r++) for (let k = 0; k < 4; k++) { c.fillStyle = cs[(r * 4 + k) % 6]; c.beginPath(); c.roundRect(20 + k * 56, 130 + r * 66, 42, 42, 10); c.fill(); }
+      c.fillStyle = "rgba(255,255,255,0.18)"; c.beginPath(); c.roundRect(24, 462, 208, 30, 15); c.fill();
+    });
+    const lcd = new THREE.Mesh(b.track(new THREE.PlaneGeometry(1.0, 2.0)), b.track(new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }))); lcdL.add(lcd);
+    bodyL.add(new THREE.Mesh(b.track(new RoundedBoxGeometry(1.12, 2.32, 0.1, 4, 0.1)), mat(b, "#20253f", { roughness: 0.35, metalness: 0.6 })));
+    bodyL.add(place(ball(b, 0.06, mat(b, "#0b0d18", { roughness: 0.2 }), 14), [0.28, 0.98, -0.07]));
+    // cruces: un hilo de luz entre las dos capas y una bolita en medio
+    type Cr = { m: THREE.MeshBasicMaterial; rod: THREE.Mesh; dot: THREE.Mesh; x: number; y: number; i: number; j: number };
+    const cr: Cr[] = [], crG = new THREE.Group(); g.add(crG);
+    for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+      const m = mk(cyanC, 1.5), rod = new THREE.Mesh(b.track(new THREE.CylinderGeometry(0.012, 0.012, 1, 6)), m), dot = ball(b, 0.034, m, 10);
+      rod.rotation.x = Math.PI / 2; crG.add(rod, dot); cr.push({ m, rod, dot, x: X0 + i * PX, y: Y0 + j * PY, i, j });
+    }
+    // pulso que viaja por el hilo que envía, aro de «el más débil» y brillos
+    const pulse = ball(b, 0.05, beam(b, "#ffffff", 2.2, { transparent: true, opacity: 0 }), 12); g.add(pulse);
+    const ring = new THREE.Mesh(b.track(new THREE.TorusGeometry(0.15, 0.012, 8, 40)), beam(b, "#ffffff", 2, { transparent: true, opacity: 0 })); g.add(ring);
+    // dedos (el 2.º solo con dos_dedos) y brillo bajo la yema
+    const F = [0, 1].map((k) => { const fg = dedoPiel(b), gl = halo(b, "rgba(120,235,255,0.95)", 0.6, 0); g.add(fg, gl); return { fg, gl, x: k ? -0.2 : 0.14, y: k ? -0.3 : 0.2 }; });
+    const dirV = new THREE.Vector3(0, 0.34, -0.94).normalize(), nailV = new THREE.Vector3(0, 0.94, 0.34).normalize();
+    const basis = new THREE.Matrix4().makeBasis(new THREE.Vector3().crossVectors(dirV, nailV).normalize(), dirV, nailV);
+    F.forEach((f) => f.fg.quaternion.setFromRotationMatrix(basis));
+    g.position.y = 1.3; root.add(g); shadows(g);
+    let ex = p === "telefono" ? 0 : 1, sg = p === "tocando" ? 1 : 0, tc = p === "tocando" ? 1 : 0, bar = p === "tocando" ? 1 : 0, dos = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      const zG = 0.06 + 0.62 * ex, zT = 0.035 + 0.3 * ex, zR = 0.015, zL = -0.02 - 0.3 * ex, zB = -0.08 - 0.62 * ex;
+      glass.position.z = zG; txL.position.z = zT; rxL.position.z = zR; lcdL.position.z = zL; bodyL.position.z = zB;
+      const vis = 0.28 + 0.72 * ex;
+      // fila que envía en este momento; el barrido es más rápido cuando el chip revisa
+      const rate = bar > 0 ? 0.034 : 0.012, ph = (f * rate) % 1, row = Math.floor(ph * NY), within = ph * NY - row, scanning = sg > 0.02 || bar > 0.02;
+      const sgn = Math.max(sg, bar);
+      txM.forEach((m, j) => { const h = scanning && j === row ? 1 : 0; m.color.copy(goldC).multiplyScalar((0.55 + 1.7 * h * sgn) * vis); m.opacity = vis; });
+      rxM.forEach((m, i) => { const h = scanning ? 0.5 + 0.5 * Math.sin(f * 0.3 + i * 1.1) : 0; m.color.copy(cyanC).multiplyScalar((0.55 + 1.1 * h * sgn) * vis); m.opacity = vis; });
+      pulse.position.set(-0.43 + 0.86 * within, Y0 + row * PY, zT); (pulse.material as THREE.MeshBasicMaterial).opacity = scanning ? sgn : 0;
+      // dedos
+      const hover = p === "telefono" ? 0.3 + 0.04 * Math.sin(f * 0.07) : 0.95;
+      const fs = [tc, dos];
+      F.forEach((fi, k) => {
+        const t = fs[k], gap = hover * (1 - t) + 0.0 * t, on = k === 0 ? ((p === "telefono" && ex < 0.5) || t > 0.01) : t > 0.01;
+        const slide = k === 0 && p === "telefono" ? 0.1 * Math.sin(f * 0.05) * t : 0;
+        fi.fg.visible = on; fi.fg.position.set(fi.x + slide, fi.y, zG + 0.025 + gap * 0.95);
+        fi.gl.visible = on; fi.gl.position.set(fi.x + slide, fi.y, zG + 0.03); (fi.gl.material as THREE.MeshBasicMaterial).opacity = 0.75 * t;
+      });
+      // campo en cada cruce: cae donde hay un dedo
+      let weak = 9, wx = 0, wy = 0;
+      cr.forEach((c) => {
+        let dip = 0; F.forEach((fi, k) => { dip += fs[k] * Math.exp(-((c.x - fi.x) ** 2 + (c.y - fi.y) ** 2) / (2 * 0.1 * 0.1)); });
+        const s = Math.max(0.06, 1 - 0.95 * Math.min(1, dip)), hot = scanning && c.j === row ? 1 : 0;
+        if (s < weak) { weak = s; wx = c.x; wy = c.y; }
+        const k = (0.5 + 1.0 * s) * (1 + 0.8 * hot * sgn) * (0.35 + 0.65 * ex);
+        c.m.color.copy(cyanC).lerp(weakC, 1 - s).multiplyScalar(k); c.m.opacity = (0.35 + 0.65 * s) * (0.25 + 0.75 * ex);
+        const len = Math.max(0.03, zT - zR), mid = (zT + zR) / 2;
+        c.rod.position.set(c.x, c.y, mid); c.rod.scale.set(s, len, s); c.dot.position.set(c.x, c.y, mid); c.dot.scale.setScalar(0.5 + 0.7 * s * (1 + 0.5 * Math.sin(f * 0.2 + c.i + c.j)));
+      });
+      // chip y aro del más débil
+      dieM.emissive.copy(cyanC).multiplyScalar(0.3 + 1.4 * Math.max(bar, sg * 0.4));
+      (chipHalo.material as THREE.MeshBasicMaterial).opacity = 0.65 * Math.max(bar, sg * 0.3) * (0.7 + 0.3 * Math.sin(f * 0.4));
+      const rin = clamp01((bar - 0.75) / 0.25) * (tc > 0.5 ? 1 : 0);
+      ring.position.set(F[0].x, F[0].y, (zT + zR) / 2); (ring.material as THREE.MeshBasicMaterial).opacity = rin * (0.7 + 0.3 * Math.sin(f * 0.3)); ring.scale.setScalar(1 + 0.15 * Math.sin(f * 0.25));
+      void weak; void wx; void wy;
+      g.rotation.y = -0.3 - 0.45 * ex + 0.06 * Math.sin(f * 0.012); g.rotation.x = -0.1 * ex; g.position.y = 1.3 + 0.02 * Math.sin(f * 0.04);
+    };
+    return {
+      root, update: (f) => paint(f), dispose: b.dispose,
+      act: (name, u) => {
+        if (name === "abrir") ex = ease(u);
+        if (name === "senal") sg = ease(u);
+        if (name === "tocar") tc = ease(u);
+        if (name === "barrer") bar = clamp01(u);
+        if (name === "dos_dedos") dos = ease(u);
+        paint(lf);
+      },
+    };
+  },
+};
+
+// pantalla-tactil · corte lateral: un dedo con guante (tela gruesa) o con hilo conductor sobre el vidrio; el campo sube un poco por encima del vidrio
+export const guante_pantalla: HeroDef = {
+  kind: "primitive",
+  when: "Guante normal que no funciona en una pantalla táctil (la tela aísla el dedo del campo) y guante táctil con hilo conductor que sí: por qué el guante bloquea el campo, el vidrio no estorba pero la tela sí, dedo con guantes sobre el móvil.",
+  poses: ["guante", "tactil"],
+  actions: {
+    acercar: "El dedo con guante baja hasta apoyarse en el vidrio; el testigo de la derecha se queda apagado (guante normal) o se enciende (guante táctil) (se queda así): con guante, se pone el guante, la tela, apoya el dedo.",
+  },
+  center: [0, 1.15, 0], radius: 0.8,
+  anchors: { hero: [0, 1.15, 0], top: [0, 2.4, 0], base: [0, 0.05, 0], vidrio: [0, 1.0, 0.1], tela: [0, 1.35, 0.2], dedo: [0, 1.8, 0], campo: [0.3, 1.05, 0.3], testigo: [1.4, 1.2, 0.3] },
+  build: (_L, pose) => {
+    const p = poseOf(guante_pantalla, pose, "guante_pantalla");
+    const b = bin(), root = new THREE.Group(), g = new THREE.Group();
+    const cyanC = new THREE.Color("#59e6ff"), goldC = new THREE.Color("#ffb24a");
+    // sándwich: vidrio, hilos (dorado y cian alternos, como tiras en profundidad), pantalla y cuerpo
+    g.add(place(new THREE.Mesh(b.track(new RoundedBoxGeometry(2.7, 0.1, 1.0, 3, 0.02)), ghostMat(b, "#bfe6ff", 0.24, { metalness: 0.2 })), [0, 0.96, 0]));
+    g.add(place(box(b, 2.7, 0.01, 1.0, mat(b, "#cfe9ff", { metalness: 0.6, roughness: 0.2 })), [0, 0.905, 0]));
+    const NE = 10, pit = 0.26, EX0 = -((NE - 1) * pit) / 2;
+    for (let k = 0; k < NE; k++) g.add(place(box(b, 0.12, 0.03, 0.86, glowMat(b, k % 2 ? "#59e6ff" : "#ffb24a", 0.9, { roughness: 0.4 })), [EX0 + k * pit, 0.88, 0]));
+    g.add(place(box(b, 2.7, 0.05, 1.0, beam(b, "#2a4a9a", 0.9)), [0, 0.8, 0]), place(box(b, 2.8, 0.2, 1.1, mat(b, "#20253f", { roughness: 0.35, metalness: 0.6 })), [0, 0.67, 0]));
+    // arcos del campo entre cada par de tiras, tres a lo largo de la profundidad
+    const arcs: { m: THREE.MeshBasicMaterial; x: number; mesh: THREE.Mesh }[] = [];
+    for (let k = 0; k < NE - 1; k++) for (let z = -1; z <= 1; z++) {
+      const m = beam(b, "#59e6ff", 1.4, { transparent: true, opacity: 0.9 }), a = new THREE.Mesh(b.track(new THREE.TorusGeometry(pit / 2, 0.011, 6, 22, Math.PI)), m);
+      a.position.set(EX0 + (k + 0.5) * pit, 0.9, z * 0.3); a.scale.y = 1.15; g.add(a); arcs.push({ m, x: EX0 + (k + 0.5) * pit, mesh: a });
+    }
+    // dedo dentro de un guante de lana (cáscara translúcida) con puntadas; en la pose táctil, un parche de hilo conductor en la punta
+    const finger = new THREE.Group(); g.add(finger);
+    const skinR = 0.1, shellR = 0.21, len = 0.9, pad = 0.19;
+    const skin = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(skinR, len, 10, 20)), mat(b, "#e8b394", { roughness: 0.62 })); skin.position.y = pad + skinR + len / 2; finger.add(skin);
+    const wool = p === "tactil" ? "#4a6fe0" : "#e4572e";
+    const shell = new THREE.Mesh(b.track(new THREE.CapsuleGeometry(shellR, len + 0.1, 10, 24)), ghostMat(b, wool, 0.36, { roughness: 0.9 })); shell.position.y = shellR + (len + 0.1) / 2; finger.add(shell);
+    for (let k = 0; k < 7; k++) { const st = place(new THREE.Mesh(b.track(new THREE.TorusGeometry(shellR + 0.004, 0.008, 5, 28)), mat(b, wool, { roughness: 0.95 })), [0, shellR + 0.06 + k * 0.14, 0]); st.rotation.x = Math.PI / 2; finger.add(st); }
+    const thread = p === "tactil" ? cyl(b, 0.07, 0.07, pad + 0.02, glowMat(b, "#d8dcea", 0.4, { metalness: 0.9, roughness: 0.25 }), 16) : null;
+    if (thread) { thread.position.y = (pad + 0.02) / 2; finger.add(thread); for (let k = 0; k < 3; k++) { const th = place(new THREE.Mesh(b.track(new THREE.TorusGeometry(0.075, 0.006, 5, 20)), beam(b, "#ffe6a0", 1.4)), [0, 0.04 + k * 0.06, 0]); th.rotation.x = Math.PI / 2; finger.add(th); } }
+    finger.rotation.z = 0.12;
+    // testigo de «te detecto» (bola) y barra de señal en un lateral
+    const lampM = glowMat(b, "#3a3d48", 0.1, { roughness: 0.3 }), lamp = ball(b, 0.11, lampM, 18); lamp.position.set(1.62, 1.35, 0); g.add(lamp);
+    const barM = beam(b, "#59e6ff", 1.3), bar = box(b, 0.12, 1, 0.12, barM); g.add(bar);
+    g.add(place(box(b, 0.2, 0.02, 0.2, mat(b, "#20253f")), [1.62, 0.72, 0]));
+    g.rotation.y = -0.35; g.position.y = 0.0; root.add(g); shadows(g);
+    let ap = 0, lf = 0;
+    const paint = (f: number) => {
+      lf = f;
+      const top = 1.01, y = top + 0.95 * (1 - ap) + 0.015 * Math.sin(f * 0.08) * (1 - ap); finger.position.set(0, y, 0);
+      const absorb = p === "tactil" ? ap : 0;
+      arcs.forEach((a) => {
+        const d = Math.exp(-(a.x * a.x) / (2 * 0.34 * 0.34)) * absorb;
+        a.m.color.copy(cyanC).lerp(goldC, d * 0.6).multiplyScalar(1.4 * (1 - 0.8 * d)); a.m.opacity = 0.9 * (1 - 0.7 * d); a.mesh.scale.y = 1.15 + 0.5 * d;
+      });
+      const on = absorb > 0.6; lampM.color.set(on ? "#7cf59b" : "#3a3d48"); lampM.emissive.set(on ? "#7cf59b" : "#3a3d48").multiplyScalar(on ? 1.2 : 0.1);
+      const sig = 1 - 0.85 * absorb; bar.scale.y = 0.9 * sig; bar.position.set(1.62, 0.78 + 0.45 * sig, 0); barM.color.copy(cyanC).lerp(new THREE.Color("#ff4f6d"), 1 - sig).multiplyScalar(1.3);
+      g.rotation.y = -0.35 + 0.08 * Math.sin(f * 0.012);
+    };
+    return { root, update: (f) => paint(f), dispose: b.dispose, act: (name, u) => { if (name === "acercar") ap = ease(u); paint(lf); } };
+  },
+};
+
+// pantalla-tactil · el mismo móvil cerrado, con un dedo que lo roza; al abrirse se ven las capas
+export const movil_dedo: HeroDef = {
+  kind: "primitive",
+  when: "Un móvil con pantalla encendida y un dedo que lo roza (sin apretar), que se abre en capas bajo el vidrio: tocar la pantalla, usar el móvil con un dedo, mirar por dentro de la pantalla táctil.",
+  poses: ["roce"],
+  actions: { tocar: pantalla_tactil.actions!.tocar, abrir: pantalla_tactil.actions!.abrir },
+  center: pantalla_tactil.center, radius: pantalla_tactil.radius, anchors: pantalla_tactil.anchors,
+  build: (L) => pantalla_tactil.build(L, "telefono"),
 };

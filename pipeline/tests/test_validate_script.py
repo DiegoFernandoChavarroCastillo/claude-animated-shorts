@@ -8,7 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 import validate_script  # noqa: E402
-from validate_script import validate  # noqa: E402
+from validate_script import parse, validate  # noqa: E402
 
 ROOT = HERE.parents[1]
 GOOD = [ROOT / "templates/examples/hielo-flota/02_SCRIPT.md", ROOT / "templates/examples/cielo-azul/02_SCRIPT.md",
@@ -55,6 +55,7 @@ def variants() -> dict[str, tuple[str, str]]:
         "cierre bucle con despedida": (cadena.replace("Así que cuando veas el próximo atardecer, recuerda que el azul sigue ahí, solo que lejos.", "Gracias por mirar, nos vemos pronto con más cosas del atardecer."), "no puede despedirse"),
         "gancho negativo sin forma": (cadena.replace("hook: reto", "hook: negativo"), "no tiene la forma de 'negativo'"),
         "gancho coste sin forma": (cadena.replace("hook: reto", "hook: coste"), "no tiene la forma de 'coste'"),
+        "gancho objeto_comun sin forma": (cadena.replace("hook: reto", "hook: objeto_comun"), "no tiene la forma de 'objeto_comun'"),
         "cierre envia sin enviar": (lista.replace("Envíaselo a quien todavía deja una botella cerrada en el congelador.", "¿Qué otra rareza quieres?"), "no tiene la forma de 'envia'"),
         "cierre sin cta": (hist.replace("Pruébalo esta noche en la ducha y cuéntame qué notas.", "Y así termina la historia de los dedos."), "no tiene la forma de 'reto_casa'"),
         # fórmulas nuevas (D120)
@@ -115,6 +116,10 @@ def main() -> int:
         ok = (not hook_errs) == ok_want
         fails += not ok
         print(f"{'OK ' if ok else 'MAL'} en gancho {tipo} {'pasa' if ok_want else 'falla'}: {hook_errs}")
+    q = parse("# T\nlang: es\npregunta: ¿Por qué el móvil se recarga y una pila no?\n\n## Guion\n[hook] Hola.\n")
+    ok = q.question == "¿Por qué el móvil se recarga y una pila no?" and not any("pregunta" in e for e in q.errors)
+    fails += not ok
+    print(f"{'OK ' if ok else 'MAL'} D125: la cabecera `pregunta:` se lee como pregunta central")
     print("TODO BIEN" if not fails else f"{fails} PRUEBAS MAL")
     return 1 if fails else 0
 

@@ -22,6 +22,17 @@
         72
       ]
     },
+    "escalada": {
+      "_nota": "D126: `structure: escalada` (racha de hitos con datos y un giro final). Más corto que una historia: los golpes de datos cansan pasado el minuto; 45–59 s como el explainer.",
+      "words": [
+        150,
+        215
+      ],
+      "durationS": [
+        45,
+        59.9
+      ]
+    },
     "softOpeners": [
       "alguna vez",
       "te has preguntado",

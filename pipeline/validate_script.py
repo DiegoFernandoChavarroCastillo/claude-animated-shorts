@@ -74,6 +74,8 @@ DRAMA = json.loads((ROOT / "templates" / "dramatizacion.json").read_text(encodin
 # 60–70 s. Las que no («Eres el escriba», «Eres Cleopatra», «tres apuestas», 57 s apretados) fallaban justo ahí.
 # `enigma` (D123): curiosidades e historia sin protagonista único, contadas como un misterio que se resuelve en el remate.
 STORY_STRUCTURES = ("drama", "alegoria", "enigma")
+# `escalada` (D126): racha de hitos con datos y un giro que la rompe; 45–59 s (perfil `escalada` de pacing_viral.json), con Ángulo.
+SHORT_2D_STRUCTURES = ("escalada",)
 # `## Ángulo` (D123): lo que convierte una idea simple en un video que se ve entero y se comparte. Se decide antes de escribir.
 ANGLE_KEYS = ("pregunta", "en_juego", "cifras", "climax", "remate", "compartir")
 VIRAL_CLOSINGS = ("bucle", "remate_cta")
@@ -209,6 +211,8 @@ class Script:
     pacing: str = ""
     ficcion: str = ""
     pov: str = ""
+    question: str = ""     # D125: `pregunta: …` en la cabecera, la pregunta central que tira del explainer
+    guion_autor: str = ""  # D127 `guion_autor: usuario`: el guion lo trajo el usuario; se conserva su redacción (solo se corrigen datos y forma)
     hook_autor: str = ""   # `hook_autor: usuario`: el usuario escribió el gancho; no se le aplican las reglas de forma (2.ª persona, apertura suave)
     fiction: list[str] = field(default_factory=list)   # sección "## Ficción": anclas y lo inventado
     angle: dict[str, str] = field(default_factory=dict)  # sección "## Ángulo": pregunta, en_juego, cifras, climax, remate, compartir
@@ -230,7 +234,7 @@ def parse(md: str) -> Script:
         line = raw.strip()
         if not line:
             continue
-        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|ficcion|pov|hook_autor|gancho|estructura|cierre|ritmo|ficción):\s*(\w+)", line, re.I)
+        m = re.fullmatch(r"(lang|hook|structure|closing|pacing|ficcion|pov|hook_autor|guion_autor|gancho|estructura|cierre|ritmo|ficción):\s*(\w+)", line, re.I)
         if m and section is None:
             key = {"gancho": "hook", "estructura": "structure", "cierre": "closing", "ritmo": "pacing", "ficción": "ficcion"}.get(m.group(1).lower(), m.group(1).lower())
             setattr(s, key, m.group(2).lower())
@@ -238,6 +242,10 @@ def parse(md: str) -> Script:
         m = re.fullmatch(r"beats:\s*(.+)", line, re.I)
         if m and section is None:
             s.beats = beats_of(m.group(1))
+            continue
+        m = re.fullmatch(r"(?:pregunta|question):\s*(.+)", line, re.I)
+        if m and section is None:
+            s.question = m.group(1).strip()
             continue
         if line.startswith("## "):
             name = fold(line[3:]).strip()
@@ -281,6 +289,8 @@ HOOK_MARKS = {
     "negativo": (r"no vuelvas|deja de|nunca |no hagas|jamas|no pongas|no sigas|evita ", r"stop |don't |never |do not|quit |avoid "),
     "coste": (r"te cuesta|te cuestan|pierdes|te quita|te roba|pagas|gastas|te sale|desperdicias", r"costs you|cost you|costing you|losing|robs|draining|wasting|paying"),
     "contradiccion": (r"al reves|lo contrario|no es lo que|no es como|no funciona como|todo lo que sabes|no es asi", r"backwards|the opposite|not what|isn't how|everything you know|upside"),
+    "objeto_comun": (r"todos (tenemos|tienen|usamos)|todo el mundo|tienes (uno|una|esto|esta|este)|en tu (casa|bolsillo|cocina|mano)|usas|cada dia|a diario|millones de|nadie sabe|casi nadie",
+                     r"everyone (has|uses|owns)|you have (one|this)|in your (house|home|pocket|kitchen|hand)|you use|every day|millions of|nobody knows|almost nobody"),
 }
 FAREWELL = (r"gracias|adios|hasta (luego|pronto|la proxima)|nos vemos|suscrib|sigueme|comenta|dale (like|me gusta)|dejame|deja tu|hasta aqui",
             r"thanks|thank you|goodbye|bye|see you|subscribe|follow me|comment|like this|that's all")
@@ -447,7 +457,8 @@ def validate(md: str) -> tuple[list[str], dict]:
     if s.pacing and not viral:
         errs.append(f"ritmo desconocido '{s.pacing}' (válido: viral)")
     story = bool(s.ficcion) or (s.structure or "") in STORY_STRUCTURES
-    w_min, w_max = (VIRAL["story2d"]["words"] if story else VIRAL["words"]) if viral else (WORDS_MIN, WORDS_MAX)
+    short2d = (s.structure or "") in SHORT_2D_STRUCTURES
+    w_min, w_max = (VIRAL["escalada"]["words"] if short2d else VIRAL["story2d"]["words"] if story else VIRAL["words"]) if viral else (WORDS_MIN, WORDS_MAX)
     hook_max, sentence_max = (VIRAL["hookMax"], VIRAL["sentenceMax"]) if viral else (HOOK_MAX, SENTENCE_MAX)
     if not w_min <= nwords <= w_max:
         errs.append(f"longitud: {nwords} palabras (debe estar entre {w_min} y {w_max})")
@@ -473,6 +484,10 @@ def validate(md: str) -> tuple[list[str], dict]:
     hook = " ".join(t for r, t in s.lines if r == "hook")
     if len(hook.split()) > hook_max:
         errs.append(f"gancho de {len(hook.split())} palabras (máximo {hook_max}): {hook!r}")
+    if s.guion_autor and s.guion_autor != "usuario":
+        errs.append(f"guion_autor desconocido '{s.guion_autor}' (válido: usuario)")
+    if s.guion_autor == "usuario" and not s.hook_autor:
+        s.hook_autor = "usuario"   # D127: su guion incluye su gancho
     if s.hook_autor and s.hook_autor != "usuario":
         errs.append(f"hook_autor desconocido '{s.hook_autor}' (válido: usuario)")
     first = re.split(r"(?<=[.!?…])\s+", hook.strip())[0]
@@ -507,7 +522,7 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs.append(e)
     if viral:
         errs += viral_errors(s, hook, last)
-    if viral and story:
+    if viral and (story or short2d):
         errs += angle_errors(s)
     if s.ficcion:
         errs += fiction_errors(s)

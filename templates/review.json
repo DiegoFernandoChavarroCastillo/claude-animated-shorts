@@ -1,5 +1,5 @@
 {
-  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario. `script`: umbrales de la etapa review-script (solo texto, antes de la voz; `tts` no arranca sin ella). `drama` mide si suena a historia vivida o a documental; `fidelidad` (antes `rigor`) que no se altere ningún hecho ancla ni se presente lo inventado como dato (D118). D123: `compartible` (guion) mide si hay un motivo para enviarlo, y `visualizacion` (story) si las cifras se vuelven imagen, si los recursos varían y si hay un clímax panorámico; `cierre_bucle` juzga el cierre declarado, sea `bucle` o `remate_cta`. D124 (guion): `sorpresa` (peso 2) premia los datos y giros inesperados; el crítico lista lo que funciona (`keep`) y no puede quitarlo; escala calibrada (7 = se publica, las mejores historias del canal 7–8), por eso el mínimo del guion baja a 7,2; con `hook_autor: usuario` el mínimo del gancho no bloquea (el gancho lo eligió Diego), aunque sigue contando en el total; desde la 2.ª ronda el crítico recibe su ronda anterior.",
+  "_nota": "Etapa `review` (entre validate-story y stills): un agente independiente califica el story de 0 a 10 por dimensión. El total y el veredicto los calcula pipeline/review_story.py (no se fía del `pass` del agente). Si no pasa, el story se devuelve con las correcciones; tras maxRounds intentos fallidos se para y se consulta al usuario. `script`: umbrales de la etapa review-script (solo texto, antes de la voz; `tts` no arranca sin ella). `drama` mide si suena a historia vivida o a documental; `fidelidad` (antes `rigor`) que no se altere ningún hecho ancla ni se presente lo inventado como dato (D118). D123: `compartible` (guion) mide si hay un motivo para enviarlo, y `visualizacion` (story) si las cifras se vuelven imagen, si los recursos varían y si hay un clímax panorámico; `cierre_bucle` juzga el cierre declarado, sea `bucle` o `remate_cta`. D124 (guion): `sorpresa` (peso 2) premia los datos y giros inesperados; el crítico lista lo que funciona (`keep`) y no puede quitarlo; escala calibrada (7 = se publica, las mejores historias del canal 7–8), por eso el mínimo del guion baja a 7,2; con `hook_autor: usuario` el mínimo del gancho no bloquea (el gancho lo eligió Diego), aunque sigue contando en el total; desde la 2.ª ronda el crítico recibe su ronda anterior. D125 (explainer): `explainer` califica el guion del explainer con templates/prompts/critico_explainer.md: `pregunta_central` (una pregunta que tira del video y se paga tarde) y `claridad` (actor + camino + resultado en cada paso del mecanismo) son nuevas; `claridad` y `fidelidad` necesitan ≥7 (`minKeys`) porque un explainer que se entiende mal es peor que uno aburrido; el gancho necesita 7,5.",
   "weights": {
     "gancho": 3,
     "retencion": 3,
@@ -29,6 +29,27 @@
     "minTotal": 7.2,
     "minGancho": 7,
     "minDimension": 5,
+    "maxRounds": 3
+  },
+  "explainer": {
+    "weights": {
+      "gancho": 3,
+      "pregunta_central": 2,
+      "claridad": 3,
+      "retencion": 2,
+      "sorpresa": 2,
+      "ritmo_verbal": 1,
+      "cierre_bucle": 1,
+      "compartible": 1,
+      "fidelidad": 2
+    },
+    "minTotal": 7.2,
+    "minGancho": 7.5,
+    "minDimension": 5,
+    "minKeys": {
+      "claridad": 7,
+      "fidelidad": 7
+    },
     "maxRounds": 3
   }
 }

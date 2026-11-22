@@ -352,3 +352,141 @@ export const mapa_vecindario: HeroDef = {
   build: (_L, pose) => { poseOf(mapa_vecindario, pose, "mapa_vecindario"); return noBuild(); },
   flat: MapaVecindario,
 };
+
+// ---------------------------------------------------------------- pila_cargador (baterias-recargables)
+/** pila AA genérica de pie: camisa azul con banda dorada; `bulge` abomba los lados (px) */
+const AA = ({ x, y, w, h, bulge = 0 }: { x: number; y: number; w: number; h: number; bulge?: number }) => {
+  const side = (s: number) => `Q${x + (s > 0 ? w + bulge : -bulge)} ${y + h / 2}`;
+  const body = `M${x} ${y} L${x + w} ${y} ${side(1)} ${x + w} ${y + h} L${x} ${y + h} ${side(-1)} ${x} ${y} Z`;
+  return (
+    <g>
+      <defs><linearGradient id="aash" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#000" stopOpacity={0.35} /><stop offset="0.35" stopColor="#fff" stopOpacity={0.18} /><stop offset="1" stopColor="#000" stopOpacity={0.45} /></linearGradient>
+        <clipPath id="aacl"><path d={body} /></clipPath></defs>
+      <rect x={x + w / 2 - 26} y={y - 30} width={52} height={34} rx={8} fill="#C9CFDD" />
+      <path d={body} fill="#1C2658" />
+      <g clipPath="url(#aacl)"><rect x={x - bulge - 4} y={y} width={w + 2 * bulge + 8} height={h * 0.3} fill="#E0A93E" /><rect x={x - bulge - 4} y={y + h * 0.3} width={w + 2 * bulge + 8} height={8} fill="#F4E6C0" />
+        {[0, 1, 2].map((i) => <rect key={i} x={x + 18 + i * 40} y={y + h * 0.45} width={18} height={h * 0.45} fill="#2C3A86" />)}</g>
+      <text x={x + w / 2} y={y + h * 0.2} textAnchor="middle" fontSize={64} fontWeight={900} fill="#1C2658" fontFamily="sans-serif">+</text>
+      <path d={body} fill="url(#aash)" />
+      <rect x={x - 2} y={y + h - 14} width={w + 4} height={16} rx={4} fill="#AEB5C6" />
+    </g>
+  );
+};
+
+const PilaCargador: FlatComp = ({ t, u, cam, subject }) => {
+  const e = ease(u.fuga ?? 0), heat = e * (0.85 + 0.15 * Math.sin(t * 0.35)), bx = 470, by = 640, bw = 140, bh = 520;
+  return (
+    <>
+      <Depth cam={cam} z={0.2}>
+        <Backdrop id="pcb" top="#2A1C34" mid="#1A1226" bottom="#0E0A18" />
+        {[...Array(14)].map((_, i) => <rect key={i} x={-200 + i * 110} y={-300} width={2} height={2600} fill={PALETTE.mid.lavender} opacity={0.05} />)}
+        <Glow id="pcg0" cx={540} cy={900} r={700} color={PALETTE.mid.violet} a={0.25} />
+      </Depth>
+      <Depth cam={cam} z={0.6}>
+        <rect x={250} y={560} width={580} height={860} rx={60} fill="#3A3550" />
+        <rect x={270} y={580} width={540} height={820} rx={48} fill="#D7DAE4" />
+        <rect x={270} y={580} width={540} height={70} rx={30} fill="#F1F2F7" opacity={0.7} />
+        <rect x={440} y={600} width={200} height={600} rx={26} fill="#2A2D3E" />
+        <rect x={360} y={1260} width={360} height={60} rx={20} fill="#B9BDCB" />
+        <circle cx={760} cy={640} r={16} fill={e > 0 && Math.sin(t * 0.6) > 0 ? PALETTE.ui.red : "#6B2B3A"} />
+        {e > 0 ? <circle cx={760} cy={640} r={34} fill={PALETTE.ui.red} opacity={0.25 * e} /> : null}
+        <path d="M540 1400 L540 1560" stroke="#3A3550" strokeWidth={26} />
+        <rect x={480} y={1540} width={120} height={70} rx={14} fill="#2A2D3E" />
+      </Depth>
+      <Subject cam={cam} pose={subject} at={[540, 900]}>
+        <Glow id="pch" cx={540} cy={900} r={360} color={PALETTE.ui.red} a={0.55 * heat} />
+        <AA x={bx} y={by} w={bw} h={bh} bulge={26 * e + 3 * e * Math.sin(t * 0.4)} />
+        {e > 0 ? (
+          <g>
+            {[...Array(9)].map((_, i) => { const k = clamp01(e * 1.6 - i * 0.08), a = (i / 9) * Math.PI * 2; return <polygon key={i} points={`0,-14 11,-4 7,12 -7,12 -11,-4`} fill="#F4F1E6" opacity={k} transform={`translate(${540 + Math.cos(a) * 46} ${by - 16 + Math.sin(a) * 14}) scale(${0.6 + k})`} />; })}
+            {[0, 1, 2, 3].map((i) => { const k = clamp01(e * 2.4 - i * 0.12), x = bx + 20 + i * 34, len = 30 + 110 * k + 10 * Math.sin(t * 0.2 + i); return <path key={i} d={`M${x} ${by + bh - 6} L${x} ${by + bh + len}`} stroke="#EDE7D2" strokeWidth={14 - i * 2} strokeLinecap="round" opacity={0.9 * k} />; })}
+            {[0, 1, 2].map((i) => { const ph = ((t * 0.02 + i / 3) % 1); return <path key={i} d={`M${505 + i * 35} ${by - 60 - ph * 160} q 18 -30 0 -60 q -18 -30 0 -60`} stroke="#FFD2B0" strokeWidth={7} fill="none" strokeLinecap="round" opacity={e * 0.6 * (1 - ph)} />; })}
+          </g>
+        ) : null}
+      </Subject>
+      <Grain n={600} />
+    </>
+  );
+};
+
+export const pila_cargador: HeroDef = {
+  kind: "plano",
+  when: "Una pila alcalina AA desechable metida en un cargador: al cargarla se calienta (resplandor rojo y vapor), se abomba y suelta un polvo blanco que gotea; por qué no se debe cargar una pila normal, se calienta, se derrama, se hincha.",
+  poses: ["cargador"],
+  actions: {
+    fuga: "Se enciende el piloto rojo, la pila se calienta, se abomba y le salen cristales blancos que gotean: se calienta, se derrama, se hincha, peligro al cargarla.",
+  },
+  center: [0, 1, 0], radius: 1.5,
+  anchors: { hero: [540, 900, 1], top: [540, 600, 1], base: [540, 1200, 1], pila: [540, 900, 1], fuga: [540, 1190, 1], cargador: [540, 1300, 0.6] },
+  build: (_L, pose) => { poseOf(pila_cargador, pose, "pila_cargador"); return noBuild(); },
+  flat: PilaCargador,
+};
+
+// ---------------------------------------------------------------- viaje_ida_vuelta (baterias-recargables)
+const LOOP = { cx: 600, cy: 1170, rx: 300, ry: 115 };
+const loopAt = (a: number): [number, number] => [LOOP.cx + LOOP.rx * Math.cos(a), LOOP.cy + LOOP.ry * Math.sin(a)];
+
+const ViajeIdaVuelta: FlatComp = ({ t, u, cam, subject }) => {
+  const ida = ease(u.ida ?? 0), vu = ease(u.vuelta ?? 0), pe = ease(u.perder ?? 0);
+  const dotX = 300 + 520 * ida, LOST = [1, 4, 6];
+  const lab = (x: number, y: number, s: string, c: string, o = 1, fs = 46) => <text x={x} y={y} fontSize={fs} fontWeight={900} fill={c} fontFamily="sans-serif" opacity={o} letterSpacing={2}>{s}</text>;
+  return (
+    <>
+      <Depth cam={cam} z={0.2}>
+        <Backdrop id="ivb" top="#1A2150" mid="#121839" bottom="#0A0D22" />
+        {[...Array(18)].map((_, i) => <line key={i} x1={-300} y1={300 + i * 100} x2={1400} y2={300 + i * 100} stroke={PALETTE.mid.lavender} strokeWidth={2} opacity={0.05} />)}
+        <Glow id="ivg1" cx={540} cy={760} r={520} color={PALETTE.ui.red} a={0.14} />
+        <Glow id="ivg2" cx={600} cy={1170} r={600} color={PALETTE.warm.gold} a={0.2} />
+      </Depth>
+      <Subject cam={cam} pose={subject} at={[540, 980]}>
+        <g transform="translate(540 990) scale(0.74) translate(-540 -990)">
+        <rect x={70} y={600} width={940} height={330} rx={36} fill="#0E1230" opacity={0.75} stroke={PALETTE.mid.lavender} strokeOpacity={0.25} strokeWidth={3} />
+        {lab(110, 670, "PILA", PALETTE.light.cream)}
+        {lab(560, 670, "SOLO IDA", PALETTE.ui.red, clamp01(ida * 3 - 1.6))}
+        <g transform="translate(110 740)"><rect x={0} y={0} width={150} height={64} rx={12} fill="#1C2658" /><rect x={0} y={0} width={46} height={64} rx={12} fill="#E0A93E" /><rect x={150} y={18} width={18} height={28} rx={5} fill="#C9CFDD" /></g>
+        <line x1={300} y1={772} x2={830} y2={772} stroke={PALETTE.mid.lavender} strokeWidth={8} strokeLinecap="round" strokeDasharray="4 26" opacity={0.6} />
+        <path d={`M300 772 L${dotX} 772`} stroke={PALETTE.ui.cyan} strokeWidth={10} strokeLinecap="round" opacity={0.85} />
+        <rect x={850} y={712} width={44} height={120} rx={10} fill="#6E6A72" />
+        {[0, 1, 2, 3, 4].map((i) => <circle key={i} cx={812 + (i % 3) * 22 - (i > 2 ? -11 : 0)} cy={800 - (i > 2 ? 22 : 0)} r={14} fill="#F1EDE0" opacity={clamp01(ida * 4 - 3)} />)}
+        <circle cx={dotX} cy={772} r={22} fill={ida >= 1 ? "#F1EDE0" : PALETTE.ui.cyan} />
+        {ida >= 1 ? <path d="M720 700 l60 60 m0 -60 l-60 60" stroke={PALETTE.ui.red} strokeWidth={12} strokeLinecap="round" opacity={clamp01(Math.sin(t * 0.15) * 0.3 + 0.7)} /> : null}
+
+        <rect x={70} y={970} width={940} height={420} rx={36} fill="#0E1230" opacity={0.75} stroke={PALETTE.warm.gold} strokeOpacity={0.3} strokeWidth={3} />
+        {lab(110, 1040, "BATERÍA", PALETTE.light.cream)}
+        {lab(560, 1040, "IDA Y VUELTA", PALETTE.warm.gold, clamp01(vu * 3), 40)}
+        <g transform="translate(120 1120)"><rect x={0} y={0} width={110} height={110} rx={18} fill="#39426A" /><rect x={10} y={10} width={42} height={90} rx={8} fill="#5266D0" /><rect x={58} y={10} width={42} height={90} rx={8} fill="#3F4458" />
+          {[0, 1, 2].map((i) => <circle key={i} cx={79} cy={30 + i * 26} r={8} fill={PALETTE.warm.gold} />)}</g>
+        <ellipse cx={LOOP.cx} cy={LOOP.cy} rx={LOOP.rx} ry={LOOP.ry} fill="none" stroke={PALETTE.warm.gold} strokeWidth={8} strokeDasharray="4 22" strokeLinecap="round" opacity={0.55} />
+        <path d={`M${LOOP.cx + LOOP.rx - 20} ${LOOP.cy - 40} l20 34 l22 -30`} stroke={PALETTE.warm.gold} strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.7} />
+        <path d={`M${LOOP.cx - LOOP.rx + 20} ${LOOP.cy + 40} l-20 -34 l-22 30`} stroke={PALETTE.warm.gold} strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.7} />
+        {[...Array(8)].map((_, i) => {
+          const lost = LOST.indexOf(i), a0 = (i / 8) * Math.PI * 2 + t * 0.05 * (0.3 + vu);
+          if (lost >= 0 && pe > 0) {
+            const k = ease(clamp01(pe * 1.6 - lost * 0.25)), aStop = (i / 8) * Math.PI * 2 + 1.4, [sx, sy] = loopAt(aStop), [ax, ay] = loopAt(a0);
+            const x = ax + (sx - ax) * k, y = ay + (sy - ay) * k + 70 * k;
+            return <g key={i}><circle cx={x} cy={y} r={20} fill={k > 0.9 ? "#7C7870" : PALETTE.warm.gold} /><circle cx={x} cy={y} r={34} fill={PALETTE.warm.gold} opacity={0.25 * (1 - k)} /></g>;
+          }
+          const [x, y] = loopAt(a0);
+          return <g key={i}><circle cx={x} cy={y} r={34} fill={PALETTE.warm.gold} opacity={0.25} /><circle cx={x} cy={y} r={20} fill={PALETTE.warm.gold} /><path d={`M${x - 9} ${y} h18 M${x} ${y - 9} v18`} stroke="#FFFFFF" strokeWidth={4} /></g>;
+        })}
+        </g>
+      </Subject>
+      <Grain n={600} />
+    </>
+  );
+};
+
+export const viaje_ida_vuelta: HeroDef = {
+  kind: "plano",
+  when: "Esquema de dos carriles: arriba una pila desechable cuyo viaje es solo de ida (el punto llega a un muro y se vuelve polvo blanco); abajo una batería cuyos iones de litio dan vueltas en un circuito de ida y vuelta y algunos se quedan por el camino; pila contra batería recargable, un solo uso contra muchos ciclos, desgaste.",
+  poses: ["carriles"],
+  actions: {
+    ida: "El punto de la pila recorre su carril una sola vez y se queda en el muro convertido en polvo blanco (aparece «SOLO IDA»): un viaje de ida, un solo uso, se acaba.",
+    vuelta: "Los iones de litio aceleran en su circuito de ida y vuelta (aparece «IDA Y VUELTA»): recargable, va y viene, ciclos.",
+    perder: "Tres iones se salen del circuito, caen y se quedan grises por el camino: se queda por el camino, pierde litio, desgaste.",
+  },
+  center: [0, 1, 0], radius: 1.5,
+  anchors: { hero: [540, 980, 1], top: [540, 620, 1], base: [540, 1380, 1], pila: [560, 772, 1], bateria: [600, 1170, 1] },
+  build: (_L, pose) => { poseOf(viaje_ida_vuelta, pose, "viaje_ida_vuelta"); return noBuild(); },
+  flat: ViajeIdaVuelta,
+};
