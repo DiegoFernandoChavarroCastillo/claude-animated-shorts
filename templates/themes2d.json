@@ -254,6 +254,41 @@
       "vignette": 0.24,
       "veil": 0.05,
       "probado": false
+    },
+    "scifi": {
+      "look": "Ciencia ficción de mundos distintos: el negro del espacio con halos y planetas, y cada mundo con su color (Tierra de polvo ámbar, planeta de agua gris azulado, hielo blanco, desierto naranja, interiores cálidos, estación luminosa).",
+      "when": "Resúmenes de películas, series o libros de ciencia ficción y viajes espaciales que pasan por varios mundos; videos largos (long-video).",
+      "palettes": [
+        "cosmos",
+        "polvo",
+        "interior",
+        "miller",
+        "hielo",
+        "edmunds",
+        "estacion"
+      ],
+      "lights": [
+        "luna",
+        "ninguna",
+        "dia",
+        "atardecer",
+        "foco",
+        "sol",
+        "velas"
+      ],
+      "ambient": [
+        "estrellas",
+        "particulas",
+        "niebla",
+        "nubes",
+        "rayos_luz"
+      ],
+      "musicMood": "tense",
+      "sat": 1.08,
+      "contrast": 1.06,
+      "vignette": 0.28,
+      "veil": 0.06,
+      "probado": false
     }
   },
   "skies": {
@@ -331,6 +366,36 @@
       "#02050E",
       "#0A1638",
       "#1C2F6E"
+    ],
+    "polvo": [
+      "#4A2C16",
+      "#9A6436",
+      "#D8A060"
+    ],
+    "interior": [
+      "#1A100A",
+      "#3A2416",
+      "#6A4630"
+    ],
+    "miller": [
+      "#4A6A80",
+      "#8AB0C4",
+      "#C8DEE6"
+    ],
+    "hielo": [
+      "#7A96B0",
+      "#B8D0E2",
+      "#EEF6FC"
+    ],
+    "edmunds": [
+      "#6A3A24",
+      "#C27A48",
+      "#F2C08A"
+    ],
+    "estacion": [
+      "#E8E4C8",
+      "#B8D8C0",
+      "#8AB078"
     ]
   },
   "elegir": [

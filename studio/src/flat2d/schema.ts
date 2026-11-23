@@ -29,8 +29,12 @@ export const Beat2Schema = z.looseObject({
 });
 export const Story2Schema = z.object({
   meta: z.looseObject({ id: z.string(), lang: z.enum(["es", "en"]), title: z.string(), engine: z.literal("2d"), tailS: z.number().min(0.1).max(2).default(1.0),
-    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral"]).optional(), hookTitle: z.string().max(48).optional(),
-    theme: z.string().optional(), themeAlt: z.string().optional() }),
+    captionEmphasis: z.enum(["box", "accent"]).default("box"), pacing: z.enum(["viral", "longform"]).optional(), hookTitle: z.string().max(48).optional(),
+    theme: z.string().optional(), themeAlt: z.string().optional(),
+    // video largo (PLAN_LONG_VIDEO): lienzo 16:9, subtítulos como .srt aparte o quemados en franja baja, overlays a un lado del cuadro
+    format: z.enum(["vertical", "wide"]).default("vertical"), captions: z.enum(["burned", "srt"]).optional(),
+    overlayX: z.number().min(0.15).max(0.85).default(0.5),
+    chapters: z.array(z.object({ id: z.string(), title: z.string(), from: z.string() })).optional() }),
   beats: z.array(Beat2Schema).min(1),
 });
 export const Props2Schema = z.object({ story: Story2Schema, words: z.array(WordSchema).min(1) });

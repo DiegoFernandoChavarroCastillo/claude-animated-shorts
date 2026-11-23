@@ -285,11 +285,53 @@ class Run:
             return f"{len(frames.split(','))} stills (frames {frames})"
         self.stage("stills", stamp, [self.p("05_story.json"), self.p("04_words.json")], run)
 
+    def chapter_ranges(self) -> list[tuple[str, int, int]]:
+        """video largo (longform, D128): (id, primer frame, último frame) de cada capítulo de meta.chapters"""
+        from sfx_plan import beat_frames
+        story = load_json(self.p("05_story.json"))
+        bts, total = beat_frames(story, load_json(self.p("04_words.json")))
+        start = {b["id"]: b["a"] for b in bts}
+        chs = story["meta"]["chapters"]
+        firsts = [start[c["from"]] for c in chs] + [total]
+        return [(c["id"], firsts[k], firsts[k + 1] - 1) for k, c in enumerate(chs)]
+
     def render(self):
         out = self.p("07_video.mp4")
+        meta = load_json(self.p("05_story.json"))["meta"]
+        if meta.get("pacing") == "longform" and meta.get("chapters"):
+            return self.stage("render", out, [self.p("05_story.json"), self.p("04_words.json")], self.render_chapters)
         self.stage("render", out, [self.p("05_story.json"), self.p("04_words.json")], lambda: self.sh(
             ["node", "scripts/job.mjs", "render", BUNDLE, str(self.props()), str(out), "--scale", str(self.a.scale),
              "--concurrency", str(self.a.concurrency)], cwd=STUDIO, tag="render").splitlines()[-1])
+
+    def render_chapters(self):
+        """un mp4 por capítulo en 07_parts/ (se rehace solo el que cambió: --chapter <id>, o los que falten / sean viejos)
+        y luego se unen sin recodificar. Un fallo a mitad no obliga a repetir 9 minutos de render."""
+        parts = self.p("07_parts")
+        parts.mkdir(exist_ok=True)
+        props = self.props()
+        inputs = [self.p("05_story.json"), self.p("04_words.json")]
+        only = set(filter(None, (getattr(self.a, "chapter", None) or "").split(",")))
+        done = []
+        for cid, f0, f1 in self.chapter_ranges():
+            part = parts / f"{cid}.mp4"
+            stamp = parts / f"{cid}.range"
+            same = stamp.exists() and stamp.read_text() == f"{f0}-{f1}@{self.a.scale}"
+            redo_all = "render" in self.force and not only
+            if not redo_all and (cid not in only) and part.exists() and same and (only or self.fresh(part, inputs)):
+                done.append(f"{cid} (al día)")
+                continue
+            t0 = time.time()
+            self.sh(["node", "scripts/job.mjs", "render", BUNDLE, str(props), str(part), "--scale", str(self.a.scale),
+                     "--concurrency", str(self.a.concurrency), "--frames", f"{f0}-{f1}"], cwd=STUDIO, tag=f"render {cid}")
+            stamp.write_text(f"{f0}-{f1}@{self.a.scale}")
+            done.append(f"{cid} {(time.time() - t0) / 60:.1f} min")
+        lst = parts / "concat.txt"
+        lst.write_text("".join(f"file '{parts / (cid + '.mp4')}'\n" for cid, _, _ in self.chapter_ranges()), encoding="utf-8")
+        tmp = self.p("07_video.part.mp4")
+        self.sh(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(tmp)])
+        tmp.replace(self.p("07_video.mp4"))
+        return "capítulos: " + ", ".join(done)
 
     def mix(self):
         plan, out = self.p("08_sfx_plan.json"), self.p("08_mix.wav")
@@ -381,6 +423,7 @@ def main():
     ap.add_argument("--scale", type=float, default=1.0, help="escala del render final (1 = 1080x1920)")
     ap.add_argument("--stills-scale", type=float, default=0.5)
     ap.add_argument("--concurrency", type=int, default=1)
+    ap.add_argument("--chapter", default=None, help="video largo: rehace solo estos capítulos del render (ids separados por comas)")
     ap.add_argument("--whisper", default="medium")
     ap.add_argument("--reviewer", choices=["claude", "manual"], default="claude", help="etapa review: `claude` lanza `claude -p` sin contexto; `manual` espera un 06_review.json de otro agente")
     ap.add_argument("--no-story-review", action="store_true", help="saltar la etapa review (queda anotado en el log)")

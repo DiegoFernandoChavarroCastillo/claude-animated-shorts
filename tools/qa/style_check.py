@@ -46,6 +46,13 @@ PASS_RATE = 0.8
 def apply_pacing(pacing: str | None) -> dict | None:
     """perfil `viral` (templates/pacing_viral.json): subtítulos de 1–3 palabras en la franja baja-central; fija las constantes del OCR"""
     global BAND, OCR_ROWS, MIN_WORDS, MAX_WORDS
+    if pacing == "longform":   # video largo 16:9 (D128): subtítulos de 3–9 palabras en la franja baja si van quemados
+        prof = json.loads((ROOT / "templates" / "pacing_longform.json").read_text(encoding="utf-8"))
+        c = prof["captions"]
+        BAND = (c["centerYK"] - 0.07, c["centerYK"] + 0.07)
+        OCR_ROWS = (BAND[0] - 0.04, min(1.0, BAND[1] + 0.04))
+        MIN_WORDS, MAX_WORDS = c["minWords"], c["maxWords"]
+        return prof
     if pacing != "viral":
         return None
     prof = json.loads((ROOT / "templates" / "pacing_viral.json").read_text(encoding="utf-8"))
@@ -247,7 +254,7 @@ def caption_ok(c: dict) -> bool:
 
 
 def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | None = None, engine: str = "3d",
-          pacing: str | None = None, skip_beat: str | None = None, theme: str | None = None) -> tuple[bool, list[str], dict]:
+          pacing: str | None = None, skip_beat: str | None = None, theme: str | None = None, ocr: bool = True) -> tuple[bool, list[str], dict]:
     words = json.loads(words_path.read_text(encoding="utf-8")) if words_path else None
     prof = apply_pacing(pacing)
     m = measure(video, words)
@@ -257,7 +264,9 @@ def check(video: Path, words_path: Path | None, lang: str, frames_from: Path | N
     md = [f"**Estilo**: {passed}/{len(rated)} métricas en rango ({passed / max(1, len(rated)):.0%}; objetivo ≥{PASS_RATE:.0%}).", "",
           *table(rows), ""]
     ok = passed / max(1, len(rated)) >= PASS_RATE
-    if words:
+    if words and not ocr:   # subtítulos en un .srt aparte (video largo): no hay nada que leer en la imagen
+        md += ["**Subtítulos**: van en un archivo .srt aparte (CC de YouTube); no se pintan en la imagen ni se comprueban por OCR.", ""]
+    elif words:
         c = caption_ocr(frames_from or video, words, lang, skip_beat)
         md += caption_md(c)
         ok &= caption_ok(c)

@@ -91,12 +91,16 @@ def plan(story: dict, words: list[dict]) -> dict:
     bts, total = beat_frames(story, words)
     ev = []
     add = lambda typ, f, why: ev.append({"type": typ, "t": round(f / FPS, 3), "why": why})  # noqa: E731
-    cfg = load_json(ROOT / "templates" / "pacing_viral.json")["sfx"] if story["meta"].get("pacing") == "viral" else None
-    if cfg:   # perfil viral: golpe grave con el gancho y un barrido en cada cambio de escena
+    pacing = story["meta"].get("pacing")
+    cfg = load_json(ROOT / "templates" / ("pacing_viral.json" if pacing == "viral" else "pacing_longform.json"))["sfx"] if pacing in ("viral", "longform") else None
+    if cfg:   # perfiles viral y longform: golpe grave con el gancho; barrido en cada cambio de escena (viral) o de capítulo (longform)
         add("impact", cfg["hookImpactAtS"] * FPS, "gancho: golpe en el segundo 0")
+    chap_starts = {c["from"] for c in story["meta"].get("chapters", [])[1:]} if cfg and cfg.get("chapterWhoosh") else set()
     for i, (b, bt) in enumerate(zip(story["beats"], bts)):
         if cfg and cfg["sceneWhoosh"] and i > 0:
             add("whoosh_soft", bt["a"] - 6, f"{b['id']}: cambio de escena")
+        if b["id"] in chap_starts:
+            add("whoosh_soft", bt["a"] - 6, f"{b['id']}: cambio de capítulo")
         if cfg and b["role"] in cfg["riserRoles"] and b["role"] != "twist":   # el riser del twist ya lo añade la regla general
             add("riser", bt["a"] - round(0.8 * FPS), f"{b['id']}: antes de la revelación")
         if i + 1 < len(bts) and b.get("transition", "glide") in ("glide", "zoom_through", "swipe"):

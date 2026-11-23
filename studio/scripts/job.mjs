@@ -18,6 +18,8 @@ const args = process.argv.slice(2);
 const opt = (name, def) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : def; };
 const scale = Number(opt("--scale", "1"));
 const concurrency = Number(opt("--concurrency", "1"));
+// --frames a-b: renderiza solo ese tramo (ambos incluidos); el video largo se renderiza por capítulos y se une con ffmpeg
+const framesOpt = opt("--frames", null), frameRange = framesOpt ? framesOpt.split("-").map(Number) : null;
 const [cmd, bundleDir, ...rest] = args;
 const studio = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const chromiumOptions = { gl: process.env.STILLS_GL || "angle" };
@@ -79,10 +81,11 @@ if (cmd === "bundle") {
   let last = -1;
   const t0 = Date.now();
   await renderMedia({ composition, serveUrl, codec: "h264", crf: 18, outputLocation: part, inputProps, scale, concurrency, chromiumOptions,
+    ...(frameRange ? { frameRange } : {}),
     timeoutInMilliseconds: 300000, onBrowserLog,
     onProgress: ({ progress }) => { const p = Math.floor(progress * 20); if (p !== last) { last = p; console.log(`render ${Math.round(progress * 100)} % (${((Date.now() - t0) / 60000).toFixed(1)} min)`); } } });
   fs.renameSync(part, out);
-  console.log(`render: ${composition.durationInFrames} frames en ${((Date.now() - t0) / 60000).toFixed(1)} min -> ${out}`);
+  console.log(`render: ${frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames} frames en ${((Date.now() - t0) / 60000).toFixed(1)} min -> ${out}`);
 } else {
   console.error("uso: job.mjs bundle|stills|render <bundleDir> ...");
   process.exit(2);

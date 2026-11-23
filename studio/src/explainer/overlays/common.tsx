@@ -56,12 +56,21 @@ export const Body: React.FC<{ children: React.ReactNode; size?: number; col?: st
   <div style={{ fontFamily: CAPTION_FAMILY, fontWeight: weight, fontSize: size, color: col, whiteSpace: "nowrap", ...style }}>{children}</div>
 );
 
-/** lienzo 1080 x 1920 escalado al tamaño real del frame */
-export const OverlayStage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width } = useVideoConfig();
+/** en un lienzo horizontal (video largo) el lienzo lógico de 1080 x 1920 se reduce a WIDE_K del alto real y su zona de overlays
+ *  (slots top..bottom, centro en `center`) queda centrada en vertical; en x se coloca en `x` (0–1 del ancho real) */
+export const WIDE_K = 0.8;
+export const wideStage = (width: number, height: number, x = 0.5) => {
+  const s = (WIDE_K * height) / W;   // a 1920x1080: 0,8, un overlay de 1080 lógicos ocupa el 45 % del ancho
+  return { s, tx: width * x - (W / 2) * s, ty: height / 2 - SLOTS.center * H * s };
+};
+
+/** lienzo 1080 x 1920 escalado al tamaño real del frame (en horizontal, ver wideStage) */
+export const OverlayStage: React.FC<{ children: React.ReactNode; x?: number }> = ({ children, x }) => {
+  const { width, height } = useVideoConfig();
+  const t = width > height ? wideStage(width, height, x) : { s: width / W, tx: 0, ty: 0 };
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
-      <div style={{ position: "absolute", left: 0, top: 0, width: W, height: H, transform: `scale(${width / W})`, transformOrigin: "0 0" }}>{children}</div>
+      <div style={{ position: "absolute", left: 0, top: 0, width: W, height: H, transform: `translate(${t.tx}px, ${t.ty}px) scale(${t.s})`, transformOrigin: "0 0" }}>{children}</div>
     </AbsoluteFill>
   );
 };

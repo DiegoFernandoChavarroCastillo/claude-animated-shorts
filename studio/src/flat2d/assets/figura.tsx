@@ -1,8 +1,8 @@
 // figura · personaje del kit (D123): cuerpo entero de proporciones redondeadas (cabeza grande, cara simple), con degradado, luz de borde, sombra de
 // contacto y movimiento de reposo (respira, se balancea, parpadea). Sirve para cualquier época cambiando `opts`:
-//   ropa: tunica | toga | vestido | armadura | actual | manto     color, color2: clave de la paleta (accent, wall, rim…) o #hex
+//   ropa: tunica | toga | vestido | armadura | actual | manto | espacial (traje de astronauta)     color, color2: clave de la paleta (accent, wall, rim…) o #hex
 //   pelo: corto | largo | rizado | calvo | mono                    peloColor, piel: #hex     barba: true
-//   tocado: laurel | corona | diadema | casco | sombrero           gesto: feliz | serio | enojado | triste | sorpresa
+//   tocado: laurel | corona | diadema | casco | sombrero | escafandra (casco de cristal de astronauta)           gesto: feliz | serio | enojado | triste | sorpresa
 //   pose: pie | sentado | senala | celebra | asustado | cruzados | piensa     mira: -1..1 (hacia dónde gira la cara)
 //   vario: true = ropa, piel y pelo distintos por semilla (para multitudes con `repeat`)
 // Acciones propias: `point` señala a la derecha (se queda); `cheer` alza los brazos y salta; `fear` se lleva las manos a la cara y se echa atrás (se queda);
@@ -29,8 +29,9 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
   const ropa = opt(opts, "ropa", "tunica"), pelo = vario ? pick(["corto", "largo", "rizado", "corto", "mono"], 5) : opt(opts, "pelo", "corto");
   const tocado = opt(opts, "tocado", ""), gesto0 = opt(opts, "gesto", "feliz"), barba = opt(opts, "barba", false) || (vario && hash(seed + 31) > 0.72);
   const cloth = vario ? pick([pal.accent, pal.wallLit, pal.wall, pal.rim, lerpHex(pal.accent, pal.wallLit, 0.5), lerpHex(pal.wall, pal.rim, 0.45), lerpHex(pal.accent, pal.ink, 0.3)], 1)
-    : C("color", ropa === "toga" ? pal.wallLit : ropa === "manto" ? lerpHex(pal.wall, pal.ink, 0.3) : pal.accent);
-  const cloth2 = C("color2", ropa === "actual" ? lerpHex(pal.wall, pal.ink, 0.45) : ropa === "toga" ? pal.accent : lerpHex(cloth, pal.ink, 0.35));
+    : C("color", ropa === "toga" ? pal.wallLit : ropa === "manto" ? lerpHex(pal.wall, pal.ink, 0.3) : ropa === "espacial" ? "#E9E7E1" : pal.accent);
+  const cloth2 = C("color2", ropa === "actual" ? lerpHex(pal.wall, pal.ink, 0.45) : ropa === "toga" ? pal.accent : ropa === "espacial" ? "#9A9C9E" : lerpHex(cloth, pal.ink, 0.35));
+  const suit = ropa === "espacial";   // traje espacial (Interstellar, D128): blanco, guantes y botas grises, mochila y panel en el pecho
   const skin = vario ? pick(SKINS, 2) : C("piel", pal.skin), hair = vario ? pick(HAIRS, 3) : C("peloColor", lerpHex(pal.ink, pal.rock, 0.35));
   const metal = lerpHex(pal.rim, pal.rock, 0.3);
 
@@ -57,19 +58,19 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
     return (
       <g key={key}>
         <path d={`M${sx} ${sy} L${ex} ${ey}`} stroke={dark(sleeve, pal, side < 0 ? 0.18 : 0.04)} strokeWidth={7} strokeLinecap="round" />
-        <path d={`M${ex} ${ey} L${hx} ${hy2}`} stroke={dark(ropa === "actual" || ropa === "manto" ? cloth : skin, pal, side < 0 ? 0.16 : 0.02)} strokeWidth={6} strokeLinecap="round" />
-        <circle cx={hx} cy={hy2} r={3.5} fill={skin} />
+        <path d={`M${ex} ${ey} L${hx} ${hy2}`} stroke={dark(ropa === "actual" || ropa === "manto" || suit ? cloth : skin, pal, side < 0 ? 0.16 : 0.02)} strokeWidth={6} strokeLinecap="round" />
+        <circle cx={hx} cy={hy2} r={suit ? 4.2 : 3.5} fill={suit ? cloth2 : skin} />
       </g>
     );
   };
   const leg = (side: -1 | 1) => {
     const x0 = 50 + side * 6, sw = side * step * 5, kx = x0 + side * sit * 4 + sw * 0.5, ky = lerp((hip + 154) / 2, hip + 8, sit), fxx = x0 + sw + side * sit * 3, fy = 154 - Math.max(0, side * step) * 3;
-    const col = ropa === "actual" ? cloth2 : skin;
+    const col = ropa === "actual" ? cloth2 : suit ? cloth : skin;
     return (
       <g key={side}>
         <path d={`M${x0} ${hip - 4} L${kx} ${ky} L${fxx} ${fy - 2}`} stroke={dark(col, pal, side < 0 ? 0.16 : 0.03)} strokeWidth={7.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
         {ropa === "armadura" ? <path d={`M${kx} ${ky + 2} L${fxx} ${fy - 4}`} stroke={metal} strokeWidth={8} strokeLinecap="round" /> : null}
-        <ellipse cx={fxx + side * 1.5} cy={fy} rx={5.4} ry={2.6} fill={ropa === "actual" ? dark(cloth2, pal, 0.5) : lerpHex(pal.rock, pal.ink, 0.3)} />
+        <ellipse cx={fxx + side * 1.5} cy={fy} rx={suit ? 6.4 : 5.4} ry={suit ? 3.4 : 2.6} fill={ropa === "actual" ? dark(cloth2, pal, 0.5) : suit ? cloth2 : lerpHex(pal.rock, pal.ink, 0.3)} />
       </g>
     );
   };
@@ -97,6 +98,7 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
       <ContactShadow id={`${id}s`} cx={50} cy={155} rx={22 - jump * 0.8} />
       <g transform={`rotate(${lean} 50 154)`}>
         {pelo === "largo" || ropa === "manto" ? <path d={`M${50 - 15.5} ${hy - 2} Q${50 - 19} ${hy + 22} ${50 - 12} ${hy + 27} L${50 + 12} ${hy + 27} Q${50 + 19} ${hy + 22} ${50 + 15.5} ${hy - 2} Z`} fill={ropa === "manto" ? dark(cloth, pal, 0.25) : dark(hair, pal, 0.15)} /> : null}
+        {suit ? <rect x={33} y={sh - 4} width={34} height={40} rx={5} fill={dark(cloth, pal, 0.28)} /> : null}
         {arm(-1, L, "l")}
         {!long || sit > 0 ? [leg(-1), leg(1)] : [-1, 1].map((sd) => <ellipse key={sd} cx={50 + sd * 7 + sd * step * 3} cy={153.6} rx={5.2} ry={2.5} fill={lerpHex(pal.rock, pal.ink, 0.3)} />)}
         <path d={body} fill={url(`${id}b`)} />
@@ -106,6 +108,8 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
         {ropa === "armadura" ? <g><path d={`M38 ${sh - 2} Q50 ${sh - 8} 62 ${sh - 2} L62 ${sh + 30} Q50 ${sh + 35} 38 ${sh + 30} Z`} fill={url(`${id}m`)} />
           {[...Array(6)].map((_, i) => <rect key={i} x={37.5 + i * 4.3} y={sh + 31} width={3.6} height={hem - sh - 30} rx={1} fill={i % 2 ? cloth : cloth2} />)}
           <path d={`M44 ${sh + 6} Q50 ${sh + 12} 56 ${sh + 6} M50 ${sh + 10} L50 ${sh + 26}`} stroke={dark(metal, pal, 0.4)} strokeWidth={0.8} fill="none" /></g> : null}
+        {suit ? <g><rect x={43} y={sh + 8} width={14} height={11} rx={1.6} fill={cloth2} /><circle cx={46.5} cy={sh + 13.5} r={1.4} fill="#E84A3A" /><circle cx={50.5} cy={sh + 13.5} r={1.4} fill="#3AD07A" /><rect x={52.6} y={sh + 11.4} width={3} height={4.4} fill="#2A2C30" />
+          <path d={`M38 ${sh + 2} Q50 ${sh - 2} 62 ${sh + 2}`} stroke={cloth2} strokeWidth={3.2} fill="none" /><rect x={37} y={hem - 10} width={26} height={4} fill={cloth2} /></g> : null}
         {ropa === "actual" ? <path d={`M37 ${hem - 12} L63 ${hem - 12} L63.5 ${hem} Q50 ${hem + 3} 36.5 ${hem} Z`} fill={cloth2} /> : null}
         <path d={long ? `M62 ${sh - 2} L${66 + I.sway * 0.6} ${hem}` : `M62 ${sh - 2} L63.5 ${hem}`} stroke={pal.rim} strokeWidth={1.3} strokeLinecap="round" opacity={0.6} />
         {arm(1, R, "r")}
@@ -123,6 +127,9 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
         {tocado === "corona" ? <path d={`M${50 - 11} ${hy - 12} L${50 - 12} ${hy - 22} L${50 - 6} ${hy - 17} L50 ${hy - 24} L${50 + 6} ${hy - 17} L${50 + 12} ${hy - 22} L${50 + 11} ${hy - 12} Z`} fill={url(`${id}m`)} stroke={dark(metal, pal, 0.3)} strokeWidth={0.5} /> : null}
         {tocado === "diadema" ? <g><path d={`M${50 - 14.4} ${hy - 6} Q50 ${hy - 13} ${50 + 14.4} ${hy - 6}`} stroke={pal.rim} strokeWidth={2.2} fill="none" /><circle cx={fx} cy={hy - 10.6} r={1.6} fill={pal.accent} /></g> : null}
         {tocado === "casco" ? <g><path d={`M${50 - 16} ${hy - 1} Q${50 - 17} ${hy - 19} 50 ${hy - 19} Q${50 + 17} ${hy - 19} ${50 + 16} ${hy - 1} L${50 + 12} ${hy - 4} Q50 ${hy - 9} ${50 - 12} ${hy - 4} Z`} fill={url(`${id}m`)} /><path d={`M${50 - 9} ${hy - 19} Q50 ${hy - 30} ${50 + 9} ${hy - 19} Z`} fill={pal.accent} /></g> : null}
+        {tocado === "escafandra" ? <g><circle cx={50} cy={hy} r={21} fill="#BFE4FF" opacity={0.16} /><circle cx={50} cy={hy} r={21} fill="none" stroke="#E6F4FF" strokeWidth={1.2} opacity={0.7} />
+          <path d={`M${50 - 14} ${hy - 12} Q${50 - 6} ${hy - 19} ${50 + 4} ${hy - 19}`} stroke="#fff" strokeWidth={2.2} fill="none" opacity={0.65} strokeLinecap="round" />
+          <rect x={50 - 15} y={hy + 17} width={30} height={5} rx={2} fill={url(`${id}m`)} /></g> : null}
         {tocado === "sombrero" ? <g><ellipse cx={50} cy={hy - 11} rx={21} ry={3.6} fill={dark(cloth2, pal, 0.2)} /><path d={`M${50 - 11} ${hy - 11} Q${50 - 10} ${hy - 25} 50 ${hy - 25} Q${50 + 10} ${hy - 25} ${50 + 11} ${hy - 11} Z`} fill={cloth2} /></g> : null}
       </g>
     </g>

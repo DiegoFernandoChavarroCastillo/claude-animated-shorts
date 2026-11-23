@@ -1,0 +1,59 @@
+{
+  "_nota": "Perfil `longform` (cabecera `pacing: longform` en 02_SCRIPT.md, meta.pacing + meta.format: wide en 05_story.json). Videos largos horizontales de YouTube (8–10 min, 1920x1080): resúmenes de películas, series y libros, historias, biografías, mitos y casos. Plan: docs/PLAN_LONG_VIDEO.md. Fuente única para validadores, voz, SFX, subtítulos, render por capítulos y QA.",
+  "script": {
+    "words": [1150, 1650],
+    "sentenceMax": 22,
+    "hookMax": 18,
+    "hookS": [20, 45],
+    "durationS": [450, 630],
+    "chapters": [5, 10],
+    "chapterS": [35, 110],
+    "softOpeners": ["hola", "bienvenid", "soy ", "hoy vamos a", "hoy veremos", "en este video", "antes de empezar", "suscríbete", "suscribete", "dale like"]
+  },
+  "voice": {
+    "speed": 1.1,
+    "pauseMaxMs": 420,
+    "chapterPauseMs": 800,
+    "wps": [2.3, 3.0, 2.85]
+  },
+  "cadence": {
+    "eventTargetS": 4.5,
+    "eventGapMaxS": 7.0,
+    "cutsPerMinMax": 9,
+    "noHoldCamera": false
+  },
+  "sfx": {
+    "hookImpactAtS": 0.0,
+    "sceneWhoosh": false,
+    "chapterWhoosh": true,
+    "riserRoles": ["climax", "twist"]
+  },
+  "captions": {
+    "_nota": "por defecto meta.captions: srt (se publica un .srt para los CC de YouTube y no se pintan). Con `burned`: dos líneas sobrias abajo; fontSizeK es fracción del ancho (0,026 x 1920 = 50 px).",
+    "default": "srt",
+    "centerYK": 0.86,
+    "fontSizeK": 0.026,
+    "maxWidthK": 0.7,
+    "minWords": 3,
+    "maxWords": 9,
+    "shadow": "0 0 3px #000, 0 2px 0 rgba(0,0,0,0.9), 0 3px 12px rgba(0,0,0,0.7)",
+    "layerFeetMaxY": 1.0,
+    "burnedFeetMaxY": 0.8
+  },
+  "render": {
+    "chunkByChapter": true
+  },
+  "qa": {
+    "pct_quiet": [4, 22],
+    "words_per_s": [2.3, 3.0],
+    "staticRunMaxS": 8.0
+  },
+  "genres": {
+    "_nota": "géneros de la skill long-video; cada uno con su estructura de capítulos (templates/prompts/longform_script_es.md)",
+    "resumen": "película, serie o libro: gancho con la escena más fuerte → actos de la trama en orden → final explicado → análisis propio (ciencia, temas, curiosidades del rodaje) → pregunta",
+    "historia": "suceso real o época: gancho en el momento crítico → contexto → escalada por capítulos → clímax → consecuencias → por qué importa hoy",
+    "biografia": "una vida: gancho con el momento decisivo → orígenes → ascenso → crisis → legado",
+    "mito": "mito o leyenda: gancho con la imagen central → el mundo → el relato por actos → variantes y lecturas → qué nos dice hoy",
+    "caso": "misterio, crimen o enigma: gancho con la pregunta → los hechos → las pistas → las hipótesis → lo que se sabe hoy"
+  }
+}

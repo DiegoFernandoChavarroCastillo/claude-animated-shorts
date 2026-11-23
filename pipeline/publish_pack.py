@@ -69,7 +69,117 @@ def script_sources(md: str) -> str:
     return "\n".join(x for x in (m.group(1).strip().splitlines() if m else []) if x.startswith("-"))
 
 
+# ---------------------------------------------------------------- video largo 16:9 (longform, D128)
+def ts(sec: float, srt: bool = False) -> str:
+    h, m, x = int(sec // 3600), int(sec % 3600 // 60), sec % 60
+    if srt:
+        return f"{h:02d}:{m:02d}:{int(x):02d},{int(round((x - int(x)) * 1000)):03d}".replace(",1000", ",999")
+    return f"{h}:{m:02d}:{int(x):02d}" if h else f"{m}:{int(x):02d}"
+
+
+def srt(words: list[dict], max_words: int = 9, max_s: float = 4.5) -> str:
+    """subtítulos para los CC de YouTube: bloques de hasta 9 palabras que se cortan al final de frase o en una pausa"""
+    blocks, cur = [], []
+    for k, w in enumerate(words):
+        cur.append(w)
+        nxt = words[k + 1] if k + 1 < len(words) else None
+        end = re.search(r"[.?!…»]$", w["w"]) or (re.search(r"[,;:]$", w["w"]) and len(cur) >= 4)
+        if not nxt or end or len(cur) >= max_words or (nxt["start"] - w["end"] > 0.45) or (w["end"] - cur[0]["start"] > max_s):
+            blocks.append(cur)
+            cur = []
+    out = []
+    for i, b in enumerate(blocks, 1):
+        end = b[-1]["end"] + 0.15
+        if i < len(blocks):   # sin solaparse con el bloque siguiente (YouTube los apila)
+            end = min(end, blocks[i][0]["start"] - 0.02)
+        out.append(f"{i}\n{ts(b[0]['start'], True)} --> {ts(end, True)}\n{' '.join(x['w'] for x in b)}\n")
+    return "\n".join(out)
+
+
+def chapter_marks(story: dict, words: list[dict]) -> list[tuple[str, str]]:
+    """marcas de capítulo de YouTube: la primera empieza en 0:00 y cada una en la primera palabra de su capítulo"""
+    out = []
+    for k, c in enumerate(story["meta"]["chapters"]):
+        t = 0.0 if k == 0 else min(w["start"] for w in words if w["beat"] == c["from"])
+        title = "Introducción" if c["id"] == "gancho" else c["title"]
+        out.append((ts(max(0.0, t - 0.3)), title))
+    return out
+
+
+def thumbnail(d: Path, story: dict, words: list[dict]) -> str:
+    """miniatura 1280x720: el fotograma de `meta.thumb` (id de beat; por defecto el primero) con el título grande encima"""
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+    bid = story["meta"].get("thumb", story["beats"][0]["id"])
+    ws = [w for w in words if w["beat"] == bid]
+    t = (ws[0]["start"] + ws[-1]["end"]) / 2
+    raw = d / "_thumb_raw.png"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(d / "09_final.mp4"), "-frames:v", "1", "-vf", "scale=1280:720", str(raw)], check=True)
+    im = Image.open(raw).convert("RGB")
+    text = (story["meta"].get("thumbText") or story["meta"]["title"].split(":")[0]).upper()
+    lines = text.split("\n") if "\n" in text else [text]
+    font_path = next((p for p in ["/usr/share/fonts/TTF/Montserrat-ExtraBold.ttf", "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+                                   "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"] if Path(p).exists()), None)
+    font = ImageFont.truetype(font_path, 92) if font_path else ImageFont.load_default()
+    shade = Image.new("L", im.size, 0)
+    ImageDraw.Draw(shade).rectangle([0, 0, 1280, 720], fill=0)
+    grad = Image.linear_gradient("L").rotate(90).resize(im.size)   # oscurece la izquierda, donde va el texto
+    im = Image.composite(Image.new("RGB", im.size, (0, 0, 0)), im, grad.point(lambda v: int(v * 0.65)))
+    dr = ImageDraw.Draw(im)
+    y = 360 - len(lines) * 55
+    for ln in lines:
+        for dx, dy in ((-4, 0), (4, 0), (0, -4), (0, 4), (3, 3)):
+            dr.text((60 + dx, y + dy), ln, font=font, fill=(0, 0, 0))
+        dr.text((60, y), ln, font=font, fill=(255, 225, 77))
+        y += 110
+    out = d / "11_thumbnail.jpg"
+    im.filter(ImageFilter.SMOOTH).save(out, quality=92)
+    raw.unlink(missing_ok=True)
+    return out.name
+
+
+def build_long(d: Path) -> str:
+    from validate_longform import parse as parse_long
+    md = (d / "02_SCRIPT.md").read_text(encoding="utf-8")
+    sc = parse_long(md)
+    story, words = load_json(d / "05_story.json"), load_json(d / "04_words.json")
+    lang = story["meta"]["lang"]
+    lines = [t for _, t in sc.lines]
+    dur = words[-1]["end"] + story["meta"].get("tailS", 1.0)
+    (d / f"11_subtitles.{lang}.srt").write_text(srt(words), encoding="utf-8")
+    thumb = thumbnail(d, story, words)
+    marks = "\n".join(f"{t} {n}" for t, n in chapter_marks(story, words))
+    topic = re.sub(r"[^\w]", "", story["meta"].get("topic", "").lower())
+    tags = " ".join(([f"#{topic}"] if topic else []) + [t for t in hashtags(story, lang) if t != f"#{topic}"][:2])   # el tema primero (lo que se busca)
+    intro = " ".join(t for _, t in sc.chapters[0].lines)
+    return f"""# Publicación: {story['meta']['title']}
+
+Video: `09_final.mp4` ({dur / 60:.1f} min, 1920x1080) · miniatura: `{thumb}` · subtítulos: `11_subtitles.{lang}.srt`
+Borrador generado por `pipeline/publish_pack.py` (video largo, D128): revísalo antes de publicar.
+
+## YouTube (video normal, no Short)
+- **Título** (≤ 100 caracteres; la palabra clave primero): {yt_title(story['meta'].get('topic'), story['meta']['title'].split(':', 1)[-1].strip())}
+- **Miniatura:** `{thumb}` (1280x720)
+- **Subtítulos:** sube `11_subtitles.{lang}.srt` en YouTube Studio → Subtítulos ({lang}).
+- **Descripción:**
+
+{intro}
+
+Capítulos:
+{marks}
+
+Fuentes:
+{script_sources(md) or '(sin fuentes)'}
+
+Resumen y análisis con ilustraciones propias; no se usa material de la película.
+{tags}
+
+- **Comentario fijado:** {lines[-1]}
+"""
+
+
 def build(d: Path) -> str:
+    if load_json(d / "05_story.json")["meta"].get("pacing") == "longform":
+        return build_long(d)
     script = parse((d / "02_SCRIPT.md").read_text(encoding="utf-8"))
     story = load_json(d / "05_story.json")
     words = load_json(d / "04_words.json")
@@ -142,7 +252,7 @@ def main():
             raise PipelineError(f"falta {d / f}")
     (d / "11_publish.md").write_text(build(d), encoding="utf-8")
     (d / "meta.json").write_text(json.dumps(meta(d), ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[publish] {d / '11_publish.md'} y 11_cover.png")
+    print(f"[publish] {d / '11_publish.md'} y {'11_thumbnail.jpg + .srt' if load_json(d / '05_story.json')['meta'].get('pacing') == 'longform' else '11_cover.png'}")
 
 
 if __name__ == "__main__":

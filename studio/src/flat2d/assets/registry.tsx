@@ -138,6 +138,26 @@ import { PantallaPc } from "./pantalla_pc";
 import { FabricaRobot } from "./fabrica_robot";
 import { Proteina } from "./proteina";
 import { RelojAgujas } from "./reloj_agujas";
+import { Espacio } from "./espacio";
+import { CabinaNave } from "./cabina_nave";
+import { Saturno } from "./saturno";
+import { Gargantua } from "./gargantua";
+import { AgujeroGusano } from "./agujero_gusano";
+import { Endurance } from "./endurance";
+import { Ranger } from "./ranger";
+import { Planeta } from "./planeta";
+import { Tars } from "./tars";
+import { TormentaPolvo } from "./tormenta_polvo";
+import { CuartoMurph } from "./cuarto_murph";
+import { BaseNasa } from "./base_nasa";
+import { SuperficieMiller } from "./superficie_miller";
+import { HieloMann } from "./hielo_mann";
+import { EdmundsCampo } from "./edmunds_campo";
+import { Teseracto } from "./teseracto";
+import { EstacionCooper } from "./estacion_cooper";
+import { RelojPulsera } from "./reloj_pulsera";
+import { Cama } from "./cama";
+import { MonitorMensaje } from "./monitor_mensaje";
 import { Frontera } from "./frontera";
 import { TumbaTesoro } from "./tumba_tesoro";
 import { ValleReyes } from "./valle_reyes";
@@ -170,7 +190,8 @@ const REAL: Record<string, AssetFC> = {
   cleopatra: Cleopatra, saco_cesar: SacoCesar, alejandria_noche: AlejandriaNoche, cabeza_pompeyo: CabezaPompeyo, ptolomeo_furia: PtolomeoFuria, pasillo_guardias: PasilloGuardias, nilo_ahogo: NiloAhogo, banquete_nilo: BanqueteNilo, foro: Foro, senadores_odio: SenadoresOdio, templo_venus: TemploVenus, idus_marzo: IdusMarzo, huida_barco: HuidaBarco, octavio_consejo: OctavioConsejo, cesarion: Cesarion,
   piramide: Piramide, guiza_crecida: GuizaCrecida, barco_piedra: BarcoPiedra, puerto_fuego: PuertoFuego, almacen_rollos: AlmacenRollos, biblioteca_alejandria: BibliotecaAlejandria, galeria_papiros: GaleriaPapiros, papiro_merer: PapiroMerer, merer: Merer, cantera_tura: CanteraTura, aldea_obreros: AldeaObreros, ovni: Ovni,
   tutankamon: Tutankamon, mascara_tut: MascaraTut, tumba_tesoro: TumbaTesoro, valle_reyes: ValleReyes, templo_amon: TemploAmon, muro_nombres: MuroNombres, baston: Baston, ataudes_hijas: AtaudesHijas, trono_oro: TronoOro,
-  imagen_ia: ImagenIa, medalla: Medalla, formulas: Formulas, pantalla_pc: PantallaPc, fabrica_robot: FabricaRobot, proteina: Proteina, reloj_agujas: RelojAgujas, frontera: Frontera,
+  imagen_ia: ImagenIa, medalla: Medalla, formulas: Formulas, pantalla_pc: PantallaPc, fabrica_robot: FabricaRobot, proteina: Proteina, reloj_agujas: RelojAgujas,
+  espacio: Espacio, cabina_nave: CabinaNave, saturno: Saturno, gargantua: Gargantua, agujero_gusano: AgujeroGusano, endurance: Endurance, ranger: Ranger, planeta: Planeta, tars: Tars, tormenta_polvo: TormentaPolvo, cuarto_murph: CuartoMurph, base_nasa: BaseNasa, superficie_miller: SuperficieMiller, hielo_mann: HieloMann, edmunds_campo: EdmundsCampo, teseracto: Teseracto, estacion_cooper: EstacionCooper, reloj_pulsera: RelojPulsera, cama: Cama, monitor_mensaje: MonitorMensaje, frontera: Frontera,
   sisifo_roca: SisifoRoca, montana_sisifo: MontanaSisifo, tanatos: Tanatos, camus_escribe: CamusEscribe, rutina: Rutina, cafe_risa: CafeRisa,
 };
 

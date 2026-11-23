@@ -27,6 +27,8 @@ STRUCTURE_DEFAULT = "alegoria"
 CLASSIC_2D_GAP_S = 3.5   # historias 2D sin perfil viral: el explainer bajó a 3,0 s (D121); estas conservan su ritmo
 PACING = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: "viral"`
 THEMES = load_json(ROOT / "templates" / "themes2d.json")       # temas visuales (`meta.theme`, D123)
+LONG = load_json(ROOT / "templates" / "pacing_longform.json")  # perfil `meta.pacing: "longform"` (video largo 16:9, D128)
+LONG_ROLES = ("hook", "escena", "dato", "analisis", "puente", "climax", "twist", "cta")
 CTA_OVERLAYS = ("ShareCTA", "ChatMock")                        # CTA animado del cierre `remate_cta`
 PILL_SHARE_MAX = 0.6
 
@@ -58,7 +60,15 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
         errs.append('con `structure: escalada` en el guion, pon `meta.structure: "escalada"` en el story (y solo entonces)')
     viral = meta.get("pacing") == "viral"
     cap = PACING["captions"]
-    gap_max = PACING["cadence"]["eventGapMaxS"] if viral else CLASSIC_2D_GAP_S
+    long = meta.get("pacing") == "longform"
+    gap_max = PACING["cadence"]["eventGapMaxS"] if viral else LONG["cadence"]["eventGapMaxS"] if long else CLASSIC_2D_GAP_S
+    if long and meta.get("format") != "wide":
+        errs.append('el perfil longform es horizontal: meta.format "wide"')
+    if long:   # capítulos: cada uno empieza en un beat existente, en orden
+        ids = [b.get("id") for b in beats]
+        froms = [c.get("from") for c in meta.get("chapters", [])]
+        if not froms or any(f not in ids for f in froms) or [ids.index(f) for f in froms] != sorted(ids.index(f) for f in froms) or froms[0] != ids[0]:
+            errs.append("meta.chapters: cada capítulo con `from` = el id de su primer beat, en orden, y el primero desde el beat 1 (tools/longform_skeleton.py)")
     if viral and meta.get("captionEmphasis") not in (None, cap["emphasis"]):
         errs.append(f"el perfil viral resalta las palabras clave con color (captionEmphasis '{cap['emphasis']}')")
     # tema visual (D123): paletas y luces del tema, tres planos de profundidad y una capa de ambiente por beat
@@ -218,7 +228,7 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     if with_actions < -(-len(beats) // 2):
         errs.append(f"solo {with_actions} de {len(beats)} beats llevan acciones (hacen falta al menos {-(-len(beats) // 2)}): que la escena reaccione a lo que dice la voz")
     # estructura: los roles siguen el orden de la estructura (cada uno puede repetirse) y cumplen sus mínimos
-    st = cat["structures"].get(structure or STRUCTURE_DEFAULT)
+    st = {"order": list(LONG_ROLES)} if long else cat["structures"].get(structure or STRUCTURE_DEFAULT)
     if not st and order:   # estructura nueva del guion (D120): su orden lo declara `beats:` y ya lo validó validate_script
         st = {"order": order}
     if not st:
@@ -231,7 +241,10 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             errs.append(f"roles fuera de la estructura {structure or STRUCTURE_DEFAULT}: {', '.join(sorted(set(bad)))} (orden: {' → '.join(st['order'])})")
         else:
             idx = [st["order"].index(r) for r in roles]
-            if idx != sorted(idx):
+            if long:   # en un video largo los roles se mezclan por capítulos: solo empieza en hook y acaba en cta
+                if roles[-1] != "cta":
+                    errs.append("el último beat de un video largo es `cta`")
+            elif idx != sorted(idx):
                 errs.append(f"los roles no siguen el orden {' → '.join(st['order'])}: {' → '.join(roles)}")
             for r, n in st.get("min", {}).items():
                 if roles.count(r) < n:
@@ -242,8 +255,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
     # cortes por minuto (la transición del último beat no se usa)
     dur = (words[-1]["end"] + 1.0) if words else sum(len(words_of(b.get("text", ""))) for b in beats) / WPS
     cuts = sum(1 for b in beats[:-1] if b.get("transition") == "cut")
-    if cuts / (dur / 60) > CUTS_PER_MIN:
-        errs.append(f"{cuts} cortes en {dur:.0f} s = {cuts / (dur / 60):.1f} por minuto (máximo {CUTS_PER_MIN})")
+    cpm = LONG["cadence"]["cutsPerMinMax"] if long else CUTS_PER_MIN
+    if cuts / (dur / 60) > cpm:
+        errs.append(f"{cuts} cortes en {dur:.0f} s = {cuts / (dur / 60):.1f} por minuto (máximo {cpm})")
 
     if words is not None:
         ids = [b["id"] for b in beats]
@@ -252,7 +266,7 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             errs.append(f"words.json no tiene palabras de los beats {', '.join(missing)}")
         else:
             w1 = [w for w in words if w["beat"] == beats[0]["id"]]
-            if w1[-1]["end"] > HOOK_MAX_S:
+            if w1[-1]["end"] > HOOK_MAX_S and not long:   # en un video largo el gancho es un capítulo de 20–45 s (lo mide validate_longform)
                 errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {HOOK_MAX_S:.1f} s): acórtalo (unas 8–9 palabras)")
             acts = [at_seconds(beats[0], w1, x.get("at"), 0.0) for x in beats[0].get("actions", [])]
             if not acts or min(acts) > HOOK_ACTION_S:

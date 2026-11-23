@@ -5,6 +5,7 @@ import { AbsoluteFill, CalculateMetadataFunction, useCurrentFrame, useVideoConfi
 import { Captions, HookTitle, hookEndFrame } from "../explainer/captions/Caption";
 import { CAPTION } from "../explainer/style";
 import pacingViral from "../../../templates/pacing_viral.json";
+import pacingLong from "../../../templates/pacing_longform.json";
 import { OverlayLayer } from "../explainer/overlays/OverlayLayer";
 import type { Timeline } from "../explainer/timeline";
 import { type Layer2, Props2Schema, type Props2 } from "./schema";
@@ -17,11 +18,13 @@ import { LookCtx, flicker, hash } from "./assets/common";
 import { SCENE_GLOW, type Theme, lerpSky, skyOf, themeOf } from "./look";
 
 const parse = (p: Props2) => Props2Schema.parse(p);
-const W = 1080, H = 1920;
+/** tamaño del lienzo según `meta.format`: vertical (shorts, por defecto) o wide (videos largos de YouTube, 16:9) */
+export const SIZES = { vertical: [1080, 1920], wide: [1920, 1080] } as const;
 
 export const calcFlat2DMetadata: CalculateMetadataFunction<Props2> = ({ props }) => {
   const { story, words } = parse(props);
-  return { durationInFrames: buildTimeline2D(story, words, 30).total, fps: 30, width: W, height: H };
+  const [width, height] = SIZES[story.meta.format];
+  return { durationInFrames: buildTimeline2D(story, words, 30).total, fps: 30, width, height };
 };
 
 /** copias de una capa con `repeat` (D123): rejilla en filas que se alejan (cada fila más pequeña y más arriba), con desorden determinista */
@@ -38,6 +41,7 @@ const instances = (ly: Layer2, k: number) => {
 };
 
 const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; swipe: number | null; theme: Theme | null }> = ({ tl, i, f, alpha, swipe, theme }) => {
+  const { width: W, height: H } = useVideoConfig();
   const bt = tl.beats[i], sc = bt.beat.scene, acts = tl.actions.filter((a) => a.beat === i);
   const fxS = sceneFx(acts, f), cam = camAt(bt, f, !!theme), flick = flicker(f);
   const pal: Pal = fxS.shift ? lerpPal(palette(sc.palette), palette(fxS.shift.to), fxS.shift.u) : palette(sc.palette);
@@ -92,18 +96,25 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
 /** ruido de película (D123): grano fino que cambia cada frame sobre toda la imagen. Quita el aspecto de vector limpio sin ensuciar
  *  (las motas de `Grain` parecían polvo) y hace que un plano lento sobre colores lisos no parezca una imagen parada. Se calcula a
  *  media resolución y se amplía: cuesta la cuarta parte. */
-const FilmNoise: React.FC<{ f: number }> = ({ f }) => (
-  <AbsoluteFill style={{ mixBlendMode: "overlay", opacity: 0.16, pointerEvents: "none" }}>
-    <svg width={W / 2} height={H / 2} style={{ transform: "scale(2)", transformOrigin: "0 0" }}>
-      <filter id="fn" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={1} seed={f % 97} /><feColorMatrix type="saturate" values="0" /></filter>
-      <rect width="100%" height="100%" filter="url(#fn)" />
-    </svg>
-  </AbsoluteFill>
-);
+const FilmNoise: React.FC<{ f: number }> = ({ f }) => {
+  const { width: W, height: H } = useVideoConfig();
+  return (
+    <AbsoluteFill style={{ mixBlendMode: "overlay", opacity: 0.16, pointerEvents: "none" }}>
+      <svg width={W / 2} height={H / 2} style={{ transform: "scale(2)", transformOrigin: "0 0" }}>
+        <filter id="fn" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={1} seed={f % 97} /><feColorMatrix type="saturate" values="0" /></filter>
+        <rect width="100%" height="100%" filter="url(#fn)" />
+      </svg>
+    </AbsoluteFill>
+  );
+};
 
 /** perfil `meta.pacing: "viral"`: subtítulos grandes de 1–3 palabras en la franja baja-central, con la palabra clave en amarillo y un contorno
  *  oscuro que los hace legibles sobre fondos y ropas claras (pergamino, arena, mantos blancos; D118) */
-const captionCfg = (viral: boolean, themed = false): typeof CAPTION => {
+const captionCfg = (viral: boolean, themed = false, wide = false): typeof CAPTION => {
+  if (wide) {   // video largo: 2 líneas sobrias en la franja baja, como unos subtítulos de cine (el tamaño es fracción del ANCHO: 0,026 x 1920 = 50 px)
+    const c = pacingLong.captions;
+    return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, maxWidthK: c.maxWidthK, minWords: c.minWords, maxWords: c.maxWords, shadow: c.shadow } as typeof CAPTION;
+  }
   if (!viral) return CAPTION;
   const c = pacingViral.captions;
   return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor, shadow: c.shadow, punchAll: themed } as typeof CAPTION;
@@ -117,6 +128,8 @@ export const Flat2D: React.FC<Props2> = (props) => {
   const layers = layersAt(tl, f);
   const hookF = useMemo(() => hookEndFrame(words, story.beats[0].id, fps), [words, story, fps]);
   const theme = themeOf(story.meta.theme);
+  const wide = story.meta.format === "wide";
+  const cap = captionCfg(story.meta.pacing === "viral", !!theme, wide);
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <LookCtx.Provider value={{ themed: !!theme }}>
@@ -124,9 +137,10 @@ export const Flat2D: React.FC<Props2> = (props) => {
       </LookCtx.Provider>
       {theme ? <FilmNoise f={f} /> : null}
       {/* los overlays no anclados del explainer solo necesitan la lista de overlays de la línea de tiempo */}
-      <OverlayLayer tl={tl as unknown as Timeline} words={words} lang={story.meta.lang} />
-      {story.meta.hookTitle ? <HookTitle text={story.meta.hookTitle} endF={hookF} accent={story.beats[0].keyword ?? story.beats[0].keywords?.[0]} cap={captionCfg(story.meta.pacing === "viral", !!theme)} /> : null}
-      <Captions words={words} keywords={tl.keywords} cap={captionCfg(story.meta.pacing === "viral", !!theme)} fromF={story.meta.hookTitle ? hookF : 0} />
+      <OverlayLayer tl={tl as unknown as Timeline} words={words} lang={story.meta.lang} wideX={wide ? story.meta.overlayX : undefined} />
+      {story.meta.hookTitle ? <HookTitle text={story.meta.hookTitle} endF={hookF} accent={story.beats[0].keyword ?? story.beats[0].keywords?.[0]} cap={cap} /> : null}
+      {/* en un video largo los subtítulos van por defecto en un .srt aparte (CC de YouTube); `meta.captions: "burned"` los pinta */}
+      {wide && story.meta.captions !== "burned" ? null : <Captions words={words} keywords={tl.keywords} cap={cap} fromF={story.meta.hookTitle ? hookF : 0} />}
     </AbsoluteFill>
   );
 };

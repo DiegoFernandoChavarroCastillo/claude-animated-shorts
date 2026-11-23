@@ -446,6 +446,9 @@ def free_structure(name: str, beats: list[str]) -> tuple[dict, list[str]]:
 
 
 def validate(md: str) -> tuple[list[str], dict]:
+    if re.search(r"^(pacing|ritmo):\s*longform\s*$", md, re.I | re.M):   # video largo horizontal: su propio formato por capítulos
+        from validate_longform import validate as validate_long
+        return validate_long(md)
     s = parse(md)
     errs = list(s.errors)
     if errs:
@@ -568,6 +571,10 @@ def main():
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     errs, stats = validate(a.script.read_text(encoding="utf-8"))
+    if stats.get("chapters") is not None and not a.json:
+        from validate_longform import report
+        report(errs, stats, a.script)
+        sys.exit(0 if not errs else 1)
     if a.json:
         print(json.dumps({"ok": not errs, "errors": errs, "stats": stats}, ensure_ascii=False, indent=1))
     else:

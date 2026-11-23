@@ -26,6 +26,13 @@ def viral_voice(meta: dict) -> dict | None:
     return load_json(ROOT / "templates" / "pacing_viral.json")["voice"]
 
 
+def long_voice(meta: dict) -> dict | None:
+    """perfil `pacing: longform` (templates/pacing_longform.json): narración pausada de video largo; None si no aplica"""
+    if meta.get("pacing") != "longform":
+        return None
+    return load_json(ROOT / "templates" / "pacing_longform.json")["voice"]
+
+
 def wav_seconds(p: Path) -> float:
     import wave
     with wave.open(str(p), "rb") as w:
@@ -49,7 +56,10 @@ def main():
     voice = a.voice or meta["voice"]["voice"]
     speed = a.speed or float(meta["voice"].get("speed", 1.0))
     vv = viral_voice(meta)
+    lv = long_voice(meta)
     wps_lo, wps_hi, wps_target = WPS_LO, WPS_HI, WPS_TARGET
+    if lv:
+        wps_lo, wps_hi, wps_target = lv["wps"]
     if vv:
         speed = a.speed or max(speed, vv["speed"])   # +12–15 % sobre la narración normal; un story puede pedir más, nunca menos
         wps_lo, wps_hi, wps_target = vv["wps"]
@@ -64,6 +74,12 @@ def main():
     pauses = [int(s.pause_after_ms * scale) for s in segs]
     if vv:
         pauses = [min(p, vv["pauseMaxMs"]) for p in pauses]
+    if lv:   # video largo: pausas cortas entre frases y beats, y un respiro más largo al cambiar de capítulo
+        chap = {b["id"]: b.get("chapter") for b in story["beats"]}
+        pauses = [min(p, lv["pauseMaxMs"]) for p in pauses]
+        for k in range(len(segs) - 1):
+            if chap.get(segs[k].beat) != chap.get(segs[k + 1].beat):
+                pauses[k] = lv["chapterPauseMs"]
     for attempt in range(2):
         synth([s.text for s in segs], meta["lang"], voice, speed, pauses, out, eng,
               [{"beat": s.beat, "role": s.role} for s in segs])

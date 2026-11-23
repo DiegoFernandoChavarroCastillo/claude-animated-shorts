@@ -19,7 +19,8 @@ from style_check import check  # noqa: E402
 from validate_script import DURATION_S  # noqa: E402
 VIRAL_SCRIPT = load_json(ROOT / "templates" / "pacing_viral.json")["script"]
 VIRAL_DUR, STORY_DUR = VIRAL_SCRIPT["durationS"], VIRAL_SCRIPT["story2d"]["durationS"]
-ESCALADA_DUR = VIRAL_SCRIPT["escalada"]["durationS"]   # D126: `meta.structure: "escalada"` en el story 2D
+ESCALADA_DUR = VIRAL_SCRIPT["escalada"]["durationS"]
+LONG = load_json(ROOT / "templates" / "pacing_longform.json")   # video largo 16:9 (D128)   # D126: `meta.structure: "escalada"` en el story 2D
 
 DESIGN_STATIC_MAX = 45   # regla de F2 (D31): todos nuestros planos llevan empuje
 
@@ -54,8 +55,9 @@ def report(d: Path) -> tuple[bool, str]:
     v, a, f = probe_dur(d / "07_video.mp4"), probe_dur(d / "08_mix.wav"), probe_dur(d / "09_final.mp4")
     is_2d = load_json(d / "05_story.json")["meta"].get("engine") == "2d"
     escalada = is_2d and load_json(d / "05_story.json")["meta"].get("structure") == "escalada"
-    dur_rng = (tuple(ESCALADA_DUR) if escalada else tuple(STORY_DUR) if is_2d else tuple(VIRAL_DUR)) if story_pacing(d) == "viral" else DURATION_S
-    row("duración video (s): " + ("escalada 2D, 45–59 s (D126)" if escalada else "historia 2D, 60–70 s" if is_2d else "formato YouTube Shorts, menos de 60 (D121)"), round(v, 2), dur_rng)
+    long = story_pacing(d) == "longform"
+    dur_rng = (tuple(ESCALADA_DUR) if escalada else tuple(STORY_DUR) if is_2d else tuple(VIRAL_DUR)) if story_pacing(d) == "viral" else tuple(LONG["script"]["durationS"]) if long else DURATION_S
+    row("duración video (s): " + ("video largo 16:9, 7,5–10,5 min (D128)" if long else "escalada 2D, 45–59 s (D126)" if escalada else "historia 2D, 60–70 s" if is_2d else "formato YouTube Shorts, menos de 60 (D121)"), round(v, 2), dur_rng)
     row("duración mezcla (s)", round(a, 2))
     row("diferencia video − audio (s)", round(abs(v - a), 3), (0, 0.1))
     _, P = ebur(d / "09_final.mp4")
@@ -63,8 +65,10 @@ def report(d: Path) -> tuple[bool, str]:
     story = load_json(d / "05_story.json")
     lang = story["meta"]["lang"]
     style_ok, style_md, m = check(d / "09_final.mp4", d / "04_words.json", lang, frames_from=d / "07_video.mp4", engine=story["meta"].get("engine", "3d"), pacing=story["meta"].get("pacing"), theme=story["meta"].get("theme"),
-                                  skip_beat=story["beats"][0]["id"] if story["meta"].get("hookTitle") else None)
-    row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, DESIGN_STATIC_MAX))
+                                  skip_beat=story["beats"][0]["id"] if story["meta"].get("hookTitle") else None,
+                                  ocr=not (long and story["meta"].get("captions", "srt") != "burned"))
+    static_max = round(LONG["qa"]["staticRunMaxS"] * 30) if long else DESIGN_STATIC_MAX   # un plano largo y lento es normal en 16:9
+    row("racha estática, regla de diseño F2 (frames)", m["longest_static_run_frames"], (0, static_max))
     ok &= style_ok
     from qa_rules import rows as rule_rows
     for name, val, target, good in rule_rows(d):   # F18: reglas de plan y mezcla (gancho, ritmo, bucle, sonido)

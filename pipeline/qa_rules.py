@@ -20,6 +20,7 @@ EVENTS_PER_MIN_MAX = 48        # todos los sonidos juntos (los ticks de un conta
 
 
 VIRAL = load_json(ROOT / "templates" / "pacing_viral.json")   # perfil `meta.pacing: viral`
+LONG = load_json(ROOT / "templates" / "pacing_longform.json")  # perfil `meta.pacing: longform` (D128)
 
 
 def rows(d: Path) -> list[tuple[str, object, str, bool]]:
@@ -32,16 +33,18 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
         out.append((name, val, target, bool(ok)))
 
     w1 = [w for w in words if w["beat"] == beats[0]["id"]]
+    long = story["meta"].get("pacing") == "longform"   # video largo (D128): el gancho es un capítulo y el título va en la miniatura
     title = (story["meta"].get("hookTitle") or "").strip()
-    row("titular del gancho en el fotograma 0 (meta.hookTitle)", title or "falta", "sí", bool(title))
-    row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {HOOK_MAX_S}", w1[-1]["end"] <= HOOK_MAX_S)
+    if not long:
+        row("titular del gancho en el fotograma 0 (meta.hookTitle)", title or "falta", "sí", bool(title))
+        row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {HOOK_MAX_S}", w1[-1]["end"] <= HOOK_MAX_S)
     acts = [at_seconds(beats[0], w1, a.get("at"), 0.0) for a in beats[0].get("actions", [])]
     first = min(acts) if acts else None
     row("primera acción del gancho (s)", None if first is None else round(first, 1), f"≤ {HOOK_ACTION_S}", first is not None and first <= HOOK_ACTION_S)
     cam = beats[0]["scene"]["camera"]["preset"]
     row("cámara del gancho", cam, f"no {'/'.join(HOOK_STATIC_CAMERAS)}", cam not in HOOK_STATIC_CAMERAS)
     gap, at = event_gap(story, words)
-    gap_max = (VIRAL["cadence"]["eventGapMaxS"] if story["meta"].get("pacing") == "viral"
+    gap_max = (VIRAL["cadence"]["eventGapMaxS"] if story["meta"].get("pacing") == "viral" else LONG["cadence"]["eventGapMaxS"] if long
                else CLASSIC_2D_GAP_S if engine_of(story) == "2d" else MAX_EVENT_GAP_S)
     row("hueco máximo sin cambios en pantalla (s)", round(gap, 1), f"≤ {gap_max}", gap <= gap_max)
     if story["meta"].get("pacing") == "viral":
