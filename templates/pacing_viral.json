@@ -1,4 +1,5 @@
 {
+  "director": {"maxShotS": 3.0, "_": "D129: el director automático parte cada beat en planos de como mucho estos segundos (general / medio / primer plano, corte seco y Ken Burns)"},
   "_nota": "Perfil `viral` (header `pacing: viral` en 02_SCRIPT.md, meta.pacing en 05_story.json). Una sola fuente de verdad para validador de guion, TTS, plan de SFX, validador del story, subtítulos y QA. Los videos sin este perfil no cambian.",
   "script": {
     "words": [

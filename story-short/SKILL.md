@@ -9,7 +9,7 @@ Mismo repo y mismo pipeline que `explainer-short` (voz, alineación, mezcla, QA 
 
 ## Dos reglas del usuario que mandan sobre todo lo demás (D127, 16 nov)
 1. **Visto bueno del guion antes de crear nada.** En cada video, después del crítico de guion y **antes de la voz, el story, los assets o cualquier render**, enséñale al usuario el guion completo en una tabla **escena por escena** (rol, tiempo aproximado, narración literal y qué se ve) y **espera su visto bueno**. Con su sí: `make_short.py approve-script --id <id>`; `tts` no arranca sin esa aprobación de la versión exacta de `02_SCRIPT.md` (si cambias una coma, hay que volver a enseñarlo). Si el crítico lo devuelve 3 veces, se lo enseñas igual con sus notas y decide él.
-2. **Si el usuario trae su propio guion, se conserva su redacción, sin preguntar.** Cabecera `guion_autor: usuario` (incluye `hook_autor: usuario`). Solo se toca: (a) los **datos falsos** (verifícalos todos: se corrige la cifra o el hecho con la menor cantidad de palabras posible, y se le dice qué cambió y por qué); (b) lo que exige el validador (frases ≤12 palabras, gancho ≤11, números en palabras), partiendo frases por donde él las partiría. Nada de reescribir en forma de crónica o telegrama («Dos mil veinticuatro: una IA gana…» → mal; «En dos mil veinticuatro, la IA rozaba el oro…» → bien), ni añadir cifras en la voz, frases-semilla o cierres que él no escribió. Las notas del crítico que cambiarían el tono no se aplican: se le mencionan en una línea. Su guion manda también en la estructura: si no encaja en ninguna, se usa la más cercana o se crea una (como `escalada`, D126).
+2. **Si el usuario trae su propio guion, se conserva su redacción, sin preguntar.** Cabecera `guion_autor: usuario` (incluye `hook_autor: usuario`). Solo se toca: (a) los **datos falsos** (verifícalos todos: se corrige la cifra o el hecho con la menor cantidad de palabras posible, y se le dice qué cambió y por qué); (b) lo que exige el validador (frases ≤12 palabras, gancho ≤11, números en palabras), partiendo frases por donde él las partiría. Nada de reescribir en forma de crónica o telegrama («Dos mil veinticuatro: una IA gana…» → mal; «En dos mil veinticuatro, la IA rozaba el oro…» → bien), ni añadir cifras en la voz, frases-semilla o cierres que él no escribió. Las notas del crítico que cambiarían el tono no se aplican: se le mencionan en una línea. Su guion manda también en la estructura: si no encaja en ninguna, se usa la más cercana o se crea una (como `escalada`, D126); lo mismo con el cierre: si su frase final no es `bucle` ni `remate_cta`, se declara un cierre propio en `## Fórmulas nuevas` (p. ej. `sentencia`, D131) y no se reescribe.
 
 ## Pasos (en `out/<id>/`)
 | # | Paso | Artefacto |
@@ -59,6 +59,12 @@ Criterios, en orden: (1) emoción dominante del ángulo; (2) época y lugar; (3)
 
 Un asset propio sigue haciendo falta cuando la voz nombra algo concreto que el kit no tiene (fidelidad visual): hazlo con el kit de sombreado. Ejemplos de cada tema: `tools/look_sheet.py OUT [tema…]`.
 
+## Dirección visual (D129): montaje rápido y escenas con detalle
+Antes de escribir el story, lee `templates/prompts/direccion_visual.md`. Con tema, el **director automático** (`flat2d/director.ts`) parte cada beat en planos de ≤3 s (general / medio / primer plano, corte seco y Ken Burns) y añade contorno y haces de luz. Tú pones lo que pasa:
+- un micro-evento cada ~2 s: `expr` (caras), `callout` (flecha curva con rótulo pegada a la capa), `bubble` (globo), `run` / `fall`;
+- el overlay `Stamp` (sello) y las transiciones `iris`, `wipe_left`, `wipe_right` y `flash_cut`;
+- `scene.subject` cuando el sujeto del plano no es el personaje más grande.
+
 ## Qué recurso para qué frase (D123: cifra = imagen)
 | La voz dice… | Se ve | Recurso |
 |---|---|---|
@@ -81,7 +87,7 @@ El validador (con tema y perfil viral) rechaza un beat que dice una cifra y no m
 `bucle`: la última frase queda abierta y el gancho la continúa; el video se repite solo (filosofía, «¿y si…?», remates que son un gesto). `remate_cta`: el `[twist]` dice el remate («no es X, es Y») y la `[cta]` es una invitación de ≤12 palabras ligada al tema, con `ShareCTA` (avatares, Seguir/Compartir, cursor, confeti) o `ChatMock` (chat que se escribe solo) sobre la escena del remate, 3–5 s; casi siempre en `enigma` y en temas que se comparten por orgullo, ternura o asombro. No hay datos fiables de cuál rinde más: se mide en el canal con `ingest_stats.py`.
 
 ## Formato YouTube Shorts (D121)
-Solo se produce para YouTube Shorts (el mismo video se sube a TikTok para ganar seguidores). Las historias duran **60–70 s** (11 nov, a pedido del usuario: los videos que gustaron duraban 60–72 s; con 35–59 s la historia se comprimía). El explainer sigue en 35–59 s (D121). En el story: `meta.hookTitle` (2–7 palabras, ≤40 letras) es el gancho escrito que se ve completo desde el frame 0 hasta el final del gancho, en la franja de los subtítulos (lo exige el QA; la primera palabra clave sale en color), y `meta.topic` la palabra clave de búsqueda que va delante del gancho en el título de YouTube. El primer beat abre con la imagen más fuerte ya en cuadro. Gancho de `revelacion` (el desenlace primero, el cómo después) disponible para historias con un final visual.
+Solo se produce para YouTube Shorts (el mismo video se sube a TikTok para ganar seguidores). Las historias duran **60–70 s** (11 nov, a pedido del usuario: los videos que gustaron duraban 60–72 s; con 35–59 s la historia se comprimía). El explainer sigue en 35–59 s (D121). En el story: `meta.hook` (el tipo de gancho del guion: su tope hablado es 3,2 s en los de golpe y 4 s en `y_si`, `escena`, `revelacion` y `reto`, que montan una situación; `max_s` en `formulas.json`), `meta.hookTitle` (2–7 palabras, ≤40 letras) es el gancho escrito que se ve completo desde el frame 0 hasta el final del gancho, en la franja de los subtítulos (lo exige el QA; la primera palabra clave sale en color), y `meta.topic` la palabra clave de búsqueda que va delante del gancho en el título de YouTube. El primer beat abre con la imagen más fuerte ya en cuadro. Gancho de `revelacion` (el desenlace primero, el cómo después) disponible para historias con un final visual.
 
 ## Dramatización (D118)
 Los shorts de historia sonaban a documental (crónica en pasado, «según el historiador…», moraleja al final). Regla: **los hechos ancla no se tocan; el cómo se inventa** (gestos, sensaciones, pensamientos, un testigo, frases privadas fieles al personaje). Lo elige quien escribe con `templates/dramatizacion.json` y la tabla de `story2d_script_es.md`; `validate_script.py` exige `pov` y la sección `## Ficción` y limita las muletillas de crónica (≤1 con `dramatizada`, 0 con `libre`); el crítico de guion puntúa `drama` y `fidelidad`. En el story, la ficción se pone en escena: caras que reaccionan, el detalle sensorial que dice la voz en pantalla, planos cerrados en la tensión.
@@ -105,6 +111,9 @@ Voz: la definitiva es la de Diego (`chatterbox`/`diego`; con el perfil viral `sp
 
 ## Assets y cómo añadir uno
 Más de cien en `catalog2d.json` (búscalos con `catalog_search2d.py`; el kit genérico está en «Temas visuales»). Uno nuevo: `studio/src/flat2d/assets/<id>.tsx` (lienzo de 100 de ancho × 100·aspect), registrarlo en `assets/registry.tsx` y en `catalog2d.json` (aspect, anclaje, `par`, `when`, `tags`, acciones propias); `tools/gallery2d.py` para verlo. Estilo: colores de la paleta (nunca hex sueltos salvo luz), ≥4 partes, nada de sustitutos de lo que dice la voz; con el kit de sombreado (`shade.tsx`) y movimiento de reposo (`idle`); opciones fijas en `opts` (`opt()` de `common.ts`).
+
+## Efectos de sonido (D130)
+Una vez por PC: `.venv/bin/python tools/sfx_fetch.py` baja las librerías CC0 a `sfx_lib/`; la mezcla rota sus variantes (`templates/sfx_library.json`). Sin ellas usa los sintetizados.
 
 ## Antes de dar algo por terminado
 `.venv/bin/python tools/run_tests.py` y `.venv/bin/python tools/regression_check.py` (el 3D no debe cambiar). `make_short.py` para con error si el QA tiene ❌ (`--allow-qa-warnings` solo si el usuario lo acepta y se dice).

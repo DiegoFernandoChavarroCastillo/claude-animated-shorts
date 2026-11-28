@@ -28,4 +28,7 @@ Un resumen o una historia larga se ve entera si hay una **pregunta** que tira de
 - Capítulos de 35–110 s (5–10 entre el gancho y el cierre). Un capítulo = un lugar o un giro.
 - Cada capítulo intermedio acaba en `[puente]`: una pregunta abierta o una amenaza («Pero el doctor Mann sí guarda un secreto. Y es mucho peor.»).
 - Reparte el análisis: un `[analisis]` o `[dato]` cada 3–5 beats, no todo al final.
+- **Re-gancho cada 15–20 s** (D129): una pregunta, una amenaza o un «pero» que empuje a seguir mirando, sin esperar al `[puente]`.
+- **Siembra y cobra**: un objeto o dato del primer minuto (el reloj, la moneda, la cifra) vuelve en el clímax. Dilo en el guion para que el story lo enseñe en primer plano las dos veces.
+- Cada frase tiene que poder dibujarse: el director cambia de plano cada ≤3,5 s, y una frase sin imagen deja el plano vacío. Dirección visual: `templates/prompts/direccion_visual.md`.
 - Cierre con `[cta]`: una pregunta personal que se contesta en una línea («¿Habrías bajado al planeta de Miller?»).

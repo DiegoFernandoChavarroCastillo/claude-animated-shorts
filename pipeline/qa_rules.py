@@ -10,7 +10,7 @@ from pathlib import Path
 
 from common import ROOT, engine_of, load_json
 from validate_story2d import CLASSIC_2D_GAP_S
-from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, HOOK_STATIC_CAMERAS, LOOP_TAIL_MAX_S, MAX_EVENT_GAP_S, MAX_SHOTS,
+from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, hook_max_s, HOOK_STATIC_CAMERAS, LOOP_TAIL_MAX_S, MAX_EVENT_GAP_S, MAX_SHOTS,
                             at_seconds, event_gap, script_closing)
 
 ACCENT_MAX_PER_S = 1 / 3.0     # un acento (sonido no estructural) por cada 3 s como máximo
@@ -37,7 +37,9 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
     title = (story["meta"].get("hookTitle") or "").strip()
     if not long:
         row("titular del gancho en el fotograma 0 (meta.hookTitle)", title or "falta", "sí", bool(title))
-        row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {HOOK_MAX_S}", w1[-1]["end"] <= HOOK_MAX_S)
+        hk = re.search(r"^hook:\s*(\w+)", md, re.M)
+        hmax = hook_max_s(story["meta"].get("hook") or (hk.group(1) if hk else None))   # tope según el tipo de gancho (25 nov)
+        row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {hmax}", w1[-1]["end"] <= hmax)
     acts = [at_seconds(beats[0], w1, a.get("at"), 0.0) for a in beats[0].get("actions", [])]
     first = min(acts) if acts else None
     row("primera acción del gancho (s)", None if first is None else round(first, 1), f"≤ {HOOK_ACTION_S}", first is not None and first <= HOOK_ACTION_S)

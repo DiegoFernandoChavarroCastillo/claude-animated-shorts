@@ -4,7 +4,7 @@
 
 Lista TODOS los problemas de una vez. Falla si: falta `shows`; un asset / paleta / luz / cámara / transición / overlay / acción no existe;
 una capa sale del cuadro o su escala no es razonable; una acción apunta a una capa que no está en el beat; los roles no siguen la estructura;
-hay más de 3 cortes por minuto; (con --words) el gancho dura más de 3,2 s, no hay acción antes de 1 s, hay huecos de más de 3,5 s sin cambios,
+hay más de 3 cortes por minuto; (con --words) el gancho dura más de su tope (3,2 s; 4 s en y_si/escena/revelacion/reto), no hay acción antes de 1 s, hay huecos de más de 3,5 s sin cambios,
 o el cierre es `bucle` y el último beat no vuelve a la paleta y a los assets del primero (o meta.tailS > 0,3). Con --script, el texto de los beats es el del guion.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, load_json, run_main, words_of  # noqa: E402
-from validate_story import hook_title_errors  # noqa: E402
+from validate_story import hook_max_s, hook_title_errors  # noqa: E402
 from validate_story import (CUTS_PER_MIN, FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, LOOP_TAIL_MAX_S, MAX_ACTIONS, MAX_EVENT_GAP_S,  # noqa: E402
                             MAX_INSERT_HOLD, MAX_INSERT_TEXT, MAX_INSERTS, MAX_SHOTS, MIN_SHOT_GAP_S, WPS, at_seconds, event_gaps,
                             resolves, script_closing, script_lines)
@@ -139,6 +139,19 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                     errs.append(f"{bid}: layers[{k}].init '{ik}' debe ser una acción propia de {a} con valor 0–1")
             if "z" in ly and not _num(ly["z"]):
                 errs.append(f"{bid}: layers[{k}].z debe ser un número")
+        if long and theme:   # D129: además de lo que el fondo trae dibujado, cada plano lleva al menos 2 sujetos o props propios
+            own = [ly for ly in layers if cat["assets"].get(ly.get("asset"), {}).get("kind") in ("personaje", "prop", "escenario")]
+            if len(own) < LONG["director"].get("minProps", 2):
+                errs.append(f"{bid}: {len(own)} personajes/props en escena; el video largo pide al menos {LONG['director'].get('minProps', 2)} (D129: escenas con detalle, no un fondo vacío)")
+        for x in b.get("actions", []):
+            if x.get("type") == "expr" and names.get(x.get("target"), {}).get("asset") != "figura":
+                errs.append(f"{bid}: expr solo cambia la cara de una `figura` (target '{x.get('target')}')")
+            if x.get("type") in ("callout", "bubble") and not str(x.get("text", "")).strip():
+                errs.append(f"{bid}: {x.get('type')} necesita `text`")
+            if x.get("type") == "callout" and len(str(x.get("text", ""))) > 24:
+                errs.append(f"{bid}: callout «{x.get('text')}» de más de 24 letras: 1–3 palabras")
+            if x.get("type") == "bubble" and len(str(x.get("text", ""))) > 14:
+                errs.append(f"{bid}: bubble «{x.get('text')}» de más de 14 letras: una reacción corta")
         cam = s.get("camera", {})
         if viral and PACING["cadence"]["noHoldCamera"] and cam.get("preset") == "hold":
             errs.append(f"{bid}: cámara 'hold' en el perfil viral: usa push_in, pull_out o pan_slow (movimiento constante)")
@@ -175,8 +188,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 if len(str(o.get("text", ""))) > MAX_INSERT_TEXT:
                     errs.append(f"{bid}: Insert text de más de {MAX_INSERT_TEXT} letras")
         acts = b.get("actions", [])
-        if len(acts) > MAX_ACTIONS:
-            errs.append(f"{bid}: {len(acts)} acciones (máximo {MAX_ACTIONS} por beat)")
+        max_acts = MAX_ACTIONS + (3 if theme else 0)   # D129: con tema, un micro-evento cada ~2 s (caras, globos, rótulos) pide más acciones por beat
+        if len(acts) > max_acts:
+            errs.append(f"{bid}: {len(acts)} acciones (máximo {max_acts} por beat)")
         for x in acts:
             t, tg = x.get("type"), x.get("target")
             if not resolves(x.get("at"), text):
@@ -266,8 +280,9 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             errs.append(f"words.json no tiene palabras de los beats {', '.join(missing)}")
         else:
             w1 = [w for w in words if w["beat"] == beats[0]["id"]]
-            if w1[-1]["end"] > HOOK_MAX_S and not long:   # en un video largo el gancho es un capítulo de 20–45 s (lo mide validate_longform)
-                errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {HOOK_MAX_S:.1f} s): acórtalo (unas 8–9 palabras)")
+            hmax = hook_max_s(story.get("meta", {}).get("hook"))   # el tope depende del tipo de gancho (meta.hook, 25 nov)
+            if w1[-1]["end"] > hmax and not long:   # en un video largo el gancho es un capítulo de 20–45 s (lo mide validate_longform)
+                errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {hmax:.1f} s para su tipo): acórtalo (unas 8–9 palabras)")
             acts = [at_seconds(beats[0], w1, x.get("at"), 0.0) for x in beats[0].get("actions", [])]
             if not acts or min(acts) > HOOK_ACTION_S:
                 errs.append(f"el primer beat no tiene una acción antes de {HOOK_ACTION_S:.0f} s: abre con movimiento (ej. pop, tremble o appear con at en la 1.ª o 2.ª palabra)")

@@ -3,10 +3,11 @@ import React from "react";
 import { OVERLAY, PALETTE } from "../style";
 import { DISPLAY_FAMILY } from "../fonts";
 import { BaseProps, Label, Place, fmt, tok, useAnim, W } from "./common";
+import { Icon } from "./icons";
 
-export type StatCalloutProps = BaseProps & { value: number; label: string; prefix?: string; suffix?: string; decimals?: number; from?: number };
+export type StatCalloutProps = BaseProps & { value: number; label: string; prefix?: string; suffix?: string; decimals?: number; from?: number; icon?: string };
 
-export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, prefix = "", suffix = "", decimals = 0, from = 0, color: c, lang = "es", slot = "bottom" }) => {
+export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, prefix = "", suffix = "", decimals = 0, from = 0, icon, color: c, lang = "es", slot = "bottom" }) => {
   const { enter, exit, prog } = useAnim(dur);
   const k = enter(0), k2 = enter(2);
   const shown = from + (value - from) * prog(0, 24);   // `from` (D123): cuenta desde otro número (una distancia que crece, un año que avanza)
@@ -18,6 +19,8 @@ export const StatCallout: React.FC<StatCalloutProps> = ({ dur, value, label, pre
         background: "radial-gradient(ellipse at center, rgba(5,6,20,0.8) 0%, rgba(5,6,20,0.55) 45%, rgba(5,6,20,0) 72%)" }} />
       <div style={{ fontFamily: DISPLAY_FAMILY, fontWeight: 800, fontSize: OVERLAY.statSizeK * W, lineHeight: 1, color: col, whiteSpace: "nowrap",
         transform: `scale(${0.85 + 0.15 * k})`, opacity: k, textShadow: `0 0 40px ${PALETTE.ui.shadow}` }}>
+        {/* D129: icono junto a la cifra (años → calendar, muertes → skull…) que late cada vez que el número cambia de decena */}
+        {icon ? <span style={{ display: "inline-block", verticalAlign: "middle", marginRight: 18, transform: `scale(${1 + 0.12 * Math.abs(Math.sin(shown / 3))})` }}><Icon name={icon} size={OVERLAY.statSizeK * W * 0.7} color={col} stroke={1.8} /></span> : null}
         {prefix}{fmt(shown, lang, decimals)}{suffix}
       </div>
       <Label style={{ marginTop: 18, opacity: k2, transform: `translateY(${(1 - k2) * 16}px)` }}>{label}</Label>

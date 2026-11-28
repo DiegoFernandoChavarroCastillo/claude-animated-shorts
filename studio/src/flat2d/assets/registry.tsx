@@ -172,6 +172,47 @@ import { Tanatos } from "./tanatos";
 import { CamusEscribe } from "./camus_escribe";
 import { Rutina } from "./rutina";
 import { CafeRisa } from "./cafe_risa";
+import { Dormitorio } from "./dormitorio";
+import { AnilloOro } from "./anillo_oro";
+import { CajaFuerte } from "./caja_fuerte";
+import { CrucetaHilos } from "./cruceta_hilos";
+import { Oveja } from "./oveja";
+import { Burro } from "./burro";
+import { Erizo } from "./erizo";
+import { BosqueNevado } from "./bosque_nevado";
+import { AuraPuas } from "./aura_puas";
+import { Schopenhauer } from "./schopenhauer";
+import { Heno } from "./heno";
+import { CuboAgua } from "./cubo_agua";
+import { SalaTv } from "./sala_tv";
+import { TronoLidia } from "./trono_lidia";
+import { Corona } from "./corona";
+import { Pergamino } from "./pergamino";
+import { ManuscritoVoynich } from "./manuscrito_voynich";
+import { SimbolosVoynich } from "./simbolos_voynich";
+import { BibliotecaNoche } from "./biblioteca_noche";
+import { DespachoCripto } from "./despacho_cripto";
+import { EscritorioCripto } from "./escritorio_cripto";
+import { FrascosBotica } from "./frascos_botica";
+import { Alambique } from "./alambique";
+import { ManoPluma } from "./mano_pluma";
+import { BigEar } from "./big_ear";
+import { OndaRadio } from "./onda_radio";
+import { ImpresionWow } from "./impresion_wow";
+import { SalaOrdenador } from "./sala_ordenador";
+import { MesaEhman } from "./mesa_ehman";
+import { Cocina70 } from "./cocina_70";
+import { GalaxiaEspiral } from "./galaxia_espiral";
+import { RadioDisco } from "./radio_disco";
+import { Cometa } from "./cometa";
+import { Satelite } from "./satelite";
+import { Balanza } from "./balanza";
+import { CamaraVigilancia } from "./camara_vigilancia";
+import { Ojo } from "./ojo";
+import { FranjaOscura } from "./franja_oscura";
+import { Rio } from "./rio";
+import { ManoAgua } from "./mano_agua";
+import { Espejo } from "./espejo";
 const REAL: Record<string, AssetFC> = {
   pared_sombras: ParedSombras, cueva_corte: CuevaCorte, prisioneros: Prisioneros, prisionero_libre: PrisioneroLibre,
   muro_bajo: MuroBajo, fuego: Fuego, tunel_ascenso: TunelAscenso, exterior_sol: ExteriorSol,
@@ -193,6 +234,11 @@ const REAL: Record<string, AssetFC> = {
   imagen_ia: ImagenIa, medalla: Medalla, formulas: Formulas, pantalla_pc: PantallaPc, fabrica_robot: FabricaRobot, proteina: Proteina, reloj_agujas: RelojAgujas,
   espacio: Espacio, cabina_nave: CabinaNave, saturno: Saturno, gargantua: Gargantua, agujero_gusano: AgujeroGusano, endurance: Endurance, ranger: Ranger, planeta: Planeta, tars: Tars, tormenta_polvo: TormentaPolvo, cuarto_murph: CuartoMurph, base_nasa: BaseNasa, superficie_miller: SuperficieMiller, hielo_mann: HieloMann, edmunds_campo: EdmundsCampo, teseracto: Teseracto, estacion_cooper: EstacionCooper, reloj_pulsera: RelojPulsera, cama: Cama, monitor_mensaje: MonitorMensaje, frontera: Frontera,
   sisifo_roca: SisifoRoca, montana_sisifo: MontanaSisifo, tanatos: Tanatos, camus_escribe: CamusEscribe, rutina: Rutina, cafe_risa: CafeRisa,
+  dormitorio: Dormitorio, anillo_oro: AnilloOro, caja_fuerte: CajaFuerte, cruceta_hilos: CrucetaHilos, oveja: Oveja, trono_lidia: TronoLidia, corona: Corona, pergamino: Pergamino, balanza: Balanza, camara_vigilancia: CamaraVigilancia, ojo: Ojo, franja_oscura: FranjaOscura,
+  rio: Rio, mano_agua: ManoAgua, espejo: Espejo,
+  burro: Burro, erizo: Erizo, bosque_nevado: BosqueNevado, aura_puas: AuraPuas, schopenhauer: Schopenhauer, heno: Heno, cubo_agua: CuboAgua, sala_tv: SalaTv,
+  manuscrito_voynich: ManuscritoVoynich, simbolos_voynich: SimbolosVoynich, biblioteca_noche: BibliotecaNoche, despacho_cripto: DespachoCripto, escritorio_cripto: EscritorioCripto, frascos_botica: FrascosBotica, alambique: Alambique, mano_pluma: ManoPluma,
+  big_ear: BigEar, onda_radio: OndaRadio, impresion_wow: ImpresionWow, sala_ordenador: SalaOrdenador, mesa_ehman: MesaEhman, cocina_70: Cocina70, galaxia_espiral: GalaxiaEspiral, radio_disco: RadioDisco, cometa: Cometa, satelite: Satelite,
 };
 
 export const ASSETS: Record<string, AssetFC> = Object.fromEntries(Object.keys(CATALOG2D.assets).map((id) => [id, REAL[id] ?? makePlaceholder(id)]));

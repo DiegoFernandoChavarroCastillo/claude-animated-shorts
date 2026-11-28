@@ -1,0 +1,22 @@
+{
+  "_nota": "D130: grabaciones CC0 por tipo de efecto (tools/sfx_fetch.py las baja a sfx_lib/). La mezcla rota las variantes de cada tipo sin repetir seguidas, con ±4 % de tono y ±1,5 dB. Fuentes: «kit:<id>» = wyzowl/sfx-kit (su sounds.json da el archivo y el punto de sincronía); «<paquete>/<patrón>» = un paquete de Kenney (el punto de sincronía es el pico). `meets`: segundos después de `t` del plan en que cae el momento del efecto (el riser acaba en la revelación, el whoosh tiene su pico en el corte). Un tipo sin entrada, o sin sfx_lib/, usa el sonido sintetizado de sfx_synth.py.",
+  "meets": {"whoosh_soft": 0.27, "riser": 0.8, "swish_up": 0.1, "swish_down": 0.1},
+  "types": {
+    "whoosh_soft": ["kit:whoosh-medium-soft", "kit:whoosh-slow-soft", "kit:whoosh-fast-soft", "kit:whoosh-medium-medium", "kit:swipe-medium-soft", "kit:swipe-slow-soft", "kit:swish-soft", "kit:swish-medium"],
+    "pop": ["kit:pop-small-bubble", "kit:pop-medium-bubble", "kit:pop-large-bubble", "kit:pop-small-in", "kit:pop-medium-in", "kit:pop-large-in", "kit:appear-flip-quick", "interface-sounds/drop_*.ogg", "interface-sounds/select_00[1-4].ogg"],
+    "tick": ["kit:click-tap-soft", "kit:click-tap-medium", "kit:click-button-soft", "kit:click-hover-soft", "interface-sounds/tick_*.ogg", "interface-sounds/click_00[1-3].ogg", "ui-audio/click*.ogg"],
+    "riser": ["kit:riser-1s-soft", "kit:riser-1s-strong", "kit:reverse-whoosh-medium-soft", "kit:reverse-whoosh-short-strong", "kit:reverse-whoosh-medium-strong"],
+    "impact": ["kit:impact-heavy-soft", "kit:impact-heavy-firm", "kit:impact-deep-soft", "kit:impact-deep-firm", "kit:boom-hit-soft", "kit:impact-medium-soft", "impact-sounds/impactSoft_heavy_*.ogg"],
+    "shimmer": ["kit:shimmer-short-soft", "kit:shimmer-short-sparkle", "kit:shimmer-short-bright", "kit:shimmer-medium-soft", "kit:shimmer-medium-sparkle"],
+    "blip": ["kit:digital-blip-clear", "kit:digital-blip-subtle", "kit:tone-step-1", "kit:tone-step-2", "kit:tone-step-3", "kit:writing-marker-tick", "interface-sounds/select_00[5-8].ogg", "interface-sounds/confirmation_00[1-2].ogg"],
+    "ding": ["kit:tone-ding-high", "kit:tone-ding-mid", "kit:notification-success-chime", "kit:notification-success-clear", "kit:notification-success-warm", "kit:notification-success-sparkle"],
+    "buzz_no": ["kit:notification-error-soft", "kit:notification-failure-low", "kit:notification-failure-knock", "kit:notification-failure-thud", "kit:digital-denied"],
+    "swish_up": ["kit:zip-in-soft", "kit:zip-in-medium", "kit:move-zoom-in", "kit:reverse-whoosh-short-soft", "kit:swipe-fast-soft"],
+    "swish_down": ["kit:zip-out-soft", "kit:zip-out-medium", "kit:move-zoom-out", "kit:faller-1s-soft", "kit:swipe-fast-firm"],
+    "zap": ["kit:digital-glitch-clear", "kit:digital-glitch-subtle", "kit:digital-static", "digital-audio/zap*.ogg", "sci-fi-sounds/forceField_00[0-2].ogg"],
+    "rumble": ["kit:bass-rumble-short", "kit:boom-drop-soft", "kit:bass-sub-drop-short", "sci-fi-sounds/lowFrequency_explosion_*.ogg", "sci-fi-sounds/spaceEngineLow_00[0-2].ogg"],
+    "crack": ["impact-sounds/impactGlass_light_*.ogg", "impact-sounds/impactWood_light_*.ogg", "impact-sounds/impactPlank_medium_*.ogg", "kit:impact-light-hard"],
+    "footsteps": [{"seq": 3, "gap": 0.4, "from": ["impact-sounds/footstep_concrete_*.ogg"]}, {"seq": 3, "gap": 0.38, "from": ["impact-sounds/footstep_wood_*.ogg"]}, {"seq": 3, "gap": 0.42, "from": ["impact-sounds/footstep_grass_*.ogg"]}, {"seq": 3, "gap": 0.4, "from": ["impact-sounds/footstep_snow_*.ogg"]}, {"seq": 3, "gap": 0.36, "from": ["rpg-audio/footstep*.ogg"]}],
+    "clock_tick": ["kit:time-stopwatch", "interface-sounds/tick_00[1-2].ogg"]
+  }
+}

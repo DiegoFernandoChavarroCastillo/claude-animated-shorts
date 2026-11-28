@@ -120,6 +120,17 @@ def main() -> int:
     ok = q.question == "¿Por qué el móvil se recarga y una pila no?" and not any("pregunta" in e for e in q.errors)
     fails += not ok
     print(f"{'OK ' if ok else 'MAL'} D125: la cabecera `pregunta:` se lee como pregunta central")
+    # 25 nov: con guion del usuario vale un cierre propio descrito en «Fórmulas nuevas» (anillo-giges, cierre `sentencia`)
+    gi = read("pipeline/tests/scripts/ok_cierre_usuario.md")
+    if gi:
+        errs, _ = validate(gi)
+        ok = not errs
+        fails += not ok
+        print(f"{'OK ' if ok else 'MAL'} cierre propio del usuario con perfil viral: {errs}")
+        errs, _ = validate(gi.replace("guion_autor: usuario\nhook_autor: usuario\n", ""))
+        ok = any("closing: bucle" in e for e in errs)
+        fails += not ok
+        print(f"{'OK ' if ok else 'MAL'} sin guion del usuario, el cierre propio no vale en viral")
     print("TODO BIEN" if not fails else f"{fails} PRUEBAS MAL")
     return 1 if fails else 0
 

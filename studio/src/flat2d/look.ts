@@ -13,8 +13,9 @@ export const skyOf = (name: string, pal: Pal): string[] => SKIES[name] ?? [pal.i
 export const lerpSky = (a: string[], b: string[], t: number) => a.map((c, i) => lerpHex(c, b[i], t));
 
 /** resplandor de escena por luz: opacidad base, parpadeo y dónde nace */
-export const SCENE_GLOW: Record<string, { a: number; flick: number; at: string; r: string }> = {
-  fuego: { a: 0.18, flick: 0.14, at: "50% 105%", r: "62%" }, sol: { a: 0.2, flick: 0, at: "50% -5%", r: "62%" }, luna: { a: 0.1, flick: 0, at: "50% 0%", r: "62%" },
-  dia: { a: 0.22, flick: 0, at: "82% -4%", r: "70%" }, atardecer: { a: 0.3, flick: 0, at: "50% 58%", r: "75%" }, velas: { a: 0.26, flick: 0.1, at: "50% 100%", r: "70%" },
-  submarino: { a: 0.28, flick: 0.05, at: "50% -10%", r: "80%" }, foco: { a: 0.34, flick: 0.04, at: "50% 42%", r: "48%" },
+/** `rays` (D129): intensidad de los haces de luz que salen de la fuente (0 = sin haces) */
+export const SCENE_GLOW: Record<string, { a: number; flick: number; at: string; r: string; rays?: number }> = {
+  fuego: { a: 0.18, flick: 0.14, at: "50% 105%", r: "62%" }, sol: { a: 0.2, flick: 0, at: "50% -5%", r: "62%", rays: 0.1 }, luna: { a: 0.1, flick: 0, at: "50% 0%", r: "62%", rays: 0.05 },
+  dia: { a: 0.22, flick: 0, at: "82% -4%", r: "70%", rays: 0.08 }, atardecer: { a: 0.3, flick: 0, at: "50% 58%", r: "75%", rays: 0.12 }, velas: { a: 0.26, flick: 0.1, at: "50% 100%", r: "70%" },
+  submarino: { a: 0.28, flick: 0.05, at: "50% -10%", r: "80%", rays: 0.12 }, foco: { a: 0.34, flick: 0.04, at: "50% 42%", r: "48%", rays: 0.14 },
 };

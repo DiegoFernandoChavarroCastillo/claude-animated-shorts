@@ -2,12 +2,14 @@
 // contacto y movimiento de reposo (respira, se balancea, parpadea). Sirve para cualquier época cambiando `opts`:
 //   ropa: tunica | toga | vestido | armadura | actual | manto | espacial (traje de astronauta)     color, color2: clave de la paleta (accent, wall, rim…) o #hex
 //   pelo: corto | largo | rizado | calvo | mono                    peloColor, piel: #hex     barba: true
-//   tocado: laurel | corona | diadema | casco | sombrero | escafandra (casco de cristal de astronauta)           gesto: feliz | serio | enojado | triste | sorpresa
-//   pose: pie | sentado | senala | celebra | asustado | cruzados | piensa     mira: -1..1 (hacia dónde gira la cara)
+//   tocado: laurel | corona | diadema | casco | sombrero | escafandra (casco de cristal de astronauta)           gesto: feliz | serio | enojado | triste | sorpresa | decidido | miedo | muerto
+//   pose: pie | sentado | senala | celebra | asustado | cruzados | piensa | corre | sostiene | caido     mira: -1..1 (hacia dónde gira la cara)
 //   vario: true = ropa, piel y pelo distintos por semilla (para multitudes con `repeat`)
 // Acciones propias: `point` señala a la derecha (se queda); `cheer` alza los brazos y salta; `fear` se lleva las manos a la cara y se echa atrás (se queda);
 // `wave` saluda con la mano; `talk` mueve la boca mientras dura; `walk` da pasos mientras dura (muévela con `slide`); `nod` asiente; `turn` gira la cara
-// al otro lado (se queda); `sit` se sienta (se queda); `bow` se inclina (se queda).
+// al otro lado (se queda); `sit` se sienta (se queda); `bow` se inclina (se queda); `run` corre mientras dura (muévela con `slide`); `fall` cae de
+// espaldas al suelo (se queda). D129: la acción genérica `expr` ({to: gesto}) cambia la cara a partir de esa palabra y se queda; acepta también
+// neutral, happy, angry, shocked, sad, determined, scared, dead.
 import React from "react";
 import { type AssetFC, clamp01, hash, idle, lerp, opt } from "./common";
 import { lerpHex } from "../palette";
@@ -17,12 +19,14 @@ type Arm = [number, number];   // grados desde «colgando»: brazo y antebrazo (
 const POSES: Record<string, { l: Arm; r: Arm }> = {
   pie: { l: [8, 3], r: [8, 3] }, sentado: { l: [14, -40], r: [14, -40] }, senala: { l: [8, 3], r: [100, 96] }, celebra: { l: [152, 168], r: [152, 168] },
   asustado: { l: [30, -160], r: [30, -160] }, cruzados: { l: [18, -98], r: [18, -98] }, piensa: { l: [14, -80], r: [28, -158] },
+  corre: { l: [30, -75], r: [30, -75] }, sostiene: { l: [22, -62], r: [22, -62] }, caido: { l: [40, 10], r: [40, 10] },
 };
+const GESTO_EN: Record<string, string> = { neutral: "serio", happy: "feliz", angry: "enojado", shocked: "sorpresa", sad: "triste", determined: "decidido", scared: "miedo", dead: "muerto", dead_x_eyes: "muerto" };
 const mixArm = (a: Arm, b: Arm, k: number): Arm => [lerp(a[0], b[0], k), lerp(a[1], b[1], k)];
 const rad = (d: number) => (d * Math.PI) / 180;
 const SKINS = ["#F3C9A5", "#E0A070", "#C98A5C", "#A86B43", "#7A4A2E"], HAIRS = ["#2A1C14", "#4A2E1C", "#7A4A24", "#1A1418", "#B8B0A8", "#9A5A2A"];
 
-export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
+export const Figura: AssetFC = ({ pal, t, seed, opts, p, params }) => {
   const id = `fg${seed}`, I = idle(t, seed), vario = opt(opts, "vario", false);
   const pick = <T,>(arr: T[], k: number): T => arr[Math.floor(hash(seed * 1.31 + k) * arr.length) % arr.length];
   const C = (k: string, d: string) => { const v = opt<string | null>(opts, k, null); return v ? ((pal as Record<string, string>)[v] ?? v) : d; };
@@ -36,21 +40,25 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
   const metal = lerpHex(pal.rim, pal.rock, 0.3);
 
   // estado: pose base + acciones
-  const base = POSES[opt(opts, "pose", "pie")] ?? POSES.pie;
+  const pose0 = opt(opts, "pose", "pie"), base = POSES[pose0] ?? POSES.pie;
   const pt = p.point ?? 0, ch = p.cheer ?? 0, fe = p.fear ?? 0, wv = p.wave ?? 0, tk = p.talk ?? 0, wk = p.walk ?? 0, nd = p.nod ?? 0, bw = p.bow ?? 0;
+  const rn = p.run ?? 0, running = pose0 === "corre" || (rn > 0 && rn < 1), fall = Math.max(pose0 === "caido" ? 1 : 0, p.fall ?? 0);
   const sit = Math.max(opt(opts, "pose", "pie") === "sentado" ? 1 : 0, p.sit ?? 0);
   const cheerK = Math.sin(clamp01(ch) * Math.PI) ** 0.5 * (ch > 0 && ch < 1 ? 1 : 0), jump = ch > 0 && ch < 1 ? Math.abs(Math.sin(ch * Math.PI * 2)) * 7 : 0;
   let L = base.l, R = base.r;
   R = mixArm(R, POSES.senala.r, pt); L = mixArm(L, POSES.celebra.l, cheerK); R = mixArm(R, POSES.celebra.r, cheerK);
   L = mixArm(L, POSES.asustado.l, fe); R = mixArm(R, POSES.asustado.r, fe);
+  if (running) { const sw = Math.sin(t * 0.85) * 26; L = mixArm(L, [30 + sw, -75], 1); R = mixArm(R, [30 - sw, -75], 1); }
+  L = mixArm(L, POSES.caido.l, fall); R = mixArm(R, POSES.caido.r, fall);
   if (wv > 0 && wv < 1) R = mixArm(R, [140, 165 + 22 * Math.sin(t * 0.7)], Math.sin(wv * Math.PI) ** 0.4);
   const mira = lerp(opt(opts, "mira", 0), -opt(opts, "mira", 0) || 0.8, p.turn ?? 0);
-  const gesto = fe > 0.3 ? "sorpresa" : cheerK > 0.2 ? "feliz" : gesto0;
-  const talking = tk > 0 && tk < 1, walking = wk > 0 && wk < 1, step = walking ? Math.sin(t * 0.55) : 0;
+  const ex0 = (params?.expr as { to?: string } | undefined)?.to, gestoX = ex0 ? GESTO_EN[ex0] ?? ex0 : gesto0;
+  const gesto = fall > 0.5 && !ex0 ? "muerto" : fe > 0.3 ? "sorpresa" : cheerK > 0.2 ? "feliz" : gestoX;
+  const talking = tk > 0 && tk < 1, walking = wk > 0 && wk < 1, step = running ? Math.sin(t * 0.85) * 1.8 : walking ? Math.sin(t * 0.55) : 0;
   const long = ropa === "toga" || ropa === "vestido" || ropa === "manto";
 
   // geometría (lienzo 100 × 160; pies en y = 154)
-  const drop = sit * 20, by = -jump + drop + I.breath * 0.35, lean = I.sway * 0.9 - fe * 5 + bw * 16, hy = 40 + by + Math.sin(clamp01(nd) * Math.PI * 2) * 2.2, fx = 50 + mira * 4.6;
+  const drop = sit * 20, by = -jump + drop + I.breath * 0.35 - (running ? Math.abs(Math.sin(t * 0.85)) * 3 : 0), lean = I.sway * 0.9 - fe * 5 + bw * 16 + (running ? 9 : 0), hy = 40 + by + Math.sin(clamp01(nd) * Math.PI * 2) * 2.2, fx = 50 + mira * 4.6;
   const sh = 64 + by, hem = long ? 148 : ropa === "armadura" ? 114 + drop * 0.4 : 116 + drop * 0.3, hip = 108 + drop;
   const arm = (side: -1 | 1, a: Arm, key: string) => {
     const sx = 50 + side * 11.5, sy = sh + 3, ex = sx + side * Math.sin(rad(a[0])) * 16, ey = sy + Math.cos(rad(a[0])) * 16;
@@ -75,7 +83,9 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
     );
   };
   const eye = (side: -1 | 1) => {
-    const ex = fx + side * 5.4, ey = hy + 1, big = gesto === "sorpresa", ry = (big ? 2.7 : 2.1) * (1 - 0.9 * I.blink), bx = gesto === "enojado" ? side * -1.2 : gesto === "triste" ? side * 1.2 : 0;
+    const ex = fx + side * 5.4, ey = hy + 1, big = gesto === "sorpresa" || gesto === "miedo", ry = (big ? 2.7 : gesto === "decidido" ? 1.5 : 2.1) * (1 - 0.9 * I.blink);
+    const bx = gesto === "enojado" ? side * -1.2 : gesto === "decidido" ? side * -1.6 : gesto === "triste" || gesto === "miedo" ? side * 1.4 : 0;
+    if (gesto === "muerto") return <path key={side} d={`M${ex - 2} ${ey - 2} L${ex + 2} ${ey + 2} M${ex + 2} ${ey - 2} L${ex - 2} ${ey + 2}`} stroke={pal.ink} strokeWidth={1.3} strokeLinecap="round" />;
     return (
       <g key={side}>
         {big ? <ellipse cx={ex} cy={ey} rx={2.6} ry={ry + 0.9} fill="#fff" /> : null}
@@ -86,6 +96,9 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
   };
   const my = hy + 7.6, open = talking ? 0.5 + 0.5 * Math.sin(t * 0.9) : 0;
   const mouth = gesto === "sorpresa" ? <ellipse cx={fx} cy={my + 0.6} rx={1.9} ry={2.5} fill={pal.ink} />
+    : gesto === "miedo" ? <path d={`M${fx - 3} ${my + 1.2} Q${fx - 1.5} ${my - 0.6} ${fx} ${my + 1} Q${fx + 1.5} ${my - 0.6} ${fx + 3} ${my + 1.2}`} stroke={pal.ink} strokeWidth={1.1} fill="none" strokeLinecap="round" />
+    : gesto === "muerto" ? <path d={`M${fx - 2.8} ${my + 0.6} Q${fx - 1.4} ${my - 0.6} ${fx} ${my + 0.6} Q${fx + 1.4} ${my + 1.8} ${fx + 2.8} ${my + 0.6}`} stroke={pal.ink} strokeWidth={1} fill="none" />
+    : gesto === "decidido" && !talking ? <path d={`M${fx - 2.8} ${my + 0.3} L${fx + 2.2} ${my - 0.3}`} stroke={lerpHex(skin, pal.ink, 0.7)} strokeWidth={1.3} strokeLinecap="round" />
     : talking ? <ellipse cx={fx} cy={my} rx={2.6} ry={0.6 + 2 * open} fill={pal.ink} />
     : <path d={gesto === "feliz" ? `M${fx - 3.4} ${my - 0.6} Q${fx} ${my + 3} ${fx + 3.4} ${my - 0.6}` : gesto === "serio" ? `M${fx - 2.6} ${my} L${fx + 2.6} ${my}` : `M${fx - 3} ${my + 1.4} Q${fx} ${my - 1.6} ${fx + 3} ${my + 1.4}`}
         stroke={lerpHex(skin, pal.ink, 0.7)} strokeWidth={1.1} strokeLinecap="round" fill="none" />;
@@ -96,7 +109,7 @@ export const Figura: AssetFC = ({ pal, t, seed, opts, p }) => {
     <g>
       <Grad id={`${id}b`} a={lite(cloth, pal, 0.22)} b={dark(cloth, pal, 0.3)} /><Vol id={`${id}h`} c={skin} pal={pal} /><Grad id={`${id}m`} a={lite(metal, pal, 0.4)} b={dark(metal, pal, 0.35)} />
       <ContactShadow id={`${id}s`} cx={50} cy={155} rx={22 - jump * 0.8} />
-      <g transform={`rotate(${lean} 50 154)`}>
+      <g transform={`translate(${fall * -6} ${fall * 6}) rotate(${-fall * 84} 50 150) rotate(${lean * (1 - fall)} 50 154)`}>
         {pelo === "largo" || ropa === "manto" ? <path d={`M${50 - 15.5} ${hy - 2} Q${50 - 19} ${hy + 22} ${50 - 12} ${hy + 27} L${50 + 12} ${hy + 27} Q${50 + 19} ${hy + 22} ${50 + 15.5} ${hy - 2} Z`} fill={ropa === "manto" ? dark(cloth, pal, 0.25) : dark(hair, pal, 0.15)} /> : null}
         {suit ? <rect x={33} y={sh - 4} width={34} height={40} rx={5} fill={dark(cloth, pal, 0.28)} /> : null}
         {arm(-1, L, "l")}

@@ -9,7 +9,7 @@ const Cam = z.tuple([z.number(), z.number(), z.number()]);   // [cx, cy, zoom]
 export const LayerSchema = z.looseObject({
   asset: z.string(), id: z.string().optional(), z: z.number().default(0),
   at: z.tuple([z.number(), z.number()]).optional(), scale: z.number().optional(), flip: z.boolean().optional(),
-  par: z.number().optional(), opacity: z.number().optional(), blur: z.number().min(0).max(40).optional(),
+  par: z.number().optional(), opacity: z.number().optional(), blur: z.number().min(0).max(40).optional(), outline: z.boolean().optional(),
   // D123: opciones fijas del asset (p. ej. `figura`: ropa, pose; `particulas`: kind) y repetición de la capa (multitudes, velas)
   opts: z.record(z.string(), z.unknown()).optional(),
   repeat: z.looseObject({ n: z.number().int().min(1).max(200), cols: z.number().int().min(1).optional(), dx: z.number().optional(), dy: z.number().optional(),

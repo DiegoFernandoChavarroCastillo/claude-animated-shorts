@@ -1,15 +1,30 @@
 // story 2D + words.json -> frames de cada beat, transiciones, palabra clave, overlays y acciones. Función pura, como explainer/timeline.ts.
 import type { Beat2, Story2, WordT } from "./schema";
 import type { Keyword } from "../explainer/captions/chunker";
+import { direct, type Shot } from "./director";
+import pacingViral from "../../../templates/pacing_viral.json";
+import pacingLong from "../../../templates/pacing_longform.json";
 
 export type Trans = { type: string; at: number; half: number };
-export type BeatT2 = { i: number; beat: Beat2; a: number; b: number; words: number[]; tIn: Trans | null; tOut: Trans | null; shots: { start: number; camera: Beat2["scene"]["camera"] }[] };
+export type BeatT2 = { i: number; beat: Beat2; a: number; b: number; words: number[]; tIn: Trans | null; tOut: Trans | null; shots: Shot[] };
 export type OverlayT2 = { beat: number; frame: number; end: number; spec: Beat2["overlays"][number]; key: string };
 export type ActionT2 = { beat: number; start: number; dur: number; spec: Beat2["actions"][number]; key: string };
 export type Timeline2 = { fps: number; total: number; beats: BeatT2[]; keywords: Keyword[]; overlays: OverlayT2[]; actions: ActionT2[] };
 export const ACTION_DUR = 30;
 const LEAD_F = 2;
-const HALF: Record<string, number> = { cut: 0, crossfade: 6, swipe: 9 };
+// D129: iris (círculo que se abre: recuerdo, flashback), wipe_left / wipe_right (barrido lateral que sigue un movimiento), flash_cut (corte con
+// destello y sacudida: golpe, revelación)
+const HALF: Record<string, number> = { cut: 0, crossfade: 6, swipe: 9, iris: 9, wipe_left: 8, wipe_right: 8, flash_cut: 0 };
+
+/** duración máxima de plano del director automático (D129): `meta.director` (s, o false para apagarlo); por defecto la del perfil en videos con tema */
+export const maxShotOf = (story: Story2): number | null => {
+  const d = (story.meta as { director?: number | false }).director;
+  if (d === false) return null;
+  if (typeof d === "number") return d;
+  if (!story.meta.theme) return null;
+  return story.meta.pacing === "longform" ? pacingLong.director.maxShotS : pacingViral.director.maxShotS;
+};
+
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\p{L}\p{N}]/gu, "");
 
 export const resolveAt = (bt: BeatT2, words: WordT[], at: string | number | undefined, fps: number): number => {
@@ -50,16 +65,32 @@ export const buildTimeline2D = (story: Story2, words: WordT[], fps = 30): Timeli
   }
   const overlays: OverlayT2[] = beats.flatMap((bt) => bt.beat.overlays.map((spec, k) => ({ beat: bt.i, frame: resolveAt(bt, words, spec.at, fps), end: bt.b, spec, key: `${bt.beat.id}_${k}` })));
   const actions: ActionT2[] = beats.flatMap((bt) => bt.beat.actions.map((spec, k) => ({ beat: bt.i, start: resolveAt(bt, words, spec.at, fps), dur: spec.dur ?? ACTION_DUR, spec, key: `${bt.beat.id}_a${k}` })));
+  const maxS = maxShotOf(story);
+  if (maxS) direct(beats, actions, words.map((w) => f(w.start)), fps, maxS, story.meta.format === "wide" ? 16 / 9 : 9 / 16);
   return { fps, total, beats, keywords, overlays, actions };
 };
 
+/** destello de un `flash_cut` en el frame f (0..1): sube en 2 frames antes del corte y se apaga en 4 después */
+export const flashCutAt = (tl: Timeline2, f: number): number => {
+  for (const bt of tl.beats) {
+    const t = bt.tOut;
+    if (t?.type !== "flash_cut") continue;
+    const d = f - t.at;
+    if (d >= -2 && d < 0) return 0.5 * (d + 3) / 3;
+    if (d >= 0 && d < 5) return 1 - d / 5;
+  }
+  return 0;
+};
+
 /** beats visibles en el frame f: el actual y, dentro de una ventana de transición, el siguiente con su opacidad (u = progreso 0..1) */
-export const layersAt = (tl: Timeline2, f: number): { beat: number; alpha: number; swipe: number | null }[] => {
+export type LayerAt = { beat: number; alpha: number; swipe: number | null; trans?: { type: string; u: number } };
+export const layersAt = (tl: Timeline2, f: number): LayerAt[] => {
   for (const bt of tl.beats) {
     const t = bt.tOut;
     if (t && t.half > 0 && f >= t.at - t.half && f < t.at + t.half) {
       const u = (f - (t.at - t.half) + 1) / (2 * t.half + 1);
-      return [{ beat: bt.i, alpha: 1, swipe: null }, { beat: bt.i + 1, alpha: t.type === "swipe" ? Math.min(1, u * 2) : u, swipe: t.type === "swipe" ? u : null }];
+      const shaped = t.type === "iris" || t.type.startsWith("wipe_");   // entran recortadas, opacas desde el primer frame
+      return [{ beat: bt.i, alpha: 1, swipe: null }, { beat: bt.i + 1, alpha: t.type === "swipe" ? Math.min(1, u * 2) : shaped ? 1 : u, swipe: t.type === "swipe" ? u : null, trans: shaped ? { type: t.type, u } : undefined }];
     }
   }
   const cur = tl.beats.find((bt) => f >= bt.a && f < bt.b) ?? tl.beats[tl.beats.length - 1];

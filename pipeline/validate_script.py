@@ -377,7 +377,7 @@ def viral_errors(s: Script, hook: str, last: str) -> list[str]:
     elif "?" in hook and not concrete_question(hook, s.lang):
         errs.append(f"gancho en pregunta sin nada concreto dentro: {hook!r}. Una pregunta vale si lleva la paradoja: una cifra, "
                     "un nombre propio o un contraste («¿Por qué una ballena nada ocho mil kilómetros sin comer?»)")
-    if s.closing not in VIRAL_CLOSINGS:
+    if s.closing not in VIRAL_CLOSINGS and not (s.guion_autor == "usuario" and s.closing in s.new):   # D127: su cierre manda
         errs.append("el perfil viral exige `closing: bucle` o `closing: remate_cta`")
     if s.closing != "bucle":
         return errs

@@ -1,4 +1,5 @@
 {
+  "director": {"maxShotS": 3.5, "minProps": 2, "_": "D129: el director automático parte cada beat en planos de como mucho estos segundos (general / medio / primer plano, corte seco y Ken Burns)"},
   "_nota": "Perfil `longform` (cabecera `pacing: longform` en 02_SCRIPT.md, meta.pacing + meta.format: wide en 05_story.json). Videos largos horizontales de YouTube (8–10 min, 1920x1080): resúmenes de películas, series y libros, historias, biografías, mitos y casos. Plan: docs/PLAN_LONG_VIDEO.md. Fuente única para validadores, voz, SFX, subtítulos, render por capítulos y QA.",
   "script": {
     "words": [1150, 1650],
@@ -18,7 +19,7 @@
   },
   "cadence": {
     "eventTargetS": 4.5,
-    "eventGapMaxS": 7.0,
+    "eventGapMaxS": 3.5,
     "cutsPerMinMax": 9,
     "noHoldCamera": false
   },
@@ -46,7 +47,7 @@
   "qa": {
     "pct_quiet": [4, 22],
     "words_per_s": [2.3, 3.0],
-    "staticRunMaxS": 8.0
+    "staticRunMaxS": 4.0
   },
   "genres": {
     "_nota": "géneros de la skill long-video; cada uno con su estructura de capítulos (templates/prompts/longform_script_es.md)",

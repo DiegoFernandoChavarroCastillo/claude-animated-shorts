@@ -119,5 +119,24 @@ ex = ROOT / "templates" / "examples" / "mito-caverna"
 md = (ex / "02_SCRIPT.md").read_text(encoding="utf-8")
 e = validate(load_json(ex / "05_story.json"), load_json(ex / "04_words.json"), script_lines(md), script_closing(md), script_structure(md))
 check("el ejemplo mito-caverna (story + palabras + guion) pasa", not e, e)
+# D129: director automático (los cortes cuentan como cambios), acciones nuevas y su límite con tema
+from validate_story import director_max, event_times  # noqa: E402
+s = base(); s["beats"][0]["actions"] = [{"type": "expr", "at": "Todo", "target": "prisioneros", "to": "sad"}]
+check("expr sobre algo que no es figura: falla", has(validate(s), "expr solo cambia la cara"))
+s = base(); s["beats"][0]["actions"] = [{"type": "callout", "at": "Todo", "target": "prisioneros"}]
+check("callout sin texto: falla", has(validate(s), "callout necesita `text`"))
+s = base(); s["beats"][0]["actions"] = [{"type": "bubble", "at": "Todo", "target": "prisioneros", "text": "esto es demasiado largo"}]
+check("bubble larga: falla", has(validate(s), "bubble «"))
+s = base(); s["beats"][0]["transition"] = "flash_cut"; s["beats"][1]["transition"] = "iris"
+check("transiciones nuevas existen", not has(validate(s), "transición"), validate(s))
+s = base()
+check("sin tema no hay director", director_max(s) is None)
+s["meta"]["theme"] = "drama_oscuro"
+check("con tema, director de los shorts (3 s)", director_max(s) == 3.0)
+s["meta"]["director"] = False
+check("meta.director false lo apaga", director_max(s) is None)
+s["meta"]["director"] = 1.0; w = words(per=0.6)
+check("los cortes del director cuentan como eventos", len(event_times(s, w)) > len(event_times(base(), w)) + 5)
+
 print("\nTODO BIEN" if not fails else f"\n{fails} MAL")
 sys.exit(1 if fails else 0)

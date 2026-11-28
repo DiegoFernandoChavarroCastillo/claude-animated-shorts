@@ -283,7 +283,7 @@
     "cut": "Corte duro. Solo al cambiar de lugar; como mucho 3 por minuto."
   },
   "overlays": {
-    "StatCallout": { "fields": { "value": "número", "label": "texto en versalitas", "prefix": "opcional", "suffix": "opcional (\" %\", \" °C\")", "decimals": "opcional", "from": "opcional: número desde el que cuenta" }, "anchored": false, "numeric": true, "when": "Un número grande que cuenta desde 0 (o desde `from`). El dato más importante del beat." },
+    "StatCallout": { "fields": { "value": "número", "label": "texto en versalitas", "prefix": "opcional", "suffix": "opcional (\" %\", \" °C\")", "decimals": "opcional", "from": "opcional: número desde el que cuenta", "icon": "opcional (D129): icono junto a la cifra (nombre de icons.tsx)" }, "anchored": false, "numeric": true, "when": "Un número grande que cuenta desde 0 (o desde `from`). El dato más importante del beat." },
     "BarCompare": { "fields": { "items": "2–3 { label, value, color? }", "unit": "opcional", "max": "opcional", "decimals": "opcional" }, "anchored": false, "numeric": true, "when": "Comparar 2–3 cantidades." },
     "Gauge": { "fields": { "value": "0..1", "label": "texto", "low": "opcional", "high": "opcional" }, "anchored": false, "when": "Un nivel entre bajo y alto (relajado/estrés, poco/mucho)." },
     "Waveform": { "fields": { "kind": "pulse | sine | noise | spike (un solo pico que no se repite)", "labels": "opcional, lista de píldoras" }, "anchored": false, "when": "Una señal en el tiempo: pulso, movimiento, sonido." },
@@ -317,6 +317,7 @@
     "Equation": { "fields": { "text": "fórmula corta (\"v = d / t\")", "note": "opcional" }, "anchored": false, "when": "Fórmula o relación en grande." },
     "ScaleBar": { "fields": { "from": "texto del extremo izquierdo", "to": "texto del extremo derecho", "pos": "0..1 posición del marcador", "label": "opcional" }, "anchored": false, "numeric": true, "when": "Dónde cae algo en una escala de tamaños, tiempos o cantidades." },
     "TrendArrow": { "fields": { "dir": "up | down", "value": "opcional (\"+12 %\")", "label": "opcional" }, "anchored": false, "numeric": true, "when": "Flecha grande de subida o bajada con un valor: aumenta, disminuye." },
+    "Stamp": { "fields": { "text": "1–2 palabras: CLASIFICADO, ELIMINADO, MENTIRA, NIVEL +3", "sub": "opcional, línea pequeña", "rotate": "grados (-6)", "color": "opcional (rojo)" }, "anchored": false, "when": "D129: sello de tinta inclinado que cae sobre la escena, tiembla al golpear y se queda: un veredicto, una revelación, algo prohibido o descartado." },
     "WarningTag": { "fields": { "text": "texto corto", "icon": "opcional (por defecto warning)" }, "anchored": false, "when": "Aviso con triángulo: peligro, error común, 'ojo con esto'." },
     "Speedometer": { "anchored": false, "numeric": true, "fields": { "value": "número", "max": "opcional (100)", "unit": "opcional (\" km/h\")", "label": "opcional", "decimals": "opcional" }, "when": "Velocímetro de aguja que sube hasta un valor: velocidad, ritmo, intensidad, cuánto de algo (zonas verde, amarilla y roja)." },
     "BatteryLevel": { "anchored": false, "numeric": true, "fields": { "value": "0..1", "label": "opcional" }, "when": "Batería que se llena o se vacía: energía, cansancio, carga del celular, reservas del cuerpo." },

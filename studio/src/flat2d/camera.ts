@@ -36,7 +36,7 @@ export const camAt = (bt: BeatT2, f: number, soft = false): Cam => {
   // micro-deriva continua: la cámara nunca está del todo quieta
   const drift = (c: Cam): Cam => (soft ? [c[0] + 0.0035 * Math.sin(f * 0.021), c[1] + 0.0025 * Math.sin(f * 0.017 + 1), c[2]] : c);
   const cur = evalSeg(segs[k].camera, segs[k].start, end(k), f, soft);
-  if (k === 0) return drift(cur);
+  if (k === 0 || (segs[k] as { cut?: boolean }).cut) return drift(cur);   // los planos del director entran con corte seco (D129)
   const t = clamp01((f - segs[k].start) / BLEND_F);
   return drift(t >= 1 ? cur : mix(evalSeg(segs[k - 1].camera, segs[k - 1].start, end(k - 1), segs[k].start, soft), cur, ease(t)));
 };

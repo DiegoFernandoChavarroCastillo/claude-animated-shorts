@@ -31,7 +31,8 @@
       "mejor_para": "Temas de física, espacio o biología donde imaginar el contrafactual explica la regla (si el hielo se hundiera…).",
       "ejemplo_es": "¿Qué pasaría si el hielo se hundiera en tu vaso?",
       "ejemplo_en": "What if ice sank in your glass?",
-      "por_que": "La hipótesis pide una respuesta que solo da el resto del video."
+      "por_que": "La hipótesis pide una respuesta que solo da el resto del video.",
+      "max_s": 4.0
     },
     "escena": {
       "nombre": "Escena en curso",
@@ -39,7 +40,8 @@
       "mejor_para": "Experiencias del cuerpo o del día a día (dolor de garganta, dedos arrugados, sueño).",
       "ejemplo_es": "Estás en la ducha y tus dedos parecen pasas.",
       "ejemplo_en": "You're in the shower and your fingers turn into prunes.",
-      "por_que": "Empieza por la acción, como una escena a mitad, y el espectador se reconoce en ella."
+      "por_que": "Empieza por la acción, como una escena a mitad, y el espectador se reconoce en ella.",
+      "max_s": 4.0
     },
     "reto": {
       "nombre": "Apuesta o reto",
@@ -47,7 +49,8 @@
       "mejor_para": "Temas con una respuesta que casi nadie conoce y que se puede decir en una frase.",
       "ejemplo_es": "Apuesto a que no sabes por qué el atardecer es rojo.",
       "ejemplo_en": "Bet you can't explain why the sunset is red.",
-      "por_que": "Hablar directo a la persona y plantear un desafío fuerza una respuesta mental."
+      "por_que": "Hablar directo a la persona y plantear un desafío fuerza una respuesta mental.",
+      "max_s": 4.0
     },
     "error": {
       "nombre": "Error común",
@@ -87,7 +90,8 @@
       "mejor_para": "Temas con un desenlace visual fuerte: algo que explota, se congela, desaparece; historias con un final que nadie espera.",
       "ejemplo_es": "Tu familia leerá tu mensaje ochenta años después de enviarlo.",
       "ejemplo_en": "Your family will read your text eighty years after you send it.",
-      "por_que": "El feed decide en un segundo: enseñar el resultado primero da la imagen más fuerte al principio y deja abierta la pregunta de cómo."
+      "por_que": "El feed decide en un segundo: enseñar el resultado primero da la imagen más fuerte al principio y deja abierta la pregunta de cómo.",
+      "max_s": 4.0
     },
     "paradoja": {
       "nombre": "Pregunta con paradoja",

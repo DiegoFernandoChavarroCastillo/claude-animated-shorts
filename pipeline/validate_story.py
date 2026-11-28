@@ -10,6 +10,7 @@ además, el texto de los beats debe ser el del guion aprobado, línea a línea.
 from __future__ import annotations
 
 import argparse
+import math
 import re
 import sys
 from pathlib import Path
@@ -26,6 +27,13 @@ MAX_HERO_SHARE = 0.65   # fracción máxima de beats con el mismo objeto (celula
 WPS = 2.8  # para estimar la duración si no hay words.json
 # F16 · gancho, ritmo y bucle (con words.json)
 HOOK_MAX_S = 3.2         # el primer beat (gancho) se dice en unos 3 s (margen de 0,2 s)
+HOOK_TYPES = load_json(ROOT / "templates" / "formulas.json")["hooks"]
+
+
+def hook_max_s(kind: str | None) -> float:
+    """tope hablado del gancho según su tipo (25 nov): los de planteamiento (`y_si`, `escena`, `revelacion`, `reto`) necesitan montar
+    la situación y llegan a `max_s` (4 s) en formulas.json; los de golpe (dato, mito, paradoja…) siguen en 3,2 s"""
+    return float(HOOK_TYPES.get(kind or "", {}).get("max_s", HOOK_MAX_S))
 HOOK_ACTION_S = 1.0      # y lleva una acción que empieza antes de 1,0 s
 HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer beat
 MAX_EVENT_GAP_S = 3.0    # tiempo máximo sin corte, acción u overlay (D121: un cambio cada 2–3 s; objetivo 2,5)
@@ -77,7 +85,31 @@ def event_times(story: dict, words: list) -> list[float]:
         ev += [at_seconds(b, ws, o.get("at"), a_s) for o in b.get("overlays", [])]
         ev += [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("actions", [])]
         ev += [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("shots", [])]
+    # D129: el director automático de flat2d (director.ts) parte cada tramo largo en planos de ≤ maxShotS con un corte seco
+    max_s = director_max(story)
+    if max_s:
+        end = words[-1]["end"] + story["meta"].get("tailS", 1.0)
+        bounds = starts[1:] + [end]
+        for b, a_s, b_e in zip(story["beats"], starts, bounds):
+            ws = [w for w in words if w["beat"] == b["id"]]
+            cuts = sorted([a_s] + [at_seconds(b, ws, x.get("at"), a_s) for x in b.get("shots", [])] + [b_e])
+            for s0, s1 in zip(cuts, cuts[1:]):
+                n = math.ceil((s1 - s0) / max_s - 1e-9)
+                ev += [s0 + (s1 - s0) * q / n for q in range(1, n)]
     return sorted(ev)
+
+
+def director_max(story: dict) -> float | None:
+    """duración máxima de plano del director automático (flat2d/timeline.ts `maxShotOf`); None si no actúa"""
+    meta = story.get("meta", {})
+    if meta.get("engine") != "2d" or meta.get("director") is False:
+        return None
+    if isinstance(meta.get("director"), (int, float)) and not isinstance(meta.get("director"), bool):
+        return float(meta["director"])
+    if not meta.get("theme"):
+        return None
+    prof = "pacing_longform.json" if meta.get("pacing") == "longform" else "pacing_viral.json"
+    return float(load_json(ROOT / "templates" / prof)["director"]["maxShotS"])
 
 
 def event_gap(story: dict, words: list) -> tuple[float, float]:
@@ -274,8 +306,9 @@ def validate(story: dict, words: list | None = None, script_lines: list[str] | N
         elif beats:
             # F16 · gancho: se dice en ≤3 s y el primer segundo ya tiene movimiento (acción) en una cámara que no sea suave
             w1 = [w for w in words if w["beat"] == beats[0]["id"]]
-            if w1[-1]["end"] > HOOK_MAX_S:
-                errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {HOOK_MAX_S:.1f} s): acórtalo (unas 8–9 palabras)")
+            hmax = hook_max_s(story.get("meta", {}).get("hook"))
+            if w1[-1]["end"] > hmax:
+                errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {hmax:.1f} s para su tipo): acórtalo (unas 8–9 palabras)")
             acts = [at_seconds(beats[0], w1, x.get("at"), 0.0) for x in beats[0].get("actions", [])]
             if not acts or min(acts) > HOOK_ACTION_S:
                 errs.append(f"el primer beat no tiene una acción antes de {HOOK_ACTION_S:.0f} s: abre con movimiento (ej. punch, pulse, "

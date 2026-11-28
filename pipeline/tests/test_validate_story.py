@@ -246,4 +246,10 @@ ok = not [e for e in validate(mixed) + validate(own) + validate(cut({"asset": "p
 print("OK " if ok else "MAL", "F20: mezcla 3D/2.5D/2D, acciones propias y genéricas en un plano y un Cutaway válido pasan")
 fails += not ok
 
+# 25 nov: el tope hablado del gancho depende de su tipo (formulas.json → max_s)
+from validate_story import hook_max_s  # noqa: E402
+ok = hook_max_s("y_si") == 4.0 and hook_max_s("escena") == 4.0 and hook_max_s("dato") == 3.2 and hook_max_s(None) == 3.2
+print("OK " if ok else "MAL", "tope del gancho por tipo: y_si/escena 4 s, dato y sin tipo 3,2 s")
+fails += not ok
+
 sys.exit(1 if fails else 0)

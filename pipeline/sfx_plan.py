@@ -30,6 +30,7 @@ ACTION_SFX = {"fly": "whoosh_soft", "speed": "whoosh_soft", "lift": "swish_up", 
               # story-2d: acciones del motor 2D
               "shadow_pass": "whoosh_soft", "stand_up": "swish_up", "walk": "footsteps", "carry": "footsteps", "flare": "fire_crackle",
               "light_grow": "shimmer", "sunrise": "wind", "flash": "shimmer", "tremble": "rumble", "slide": "whoosh_soft", "palette_shift": "swish_up",
+              "run": "footsteps", "fall": "impact", "callout": "blip", "bubble": "pop",   # D129
               "chispa": "zap", "llamarada": "sizzle", "acelerar": "heartbeat", "inflamar": "sizzle", "ecuador": "blip", "eje": "blip"}
 MARK_SFX = {"✓": "ding", "✗": "buzz_no", "♥": "heartbeat"}   # el símbolo de `mark` elige el sonido
 STEAM_BUBBLES = "bubbles"                                      # steam con kind "bubbles"
@@ -105,11 +106,15 @@ def plan(story: dict, words: list[dict]) -> dict:
             add("riser", bt["a"] - round(0.8 * FPS), f"{b['id']}: antes de la revelación")
         if i + 1 < len(bts) and b.get("transition", "glide") in ("glide", "zoom_through", "swipe"):
             add("whoosh_soft", bts[i + 1]["a"] - 8, f"{b['id']}: transición {b.get('transition', 'glide')}")
+        if i + 1 < len(bts) and b.get("transition") in ("iris", "wipe_left", "wipe_right"):   # D129
+            add("whoosh_soft", bts[i + 1]["a"] - 8, f"{b['id']}: transición {b['transition']}")
+        if i + 1 < len(bts) and b.get("transition") == "flash_cut":
+            add("impact", bts[i + 1]["a"] - 1, f"{b['id']}: corte con destello")
         if b["role"] == "twist":
             add("riser", bt["a"] - round(0.8 * FPS), f"{b['id']}: antes del giro")
         for o in b.get("overlays", []):
             f0 = resolve_at(bt, words, o.get("at"))
-            add("pop", f0, f"{b['id']}: entra {o['type']}")
+            add("impact" if o["type"] == "Stamp" else "pop", f0 + (5 if o["type"] == "Stamp" else 0), f"{b['id']}: entra {o['type']}")
             if o["type"] == "StatCallout":
                 for k in range(6):
                     add("tick", f0 + 2 + k * 3, f"{b['id']}: contador")

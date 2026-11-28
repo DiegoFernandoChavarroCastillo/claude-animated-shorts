@@ -11,3 +11,5 @@ __pycache__/
 _cache/
 pipeline/models/
 voices_local/
+# Librerías de efectos CC0 descargadas por tools/sfx_fetch.py (D130)
+sfx_lib/

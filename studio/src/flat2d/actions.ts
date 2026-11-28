@@ -31,6 +31,8 @@ export const layerFx = (key: string, acts: ActionT2[], f: number, W: number, H: 
     else if (t === "pop") fx.scale *= 1 + (Number(s.scale ?? 1.15) - 1) * Math.sin(Math.PI * u);
     else if (t === "slide") { fx.dx += Number(s.dx ?? 0) * W * ease(u); fx.dy += Number(s.dy ?? 0) * H * ease(u); }
     else if (t === "scale") fx.scale *= 1 + (Number(s.to ?? 1) - 1) * ease(u);
+    else if (t === "expr") { if (f >= a.start) fx.params.expr = s; }   // D129: cambio de cara que se queda (la última que ya empezó)
+    else if (t === "callout" || t === "bubble") continue;   // rótulos de escena (sceneUi.tsx)
     else { fx.p[t] = ease(u); fx.params[t] = s; }   // acción propia del asset
   }
   return fx;

@@ -3,7 +3,8 @@
 // opts: `nuevas` 0..1 (tablas nuevas al empezar), `foco` tablas | piel | sangre | neuronas (lo demás se atenúa; sin foco, todo a medias).
 // Acciones propias: `swap` cambia tablas viejas por nuevas (params `from`/`to`; destellan al cambiar), `shed` se desprenden escamas de piel que
 // caen mientras dura, `blood` las venas se encienden y los glóbulos viejos se apagan y nacen otros nuevos mientras dura, `neurons` la red de la
-// cabeza se enciende en oro y se queda encendida (no cambia).
+// cabeza se enciende en oro y se queda encendida (no cambia). `opts.tablas: false` (heraclito-rio): sin tablas; el cuerpo es piel translúcida hecha de
+// células (un mosaico de círculos) que, con `swap`, se apagan y renacen una a una con un destello: tus células se renuevan.
 import React from "react";
 import { type AssetFC, clamp01, hash, idle, lerp, opt } from "./common";
 import { lerpHex } from "../palette";
@@ -16,6 +17,8 @@ const VEINS: [number, number][][] = [
   [[55, 62], [52, 48], [50, 40]], [[55, 62], [40, 52], [34, 70], [31, 92]], [[55, 62], [60, 52], [66, 70], [69, 92]],
   [[55, 62], [50, 80], [45, 100], [43, 128], [42, 150]], [[55, 62], [52, 80], [56, 100], [57, 128], [58, 150]],
 ];
+const CELLS: [number, number, number, number][] = [];
+for (let y = 12; y < 154; y += 3.4) for (let x = 21 + ((y / 3.4) % 2) * 1.7; x < 80; x += 3.4) CELLS.push([x, y, 1.45 + hash(x * 3 + y) * 0.35, hash(x * 7.1 + y * 1.3)]);
 const NEU: [number, number][] = [[44, 24], [50, 20], [56, 24], [47, 30], [54, 30], [50, 35], [42, 30], [58, 30], [46, 18], [55, 17]];
 const LINKS = [[0, 1], [1, 2], [0, 3], [2, 4], [3, 5], [4, 5], [3, 4], [6, 0], [6, 3], [7, 2], [7, 4], [8, 1], [9, 1], [8, 0], [9, 2]];
 const along = (pts: [number, number][], s: number): [number, number] => {
@@ -24,7 +27,7 @@ const along = (pts: [number, number][], s: number): [number, number] => {
 };
 
 export const CuerpoBarco: AssetFC = ({ pal, t, seed, p, params, opts }) => {
-  const id = `cb${seed}`, I = idle(t, seed), foco = opt(opts, "foco", ""), by = I.breath * 0.6;
+  const id = `cb${seed}`, I = idle(t, seed), foco = opt(opts, "foco", ""), by = I.breath * 0.6, tablas = opt(opts, "tablas", true);
   const sw = (params.swap ?? {}) as Record<string, unknown>, n0 = opt(opts, "nuevas", 0);
   const frac = p.swap !== undefined ? lerp(Number(sw.from ?? n0), Number(sw.to ?? 1), p.swap) : n0;
   const sh = p.shed ?? 0, bl = p.blood ?? 0, ne = p.neurons ?? 0, shedding = sh > 0 && sh < 1, bleeding = bl > 0 && bl < 1;
@@ -46,8 +49,24 @@ export const CuerpoBarco: AssetFC = ({ pal, t, seed, p, params, opts }) => {
       {/* contorno de piel con luz de borde (debajo: las tablas tapan las líneas interiores) */}
       {shapes({ fill: "none", stroke: dark(pal.ink, pal, 0), strokeWidth: 4.2, opacity: 0.55 })}
       <g opacity={0.45 + 0.55 * dim("piel")}>{shapes({ fill: "none", stroke: rim, strokeWidth: 2.2 })}</g>
+      {/* células (opts.tablas false): mosaico de piel que se renueva */}
+      {!tablas ? (
+        <g clipPath={`url(#${id}k)`}>
+          <rect x={20} y={10} width={60} height={145} fill={lerpHex(pal.skin, pal.ink, 0.25)} opacity={0.85} />
+          {CELLS.map(([x, y, r, o], k) => {
+            const isNew = o < frac, flip = (frac - o) * CELLS.length, col = isNew ? lerpHex(pal.skin, pal.wallLit, 0.35) : lerpHex(pal.skin, "#8A7A70", 0.45);
+            return (
+              <g key={k}>
+                <circle cx={x} cy={y + by} r={r} fill={col} opacity={0.9} />
+                <circle cx={x - r * 0.25} cy={y + by - r * 0.25} r={r * 0.35} fill={lerpHex(col, pal.ink, 0.35)} opacity={0.7} />
+                {flip > 0 && flip < 3 && p.swap !== undefined ? <circle cx={x} cy={y + by} r={r * 1.3} fill={pal.glow} opacity={0.85 * (1 - flip / 3)} /> : null}
+              </g>
+            );
+          })}
+        </g>
+      ) : null}
       {/* tablas */}
-      <g clipPath={`url(#${id}k)`} opacity={foco && foco !== "tablas" ? 0.82 : 1}>
+      <g clipPath={`url(#${id}k)`} opacity={foco && foco !== "tablas" ? 0.82 : 1} display={tablas ? undefined : "none"}>
         {[...Array(N)].map((_, k) => {
           const r = Math.floor(k / 2), c = k % 2, ord = order.get(k)!, isNew = ord < frac * N, flip = frac * N - ord, y = 13 + r * 4.15, col = isNew ? newW : oldW;
           return (

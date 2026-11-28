@@ -9,7 +9,8 @@ import pacingLong from "../../../templates/pacing_longform.json";
 import { OverlayLayer } from "../explainer/overlays/OverlayLayer";
 import type { Timeline } from "../explainer/timeline";
 import { type Layer2, Props2Schema, type Props2 } from "./schema";
-import { buildTimeline2D, layersAt, type Timeline2 } from "./timeline";
+import { buildTimeline2D, flashCutAt, layersAt, type LayerAt, type Timeline2 } from "./timeline";
+import { SceneUI } from "./sceneUi";
 import { camAt, ease } from "./camera";
 import { layerFx, sceneFx } from "./actions";
 import { type Pal, lerpPal, palette } from "./palette";
@@ -40,7 +41,17 @@ const instances = (ly: Layer2, k: number) => {
   return out.sort((x, y) => x.s - y.s);   // las del fondo primero
 };
 
-const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; swipe: number | null; theme: Theme | null }> = ({ tl, i, f, alpha, swipe, theme }) => {
+/** recorte de las transiciones con forma (D129): iris = círculo que se abre desde el centro; wipe = barrido lateral con borde nítido */
+const transClip = (t?: LayerAt["trans"]): { clipPath?: string; dx: number } => {
+  if (!t) return { dx: 0 };
+  const u = ease(t.u);
+  if (t.type === "iris") return { clipPath: `circle(${(u * 75).toFixed(2)}% at 50% 50%)`, dx: 0 };
+  if (t.type === "wipe_left") return { clipPath: `inset(0 0 0 ${((1 - u) * 100).toFixed(2)}%)`, dx: (1 - u) * 0.06 };
+  return { clipPath: `inset(0 ${((1 - u) * 100).toFixed(2)}% 0 0)`, dx: -(1 - u) * 0.06 };
+};
+const OUTLINED = new Set(["personaje", "prop"]);
+
+const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; swipe: number | null; theme: Theme | null; trans?: LayerAt["trans"]; outlinePx: number }> = ({ tl, i, f, alpha, swipe, theme, trans, outlinePx }) => {
   const { width: W, height: H } = useVideoConfig();
   const bt = tl.beats[i], sc = bt.beat.scene, acts = tl.actions.filter((a) => a.beat === i);
   const fxS = sceneFx(acts, f), cam = camAt(bt, f, !!theme), flick = flicker(f);
@@ -49,10 +60,11 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
   const slideY = swipe === null ? 0 : (1 - ease(swipe)) * H * 0.55;
   const g = SCENE_GLOW[sc.light], glow = g ? g.a + g.flick * flick : 0, glowAt = g?.at ?? "50% 0%";
   const sky0 = skyOf(sc.palette, palette(sc.palette)), sky = fxS.shift ? lerpSky(sky0, skyOf(fxS.shift.to, palette(fxS.shift.to)), fxS.shift.u) : sky0;
+  const clip = transClip(trans);
   const camT = (par: number) => { const ze = 1 + (cam[2] - 1) * par, cx = 0.5 + (cam[0] - 0.5) * par, cy = 0.5 + (cam[1] - 0.5) * par; return `translate(${W / 2}px, ${H / 2}px) scale(${ze}) translate(${-cx * W}px, ${-cy * H}px)`; };
   return (
     <AbsoluteFill style={{ opacity: alpha, background: theme ? `linear-gradient(to bottom, ${sky[0]} 0%, ${sky[1]} 48%, ${sky[2]} 78%, ${sky[2]} 100%)` : pal.bg,
-      transform: `translate(${fxS.shakeX}px, ${fxS.shakeY + slideY}px)`, filter: theme ? `saturate(${theme.sat}) contrast(${theme.contrast})` : undefined }}>
+      transform: `translate(${fxS.shakeX + clip.dx * W}px, ${fxS.shakeY + slideY}px)`, clipPath: clip.clipPath, filter: theme ? `saturate(${theme.sat}) contrast(${theme.contrast})` : undefined }}>
       {layers.map(({ ly, k }) => {
         const m = META[ly.asset], Asset = ASSETS[ly.asset];
         const key = ly.id ?? ly.asset;
@@ -66,11 +78,15 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
               const fx = layerFx(key, acts, f - ins.delay, W, H, !!theme);
               fx.p = { ...((ly as { init?: Record<string, number> }).init ?? {}), ...fx.p };   // estado inicial de las acciones propias (p. ej. ya de pie)
               const iw = w * ins.s, ih = h * ins.s;
+              // contorno oscuro (D129): personajes y props se separan del fondo como en una ilustración entintada; grosor en px de pantalla
+              const ol = outlinePx > 0 && (ly.outline ?? OUTLINED.has(m.kind)) ? (outlinePx * 100) / iw : 0, olId = `ol${i}_${k}_${ins.i}`;
               const left = (at[0] + ins.ox) * W - m.anchor[0] * iw + fx.dx, top = (at[1] + ins.oy) * H - m.anchor[1] * ih + fx.dy;
               return (
                 <svg key={ins.i} width={iw} height={ih} viewBox={`0 0 100 ${100 * m.aspect}`} style={{ position: "absolute", left, top, overflow: "visible", opacity: (ly.opacity ?? 1) * fx.opacity,
                   transformOrigin: `${m.anchor[0] * 100}% ${m.anchor[1] * 100}%`, transform: `rotate(${fx.rot}deg) scale(${fx.scale * fx.sx}, ${fx.scale * fx.sy})` }}>
-                  <g transform={ly.flip ? `translate(100 0) scale(-1 1)` : undefined}>
+                  {ol ? <defs><filter id={olId} x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="dilate" radius={ol} result="d" />
+                    <feFlood floodColor="#16121C" floodOpacity={0.9} /><feComposite in2="d" operator="in" /><feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs> : null}
+                  <g transform={ly.flip ? `translate(100 0) scale(-1 1)` : undefined} filter={ol ? `url(#${olId})` : undefined}>
                     <Asset t={f} tb={f - bt.a} p={fx.p} params={fx.params} pal={pal} light={sc.light} flick={flick} seed={k + ins.i * 17} opts={ly.opts} />
                   </g>
                 </svg>
@@ -79,6 +95,7 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
           </div>
         );
       })}
+      <SceneUI acts={acts} layers={sc.layers} cam={cam} f={f} W={W} H={H} offset={(key) => { const o = layerFx(key, acts, f, W, H, !!theme); return { dx: o.dx, dy: o.dy }; }} />
       {(sc.lights ?? []).length ? (
         <div style={{ position: "absolute", left: 0, top: 0, width: W, height: H, transformOrigin: "0 0", transform: camT(1), mixBlendMode: "screen" }}>
           {(sc.lights ?? []).map((l, j) => { const r = l.r * W, a = (l.a ?? 0.6) * (l.flicker ? 0.72 + 0.28 * flicker(f + j * 37) : 1), c = l.color ?? pal.glow;
@@ -86,6 +103,10 @@ const SceneView: React.FC<{ tl: Timeline2; i: number; f: number; alpha: number; 
         </div>
       ) : null}
       <AbsoluteFill style={{ background: `radial-gradient(ellipse at ${glowAt}, ${pal.glow} 0%, transparent ${g?.r ?? "62%"})`, opacity: glow, mixBlendMode: "screen" }} />
+      {theme && g?.rays ? (   // haces de luz (D129): abanico de rayos desde la fuente de luz, que gira muy despacio y se apaga hacia fuera
+        <AbsoluteFill style={{ mixBlendMode: "screen", opacity: g.rays, background: `repeating-conic-gradient(from ${(f * 0.04) % 360}deg at ${glowAt}, ${pal.glow} 0deg, transparent 2.2deg, transparent 7deg)`,
+          WebkitMaskImage: `radial-gradient(ellipse at ${glowAt}, #000 0%, transparent 72%)`, maskImage: `radial-gradient(ellipse at ${glowAt}, #000 0%, transparent 72%)` }} />
+      ) : null}
       <AbsoluteFill style={{ background: theme ? `linear-gradient(to bottom, rgba(0,0,0,${theme.veil}) 0%, transparent 24%)` : "linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.22) 22%, transparent 36%)" }} />
       <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(0,0,0,${theme ? theme.vignette : 0.45}) 100%)` }} />
       {fxS.flash > 0 ? <AbsoluteFill style={{ background: "#fff", opacity: fxS.flash }} /> : null}
@@ -130,10 +151,15 @@ export const Flat2D: React.FC<Props2> = (props) => {
   const theme = themeOf(story.meta.theme);
   const wide = story.meta.format === "wide";
   const cap = captionCfg(story.meta.pacing === "viral", !!theme, wide);
+  const flashCut = flashCutAt(tl, f), fcShake = flashCut > 0 ? flashCut * 14 : 0;
+  const outlinePx = theme ? ((story.meta as { outline?: number }).outline ?? 3) : 0;   // px en los dos formatos (el lado largo es 1920)
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <LookCtx.Provider value={{ themed: !!theme }}>
-        {layers.map((l, k) => <SceneView key={k ? "over" : "base"} tl={tl} i={l.beat} f={f} alpha={l.alpha} swipe={l.swipe} theme={theme} />)}
+        <AbsoluteFill style={{ transform: fcShake ? `translate(${fcShake * Math.sin(f * 2.3)}px, ${fcShake * Math.cos(f * 1.9)}px)` : undefined }}>
+          {layers.map((l, k) => <SceneView key={k ? "over" : "base"} tl={tl} i={l.beat} f={f} alpha={l.alpha} swipe={l.swipe} theme={theme} trans={l.trans} outlinePx={outlinePx} />)}
+        </AbsoluteFill>
+        {flashCut > 0 ? <AbsoluteFill style={{ background: "#FFF6D8", opacity: flashCut }} /> : null}
       </LookCtx.Provider>
       {theme ? <FilmNoise f={f} /> : null}
       {/* los overlays no anclados del explainer solo necesitan la lista de overlays de la línea de tiempo */}

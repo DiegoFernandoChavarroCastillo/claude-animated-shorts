@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PipelineError, load_json, run_main, write_json  # noqa: E402
 from dsp import SR, dbg, integrated, momentary_max, ns, read_wav, true_peak, write_wav  # noqa: E402
 from sfx_synth import REL_DB, SFX  # noqa: E402
+from sfx_library import meets, variant  # noqa: E402
 from voice_fx import treat  # noqa: E402
 
 TARGET_LUFS = -14.0
@@ -83,6 +84,7 @@ def main():
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--music", choices=["tech", "calm", "warm", "tense"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
     ap.add_argument("--music-file", type=Path, default=None, help="música propia (mp3/wav): se recorta a la duración del video, con fundidos y agachada bajo la voz")
+    ap.add_argument("--synth-sfx", action="store_true", help="solo los efectos sintetizados (sin las grabaciones CC0 de sfx_lib/, D130)")
     ap.add_argument("--music-gain", type=float, default=0.7, help="ganancia lineal sobre el nivel original del archivo en el master (0.7 = 70 %%)")
     a = ap.parse_args()
     if not a.voice.exists():
@@ -101,20 +103,36 @@ def main():
     voice[:, : v.shape[1]] = v
     v_lufs = lufs(voice)
     sfx = np.zeros((2, n))
-    cache = {}
+    cache, used, count = {}, {}, {}
+    cap = np.abs(voice).max() * dbg(-6)
+
+    def level(x, typ):
+        x = x * dbg(v_lufs - SFX_BELOW_VOICE_DB + REL_DB[typ] - momentary_max(x))
+        # los sonidos muy cortos (tick, pop) miden poco en ventanas de 400 ms y saldrían con picos enormes:
+        # ningún SFX supera el pico de la voz − 6 dB
+        return x * min(1.0, cap / max(np.abs(x).max(), 1e-9))
+
+    salt = str(plan["duration_s"])
     for e in plan["events"]:
         typ = e["type"]
         if typ not in SFX:
             raise PipelineError(f"sfx desconocido: {typ}")
-        if typ not in cache:
-            x = SFX[typ]()
-            x = x * dbg(v_lufs - SFX_BELOW_VOICE_DB + REL_DB[typ] - momentary_max(x))
-            # los sonidos muy cortos (tick, pop) miden poco en ventanas de 400 ms y saldrían con picos enormes:
-            # ningún SFX supera el pico de la voz − 6 dB
-            cap = np.abs(voice).max() * dbg(-6)
-            cache[typ] = x * min(1.0, cap / max(np.abs(x).max(), 1e-9))
-        x = cache[typ]
-        i = ns(e["t"])
+        # D130: grabación CC0 con variantes (sfx_library.py); el sintetizado queda de respaldo
+        k = count.get(typ, 0); count[typ] = k + 1
+        rec = None if a.synth_sfx else variant(typ, k, salt)
+        if rec is not None:
+            xr, sync, key = rec
+            x = level(xr, typ)
+            t0 = e["t"] + meets(typ) - sync
+            used[key] = used.get(key, 0) + 1
+        else:
+            if typ not in cache:
+                cache[typ] = level(SFX[typ](), typ)
+            x, t0 = cache[typ], e["t"]
+            used[f"synth:{typ}"] = used.get(f"synth:{typ}", 0) + 1
+        if t0 < 0:
+            x, t0 = x[ns(-t0):], 0.0
+        i = ns(t0)
         j = min(n, i + len(x))
         if j > i:
             sfx[:, i:j] += x[: j - i]
@@ -166,7 +184,8 @@ def main():
            "max_gain_reduction_db": round(float(-20 * np.log10(g3.min())), 2),
            "own": {"I_lufs": round(lufs(y), 2), "true_peak_dbtp": round(true_peak(y), 2)},
            "bed_lufs_pre": None if bed_lufs is None else round(bed_lufs, 2), "bed_below_voice_db": None if bed_lufs is None else round(v_lufs - bed_lufs, 1),
-           "ffmpeg_ebur128": ebur128(a.out), "duration_s": plan["duration_s"], "events": len(plan["events"])}
+           "ffmpeg_ebur128": ebur128(a.out), "duration_s": plan["duration_s"], "events": len(plan["events"]),
+           "sfx_sources": dict(sorted(used.items(), key=lambda kv: -kv[1]))}
     write_json(Path(str(a.out) + ".report.json"), rep)
     f = rep["ffmpeg_ebur128"]
     ok = f["I_lufs"] is not None and abs(f["I_lufs"] - TARGET_LUFS) <= 0.5 and f["true_peak_dbtp"] <= -1.0

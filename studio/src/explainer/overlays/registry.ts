@@ -24,6 +24,7 @@ import { Compass, Venn, Pyramid, BigWord, ECG, OrbitDiagram, ReactionEq, NumberL
 import { Insert } from "./Insert";
 import { Calendar, ChatMock, Equivalence, ShareCTA } from "./Story";
 import { Cutaway } from "./Cutaway";
+import { Stamp } from "./Stamp";
 import { Timeline, Thermometer, VersusCard, Checklist, Steps, Equation, ScaleBar, TrendArrow, WarningTag } from "./Panels";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +32,7 @@ type Comp = React.FC<any>;
 /** anchored = recibe `point` (ancla del objeto 3D proyectada a pantalla) */
 export const OVERLAYS: Record<string, { component: Comp; anchored: boolean; numeric: boolean }> = {
   StatCallout: { component: StatCallout, anchored: false, numeric: true },
+  Stamp: { component: Stamp, anchored: false, numeric: false },
   BarCompare: { component: BarCompare, anchored: false, numeric: true },
   Gauge: { component: Gauge, anchored: false, numeric: false },
   Waveform: { component: Waveform, anchored: false, numeric: false },
