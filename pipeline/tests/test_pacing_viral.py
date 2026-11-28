@@ -13,7 +13,8 @@ from sfx_plan import plan  # noqa: E402
 import validate_script  # noqa: E402
 from validate_script import validate  # noqa: E402
 
-validate_script.VIRAL["words"] = [100, 400]   # el ejemplo es de formato (anterior a D121, 231 palabras); el rango real se prueba aparte
+validate_script.VIRAL["words"] = [100, 400]
+validate_script.VIRAL["story2d"]["words"] = [100, 400]   # ídem: anterior a D132 (85–125)   # el ejemplo es de formato (anterior a D121, 231 palabras); el rango real se prueba aparte
 from validate_story2d import validate as validate_story  # noqa: E402
 from voice import viral_voice  # noqa: E402
 
@@ -46,7 +47,7 @@ errs, _ = validate(SCRIPT.replace("pacing: viral\n", ""))
 check("sin la cabecera viral rige el perfil clásico (las frases cortas siguen valiendo)", not any("viral" in e for e in errs), "; ".join(errs))
 
 # --- voz
-check("viral_voice: +13 % y pausas ≤150 ms", (viral_voice(STORY["meta"]) or {}).get("speed") == 1.13 and viral_voice(STORY["meta"])["pauseMaxMs"] == 150)
+check("viral_voice: +18 % y pausas ≤120 ms (D132)", (viral_voice(STORY["meta"]) or {}).get("speed") == 1.18 and viral_voice(STORY["meta"])["pauseMaxMs"] == 120)
 check("viral_voice: None sin el perfil", viral_voice({"lang": "es"}) is None)
 
 # --- story 2D (sin words: solo reglas estáticas)

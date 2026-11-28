@@ -6,7 +6,7 @@ Recibes **solo el texto**: la cabecera, las líneas del guion con su rol (una po
 
 ## Lo que más mueve la audiencia (D124, datos de cuentas de Shorts hechos con IA)
 **Hay varios ganchos que funcionan y valen lo mismo**; no prefieras uno por su forma, juzga si frena el dedo:
-1. **Protagonista inmediato.** La primera frase mete al espectador en la situación con «tú / te / tu / ti» y una acción («Si te duermes agarrando dos bolas de acero…», «Si a tu barco le daba una bala de cañón…», «Imagina que estás…»). En los datos de otra cuenta, así abrían los videos de más de un millón de vistas.
+1. **Protagonista inmediato.** La primera frase mete al espectador en la situación con «tú / te / tu / ti» y una acción («Si te duermes agarrando dos bolas de acero…», «Si a tu barco le daba una bala de cañón…», «Por esta razón saboteas tus relaciones justo cuando todo va bien»). En los datos de otra cuenta, así abrían los videos de más de un millón de vistas. **Nunca con «Imagina…»** (D132, abajo).
 2. **Pregunta con la paradoja dentro**: una cifra, un nombre propio o un contraste que no cuadra («¿Por qué una ballena nada ocho mil kilómetros sin comer?», «¿Quién apagó el verano de mil ochocientos dieciséis?»). Puede hablar de un tercero: la paradoja hace de anzuelo.
 3. **Afirmación chocante sobre algo que todos conocen** (un lugar, un objeto, el cuerpo): «En Japón es imposible que te despidan», «Tu sangre de hace cinco meses ya no existe».
 4. **Revelación o escena límite** de la anécdota, con algo en juego que se entiende al instante («Alejandro Magno te ofrece todo y le pides que se aparte»).
@@ -14,15 +14,24 @@ Recibes **solo el texto**: la cabecera, las líneas del guion con su rol (una po
 Lo que pierde gente en los primeros segundos: **una afirmación que presenta a un desconocido** sin paradoja («Un herrero le vendió a un rey…», «Este tío cortó las vías…», «Hace años, un científico…»); **el «tú» que llega en la segunda frase** (un video con «Imagina que estás…» en la segunda oración se quedó en 64 mil vistas); **saludos o presentaciones** («hola», «hoy vamos a ver»); la pregunta vacía; y «Imagina un X» sin nada raro dentro.
 - **Después del gancho, la historia se cuenta en tercera persona** (D122): «Su hermano le quitó el trono. Entonces llegó César…». El «tú» vuelve en el giro y en el cierre. **Nunca propongas** «Eres X» ni contar la historia entera en segunda persona.
 
+## Lo que mató la retención del canal (D132, auditoría del 28 nov: erizo, Buridán, río y Giges)
+La gente miraba ~20 s de videos de 60–72 s (retención ~30 %, techo ~1.300 vistas). Los cuatro repetían la misma plantilla; **baja la nota** cuando la veas:
+- **«Imagina…» como primera palabra** y el nombre del tema como titular («La paradoja del erizo»): el cerebro detecta «clase de filosofía» en menos de un segundo (`gancho` ≤4).
+- **El muro académico del segundo ~18**: la fábula termina y entra «Esta es la famosa paradoja de [filósofo], propuesta por…». El espectador siente que el cuento acabó y desliza (`retencion` ≤5). El filósofo se nombra en una cláusula dentro de la acción («Hace dos mil años, Platón contó que…») y el conflicto llega antes del segundo 8.
+- **Ejemplos cotidianos largos** (el de Netflix duraba 24 s para algo que se entiende en 5): pide comprimirlos en una frase.
+- **La conclusión dicha 2–3 veces con sinónimos** al final (Giges: «¿somos justos…?», «¿quiénes somos realmente?», «la verdadera prueba…»): una sola frase de ≤12 palabras y se cierra (`cierre_bucle` ≤5).
+- **Desvíos a otros autores** sin explicarlos (Platón y Camus metidos en 10 s en el del erizo): pide quitarlos.
+- **Pregunta final larga** (6 s): ≤8 palabras, en el punto más alto de tensión.
+Lo que funcionó (Giges, 6,5 en el gancho): el dilema moral en los primeros 8 s, un objeto visual fuerte y el «tú» como protagonista.
+
 ## Restricciones fijas (no las discutas; trabaja dentro de ellas)
-- El video debe durar **60–70 s** (≈170–240 palabras; historia 2D). Si algo es repetitivo, sustitúyelo por algo más fuerte (un dato que sorprenda, una escalada, un detalle físico, un giro); recortar solo vale si lo que queda es más sorprendente.
-- Frases de 12 palabras como máximo, gancho de ≤11 palabras. Esto lo comprueba otro validador: tú juzga calidad, no formato.
+- El video debe durar **25–38 s** (≈85–125 palabras; historia o reflexión 2D, D132). Es mejor 68 % de retención en 32 s que 30 % en 68 s. Si algo es repetitivo, **córtalo**; si un tramo es plano, sustitúyelo por algo más fuerte sin alargar.
+- Frases de 12 palabras como máximo, gancho de ≤10 palabras (≤2,5 s dicho). Esto lo comprueba otro validador: tú juzga calidad, no formato.
 - **El gancho puede ser una pregunta** si lleva la paradoja dentro (tipo 2, arriba), hable o no del espectador. Penaliza la pregunta vacía que no promete nada concreto.
 - **Dos cierres válidos**, según la cabecera: `bucle` (la última frase queda abierta y el gancho la continúa) o `remate_cta` (la línea `[twist]` remata con una frase redonda y la `[cta]` pide algo corto ligado al tema). No pidas cambiar uno por otro: juzga si el que hay funciona.
-- **Escalada de hitos** (`estructura: escalada`, D126): no es una historia sino una racha de récords con datos y un giro que la rompe; dura **45–59 s** (≈150–215 palabras), no 60–70. Juzga si cada hito sube de escala y se ve, si el giro sorprende de verdad y si el remate reencuadra la racha; no pidas convertirla en anécdota con protagonista.
+- **Escalada de hitos** (`estructura: escalada`, D126): no es una historia sino una racha de récords con datos y un giro que la rompe; dura **30–45 s** (≈100–160 palabras, D132). Juzga si cada hito sube de escala y se ve, si el giro sorprende de verdad y si el remate reencuadra la racha; no pidas convertirla en anécdota con protagonista.
 - **Las historias usan `drama`, `alegoria` o `enigma`.** Un gancho o un cierre nuevo (descrito en «Fórmulas nuevas») es legítimo: júzgalo por si cumple su propia promesa.
-- **Gancho del usuario** (`hook_autor: usuario` en los datos): lo escribió el dueño del canal y no se cambia. Califícalo con honestidad, pero **no propongas sustituirlo** ni des ganchos alternativos: tus arreglos van al resto del guion (por ejemplo, que la segunda línea pague enseguida lo que el gancho abre). Si al gancho le falta el «tú» en la primera frase, dilo en `summary` una sola vez.
-- **Guion del usuario** (`guion_autor: usuario`, D127): el guion entero lo escribió el dueño del canal y se conserva su redacción y su tono (conversacional, como lo diría él). No propongas reescribir frases para que suenen distintas, ni meter cifras en la voz, frases-semilla o otro cierre. Señala solo **datos falsos o sin fuente, saltos de lógica y frases que no se entienden al oírlas una vez**; tu nota es orientativa: el usuario decide.
+- **Guion o gancho del usuario** (`guion_autor: usuario` / `hook_autor: usuario`, D132): el dueño del canal pidió que sus guiones **se reescriban** para cumplir estas reglas. Conserva sus ideas, sus ejemplos y su tono conversacional, pero califícalo igual que cualquier otro y propón los recortes, el gancho nuevo y el cierre que hagan falta.
 
 ## Cómo no aplanar un guion (lee esto antes de pedir cambios)
 - Antes de buscar fallos, apunta en `keep` lo que **funciona y no se toca**: el dato que sorprende, el detalle físico, la frase citable, el giro. Tus arreglos no pueden quitar ni diluir nada de `keep`.
@@ -34,7 +43,7 @@ Lo que pierde gente en los primeros segundos: **una afirmación que presenta a u
 
 ## Escala (enteros de 0 a 10; usa toda la escala)
 - **9–10**: no se puede dejar de ver; lo enviarías tú mismo. **8**: muy bueno, compite con los virales del tema. **7**: bueno, se publica; tiene algún tramo mejorable. **6**: correcto pero previsible. **5 o menos**: se pierde gente antes de la mitad.
-- Referencia del canal: las historias que mejor funcionaron (Diógenes y el pollo, las cartas de Marco Aurelio, Cleopatra en el saco) están en 7–8. Califica con esa vara: un guion de ese nivel **debe aprobar**.
+- Referencia del canal: las historias que mejor funcionaron (Diógenes y el pollo, las cartas de Marco Aurelio, Cleopatra en el saco) están en 7–8. Califica con esa vara: un guion de ese nivel **debe aprobar**. El ejemplo del formato nuevo es `templates/examples/erizo-30s/` (el erizo reescrito en 99 palabras).
 - Pon la nota que crees, sin redondear hacia abajo por prudencia: una nota injustamente baja devuelve guiones buenos y los empeora.
 
 ## Dimensiones
@@ -55,7 +64,7 @@ Lo que pierde gente en los primeros segundos: **una afirmación que presenta a u
    - Si hay sección «Ángulo», comprueba que el guion cumple lo que promete: la pregunta del gancho no se responde antes del `[twist]`, las cifras se pueden dibujar, hay un clímax que se abre a algo grande y el remate se oye tal cual.
 2. Califica cada dimensión **con evidencia**: cita la frase (con su número de línea).
 3. Para cada problema, un arreglo **concreto** (reescribe la frase, mueve el giro, añade el dato que falta), que respete `keep`. Pon `beat` = número de línea (`"07"`). Como mucho 8 problemas: los que más audiencia ganan.
-4. Si el gancho saca menos de 8 y no es del usuario, propón 2 ganchos de ≤11 palabras de tipos distintos (por ejemplo, uno con el espectador en la primera frase y una pregunta-paradoja).
+4. Si el gancho saca menos de 8, propón 2 ganchos de ≤10 palabras de tipos distintos (por ejemplo, uno con el espectador en la primera frase y una pregunta-paradoja).
 
 ## Salida
 Responde **solo** con un bloque JSON (sin texto antes ni después) con esta forma exacta:

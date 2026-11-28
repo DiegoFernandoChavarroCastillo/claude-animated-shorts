@@ -15,7 +15,7 @@ from validate_story import (FAREWELL_ES, HOOK_ACTION_S, HOOK_MAX_S, hook_max_s, 
 
 ACCENT_MAX_PER_S = 1 / 3.0     # un acento (sonido no estructural) por cada 3 s como máximo
 ACCENT_MIN_GAP_S = 1.2
-BED_MIN_BELOW_DB = 18         # con cama sonora, la voz debe quedar al menos 18 dB por encima
+BED_MIN_BELOW_DB = 16         # con cama sonora, la voz debe quedar al menos 16 dB por encima (D132: el perfil viral la pone a 18; antes 24)
 EVENTS_PER_MIN_MAX = 48        # todos los sonidos juntos (los ticks de un contador cuentan uno a uno)
 
 
@@ -38,7 +38,7 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
     if not long:
         row("titular del gancho en el fotograma 0 (meta.hookTitle)", title or "falta", "sí", bool(title))
         hk = re.search(r"^hook:\s*(\w+)", md, re.M)
-        hmax = hook_max_s(story["meta"].get("hook") or (hk.group(1) if hk else None))   # tope según el tipo de gancho (25 nov)
+        hmax = hook_max_s(story["meta"].get("hook") or (hk.group(1) if hk else None), story["meta"])   # tope según el tipo de gancho (25 nov)
         row("gancho dicho en (s)", round(w1[-1]["end"], 1), f"≤ {hmax}", w1[-1]["end"] <= hmax)
     acts = [at_seconds(beats[0], w1, a.get("at"), 0.0) for a in beats[0].get("actions", [])]
     first = min(acts) if acts else None
@@ -82,8 +82,35 @@ def rows(d: Path) -> list[tuple[str, object, str, bool]]:
         bursts = sum(1 for k, x in enumerate(ticks) if k == 0 or x - ticks[k - 1] > 0.5)   # una cuenta de ticks suena como un solo gesto
         per_min = (len([e for e in ev if e["type"] != "tick"]) + bursts) / (dur / 60)
         row("sonidos por minuto (una cuenta de ticks = 1)", round(per_min, 1), f"≤ {EVENTS_PER_MIN_MAX}", per_min <= EVENTS_PER_MIN_MAX)
+    if story["meta"].get("pacing") == "viral" and engine_of(story) == "2d":
+        out += retention_rows(story, words, plan)
     rep = d / "08_mix.wav.report.json"
     if rep.exists() and load_json(rep).get("bed_below_voice_db") is not None:   # solo con meta.music: true
         db = load_json(rep)["bed_below_voice_db"]
         row("cama sonora bajo la voz (dB)", db, f"≥ {BED_MIN_BELOW_DB}", db >= BED_MIN_BELOW_DB)
+    return out
+
+
+def fold(s: str) -> str:
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", s.lower()) if unicodedata.category(c) != "Mn")
+
+
+def retention_rows(story: dict, words: list[dict], plan: Path) -> list[tuple[str, object, str, bool]]:
+    """D132 (auditoría del 28 nov): lo que hacía deslizar a la gente, medido sobre el video ya hecho"""
+    ret, cap = VIRAL["script"]["retencion"], VIRAL["captions"]
+    out = []
+    first = fold(story["beats"][0]["text"]).lstrip("¿¡ ")
+    bad = next((o for o in ret["bannedOpeners"] if first.startswith(fold(o))), None)
+    out.append((f"el gancho no abre con «Imagina…» ni con el nombre del tema", bad or "no", "no", bad is None))
+    body = " " + fold(" ".join(b["text"] for b in story["beats"][1:])) + " "
+    wall = next((m.group(0) for p in ret["academicWall"] if (m := re.search(p, body))), None)
+    out.append(("sin muro académico en la voz («esta es la famosa…»)", wall or "no", "no", wall is None))
+    if plan.exists() and words:
+        tail = load_json(plan)["duration_s"] - max(w["end"] for w in words)
+        out.append(("silencio tras la última palabra (s)", round(tail, 2), f"≤ {ret['tailSilenceMaxS']}", tail <= ret["tailSilenceMaxS"]))
+    if story["meta"].get("hookTitle"):
+        lo, hi = VIRAL["qa"]["hookTitleBand"]
+        y = cap.get("hookTitleYK") or cap["centerYK"]
+        out.append(("titular del gancho en el tercio superior (fracción del alto)", y, f"{lo}–{hi}", lo <= y <= hi))
     return out

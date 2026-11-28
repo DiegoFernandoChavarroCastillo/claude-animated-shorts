@@ -54,6 +54,9 @@ export const CAPTION = {
   activeColor: PALETTE.light.white, spokenColor: PALETTE.ui.spoken, accentColor: PALETTE.ui.accentWord,
   shadow: "0 2px 10px rgba(0,0,0,0.45)",
   band: { topK: 0.12, bottomK: 0.30 }, // zona reservada: ningún overlay entra aquí
+  strokePx: 0,            // D132: contorno de las letras (px a 1080 de ancho); 0 = solo sombra
+  plate: "",              // D132: placa semitransparente detrás de cada línea ("" = sin placa)
+  hookTitleYK: 0,         // D132: centro del titular del gancho (fracción del alto); 0 = en la franja de los subtítulos
 };
 
 /** Caja de selección de la palabra clave (§3.5), px a 1080 */

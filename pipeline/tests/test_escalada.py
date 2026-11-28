@@ -3,7 +3,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import validate_script  # noqa: E402
 from validate_script import validate  # noqa: E402
+
+# ia-frontera es anterior a D132 (202 palabras, 45–59 s); aquí se prueba la estructura, no el rango nuevo (100–160)
+validate_script.VIRAL["escalada"]["words"] = [150, 215]
+validate_script.VIRAL["escalada"]["hookMax"] = 11
 from validate_story2d import validate as validate_story  # noqa: E402
 
 MD = (Path(__file__).resolve().parents[2] / "templates" / "examples" / "ia-frontera" / "02_SCRIPT.md")

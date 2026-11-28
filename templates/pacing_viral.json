@@ -1,5 +1,8 @@
 {
-  "director": {"maxShotS": 3.0, "_": "D129: el director automático parte cada beat en planos de como mucho estos segundos (general / medio / primer plano, corte seco y Ken Burns)"},
+  "director": {
+    "maxShotS": 2.0,
+    "_": "D129: el director automático de flat2d parte cada beat en planos de como mucho estos segundos. D132 (auditoría 28 nov): 3 s → 2 s; ningún plano quieto más de 2 s"
+  },
   "_nota": "Perfil `viral` (header `pacing: viral` en 02_SCRIPT.md, meta.pacing en 05_story.json). Una sola fuente de verdad para validador de guion, TTS, plan de SFX, validador del story, subtítulos y QA. Los videos sin este perfil no cambian.",
   "script": {
     "words": [
@@ -13,26 +16,30 @@
       59.9
     ],
     "story2d": {
-      "_nota": "Historias 2D (structure drama/alegoria o con `ficcion:`): 60–70 s como diogenes-pollo, diogenes-alejandro y cartas-marco-aurelio, que gustaron (11 nov). Con 35–59 s la historia se comprime en frases telegráficas.",
+      "_nota": "D132 (28 nov, auditoría de erizo, Buridán, río y Giges + métricas del canal): la gente ve ~20 s; con 60–72 s la retención media se clavaba en ~30 % y el algoritmo frenaba en ~1.300 vistas. Historias y reflexiones 2D: 25–38 s (antes 60–70, D121/11 nov).",
       "words": [
-        170,
-        240
+        85,
+        125
       ],
       "durationS": [
-        58,
-        72
-      ]
+        24,
+        40
+      ],
+      "hookMax": 10,
+      "hookMaxS": 2.5
     },
     "escalada": {
-      "_nota": "D126: `structure: escalada` (racha de hitos con datos y un giro final). Más corto que una historia: los golpes de datos cansan pasado el minuto; 45–59 s como el explainer.",
+      "_nota": "D126: racha de hitos con datos y un giro final. D132: 30–45 s (antes 45–59).",
       "words": [
-        150,
-        215
+        100,
+        160
       ],
       "durationS": [
-        45,
-        59.9
-      ]
+        29,
+        47
+      ],
+      "hookMax": 10,
+      "hookMaxS": 2.5
     },
     "softOpeners": [
       "alguna vez",
@@ -66,21 +73,67 @@
       "para",
       "por"
     ],
-    "_notaGancho": "D123: una pregunta vale como gancho si lleva algo concreto dentro (cifra, nombre propio o contraste); «¿Sabías que…?» ya no es apertura suave por sí sola, pero sigue esa regla. Cierres del perfil: bucle o remate_cta. D124: «imagina» sale de softOpeners (vale «Imagina que estás…», no «Imagina un…», lo comprueba validate_script.py); se suman saludos y presentaciones; la primera frase del gancho mete al espectador (tú/te/tu/ti) o es una pregunta con la paradoja dentro; una afirmación sobre un tercero desconocido no vale."
+    "_notaGancho": "D123: una pregunta vale como gancho si lleva algo concreto dentro (cifra, nombre propio o contraste); «¿Sabías que…?» ya no es apertura suave por sí sola, pero sigue esa regla. Cierres del perfil: bucle o remate_cta. D124: «imagina» sale de softOpeners (vale «Imagina que estás…», no «Imagina un…», lo comprueba validate_script.py); se suman saludos y presentaciones; la primera frase del gancho mete al espectador (tú/te/tu/ti) o es una pregunta con la paradoja dentro; una afirmación sobre un tercero desconocido no vale.",
+    "retencion": {
+      "_nota": "D132: reglas medibles de la auditoría (Auditoria.md, 28 nov). Se aplican a todo guion viral 2D, también a los de Diego (guion_autor: usuario): él pidió que se reescriban.",
+      "bannedOpeners": [
+        "imagina",
+        "imaginate",
+        "imagínate",
+        "hoy te voy",
+        "te voy a contar",
+        "esta es la historia",
+        "la paradoja de",
+        "el mito de",
+        "el asno de",
+        "el anillo de",
+        "la alegoria de"
+      ],
+      "academicWall": [
+        "esta es (la|una) (famosa|conocida|celebre|famosisima)",
+        "es (la|una) (famosa|conocida|celebre) (paradoja|teoria|reflexion|historia|alegoria|frase)",
+        "esta es una de las (reflexiones|ideas|paradojas|historias|frases) mas",
+        "(propuesta|planteada|formulada|descrita|contada|creada|ideada) por (el|la) (filosofo|filosofa|pensador|pensadora|escritor|escritora)",
+        "se (conoce|le conoce|la conoce) como",
+        "conocid[ao]s? como (la|el) (paradoja|teoria|mito|dilema|efecto|experimento)",
+        "un experimento (filosofico|mental) que",
+        "del filosofo (griego|aleman|frances|romano|chino)"
+      ],
+      "academicMaxFilosofo": 1,
+      "conclusionMarkers": [
+        "quizas",
+        "quiza",
+        "tal vez",
+        "lo verdaderamente",
+        "la verdadera (prueba|pregunta|respuesta|leccion)",
+        "porque a veces",
+        "al final del dia",
+        "en el fondo",
+        "nos recuerda",
+        "nos ensena",
+        "la leccion es"
+      ],
+      "conclusionMax": 1,
+      "questionsMax": 2,
+      "ctaQuestionMaxWords": 8,
+      "tailSilenceMaxS": 0.35
+    }
   },
   "voice": {
-    "speed": 1.13,
-    "pauseMaxMs": 150,
+    "speed": 1.18,
+    "pauseMaxMs": 120,
     "wps": [
-      3.3,
-      4.3,
-      3.7
-    ]
+      3.5,
+      4.5,
+      3.9
+    ],
+    "_": "D132: la auditoría midió la voz como de audiolibro; +18 % y pausas ≤120 ms (antes +13 % y ≤150 ms)"
   },
   "cadence": {
-    "eventTargetS": 2.5,
-    "eventGapMaxS": 3.0,
-    "noHoldCamera": true
+    "eventTargetS": 1.8,
+    "eventGapMaxS": 2.5,
+    "noHoldCamera": true,
+    "_": "D132: un evento cada ~1,8 s (≥4 por cada 10 s), nunca más de 2,5 s sin cambio (antes 2,5 y 3 s)"
   },
   "sfx": {
     "hookImpactAtS": 0.0,
@@ -89,10 +142,14 @@
       "rupture",
       "twist",
       "climax"
-    ]
+    ],
+    "bedBelowVoiceDb": 18.0,
+    "climaxHit": true,
+    "_": "D132: la cama sonora va 18 dB bajo la voz (antes 24, casi inaudible), el clímax/giro lleva un golpe seco con un corte de música de 0,4 s y ningún tramo pasa de 4 s sin un efecto",
+    "gapMaxS": 4.0
   },
   "captions": {
-    "centerYK": 0.7,
+    "centerYK": 0.66,
     "fontSizeK": 0.074,
     "minWords": 1,
     "maxWords": 3,
@@ -103,7 +160,11 @@
     "forbiddenSlots": [
       "lower",
       "bottom"
-    ]
+    ],
+    "strokePx": 7,
+    "plate": "rgba(6,8,20,0.42)",
+    "hookTitleYK": 0.22,
+    "_": "D132: subtítulos al 66 % del alto con contorno grueso y placa semitransparente (se leen sobre nieve y cielo claros); el cartel del gancho sube al tercio superior (22 %), lejos de la interfaz de TikTok/Shorts"
   },
   "qa": {
     "pct_quiet": [
@@ -111,12 +172,16 @@
       14
     ],
     "words_per_s": [
-      3.3,
-      4.3
+      3.5,
+      4.5
     ],
     "captionBand": [
       0.62,
-      0.78
+      0.74
+    ],
+    "hookTitleBand": [
+      0.16,
+      0.3
     ]
   }
 }

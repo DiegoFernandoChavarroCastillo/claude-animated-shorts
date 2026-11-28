@@ -177,6 +177,8 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
                 errs.append(f"{bid}: slot '{o['slot']}' no existe")
             if viral and o.get("slot", "lower") in cap["forbiddenSlots"]:
                 errs.append(f"{bid}: overlay en el slot '{o.get('slot', 'lower')}' (zona de subtítulos del perfil viral): usa top, upper o center")
+            if viral and cap.get("hookTitleYK") and meta.get("hookTitle") and b is beats[0] and o.get("slot", "lower") in ("top", "upper"):
+                errs.append(f"{bid}: overlay en '{o.get('slot')}' durante el gancho: ahí va el titular del gancho (D132, tercio superior); usa center")
             if not resolves(o.get("at"), text):
                 errs.append(f"{bid}: overlay at '{o.get('at')}' no es una palabra del beat")
             if t == "Insert":
@@ -280,7 +282,7 @@ def validate(story: dict, words: list | None = None, script: list[str] | None = 
             errs.append(f"words.json no tiene palabras de los beats {', '.join(missing)}")
         else:
             w1 = [w for w in words if w["beat"] == beats[0]["id"]]
-            hmax = hook_max_s(story.get("meta", {}).get("hook"))   # el tope depende del tipo de gancho (meta.hook, 25 nov)
+            hmax = hook_max_s(story.get("meta", {}).get("hook"), story.get("meta"))   # el tope depende del tipo de gancho (meta.hook, 25 nov)
             if w1[-1]["end"] > hmax and not long:   # en un video largo el gancho es un capítulo de 20–45 s (lo mide validate_longform)
                 errs.append(f"el gancho dura {w1[-1]['end']:.1f} s hablado (máximo {hmax:.1f} s para su tipo): acórtalo (unas 8–9 palabras)")
             acts = [at_seconds(beats[0], w1, x.get("at"), 0.0) for x in beats[0].get("actions", [])]

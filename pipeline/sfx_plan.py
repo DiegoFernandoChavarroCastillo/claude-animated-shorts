@@ -137,8 +137,35 @@ def plan(story: dict, words: list[dict]) -> dict:
     ev = [e for k, e in enumerate(ev) if "acción" not in e["why"] or not any(o["type"] == e["type"] and 0 <= e["t"] - o["t"] < 0.12 for o in ev[:k])]   # una acción no duplica un sonido que ya suena
     for e in ev:
         e["t"] = max(0.0, e["t"])
-    ev = direct_accents(ev, total / FPS)
-    return {"duration_s": round(total / FPS, 3), "frames": total, "events": ev}
+    cuts = []
+    if cfg and cfg.get("climaxHit"):   # D132: golpe seco y corte de música de 0,4 s en el clímax (o el giro, si no hay clímax)
+        hit = next(((b, bt) for b, bt in zip(story["beats"], bts) if b["role"] == "climax"), None) or \
+            next(((b, bt) for b, bt in zip(story["beats"], bts) if b["role"] == "twist"), None)
+        if hit:
+            t = round(hit[1]["a"] / FPS, 3)
+            ev.append({"type": "impact", "t": t, "why": f"{hit[0]['id']}: golpe del clímax (D132)"})
+            cuts.append({"t": t, "dur": 0.4})
+    if cfg and cfg.get("gapMaxS"):   # D132: ningún tramo de más de gapMaxS sin un efecto
+        ev = fill_gaps(sorted(ev, key=lambda e: e["t"]), words, total / FPS, cfg["gapMaxS"])
+    ev = direct_accents(sorted(ev, key=lambda e: e["t"]), total / FPS)
+    out = {"duration_s": round(total / FPS, 3), "frames": total, "events": ev}
+    if cfg and cfg.get("climaxHit"):
+        out["musicCuts"] = cuts
+    return out
+
+
+def fill_gaps(ev: list[dict], words: list[dict], dur: float, gap_max: float) -> list[dict]:
+    """añade un pop suave en la palabra más cercana al centro de cada hueco sin efectos de más de gap_max s (D132)"""
+    ts = [0.0] + [e["t"] for e in ev] + [dur]
+    out = list(ev)
+    for a, b in zip(ts, ts[1:]):
+        while b - a > gap_max:
+            mid = a + min(gap_max * 0.75, (b - a) / 2)
+            w = min(words, key=lambda x: abs(x["start"] - mid), default=None)
+            t = round(w["start"] if w and a < w["start"] < b else mid, 3)
+            out.append({"type": "pop", "t": t, "why": "relleno: hueco sin efectos (D132)"})
+            a = t
+    return sorted(out, key=lambda e: e["t"])
 
 
 def main():

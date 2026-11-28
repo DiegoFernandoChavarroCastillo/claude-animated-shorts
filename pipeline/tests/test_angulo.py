@@ -4,7 +4,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import validate_script  # noqa: E402
 from validate_script import concrete_question, validate  # noqa: E402
+
+# el guion de prueba es de formato (anterior a D132: 194 palabras); el rango 85–125 y los ganchos nuevos se prueban en test_retencion.py
+validate_script.VIRAL["story2d"]["words"] = [85, 240]
+validate_script.VIRAL["story2d"]["hookMax"] = 11
 
 # guion de prueba (no es un video publicado): una curiosidad contada como enigma
 MD = """# Ballenas
@@ -74,13 +79,13 @@ check("afirmación que abre con un tercero falla (D124)", any("no mete al espect
 errs = validate(MD.replace(NEW_HOOK, "[hook] Una ballena nada ocho mil kilómetros. ¿Lo harías tú?"))[0]
 check("el «tú» en la segunda frase falla (D124)", any("no mete al espectador" in e for e in errs), errs)
 errs = validate(MD.replace(NEW_HOOK, "[hook] Imagina que nadas ocho mil kilómetros sin comer."))[0]
-check("«Imagina que nadas…» vale (D124)", not any("espectador" in e or "Imagina" in e or "suave" in e for e in errs), errs)
+check("«Imagina que nadas…» ya no vale (D132; antes D124)", any("«imagina…»" in e for e in errs), errs)
 errs = validate(MD.replace(NEW_HOOK, "[hook] Imagina una ballena que nada ocho mil kilómetros."))[0]
 check("«Imagina una ballena…» falla (D124)", any("Imagina" in e for e in errs), errs)
 errs = validate(MD.replace(NEW_HOOK, "[hook] Hola, hoy te cuento por qué nadas tanto."))[0]
 check("un saludo es apertura suave (D124)", any("introducción suave" in e for e in errs), errs)
 errs = validate(MD.replace("pacing: viral", "pacing: viral\nhook_autor: usuario").replace(NEW_HOOK, "[hook] Imagina una ballena que nada ocho mil kilómetros."))[0]
-check("con `hook_autor: usuario` el gancho del usuario pasa (D124)", not errs, errs)
+check("con `hook_autor: usuario` el «Imagina un…» también falla (D132: Diego pidió reescribir sus guiones)", errs and all("imagina" in e.lower() for e in errs), errs)
 
 # ángulo
 no_angle = MD[:MD.index("## Ángulo")] + MD[MD.index("## Guion"):]

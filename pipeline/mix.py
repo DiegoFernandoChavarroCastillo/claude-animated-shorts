@@ -72,6 +72,19 @@ def ebur128(path: Path) -> dict:
     return {"I_lufs": float(I.group(1)) if I else None, "true_peak_dbtp": float(P.group(1)) if P else None}
 
 
+def music_cuts(plan: dict, n: int) -> np.ndarray:
+    """D132: envolvente de la música con un corte seco (−30 dB) en cada `musicCuts` del plan: el clímax se oye en el silencio"""
+    g = np.ones(n)
+    for c in plan.get("musicCuts", []):
+        i, j = ns(max(0.0, c["t"] - 0.03)), ns(c["t"] + c.get("dur", 0.4))
+        r = ns(0.25)
+        g[i:j] = dbg(-30)
+        k = min(n, j + r)
+        if k > j:
+            g[j:k] = np.minimum(g[j:k], np.linspace(dbg(-30), 1, k - j))
+    return g[None, :]
+
+
 def duck_curve_music(voice):
     from bed_synth import duck_curve
     return duck_curve(voice)
@@ -85,6 +98,7 @@ def main():
     ap.add_argument("--music", choices=["tech", "calm", "warm", "tense"], default=None, help="añade la cama sonora sintetizada (bed_synth.py)")
     ap.add_argument("--music-file", type=Path, default=None, help="música propia (mp3/wav): se recorta a la duración del video, con fundidos y agachada bajo la voz")
     ap.add_argument("--synth-sfx", action="store_true", help="solo los efectos sintetizados (sin las grabaciones CC0 de sfx_lib/, D130)")
+    ap.add_argument("--bed-below", type=float, default=BED_BELOW_VOICE_DB, help="dB de la cama sintetizada bajo la voz (perfil viral: 18, D132)")
     ap.add_argument("--music-gain", type=float, default=0.7, help="ganancia lineal sobre el nivel original del archivo en el master (0.7 = 70 %%)")
     a = ap.parse_args()
     if not a.voice.exists():
@@ -142,8 +156,8 @@ def main():
         from bed_synth import bed, duck_curve
         b = bed(plan["duration_s"], a.music)
         b = np.pad(b[:n], (0, max(0, n - len(b))))   # la cama puede salir una muestra más larga o corta que la voz
-        b = b * duck_curve(voice[0]) * dbg(v_lufs - BED_BELOW_VOICE_DB - lufs(np.vstack([b, b])))
-        sfx = sfx + np.vstack([b, b])[:, :n]
+        b = b * duck_curve(voice[0]) * dbg(v_lufs - a.bed_below - lufs(np.vstack([b, b])))
+        sfx = sfx + (np.vstack([b, b])[:, :n] * music_cuts(plan, n))
         bed_lufs = lufs(np.vstack([b, b]))
         s_lufs = lufs(sfx)
     music_pre = None
@@ -155,8 +169,9 @@ def main():
         m = np.frombuffer(raw, dtype=np.float32).reshape(-1, 2).T.astype(np.float64)
         if m.shape[1] < n:
             raise PipelineError(f"la música ({m.shape[1] / SR:.1f} s) es más corta que el video ({plan['duration_s']} s)")
-        m = m[:, :n] * duck_curve_music(voice[0])
-        fade_in, fade_out = np.linspace(0, 1, min(n, ns(1.0))), np.linspace(1, 0, min(n, ns(2.5)))
+        m = m[:, :n] * duck_curve_music(voice[0]) * music_cuts(plan, n)
+        # D132: con musicCuts (perfil viral) el video hace bucle: la música no se apaga en 2,5 s de silencio al final
+        fade_in, fade_out = np.linspace(0, 1, min(n, ns(1.0))), np.linspace(1, 0, min(n, ns(0.3 if "musicCuts" in plan else 2.5)))
         m[:, : len(fade_in)] *= fade_in
         m[:, n - len(fade_out):] *= fade_out
         # el nivel pedido es el que tendría en el master (-14 LUFS): antes del master se divide por la ganancia final

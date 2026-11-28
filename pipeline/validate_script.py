@@ -377,7 +377,9 @@ def viral_errors(s: Script, hook: str, last: str) -> list[str]:
     elif "?" in hook and not concrete_question(hook, s.lang):
         errs.append(f"gancho en pregunta sin nada concreto dentro: {hook!r}. Una pregunta vale si lleva la paradoja: una cifra, "
                     "un nombre propio o un contraste («¿Por qué una ballena nada ocho mil kilómetros sin comer?»)")
-    if s.closing not in VIRAL_CLOSINGS and not (s.guion_autor == "usuario" and s.closing in s.new):   # D127: su cierre manda
+    if s.closing not in VIRAL_CLOSINGS and not (s.guion_autor == "usuario" and s.closing in s.new and not s.ficcion
+                                               and (s.structure or "") not in STORY_STRUCTURES + SHORT_2D_STRUCTURES):
+        # D127/D131: el cierre propio del usuario valía; D132: en las historias 2D también su guion se adapta (bucle o remate_cta)
         errs.append("el perfil viral exige `closing: bucle` o `closing: remate_cta`")
     if s.closing != "bucle":
         return errs
@@ -387,6 +389,43 @@ def viral_errors(s: Script, hook: str, last: str) -> list[str]:
     if not ends_open:
         errs.append(f"el cierre no se engancha con el gancho: la última frase debe quedar abierta (acabar en «:», «…» o en un nexo sin punto, "
                     f"p. ej. «…y la respuesta es:») para que «{hook.split()[0]}…» la continúe al repetirse el video: {last!r}")
+    return errs
+
+
+RET = VIRAL["retencion"]   # D132: reglas de la auditoría del 28 nov (pacing_viral.json → script.retencion)
+
+
+def retention_errors(s: Script, hook: str, last: str) -> list[str]:
+    """D132 (auditoría de erizo, Buridán, río y Giges): lo que hacía que la gente deslizara a los ~20 s. Se aplica también a los
+    guiones de Diego (`guion_autor: usuario`): pidió que la skill los reescriba para cumplirlas."""
+    errs = []
+    h = fold(hook).lstrip("¿¡ ")
+    if s.lang == "es" and (o := next((o for o in RET["bannedOpeners"] if h.startswith(fold(o))), None)):
+        errs.append(f"el gancho abre con «{o}…»: {hook!r}. Los 4 videos auditados abrían así y perdían a la gente en 2 s. "
+                    "Abre con el conflicto en «tú», una contradicción o una consecuencia extrema («Por esta razón saboteas tus "
+                    "relaciones justo cuando todo va bien.»); el nombre del tema o del filósofo va después, en una cláusula")
+    if s.lang != "es":
+        return errs
+    body = [t for r, t in s.lines if r != "hook"]
+    text = " " + fold(" ".join(body)) + " "
+    for pat in RET["academicWall"]:
+        if m := re.search(pat, text):
+            errs.append(f"muro académico: «{m.group(0)}». Ahí se iba la gente (segundo ~18 de los 4 videos auditados): no frenes la "
+                        "historia para presentar la teoría; mete el dato en la acción («Hace dos mil años, Platón contó que…») y sigue")
+            break
+    if (n := len(re.findall(r"\bfilosof[oa]s?\b", text))) > RET["academicMaxFilosofo"]:
+        errs.append(f"«filósofo» aparece {n} veces: nombra al pensador una vez, por su nombre, dentro de la acción")
+    conc = [m for m in RET["conclusionMarkers"] if re.search(rf"\b{m}\b", text)]
+    n_conc = sum(len(re.findall(rf"\b{m}\b", text)) for m in conc)
+    if n_conc > RET["conclusionMax"]:
+        errs.append(f"la conclusión se repite: {n_conc} frases de moraleja ({', '.join(conc)}; máximo {RET['conclusionMax']}). "
+                    "Dila una sola vez, corta (≤12 palabras), y cierra")
+    nq = sum(t.count("?") for t in body[:-1])
+    if nq > RET["questionsMax"]:
+        errs.append(f"{nq} preguntas entre el gancho y el cierre (máximo {RET['questionsMax']}): repetir la pregunta con otras "
+                    "palabras hace que el video «dé vueltas» antes de cerrar")
+    if last.rstrip().endswith("?") and (n := len(last.split())) > RET["ctaQuestionMaxWords"]:
+        errs.append(f"la pregunta final tiene {n} palabras (máximo {RET['ctaQuestionMaxWords']}): «¿Qué harías tú si nadie te viera?»")
     return errs
 
 
@@ -462,7 +501,8 @@ def validate(md: str) -> tuple[list[str], dict]:
     story = bool(s.ficcion) or (s.structure or "") in STORY_STRUCTURES
     short2d = (s.structure or "") in SHORT_2D_STRUCTURES
     w_min, w_max = (VIRAL["escalada"]["words"] if short2d else VIRAL["story2d"]["words"] if story else VIRAL["words"]) if viral else (WORDS_MIN, WORDS_MAX)
-    hook_max, sentence_max = (VIRAL["hookMax"], VIRAL["sentenceMax"]) if viral else (HOOK_MAX, SENTENCE_MAX)
+    prof = VIRAL["escalada"] if short2d else VIRAL["story2d"] if story else VIRAL
+    hook_max, sentence_max = (prof.get("hookMax", VIRAL["hookMax"]), VIRAL["sentenceMax"]) if viral else (HOOK_MAX, SENTENCE_MAX)
     if not w_min <= nwords <= w_max:
         errs.append(f"longitud: {nwords} palabras (debe estar entre {w_min} y {w_max})")
     roles = [r for r, _ in s.lines]
@@ -527,6 +567,7 @@ def validate(md: str) -> tuple[list[str], dict]:
         errs += viral_errors(s, hook, last)
     if viral and (story or short2d):
         errs += angle_errors(s)
+        errs += retention_errors(s, hook, last)
     if s.ficcion:
         errs += fiction_errors(s)
         if structure not in STORY_STRUCTURES:
