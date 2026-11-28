@@ -124,9 +124,12 @@ def main() -> int:
     gi = read("pipeline/tests/scripts/ok_cierre_usuario.md")
     if gi:
         errs, _ = validate(gi)
-        ok = not errs
+        # D132 (28 nov): este es el guion de Giges que auditó Gemini; Diego pidió que la skill reescriba sus guiones, así que
+        # ahora falla justo por lo que señaló la auditoría (duración, «Imagina…», moraleja repetida, cierre propio)
+        want = ("longitud", "«imagina…»", "la conclusión se repite", "closing: bucle")
+        ok = all(any(w in e for e in errs) for w in want)
         fails += not ok
-        print(f"{'OK ' if ok else 'MAL'} cierre propio del usuario con perfil viral: {errs}")
+        print(f"{'OK ' if ok else 'MAL'} D132: el guion de Giges del usuario falla por lo que vio la auditoría: {errs}")
         errs, _ = validate(gi.replace("guion_autor: usuario\nhook_autor: usuario\n", ""))
         ok = any("closing: bucle" in e for e in errs)
         fails += not ok

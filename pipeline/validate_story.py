@@ -30,10 +30,16 @@ HOOK_MAX_S = 3.2         # el primer beat (gancho) se dice en unos 3 s (margen d
 HOOK_TYPES = load_json(ROOT / "templates" / "formulas.json")["hooks"]
 
 
-def hook_max_s(kind: str | None) -> float:
+def hook_max_s(kind: str | None, meta: dict | None = None) -> float:
     """tope hablado del gancho según su tipo (25 nov): los de planteamiento (`y_si`, `escena`, `revelacion`, `reto`) necesitan montar
-    la situación y llegan a `max_s` (4 s) en formulas.json; los de golpe (dato, mito, paradoja…) siguen en 3,2 s"""
-    return float(HOOK_TYPES.get(kind or "", {}).get("max_s", HOOK_MAX_S))
+    la situación y llegan a `max_s` (4 s) en formulas.json; los de golpe (dato, mito, paradoja…) siguen en 3,2 s.
+    D132: en un story 2D con perfil viral (`meta`), ningún gancho pasa de `hookMaxS` (2,5 s): el conflicto se dice ya"""
+    t = float(HOOK_TYPES.get(kind or "", {}).get("max_s", HOOK_MAX_S))
+    if meta and meta.get("pacing") == "viral" and meta.get("engine") == "2d":
+        sc = load_json(ROOT / "templates" / "pacing_viral.json")["script"]
+        prof = sc["escalada"] if meta.get("structure") == "escalada" else sc["story2d"]
+        t = min(t, float(prof.get("hookMaxS", t)))
+    return t
 HOOK_ACTION_S = 1.0      # y lleva una acción que empieza antes de 1,0 s
 HOOK_STATIC_CAMERAS = ("drift",)   # cámaras demasiado suaves para el primer beat
 MAX_EVENT_GAP_S = 3.0    # tiempo máximo sin corte, acción u overlay (D121: un cambio cada 2–3 s; objetivo 2,5)

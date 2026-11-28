@@ -29,7 +29,8 @@ const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keywo
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top, opacity: out }}>
       {b.lines.map((l, li) => (
-        <div key={li} style={{ display: "flex", justifyContent: "center", height: lh, alignItems: "center", gap: b.space }}>
+        <div key={li} style={{ display: "flex", justifyContent: "center", height: lh, alignItems: "center", gap: b.space,
+          ...(CAPTION.plate ? { width: "fit-content", margin: "0 auto", padding: `0 ${fs * 0.3}px`, borderRadius: fs * 0.28, background: CAPTION.plate } : {}) }}>
           {l.words.map((i) => {
             const k = b.words.indexOf(i), shown = f >= wordFrame(words[i], fps), isActive = i === active, kw = keywords.get(i);
             const col = isActive && kw === "accent" ? CAPTION.accentColor : isActive ? CAPTION.activeColor : CAPTION.spokenColor;
@@ -46,6 +47,8 @@ const BlockView: React.FC<{ b: Block; words: Word[]; keywords: Map<number, Keywo
                   transform: (kw || (CAPTION as { punchAll?: boolean }).punchAll) && isActive ? `scale(${1 + (kw ? 0.16 : 0.08) * Math.max(0, 1 - (f - wordFrame(words[i], fps)) / 8) ** 2})` : undefined,
                   fontFamily: CAPTION_FAMILY, fontSize: fs, lineHeight: 1, whiteSpace: "nowrap", color: col,
                   fontWeight: isActive ? CAPTION.activeWeight : CAPTION.spokenWeight, textShadow: CAPTION.shadow,
+                  // D132: contorno grueso por detrás del relleno (paint-order) para leerse sobre nieve o cielo claro
+                  ...(CAPTION.strokePx ? { WebkitTextStroke: `${(CAPTION.strokePx * width) / 1080}px rgba(0,0,0,0.92)`, paintOrder: "stroke fill" } : {}),
                 }}>{words[i].w}</span>
               </span>
             );
@@ -64,7 +67,8 @@ const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u
 
 /** Titular del gancho (YouTube Shorts: el espectador decide en el primer segundo, muchas veces sin sonido). Un texto corto
  *  (`meta.hookTitle`) visible y completo desde el frame 0 hasta el final del gancho, en la franja de los subtítulos y sobre una
- *  placa oscura; la palabra clave del gancho va en el color de acento. Mientras está, los subtítulos no se pintan (no se repite texto). */
+ *  placa oscura; la palabra clave del gancho va en el color de acento. Mientras está, los subtítulos no se pintan (no se repite texto).
+ *  D132: con `cap.hookTitleYK` sube al tercio superior (lejos de la interfaz de TikTok/Shorts) y los subtítulos corren desde el frame 0. */
 export const HookTitle: React.FC<{ text: string; endF: number; accent?: string; cap?: CaptionCfg }> = ({ text, endF, accent, cap = CAP }) => {
   const f = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -74,7 +78,7 @@ export const HookTitle: React.FC<{ text: string; endF: number; accent?: string; 
   const settle = 1 + 0.05 * Math.max(0, 1 - f / 8) ** 2;   // entra ya visible, con un asentamiento mínimo
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
-      <div style={{ position: "absolute", left: 0, right: 0, top: cap.centerYK * height - lh * 0.62, display: "flex", justifyContent: "center", opacity: out }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: (cap.hookTitleYK || cap.centerYK) * height - lh * 0.62, display: "flex", justifyContent: "center", opacity: out }}>
         <div style={{ maxWidth: cap.maxWidthK * width, padding: `${fs * 0.22}px ${fs * 0.42}px`, borderRadius: fs * 0.32, background: "rgba(8,9,24,0.62)",
           display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: fs * 0.28, transform: `scale(${settle})` }}>
           {text.split(/\s+/).filter(Boolean).map((w, i) => (

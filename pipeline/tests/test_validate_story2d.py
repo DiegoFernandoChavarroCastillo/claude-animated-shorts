@@ -132,7 +132,7 @@ check("transiciones nuevas existen", not has(validate(s), "transición"), valida
 s = base()
 check("sin tema no hay director", director_max(s) is None)
 s["meta"]["theme"] = "drama_oscuro"
-check("con tema, director de los shorts (3 s)", director_max(s) == 3.0)
+check("con tema, director de los shorts (2 s, D132)", director_max(s) == 2.0)
 s["meta"]["director"] = False
 check("meta.director false lo apaga", director_max(s) is None)
 s["meta"]["director"] = 1.0; w = words(per=0.6)

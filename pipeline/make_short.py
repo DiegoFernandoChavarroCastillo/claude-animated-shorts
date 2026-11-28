@@ -340,6 +340,8 @@ class Run:
             self.sh([PY, "pipeline/sfx_plan.py", "--story", str(self.p("05_story.json")), "--words", str(self.p("04_words.json")), "--out", str(plan)], tag="sfx")
             meta = load_json(self.p("05_story.json"))["meta"]
             music = ["--music", meta.get("musicMood", "tech")] if meta.get("music") else []
+            if music and meta.get("pacing") == "viral":   # D132: la cama sube a 18 dB bajo la voz (antes 24, casi inaudible)
+                music += ["--bed-below", str(load_json(ROOT / "templates" / "pacing_viral.json")["sfx"].get("bedBelowVoiceDb", 24.0))]
             if meta.get("musicFile"):
                 music = ["--music-file", str(ROOT / meta["musicFile"]), "--music-gain", str(meta.get("musicGain", 0.7))]
             return self.sh([PY, "pipeline/mix.py", "--voice", str(self.p("03_voice.wav")), "--plan", str(plan), "--out", str(out), *music], tag="mix").splitlines()[-1]

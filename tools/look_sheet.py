@@ -40,7 +40,7 @@ SCENES = {
         {"asset": "vela", "id": "velas", "z": 7, "at": [0.5, 0.635], "scale": 0.075, "repeat": {"n": 9, "cols": 9, "dx": 0.105, "jitter": 0.25, "stagger": 4}},
         {"asset": "particulas", "z": 8, "opts": {"kind": "notas", "n": 7}}, {"asset": "bokeh", "z": 9, "opts": {"n": 10, "colores": True}}],
         actions=[{"type": "light", "at": "enciende", "target": "velas", "dur": 20}, {"type": "wave", "at": "familia", "target": "f30", "dur": 40}],
-        overlays=[{"type": "Calendar", "at": "noche", "month": "DICIEMBRE", "day": 7, "slot": "top"}]),
+        overlays=[{"type": "Calendar", "at": "noche", "month": "DICIEMBRE", "day": 7, "slot": "center"}]),
         beat(2, "Envíaselo a quien enciende contigo la primera vela del año.", "noche_luces", "velas", [
         {"asset": "cielo", "z": 0, "opts": {"astro": "luna", "x": 74, "y": 40, "r": 5}}, {"asset": "estrellas", "z": 1, "opts": {"hasta": 0.4}},
         {"asset": "calle", "z": 2, "opts": {"epoca": "colonial", "guirnalda": True}},
@@ -51,7 +51,7 @@ SCENES = {
         {"asset": "estrellas", "z": 0, "opts": {"hasta": 1, "n": 120}}, {"asset": "particulas", "z": 4, "opts": {"kind": "polvo", "n": 20}},
         {"asset": "mapa_mundo", "id": "mapa", "z": 2, "scale": 1.3, "opts": {"vista": "globo", "centro": [-75, -22], "ruta": [[-62, -64], [-76, -47], [-81, -20], [-78, 3.5]]}}],
         actions=[{"type": "route", "at": "nadan", "target": "mapa", "dur": 60}],
-        overlays=[{"type": "StatCallout", "at": "ocho", "value": 8000, "suffix": " km", "slot": "upper"}], camera={"preset": "reveal", "from": [0.45, 0.62, 1.7]})],
+        overlays=[{"type": "StatCallout", "at": "ocho", "value": 8000, "suffix": " km", "slot": "center"}], camera={"preset": "reveal", "from": [0.45, 0.62, 1.7]})],
     "pergamino": [beat(1, "La noticia viaja de Roma hasta Alejandría en pocas semanas.", "pergamino", "dia", [
         {"asset": "mapa_mundo", "id": "mapa", "z": 1, "scale": 1.3, "opts": {"centro": [20, 38], "zoom": 5.5, "ruta": [[12.5, 41.9], [15.6, 38.2], [23, 35], [29.9, 31.2]], "puntos": [[12.5, 41.9], [29.9, 31.2], [23.7, 38], [35.2, 31.8]]}},
         {"asset": "particulas", "z": 3, "opts": {"kind": "polvo", "n": 30}}, {"asset": "particulas", "id": "lejos", "z": 0, "par": 0.4, "opts": {"kind": "polvo", "n": 20}}],
@@ -74,7 +74,7 @@ SCENES = {
         {"asset": "figura", "id": "gente", "z": 4, "at": [0.5, 0.56], "scale": 0.13, "repeat": {"n": 12, "cols": 6, "dx": 0.15, "dy": 0.03, "depth": 0.85, "stagger": 2}, "opts": {"vario": True, "ropa": "actual"}},
         FIG(0.3, 0.62, 0.24, id="ella", ropa="vestido", color="#F2583E", pelo="largo", mira=0.5), FIG(0.66, 0.62, 0.25, id="el", ropa="actual", color="#2FA86B", mira=-0.5),
         {"asset": "particulas", "z": 8, "opts": {"kind": "hojas", "n": 14}}],
-        overlays=[{"type": "Equivalence", "at": "entera", "count": 3, "icon": "globe", "label": "3 estadios llenos", "text": "200.000 personas", "slot": "top"}],
+        overlays=[{"type": "Equivalence", "at": "entera", "count": 3, "icon": "globe", "label": "3 estadios llenos", "text": "200.000 personas", "slot": "center"}],
         actions=[{"type": "cheer", "at": "celebrar", "target": "ella", "dur": 30}, {"type": "cheer", "at": "celebrar", "target": "el", "dur": 30}, {"type": "cheer", "at": "sale", "target": "gente", "dur": 40}])],
 }
 

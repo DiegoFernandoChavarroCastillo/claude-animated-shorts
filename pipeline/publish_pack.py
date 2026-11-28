@@ -219,6 +219,7 @@ Borrador generado por `pipeline/publish_pack.py`: revísalo y afínalo antes de 
 {src or '(sin fuentes)'}
 
 ## Antes de publicar
+- **Mismo día en YouTube Shorts y TikTok** (D132): el 70–100 % de las vistas llegan el primer día y un video de TikTok ya rindió más allí que en YouTube. Uno por día, a la misma hora.
 - Vista previa del video en cada app: la descripción y los botones tapan la parte baja; los subtítulos van arriba a propósito.
 - Si el video es un bucle, no pongas «gracias por ver» ni despedidas en el texto: que el comentario fijado retome el gancho.
 """

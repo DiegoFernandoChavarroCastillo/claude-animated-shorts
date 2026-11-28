@@ -1,6 +1,18 @@
 # Prompt: guion de un short narrativo 2D (español) · estructuras `drama` (hechos reales), `alegoria` (mitos), `enigma` (curiosidades) y `escalada` (rachas de récords, D126)
 
-Escribes el guion de un short vertical de **60 a 70 s** (historia 2D; con el perfil viral, 170–240 palabras) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
+Escribes el guion de un short vertical de **25 a 38 s** (historia o reflexión 2D; con el perfil viral, 85–125 palabras, D132) que cuenta una **alegoría, mito o relato filosófico** como un viaje, con voz en off. Mismas reglas de voz y de validador que `script_es.md` (frases ≤22 palabras, números en palabras y con fuente, nada de «ll/y» seguidos, sin despedida). Esta guía solo cambia la **estructura** y el **tono**.
+
+## Las 8 reglas de retención (D132, 28 nov; mandan sobre todo lo de abajo)
+Salen de auditar los cuatro shorts de filosofía del canal (erizo, Buridán, río de Heráclito, anillo de Giges): la gente miraba ~20 s de 60–72, la retención se clavaba en ~30 % y YouTube dejaba de repartirlos en ~1.300 vistas. Los cuatro seguían la misma plantilla «Imagina + fábula + "Esta es la famosa paradoja de…" en el segundo 18 + moraleja repetida». Valen también para los guiones de Diego (`guion_autor: usuario`): él pidió que la skill los reescriba.
+1. **25–38 s, 85–125 palabras.** Mejor 68 % de retención en 32 s que 30 % en 68 s. Si no cabe, quita ideas, no palabras de cada frase.
+2. **Nunca «Imagina…» ni el nombre del tema** en la primera frase. En ≤2,5 s (≤10 palabras): el conflicto en «tú», una contradicción o una consecuencia extrema. «Por esta razón saboteas tus relaciones justo cuando todo va bien.» · «Este burro murió con comida y agua delante. Tú haces lo mismo.» · «Si pudieras ser invisible sin castigo, ¿seguirías siendo buena persona?» (la pregunta vale si es el dilema directo).
+3. **Sin muro académico.** Nada de «Esta es la famosa paradoja…», «propuesta por el filósofo…», «se conoce como…». El pensador se nombra una vez, en una cláusula dentro de la acción («Schopenhauer vio en ellos a la sociedad entera.»). El conflicto llega antes del segundo 8.
+4. **El ejemplo cotidiano cabe en una frase** («Pasas veinte minutos buscando qué ver y apagas la tele.»), no en 24 s.
+5. **Una sola conclusión**, de ≤12 palabras («El problema no son las púas. Es querer amar sin salir herido.»). Nada de «quizás…», «tal vez…», «la verdadera prueba…» repetidos; como mucho dos preguntas en el cuerpo.
+6. **Sin desvíos** a otros autores u otras ideas (Platón y Camus metidos en el erizo).
+7. **Cierre de ≤8 palabras que enlaza con la primera del gancho** (bucle sintáctico: «Y mientras esperas eso, sin darte cuenta, saboteas…» → «Saboteas tus relaciones…»).
+8. **El titular del gancho** (`meta.hookTitle`, tercio superior) da curiosidad en segunda persona («¿Y si fueras invisible?»), nunca es el nombre del tema («La paradoja del erizo»).
+Ejemplo del formato: `templates/examples/erizo-30s/02_SCRIPT.md` (el erizo de 72 s reescrito en 99 palabras). `validate_script.py` comprueba 1, 2, 3, 5 y 7; el crítico de guion, todas.
 
 ## Entrada
 - El tema y `01_research.md` con los **hechos ancla verificados contra el texto original** (≥2 fuentes cada uno) y una sección **«Huecos»**: lo que las fuentes no cuentan (qué pensaba, qué se dijo en privado, quién miraba, cómo olía el lugar). Los huecos son donde va la ficción.
@@ -25,7 +37,7 @@ Los videos que gustaron (diogenes-pollo, diogenes-alejandro, cartas-marco-aureli
 - **Tercera persona, como se le cuenta algo a un amigo**: «Su hermano le quitó el trono. Entonces llegó César. Cleopatra necesitaba verlo…». Cada frase con sujeto claro; pasado o presente, los dos valen. **Nunca «Eres X»**: el «tú» va solo en el gancho y en el cierre, o como testigo en la sala (el validador rechaza `pov: tu` en historias reales).
 - **El remate es concreto**: un acto o una frase que se entiende al instante («Apártate, me tapas el sol», el pollo desplumado, las cartas quemadas sin leer). Nada de metáforas de estructura («la última apuesta», «no la mataron siete barcos») ni rótulos conceptuales en pantalla.
 - **Solo `drama`, `alegoria` o `enigma`**: las estructuras inventadas obligan a descifrar la historia (el validador las rechaza con `ficcion:`).
-- **Con aire**: 60–70 s, frases completas. Si no cabe, quita hechos, no palabras de cada frase.
+- **Corto y completo**: 25–38 s (D132), frases completas. Si no cabe, quita hechos, no palabras de cada frase.
 
 ## Dramatización (la eliges tú; no se le pregunta al usuario)
 Un short de historia que suena a documental se desliza: «Según Dion…», «Cuentan que…», crónica en pasado, una lista de hechos y la moraleja al final. Lo que retiene es **vivir la escena**. Regla de oro: **los hechos ancla no se tocan; el cómo se inventa.**
@@ -95,7 +107,7 @@ Cabecera: `ficcion:` y `pov:` (valores en `templates/dramatizacion.json`), y una
 Reglas propias: la pregunta del gancho **no se responde antes del `twist`** (si una pista la contesta, ya no hay motivo para seguir); una pista de cada dos trae algo que se ve moverse; nada de listas de datos sin hilo: cada pista responde a «¿y entonces por qué…?».
 
 ## Estructura `escalada` (`structure: escalada`, para rachas de récords con un giro; D126)
-`[hook] → [hito]+ → [giro]+ → [twist]+ → [cta]` (3–5 `hito`, 1–2 `giro`, 1–2 `twist`). **No es una historia**: no lleva `ficcion:` ni protagonista; todo es dato verificado. Para «cómo cambió X en diez años», avances de tecnología o ciencia, récords deportivos: un tema con 3–5 hitos que suben de escala y **una excepción absurda** que todavía falla. Dura **45–59 s** (150–215 palabras; perfil `escalada` de `pacing_viral.json`), no 60–70: los golpes de datos cansan pasado el minuto. Lleva `## Ángulo` como las historias. Ejemplo: `templates/examples/ia-frontera/`.
+`[hook] → [hito]+ → [giro]+ → [twist]+ → [cta]` (3–5 `hito`, 1–2 `giro`, 1–2 `twist`). **No es una historia**: no lleva `ficcion:` ni protagonista; todo es dato verificado. Para «cómo cambió X en diez años», avances de tecnología o ciencia, récords deportivos: un tema con 3–5 hitos que suben de escala y **una excepción absurda** que todavía falla. Dura **30–45 s** (100–160 palabras; perfil `escalada` de `pacing_viral.json`, D132): los golpes de datos cansan rápido. Lleva `## Ángulo` como las historias. Ejemplo: `templates/examples/ia-frontera/`.
 
 | Rol | Qué hace | Imagen que necesita |
 |---|---|---|
@@ -154,24 +166,24 @@ Igual que `script_es.md`, con cabecera `hook: mito|paradoja|…|<nuevo>`, `struc
 ## Perfil `pacing: viral` (por defecto en los videos nuevos)
 Cabecera del guion: `pacing: viral` (y `closing: bucle`); en el story: `meta.pacing: "viral"`. Todo lo que cambia está en `templates/pacing_viral.json` (una sola fuente de verdad) y lo comprueban `validate_script.py`, `validate_story2d.py` y el QA. Sin esa cabecera rigen las reglas de arriba.
 
-**System prompt de la etapa de redacción** (historias 2D: 60–70 s; el explainer sigue en 35–59 s, D121):
-> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es contar la idea del usuario como **una anécdota**, en tercera persona y en orden, en un guion de 60 a 70 segundos (170–240 palabras). Frases cortas y claras con sujeto, ritmo ágil, suspenso narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
+**System prompt de la etapa de redacción** (historias 2D: 25–38 s, D132; el explainer sigue en 35–59 s, D121):
+> Eres un guionista experto en viralidad de YouTube Shorts con retención superior al 100 %. Tu objetivo es contar la idea del usuario como **una anécdota**, en tercera persona y en orden, en un guion de 25 a 38 segundos (85–125 palabras). Nunca empieces con «Imagina» ni con el nombre del tema, nunca frenes para presentar la teoría, y di la conclusión una sola vez. Frases cortas y claras con sujeto, ritmo ágil, suspenso narrativo y un gancho agresivo en los primeros 2 segundos. Asegúrate de que la última palabra del texto conecte gramaticalmente con la primera palabra del texto para crear un bucle perfecto.
 
 | Regla | Valor |
 |---|---|
-| Duración | 60–70 s hablados (170–240 palabras con la voz `diego`); sin relleno ni pausas |
-| Gancho (0–3 s) | ≤11 palabras; afirmación chocante, paradoja o dato contraintuitivo en la primera frase, o una pregunta con la paradoja dentro (cifra, nombre propio o contraste). Uno de los cuatro tipos de «Gancho» (D124). Prohibido: «¿Alguna vez…?», «Imagina un X» sin el espectador dentro, saludos, «Solo conversación…», la pregunta vacía y abrir afirmando algo de un tercero desconocido |
+| Duración | 25–38 s hablados (85–125 palabras con la voz `diego`, D132); sin relleno ni pausas |
+| Gancho (0–2,5 s) | ≤10 palabras; nunca «Imagina…» ni el nombre del tema (D132); afirmación chocante, paradoja o dato contraintuitivo en la primera frase, o una pregunta con la paradoja dentro (cifra, nombre propio o contraste). Uno de los cuatro tipos de «Gancho» (D124). Prohibido: «¿Alguna vez…?», «Imagina…» (cualquiera, D132), saludos, «Solo conversación…», la pregunta vacía y abrir afirmando algo de un tercero desconocido |
 | Frases | 8–12 palabras como máximo; verbos de acción, sin adjetivos de relleno; una imagen por frase; frases completas con sujeto, no telegramas |
 | Cierre en bucle (`closing: bucle`; la alternativa es `remate_cta`, arriba) | La última frase queda **abierta** (acaba en «:», «…» o en un nexo sin punto: *que, porque, cuando, como, y…*) y la primera frase del gancho la continúa. Ej.: cierre «Y lo único que importa de los demás es que» → gancho «Solo tú eres real. Los demás, decorado.» Comparte además una palabra de ≥5 letras con el gancho |
 
 Ejemplo vigente (con story, `templates/examples/solipsismo-viral/`): gancho «Solo tú eres real. Los demás, decorado.». El gancho debe pasar igualmente la prueba de los 3 s: si una frase tan larga como la de un ejemplo de dos oraciones no cabe en 3 s hablados, deja la primera frase como gancho y mueve la segunda a la primera línea `[scene]`.
 
 ### Audio y tiempos (los aplica el pipeline)
-- Voz: `meta.voice.speed` ≥ 1,13 (+13 %, rango pedido +12–15 %) y pausas entre frases ≤150 ms (`pauseMaxMs`); el silencio de cada frase se recorta siempre. La velocidad y las pausas del perfil no se reajustan al medir (solo avisa si salen de 3,3–4,3 pal/s).
-- SFX: golpe grave (`impact`) en el segundo 0, barrido (`whoosh_soft`) en cada cambio de escena y `riser` 0,8 s antes de `rupture`, `climax` y `twist`.
+- Voz: `meta.voice.speed` ≥ 1,18 (+18 %, D132; antes 1,13) y pausas entre frases ≤120 ms (`pauseMaxMs`); el silencio de cada frase se recorta siempre. La velocidad y las pausas del perfil no se reajustan al medir (el QA exige 3,5–4,5 pal/s).
+- SFX: golpe grave (`impact`) en el segundo 0, barrido (`whoosh_soft`) en cada cambio de escena, `riser` 0,8 s antes de `rupture`, `climax` y `twist`, y (D132) un golpe seco con 0,4 s de música cortada al entrar el `climax` (o el `twist`), más un `pop` de relleno si pasan 4 s sin ningún efecto. La cama sonora va 18 dB bajo la voz (antes 24) y la música no se apaga al final (el video hace bucle).
 
 ### Visual y subtítulos del story
-- Un cambio (acción, overlay o sub-plano) cada 2,0–2,5 s; nunca más de 3 s sin cambios; ninguna cámara `hold`.
-- Subtítulos de 1–3 palabras, grandes (7,4 % del ancho ≈ 80 px a 1080), centro-inferior (centro en el 70 % del alto, por encima de la interfaz de Shorts). Las palabras clave van en **amarillo** (`meta.captionEmphasis: "accent"`): pon `keywords: [...]` (varias por beat) en cada beat.
-- La franja 0,62–0,78 del alto es de los subtítulos: capas con los pies en y ≤0,62 y overlays solo en los slots `top`, `upper` o `center`.
+- Un cambio (acción, overlay o sub-plano) cada ~1,8 s (≥4 por cada 10 s, D132); nunca más de 2,5 s sin cambios; planos del director de ≤2 s; ninguna cámara `hold`.
+- Subtítulos de 1–3 palabras, grandes (7,4 % del ancho ≈ 80 px a 1080), con contorno grueso y placa semitransparente (D132: se leen sobre nieve o cielo claro), centro-inferior (centro en el 66 % del alto, por encima de la interfaz de Shorts y TikTok). El titular del gancho va en el tercio superior (22 %): durante el gancho no pongas overlays en `top`/`upper`. Las palabras clave van en **amarillo** (`meta.captionEmphasis: "accent"`): pon `keywords: [...]` (varias por beat) en cada beat.
+- La franja 0,62–0,74 del alto es de los subtítulos: capas con los pies en y ≤0,62 y overlays solo en los slots `top`, `upper` o `center`.
 - `at` busca la **primera** aparición de la palabra en el beat: si se repite («Es… es una»), elige otra palabra más única.

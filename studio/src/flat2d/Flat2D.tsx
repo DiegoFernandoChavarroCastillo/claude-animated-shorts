@@ -138,7 +138,8 @@ const captionCfg = (viral: boolean, themed = false, wide = false): typeof CAPTIO
   }
   if (!viral) return CAPTION;
   const c = pacingViral.captions;
-  return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor, shadow: c.shadow, punchAll: themed } as typeof CAPTION;
+  return { ...CAPTION, centerYK: c.centerYK, fontSizeK: c.fontSizeK, minWords: c.minWords, maxWords: c.maxWords, accentColor: c.accentColor, shadow: c.shadow, punchAll: themed,
+    strokePx: c.strokePx ?? 0, plate: c.plate ?? "", hookTitleYK: c.hookTitleYK ?? 0 } as typeof CAPTION;
 };
 
 export const Flat2D: React.FC<Props2> = (props) => {
@@ -166,7 +167,7 @@ export const Flat2D: React.FC<Props2> = (props) => {
       <OverlayLayer tl={tl as unknown as Timeline} words={words} lang={story.meta.lang} wideX={wide ? story.meta.overlayX : undefined} />
       {story.meta.hookTitle ? <HookTitle text={story.meta.hookTitle} endF={hookF} accent={story.beats[0].keyword ?? story.beats[0].keywords?.[0]} cap={cap} /> : null}
       {/* en un video largo los subtítulos van por defecto en un .srt aparte (CC de YouTube); `meta.captions: "burned"` los pinta */}
-      {wide && story.meta.captions !== "burned" ? null : <Captions words={words} keywords={tl.keywords} cap={cap} fromF={story.meta.hookTitle ? hookF : 0} />}
+      {wide && story.meta.captions !== "burned" ? null : <Captions words={words} keywords={tl.keywords} cap={cap} fromF={story.meta.hookTitle && !cap.hookTitleYK ? hookF : 0} />}
     </AbsoluteFill>
   );
 };
